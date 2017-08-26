@@ -9,14 +9,18 @@ import {
 } from 're-bulma'
 
 import style from  './style.css';
+import Icon from '../Icons';
 
 const CategoriesItem = ({ image, title }) => {
   return (
     <Card isFullwidth className="categoriesItem">
-      <CardImage>
-        <Image src={ image } ratio="isSquare"/>
+      <CardImage className="categoriesImage">
+        <Icon
+          icon={ image }
+          size={60}
+        />
       </CardImage>
-      <CardContent>
+      <CardContent className="categoriesCard">
         <Content className="categoriesContainer">
           <p className="categoriesTitle">{ title }</p>
         </Content>

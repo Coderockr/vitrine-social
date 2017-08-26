@@ -4,13 +4,41 @@
   background: transparent;
 
   text-align: center;
-  color: #ff974b;;
+  color: #ff974b;
 }
+.categoriesItem:hover > .categoriesCard {
+  opacity: 1;
+}
+.categoriesCard {
+  padding: 5px;
 
+  opacity: 0;
+}
 .categoriesTitle {
   background: transparent;
 
   font-family: 'Roboto', sans-serif;
   font-weight: 700;
-  color: #ff974b;;
+  color: #ff974b;
+}
+
+.categoriesImage {
+  display: flex;
+
+  margin: 0 20px;
+  border: 4px solid #FF974B;
+  border-radius: 50%;
+  width: 140px;
+  height: 140px;
+
+  background: #ffffff;
+
+  text-align: center;
+
+  align-items: center;
+  overflow: hidden;
+  justify-content: center;
+}
+.categoriesImage svg {
+  display: inline-flex;
 }

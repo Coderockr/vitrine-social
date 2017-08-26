@@ -22,36 +22,36 @@ const Categories = () => {
       </Columns>
       <Columns style={style}>
         <Column>
-          <CategoriesItem title="Title Categorie" image="http://placehold.it/200x200" />
+          <CategoriesItem title="Artigos Domésticos" image="alimentos" />
         </Column>
         <Column>
-          <CategoriesItem title="Title Categorie" image="http://placehold.it/200x200" />
+          <CategoriesItem title="Artigos Domésticos" image="brinquedos" />
         </Column>
         <Column>
-          <CategoriesItem title="Title Categorie" image="http://placehold.it/200x200" />
+          <CategoriesItem title="Artigos Domésticos" image="construcao" />
         </Column>
         <Column>
-          <CategoriesItem title="Title Categorie" image="http://placehold.it/200x200" />
+          <CategoriesItem title="Artigos Domésticos" image="domesticos" />
         </Column>
         <Column>
-          <CategoriesItem title="Title Categorie" image="http://placehold.it/200x200" />
+          <CategoriesItem title="Artigos Domésticos" image="equipamentos" />
         </Column>
       </Columns>
       <Columns style={style}>
         <Column>
-          <CategoriesItem title="Title Categorie" image="http://placehold.it/200x200" />
+          <CategoriesItem title="Artigos Domésticos" image="higiene" />
         </Column>
         <Column>
-          <CategoriesItem title="Title Categorie" image="http://placehold.it/200x200" />
+          <CategoriesItem title="Artigos Domésticos" image="livros" />
         </Column>
         <Column>
-          <CategoriesItem title="Title Categorie" image="http://placehold.it/200x200" />
+          <CategoriesItem title="Artigos Domésticos" image="moveis" />
         </Column>
         <Column>
-          <CategoriesItem title="Title Categorie" image="http://placehold.it/200x200" />
+          <CategoriesItem title="Artigos Domésticos" image="outros" />
         </Column>
         <Column>
-          <CategoriesItem title="Title Categorie" image="http://placehold.it/200x200" />
+          <CategoriesItem title="Artigos Domésticos" image="papelaria" />
         </Column>
       </Columns>
     </Container>
