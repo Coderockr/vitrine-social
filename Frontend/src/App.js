@@ -1,5 +1,4 @@
 import React from 'react';
-import 'bulma/css/bulma.css';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
