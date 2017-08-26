@@ -7,10 +7,10 @@ import (
 
 	"os"
 
+	"github.com/Coderockr/vitrine-social/server/auth"
 	"github.com/Coderockr/vitrine-social/server/db"
+	"github.com/Coderockr/vitrine-social/server/db/inmemory"
 	"github.com/codegangsta/negroni"
-	"github.com/dahernan/auth"
-	"github.com/dahernan/auth/jwt"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -42,7 +42,7 @@ func StartServer() {
 	}
 
 	mux := mux.NewRouter()
-	options := jwt.Options{
+	options := auth.Options{
 		SigningMethod: "RS256",
 		PrivateKey:    os.Getenv("VITRINESOCIAL_PRIVATE_KEY"), // $ openssl genrsa -out app.rsa keysize
 		PublicKey:     os.Getenv("VITRINESOCIAL_PUBLIC_KEY"),  // $ openssl rsa -in app.rsa -pubout > app.rsa.pub
@@ -50,7 +50,7 @@ func StartServer() {
 	}
 
 	// creates the route with Bolt and JWT options
-	authRoute := auth.NewAuthRoute(boltStore, options)
+	authRoute := auth.NewAuthRoute(inmemory.NewUserRepository(), options)
 	app := negroni.Classic()
 	v1 := mux.PathPrefix("/v1").Subrouter()
 	authRoute := v1.PathPrefix("/auth").Subrouter()

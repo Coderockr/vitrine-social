@@ -28,7 +28,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/dahernan/auth"
-  packages = [".","crypto","jwt","store"]
+  packages = ["crypto","jwt","store"]
   revision = "237ae9d960e79e6c6ed00bc6621e4868e28a1746"
 
 [[projects]]
@@ -160,6 +160,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "193d17ea7808dc0f65fa0363a627f403daebe923d94d4416fb511699d8037cd3"
+  inputs-digest = "000734f28f9547a4832523594ed7d316c3a3b27e910e33d61ce5364c70a9f825"
   solver-name = "gps-cdcl"
   solver-version = 1
