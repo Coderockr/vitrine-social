@@ -10,7 +10,6 @@ import (
 	"github.com/Coderockr/vitrine-social/server/auth"
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/inmemory"
-	"github.com/codegangsta/negroni"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -51,16 +50,12 @@ func StartServer() {
 
 	// creates the route with Bolt and JWT options
 	authRoute := auth.NewAuthRoute(inmemory.NewUserRepository(), options)
-	app := negroni.Classic()
 	v1 := mux.PathPrefix("/v1").Subrouter()
-	authRoute := v1.PathPrefix("/auth").Subrouter()
-	authRoute.HandleFunc("/login", authRoute.Login)
-	// authRoute.HandleFunc("/signin", authRoute.Signin)
-	v1.HandleFunc("/search", negroni.New(
-		authRoute.AuthMiddleware,
-		func(w http.ResponseWriter, req *http.Request) {
+	authSub := v1.PathPrefix("/auth").Subrouter()
+	authSub.HandleFunc("/login", authRoute.Login)
+	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {
 
-		}))
+	})
 
 	http.ListenAndServe(":"+os.Getenv("API_PORT"), context.ClearHandler(mux))
 }
