@@ -21,8 +21,8 @@ var (
 
 type Options struct {
 	SigningMethod string
-	PublicKey     string
-	PrivateKey    string
+	PublicKey     []byte
+	PrivateKey    []byte
 	Expiration    time.Duration
 }
 
@@ -43,7 +43,7 @@ func generateJWTToken(userID int64, op Options) (string, error) {
 	}
 	t := jwt.NewWithClaims(jwt.GetSigningMethod(op.SigningMethod), claims)
 
-	tokenString, err := t.SignedString([]byte(op.PrivateKey))
+	tokenString, err := t.SignedString(op.PrivateKey)
 	if err != nil {
 		logError("ERROR: GenerateJWTToken: %v\n", err)
 	}
@@ -55,13 +55,13 @@ func generateJWTToken(userID int64, op Options) (string, error) {
 // Authorization: Bearer eyJhbGciOiJub25lIn0
 //
 // Returns the userId, token (base64 encoded), error
-func validateToken(r *http.Request, publicKey string) (int64, string, error) {
+func validateToken(r *http.Request, publicKey []byte) (int64, string, error) {
 	tokenString := r.Header.Get("Authorization")
 	if tokenString == "" {
 		return 0, "", errors.New("Unauthorized")
 	}
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(publicKey), nil
+		return publicKey, nil
 	})
 
 	if err != nil {

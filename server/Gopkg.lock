@@ -8,12 +8,6 @@
   version = "v0.12.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/Coderockr/vitrine-social"
-  packages = ["server/auth","server/db","server/db/inmemory","server/model","server/storage"]
-  revision = "2e9da62f2727581b6283e36801680732a758831c"
-
-[[projects]]
   name = "github.com/aws/aws-sdk-go"
   packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","internal/shareddefaults","private/protocol","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/restxml","private/protocol/xml/xmlutil","service/s3","service/sts"]
   revision = "e63027ac6e05f6d4ae9f97ce0294d7468ca652da"
@@ -118,6 +112,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6bf224dc4b42d441988b40453bc801043864aab0ea5d3da2d1d00a43d2613933"
+  inputs-digest = "3b2a7190e31837a0176536e16c46e30b3d173bd317cb246acb82bc79046b0f70"
   solver-name = "gps-cdcl"
   solver-version = 1

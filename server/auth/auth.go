@@ -28,13 +28,13 @@ func NewAuthRoute(store UserRepository, opt Options) *AuthRoute {
 func (a *AuthRoute) Login(w http.ResponseWriter, req *http.Request) {
 	var authForm map[string]string
 
-	err := RequestToJsonObject(req, &authForm)
+	err := requestToJsonObject(req, &authForm)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	email := authForm["email"]
+	email := authForm["username"]
 	pass := authForm["password"]
 
 	userID, err := a.userStore.Login(email, pass)
@@ -141,7 +141,7 @@ func (a *AuthRoute) AuthHandlerFunc(next http.HandlerFunc) http.Handler {
 	})
 }
 
-func RequestToJsonObject(req *http.Request, jsonDoc interface{}) error {
+func requestToJsonObject(req *http.Request, jsonDoc interface{}) error {
 	defer req.Body.Close()
 
 	decoder := json.NewDecoder(req.Body)
