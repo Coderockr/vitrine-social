@@ -8,13 +8,14 @@ const defaultProps = {
   styles: {}
 }
 
-const Icon = ({ icon, size, styles, className, ...props }) => (
+const Icon = ({ icon, size, styles, className, color, ...props }) => (
   <svg
     {...props}
     width={size}
     height={size}
     viewBox={map[icon] ? map[icon].viewBox : '0 0 50 50'}
     style={{ ...styles, width: size, height: size }}
+    fill={color}
     className={className ? className + ' ' : ''}
   >
     <path d={map[icon] ? map[icon].paths : ''} />
