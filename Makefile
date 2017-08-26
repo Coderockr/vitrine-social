@@ -11,6 +11,11 @@ install-db:
 	docker-compose exec postgres psql -h 0.0.0.0 -U postgres -c "create database vitrine"
 	docker-compose exec postgres psql -h 0.0.0.0 -U postgres vitrine -f /vitrine/devops/database.sql
 
+install:
+	go get github.com/rubenv/sql-migrate/...
+	go get -u github.com/golang/dep/cmd/dep
+	cd server; dep ensure
+
 migrations:
 	go get github.com/rubenv/sql-migrate/...
 	sql-migrate up -config=devops/dbconfig.yml -env=production
