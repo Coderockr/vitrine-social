@@ -1,11 +1,11 @@
 import React from 'react'
-import CategoriesItem from './CategoriesItem'
 import {
   Container,
   Column,
   Columns,
   Title
 } from 're-bulma'
+import CategoriesItem from '../../components/CategoriesItem'
 
 const Categories = () => {
 
