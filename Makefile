@@ -1,14 +1,19 @@
 .PHONY: all
 all: build
 
+# set default as dev if not set
+export VITRINESOCIAL_ENV ?= dev
+
 .PHONY: build
 
 install-db:
-	# docker run -it --rm --link postgres:postgres postgres:9-alpine psql -h postgres -U postgres -c "create database vitrine"
-	docker run -it --rm --link postgres:postgres -v ${PWD}:/vitrine postgres:9-alpine psql -h postgres -U postgres vitrine -f /vitrine/devops/database.sql
-install:
-	go get github.com/rubenv/sql-migrate/...
+	docker-compose up -d postgres
+	docker-compose exec postgres psql -h 0.0.0.0 -U postgres -c "create database vitrine"
+	docker-compose exec postgres psql -h 0.0.0.0 -U postgres vitrine -f /vitrine/devops/database.sql
+
 migrations:
-	sql-migrate up -config=devops/dbconfig.yml -env=production 
+	go get github.com/rubenv/sql-migrate/...
+	sql-migrate up -config=devops/dbconfig.yml -env=production
+
 serve:
 	cd server && go run main.go
