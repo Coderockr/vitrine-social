@@ -25,7 +25,7 @@ CREATE TABLE needs (
     description         TEXT NOT NULL,
     required_qtd        INTEGER NOT NULL,
     reached_qtd         INTEGER NOT NULL,
-    dueDate             DATE NOT NULL,
+    due_date             DATE NOT NULL,
     status              BOOLEAN NOT NULL
 );
 
