@@ -33,7 +33,7 @@ func StartServer() {
 		os.Getenv("DATABASE_NAME"),
 		os.Getenv("DATABASE_HOST"),
 		os.Getenv("DATABASE_PORT"),
-		20,
+		10,
 	}
 	_, err := db.InitDb(dbConf)
 	if err != nil {
@@ -57,5 +57,8 @@ func StartServer() {
 
 	})
 
-	http.ListenAndServe(":"+os.Getenv("API_PORT"), context.ClearHandler(mux))
+	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), context.ClearHandler(mux))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
