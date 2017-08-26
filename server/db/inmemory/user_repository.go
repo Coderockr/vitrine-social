@@ -1,4 +1,4 @@
-package db
+package inmemory
 
 import (
 	"errors"
