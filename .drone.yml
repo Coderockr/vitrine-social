@@ -5,4 +5,4 @@ pipeline:
     username: vitrine
     key: $$GCLOUD_KEY
     script:
-      - echo "deu certo"
+      - echo $$GCLOUD_KEY
