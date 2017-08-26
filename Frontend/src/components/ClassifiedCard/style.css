@@ -86,12 +86,14 @@
   position: absolute;
   margin-left: 46px;
   margin-top: -25px;
+  visibility: hidden;
   opacity: 0;
-  transition: opacity 0.6s;
+  transition: all 0.6s;
 }
 
 .progress-circle-container:hover .laste-qtd {
   opacity: 1;
+  visibility: visible;
 }
 
 .laste-qtd:before {
