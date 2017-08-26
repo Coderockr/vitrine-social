@@ -11,7 +11,7 @@ CREATE TABLE organizations (
     address     VARCHAR(255) NOT NULL,
     phone       VARCHAR(255) NOT NULL,
     resume      TEXT NOT NULL,
-    video       VARCHAR(255) NOT NULL,
+    video       VARCHAR(255) NULL,
     email       VARCHAR(255) NOT NULL UNIQUE,
     password    VARCHAR(255) NOT NULL,
     slug        VARCHAR(255) NOT NULL
@@ -25,8 +25,8 @@ CREATE TABLE needs (
     description         TEXT NOT NULL,
     required_qtd        INTEGER NOT NULL,
     reached_qtd         INTEGER NOT NULL,
-    due_date             DATE NOT NULL,
-    status              BOOLEAN NOT NULL
+    due_date             DATE NULL,
+    status              char(10) NOT NULL
 );
 
 CREATE TABLE organizations_images (
