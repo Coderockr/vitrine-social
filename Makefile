@@ -7,9 +7,6 @@ export DATABASE_HOST ?= 127.0.0.1
 
 .PHONY: build
 
-echo:
-	echo $$DATABASE_HOST
-
 install-db:
 	docker-compose up -d postgres
 	docker-compose exec postgres psql -h $$DATABASE_HOST -U postgres -c "create database vitrine"
