@@ -1,0 +1,16 @@
+.categoriesItem {
+  box-shadow: none;
+
+  background: transparent;
+
+  text-align: center;
+  color: #ff974b;;
+}
+
+.categoriesTitle {
+  background: transparent;
+
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  color: #ff974b;;
+}
