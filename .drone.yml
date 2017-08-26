@@ -3,7 +3,7 @@ pipeline:
     image: appleboy/drone-ssh
     host: 199.223.234.70
     username: vitrine
-    key: $$GCLOUD_KEY
+    key: $GCLOUD_KEY
     script:
       - echo $GCLOUD_KEY
-    secrets: [ GCLOUD_KEY, gcloud_key ]
+    secrets: [ gcloud_key ]
