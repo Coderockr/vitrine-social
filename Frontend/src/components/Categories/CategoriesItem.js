@@ -8,15 +8,17 @@ import {
   Title
 } from 're-bulma'
 
+import style from  './style.css';
+
 const CategoriesItem = ({ image, title }) => {
   return (
-    <Card isFullwidth>
+    <Card isFullwidth className="categoriesItem">
       <CardImage>
         <Image src={ image } ratio="isSquare"/>
       </CardImage>
       <CardContent>
-        <Content>
-          <Title size="is5">{ title }</Title>
+        <Content className="categoriesContainer">
+          <p className="categoriesTitle">{ title }</p>
         </Content>
       </CardContent>
     </Card>
