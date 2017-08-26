@@ -3,7 +3,6 @@ pipeline:
     image: appleboy/drone-ssh
     host: 199.223.234.70
     username: vitrine
-    key: ${GCLOUD_KEY}
+    key: $$GCLOUD_KEY
     script:
       - echo "deu certo"
-    secrets: [ GCLOUD_KEY ]
