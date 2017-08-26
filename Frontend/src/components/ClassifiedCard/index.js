@@ -18,8 +18,12 @@ import './style.css';
 const ClassifiedCard = ({ organization }) => (
   <Container isFullwidth>
     <Media className="classifiedCard">
-      <MediaLeft>
-        <Image src={organization.image} alt={`${organization.name}`} />
+      <MediaLeft className="classifiedIcon">
+        <Icon
+          icon={organization.category}
+          size={60}
+          color='#FF974B'
+        />
       </MediaLeft>
       <MediaContent>
         <Content>
@@ -28,11 +32,6 @@ const ClassifiedCard = ({ organization }) => (
             <p>
               {organization.description}
             </p>
-            <div>
-              {organization.categories.map(categorie => (
-                <Icon icon={categorie} />
-              ))}
-            </div>
           </div>
         </Content>
       </MediaContent>

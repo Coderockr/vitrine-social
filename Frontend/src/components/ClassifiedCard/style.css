@@ -20,3 +20,20 @@
   border-left: 1px solid #EBEBEB;
 }
 
+.classifiedCard > .classifiedIcon {
+  align-items: center;
+  border-radius: 50%;
+  border: 1px solid #FF974B;
+  display: flex;
+  height: 120px;
+  justify-content: center;
+  padding: 0;
+  width: 120px;
+}
+
+.__re-bulma_title {
+  font-weight: bold;
+}
+
+.classifiedCard > .classifiedIcon svg {
+}
