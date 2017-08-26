@@ -30,10 +30,11 @@ func StartServer() {
 		os.Getenv("DATABASE_NAME"),
 		os.Getenv("DATABASE_HOST"),
 		os.Getenv("DATABASE_PORT"),
+		20,
 	}
 	dbConn, err := db.InitDb(dbConf)
 	if err != nil {
-		log.Printf("Error initializing database: %v\n", err)
+		log.Fatalf("Error initializing database: %v\n", err)
 	}
 
 	r := mux.NewRouter()

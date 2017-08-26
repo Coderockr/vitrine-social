@@ -2,6 +2,8 @@ package db
 
 import (
 	"database/sql"
+	"log"
+	"time"
 
 	"fmt"
 	"os"
@@ -15,11 +17,12 @@ type mDB struct {
 }
 
 type DBConfig struct {
-	User   string
-	Passwd string
-	DBName string
-	DBHost string
-	DBPort string
+	User     string
+	Passwd   string
+	DBName   string
+	DBHost   string
+	DBPort   string
+	Attempts int
 }
 
 //InitDb faz a conexão com o banco
@@ -29,9 +32,14 @@ func InitDb(dbConfig DBConfig) (*sqlx.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = db.Ping()
-	if err != nil {
-		return nil, err
+	var dbErr error
+	for attempt := 1; attempt < dbConfig.Attempts; attempt++ {
+		dbErr = db.Ping()
+		if dbErr == nil {
+			break
+		}
+		log.Printf("[WARN][VITRINE] %s \n", dbErr)
+		time.Sleep(time.Duration(attempt) * time.Second)
 	}
-	return db, nil
+	return db, dbErr
 }
