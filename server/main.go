@@ -3,10 +3,14 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"os"
 
 	"github.com/Coderockr/vitrine-social/server/db"
+	"github.com/codegangsta/negroni"
+	"github.com/dahernan/auth"
+	"github.com/dahernan/auth/jwt"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -32,13 +36,31 @@ func StartServer() {
 		os.Getenv("DATABASE_PORT"),
 		20,
 	}
-	dbConn, err := db.InitDb(dbConf)
+	_, err := db.InitDb(dbConf)
 	if err != nil {
 		log.Fatalf("Error initializing database: %v\n", err)
 	}
 
-	r := mux.NewRouter()
+	mux := mux.NewRouter()
+	options := jwt.Options{
+		SigningMethod: "RS256",
+		PrivateKey:    os.Getenv("VITRINESOCIAL_PRIVATE_KEY"), // $ openssl genrsa -out app.rsa keysize
+		PublicKey:     os.Getenv("VITRINESOCIAL_PUBLIC_KEY"),  // $ openssl rsa -in app.rsa -pubout > app.rsa.pub
+		Expiration:    60 * time.Minute,
+	}
 
-	http.Handle("/", r)
-	http.ListenAndServe(":"+os.Getenv("API_PORT"), context.ClearHandler(http.DefaultServeMux))
+	// creates the route with Bolt and JWT options
+	authRoute := auth.NewAuthRoute(boltStore, options)
+	app := negroni.Classic()
+	v1 := mux.PathPrefix("/v1").Subrouter()
+	authRoute := v1.PathPrefix("/auth").Subrouter()
+	authRoute.HandleFunc("/login", authRoute.Login)
+	// authRoute.HandleFunc("/signin", authRoute.Signin)
+	v1.HandleFunc("/search", negroni.New(
+		authRoute.AuthMiddleware,
+		func(w http.ResponseWriter, req *http.Request) {
+
+		}))
+
+	http.ListenAndServe(":"+os.Getenv("API_PORT"), context.ClearHandler(mux))
 }
