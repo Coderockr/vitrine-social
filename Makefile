@@ -1,16 +1,25 @@
 .PHONY: all
 all: build
 
+# set default as dev if not set
+export VITRINESOCIAL_ENV ?= dev
+export DATABASE_HOST ?= 127.0.0.1
+
 .PHONY: build
 
 install-db:
-	# docker run -it --rm --link postgres:postgres postgres:9-alpine psql -h postgres -U postgres -c "create database vitrine"
-	docker run -it --rm --link postgres:postgres -v ${PWD}:/vitrine postgres:9-alpine psql -h postgres -U postgres vitrine -f /vitrine/devops/database.sql
+	docker-compose up -d postgres
+	docker-compose exec postgres psql -h $$DATABASE_HOST -U postgres -c "create database vitrine"
+	docker-compose exec postgres psql -h $$DATABASE_HOST -U postgres vitrine -f /vitrine/devops/database.sql
+
 install:
 	go get github.com/rubenv/sql-migrate/...
 	go get -u github.com/golang/dep/cmd/dep
 	cd server; dep ensure
+
 migrations:
-	sql-migrate up -config=devops/dbconfig.yml -env=production 
+	go get github.com/rubenv/sql-migrate/...
+	sql-migrate up -config=devops/dbconfig.yml -env=production
+
 serve:
 	cd server && go run main.go
