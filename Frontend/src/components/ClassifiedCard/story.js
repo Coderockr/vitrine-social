@@ -7,7 +7,7 @@ const organization = {
   name: 'Sony Dual shock 4 GamePad',
   link: '',
   image: 'http://placehold.it/128x80',
-  categories: ['home', 'github'],
+  categories: ['alimentos', 'brinquedos'],
   description: 'Non-governmental organizations, nongovernmental organizations, or nongovernment organizations, commonly referred to as NGOs, are nonprofit organizations independent of governments and international'
 }
 

@@ -9,8 +9,9 @@ import {
   Title,
   Content,
   Button,
-  Icon,
 } from 're-bulma';
+
+import Icon from '../Icons';
 
 import './style.css';
 
@@ -29,7 +30,7 @@ const ClassifiedCard = ({ organization }) => (
             </p>
             <div>
               {organization.categories.map(categorie => (
-                <Icon icon={`fa fa-${categorie}`} size="isMedium" />
+                <Icon icon={categorie} />
               ))}
             </div>
           </div>
