@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"fmt"
-	"os"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -27,7 +26,7 @@ type DBConfig struct {
 
 //InitDb faz a conexão com o banco
 func InitDb(dbConfig DBConfig) (*sqlx.DB, error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbConfig.User, dbConfig.Passwd, os.Getenv("DATABASE_HOST"), os.Getenv("DATABASE_PORT"), dbConfig.DBName)
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", dbConfig.User, dbConfig.Passwd, dbConfig.DBHost, dbConfig.DBPort, dbConfig.DBName)
 	db, err := sqlx.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
