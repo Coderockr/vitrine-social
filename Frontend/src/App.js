@@ -1,6 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
+import { updateLocale } from 'moment';
+import ptBr from 'moment/locale/pt-br';
 import thunk from 'redux-thunk';
 import {
   BrowserRouter as Router,
@@ -19,6 +21,8 @@ try {
 } catch (e) {
   console.log(e)
 }
+
+updateLocale('pt-br', ptBr);
 
 const store = createStore(
   reducers,
