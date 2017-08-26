@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import {
   Container,
   Media,
@@ -24,20 +25,29 @@ const ClassifiedCard = ({ organization }) => (
           size={60}
           color='#FF974B'
         />
-      </MediaLeft>
-      <MediaContent>
-        <Content>
-          <div className="organizationContent">
-            <Title size="is5">{organization.name}</Title>
+        <div className="progress-circle-container">
+          <div className="progress-circle progress-80" />
+          <div className="laste-qtd">
             <p>
-              {organization.description}
+              Faltam 4
             </p>
           </div>
-        </Content>
+        </div>
+      </MediaLeft>
+      <MediaContent className="organizationContent">
+        <Title size="is5">{organization.item}</Title>
+        <a href={organization.link} target='_blank'>
+          {organization.name}
+        </a>
+        <p>
+          Atualizado em: {
+            moment(organization.data).format('DD / MMMM / YYYY').replace(/(\/)/g, 'de')
+          }
+        </p>
       </MediaContent>
       <MediaRight className="interestedContent">
         <Button color="isPrimary">
-          Tenho interesse
+          MAIS DETALHES
         </Button>
       </MediaRight>
     </Media>

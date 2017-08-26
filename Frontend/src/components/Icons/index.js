@@ -17,6 +17,7 @@ const Icon = ({ icon, size, styles, className, color, ...props }) => (
     style={{ ...styles, width: size, height: size }}
     fill={color}
     className={className ? className + ' ' : ''}
+    fill={color}
   >
     <path d={map[icon] ? map[icon].paths : ''} />
   </svg>
