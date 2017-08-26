@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="69px" height="54px" viewBox="0 0 69 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 45.2 (43514) - http://www.bohemiancoding.com/sketch -->
+    <title>voluntarios</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Listagem" transform="translate(-956.000000, -607.000000)" fill-rule="nonzero" fill="#FF974B">
+            <g id="categorias" transform="translate(405.000000, 256.000000)">
+                <g id="Icones" transform="translate(73.000000, 89.000000)">
+                    <g id="laranja">
+                        <g id="row-2" transform="translate(0.333075, 219.426893)">
+                            <g id="voluntarios" transform="translate(442.000000, 0.000000)">
+                                <path d="M36,43 L36,47.9887471 C36,61.7909475 43.3500874,73.8637156 54.2920728,80.581895 L54.2920728,96.2133027 L104.179544,96.2133027 L104.179544,89.5616399 C104.179544,80.7149283 86.4528626,76.2583142 77.5728927,76.2583142 C77.5728927,76.2583142 77.0075014,76.2583142 76.7414349,76.2583142 C60.9437356,76.2583142 47.64041,62.9549885 47.64041,47.9887471 L47.64041,43 L36,43 Z M77.5728927,43 C70.2256688,43 64.2695671,48.9561018 64.2695671,56.3033257 C64.2695671,63.6505496 70.2256688,69.6066514 77.5728927,69.6066514 C84.9201166,69.6066514 90.8762184,63.6505496 90.8762184,56.3033257 C90.8762184,48.9561018 84.9201166,43 77.5728927,43 Z"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

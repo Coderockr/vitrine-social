@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="70px" height="70px" viewBox="0 0 70 70" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 45.2 (43514) - http://www.bohemiancoding.com/sketch -->
+    <title>papelaria</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Listagem" transform="translate(-956.000000, -819.000000)" fill-rule="nonzero" fill="#FF974B">
+            <g id="categorias" transform="translate(405.000000, 256.000000)">
+                <g id="Icones" transform="translate(73.000000, 89.000000)">
+                    <g id="laranja">
+                        <g id="row-3" transform="translate(0.333075, 438.671984)">
+                            <g id="Papelaria" transform="translate(442.000000, 0.000000)">
+                                <path d="M87.7976802,36 C86.3889567,36 85.0163542,36.5418167 83.9327208,37.5893291 L76.2750442,45.2470057 L95.4192356,64.4273182 L103.076912,56.8418839 C105.244179,54.6384958 105.244179,51.2069898 103.076912,49.1119651 L91.6265185,37.5893291 C90.542885,36.5418167 89.1702826,36 87.7976802,36 M73.710445,47.8116049 L44.4523411,77.1058299 L53.6993468,78.1172211 L54.3495269,86.3889567 L62.5851413,87.0030156 L63.6326536,96.2500213 L92.8907575,66.9557963 M42.3211953,80.4650936 L36,104.63012 L60.2011476,98.1644404 L59.3342409,90.3622794 L50.9902631,89.7482204 L50.340083,81.3681215" id="papelaria"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

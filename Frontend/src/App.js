@@ -6,14 +6,13 @@ import {
   BrowserRouter as Router,
   Route,
 } from 'react-router-dom';
+import insertCss from 'insert-css';
+import css from 're-bulma/build/css';
 
 import AppContainer from './containers/App';
 
 import './App.css';
 import reducers from './reducers';
-
-import insertCss from 'insert-css';
-import css from 're-bulma/build/css';
 
 try {
   if (typeof document !== 'undefined' || document !== null) insertCss(css, { prepend: true });

@@ -1,24 +1,7 @@
-.App {
-  text-align: center;
-}
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #EFEFEF;
 }

@@ -1,11 +1,11 @@
-import React from 'react';
-import { storiesOf } from '@kadira/storybook';
+import '../src/App.css';
+import insertCss from 'insert-css';
+import css from 're-bulma/build/css';
 
-import Button from './Button';
+try {
+  if (typeof document !== 'undefined' || document !== null) insertCss(css, { prepend: true });
+} catch (e) {
+  console.log(e)
+}
 
-storiesOf('Button', module)
-  .add('Default View', () => (
-      <Button onClick={console.log} >
-        teste
-      </Button>
-  ));
+import ClassifiedCard from '../src/components/ClassifiedCard/story';

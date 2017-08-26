@@ -1,0 +1,22 @@
+.classifiedCard {
+  background: #FFF;
+  border-radius: 3px;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.classifiedCard > figure,
+.classifiedCard > div {
+  margin: 0;
+  padding: 10px;
+}
+
+.organizationContent {
+  flex: 1;
+}
+
+.interestedContent {
+  background-color: #FAFAFA;
+  border-left: 1px solid #EBEBEB;
+}
+
