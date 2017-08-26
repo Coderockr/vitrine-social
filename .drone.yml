@@ -1,0 +1,9 @@
+pipeline:
+  publish_to_homolog:
+    image: appleboy/drone-ssh
+    host: 199.223.234.70
+    username: vitrine
+    key: $GCLOUD_KEY
+    script:
+      - echo $GCLOUD_KEY
+    secrets: [ gcloud_key ]
