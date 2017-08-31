@@ -10,7 +10,8 @@ import (
 	"github.com/Coderockr/vitrine-social/server/auth"
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/inmemory"
-	"github.com/gorilla/context"
+	"github.com/Coderockr/vitrine-social/server/db/repo"
+	"github.com/Coderockr/vitrine-social/server/routes"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
@@ -18,9 +19,9 @@ import (
 func main() {
 
 	env := os.Getenv("VITRINESOCIAL_ENV")
-	err := godotenv.Load("config/" + env + ".env")
+	err := godotenv.Load("server/config/" + env + ".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading file ", "server/onfig/"+env+".env")
 	}
 	StartServer()
 }
@@ -28,17 +29,19 @@ func main() {
 //StartServer rotas e handlers
 func StartServer() {
 	dbConf := db.DBConfig{
-		os.Getenv("DATABASE_USER"),
-		os.Getenv("DATABASE_PASSWORD"),
-		os.Getenv("DATABASE_NAME"),
-		os.Getenv("DATABASE_HOST"),
-		os.Getenv("DATABASE_PORT"),
-		10,
+		User:     os.Getenv("DATABASE_USER"),
+		Passwd:   os.Getenv("DATABASE_PASSWORD"),
+		DBName:   os.Getenv("DATABASE_NAME"),
+		DBHost:   os.Getenv("DATABASE_HOST"),
+		DBPort:   os.Getenv("DATABASE_PORT"),
+		Attempts: 10,
 	}
-	_, err := db.InitDb(dbConf)
+	conn, err := db.InitDb(dbConf)
 	if err != nil {
 		log.Fatalf("Error initializing database: %v\n", err)
 	}
+
+	oR := repo.NewOrganizationRepository(conn)
 
 	mux := mux.NewRouter()
 	options := auth.Options{
@@ -51,13 +54,15 @@ func StartServer() {
 	// creates the route with Bolt and JWT options
 	authRoute := auth.NewAuthRoute(inmemory.NewUserRepository(), options)
 	v1 := mux.PathPrefix("/v1").Subrouter()
-	authSub := v1.PathPrefix("/auth").Subrouter()
-	authSub.HandleFunc("/login", authRoute.Login)
-	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {
 
-	})
+	v1.HandleFunc("/auth/login", authRoute.Login)
 
-	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), context.ClearHandler(mux))
+	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {})
+
+	organizationRoute := routes.NewOrganizationRoute(oR)
+	v1.HandleFunc("/organization/{id:[0-9]+}", organizationRoute.Get)
+
+	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), mux)
 	if err != nil {
 		log.Fatal(err)
 	}
