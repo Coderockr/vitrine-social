@@ -16,7 +16,6 @@ var categoryCache = syncmap.Map{}
 
 // NewCategoryRepository create a new repository
 func NewCategoryRepository(db *sqlx.DB) *CategoryRepository {
-
 	return &CategoryRepository{
 		db: db,
 	}
