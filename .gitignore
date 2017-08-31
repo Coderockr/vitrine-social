@@ -14,5 +14,8 @@ bin/*
 
 # ignored until version 1.0
 vendor
+vendor.orig
 
 coverage.txt
+server-cmd
+.data/
