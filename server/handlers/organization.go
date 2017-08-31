@@ -1,4 +1,4 @@
-package routes
+package handlers
 
 import (
 	"database/sql"
@@ -59,20 +59,20 @@ type OrganizationRepository interface {
 	Get(id int64) (*model.Organization, error)
 }
 
-// OrganizationRoute handles requests about organizations
-type OrganizationRoute struct {
+// OrganizationHandler handles requests about organizations
+type OrganizationHandler struct {
 	repo OrganizationRepository
 }
 
-// NewOrganizationRoute creates a new OrganizationRoute
-func NewOrganizationRoute(repo OrganizationRepository) *OrganizationRoute {
-	return &OrganizationRoute{
+// NewOrganizationHandler creates a new OrganizationHandler
+func NewOrganizationHandler(repo OrganizationRepository) *OrganizationHandler {
+	return &OrganizationHandler{
 		repo: repo,
 	}
 }
 
 // Get will retrive the data from a organization
-func (oR *OrganizationRoute) Get(w http.ResponseWriter, req *http.Request) {
+func (oR *OrganizationHandler) Get(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 
 	id, err := strconv.ParseInt(vars["id"], 10, 64)

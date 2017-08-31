@@ -11,7 +11,6 @@ import (
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/inmemory"
 	"github.com/Coderockr/vitrine-social/server/db/repo"
-	"github.com/Coderockr/vitrine-social/server/routes"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
@@ -21,7 +20,7 @@ func main() {
 	env := os.Getenv("VITRINESOCIAL_ENV")
 	err := godotenv.Load("server/config/" + env + ".env")
 	if err != nil {
-		log.Fatal("Error loading file ", "server/onfig/"+env+".env")
+		log.Fatal("Error loading file ", "server/config/"+env+".env")
 	}
 	StartServer()
 }
@@ -59,7 +58,7 @@ func StartServer() {
 
 	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {})
 
-	organizationRoute := routes.NewOrganizationRoute(oR)
+	organizationRoute := handlers.NewOrganizationHandler(oR)
 	v1.HandleFunc("/organization/{id:[0-9]+}", organizationRoute.Get)
 
 	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), mux)
