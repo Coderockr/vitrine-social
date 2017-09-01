@@ -11,6 +11,7 @@ import (
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/inmemory"
 	"github.com/Coderockr/vitrine-social/server/db/repo"
+	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
