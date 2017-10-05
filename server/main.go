@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Coderockr/vitrine-social/server/handlers"
 	"log"
 	"net/http"
 	"time"
@@ -40,7 +41,7 @@ func StartServer() {
 		log.Fatalf("Error initializing database: %v\n", err)
 	}
 
-	mux := mux.NewRouter()
+	muxR := mux.NewRouter()
 	options := auth.Options{
 		SigningMethod: "RS256",
 		PrivateKey:    os.Getenv("VITRINESOCIAL_PRIVATE_KEY"), // $ openssl genrsa -out app.rsa keysize
@@ -50,14 +51,16 @@ func StartServer() {
 
 	// creates the route with Bolt and JWT options
 	authRoute := auth.NewAuthRoute(inmemory.NewUserRepository(), options)
-	v1 := mux.PathPrefix("/v1").Subrouter()
+	v1 := muxR.PathPrefix("/v1").Subrouter()
 	authSub := v1.PathPrefix("/auth").Subrouter()
 	authSub.HandleFunc("/login", authRoute.Login)
 	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {
 
 	})
 
-	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), context.ClearHandler(mux))
+	v1.Handle("/need/{id}", handlers.NeedGet())
+
+	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), context.ClearHandler(muxR))
 	if err != nil {
 		log.Fatal(err)
 	}
