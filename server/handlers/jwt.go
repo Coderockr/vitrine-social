@@ -1,8 +1,7 @@
-package auth
+package handlers
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -10,19 +9,10 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-var (
-	ErrTokenExpired    = errors.New("Token Expired, get a new one")
-	ErrTokenValidation = errors.New("JWT Token ValidationError")
-	ErrTokenParse      = errors.New("JWT Token Error Parsing the token or empty token")
-	ErrTokenInvalid    = errors.New("JWT Token is not Valid")
-
-	logOn = true
-)
-
-type Options struct {
+type JWTOptions struct {
 	SigningMethod string
-	PublicKey     string
-	PrivateKey    string
+	PublicKey     []byte
+	PrivateKey    []byte
 	Expiration    time.Duration
 }
 
@@ -31,7 +21,7 @@ type Options struct {
 // http://github.com/dgrijalva/jwt-go
 //
 // In case you use an symmetric-key algorithm set PublicKey and PrivateKey equal to the SecretKey ,
-func generateJWTToken(userID int64, op Options) (string, error) {
+func generateJWTToken(userID int64, op JWTOptions) (string, error) {
 
 	now := time.Now()
 	// set claims
@@ -43,25 +33,27 @@ func generateJWTToken(userID int64, op Options) (string, error) {
 	}
 	t := jwt.NewWithClaims(jwt.GetSigningMethod(op.SigningMethod), claims)
 
-	tokenString, err := t.SignedString([]byte(op.PrivateKey))
-	if err != nil {
-		logError("ERROR: GenerateJWTToken: %v\n", err)
-	}
-	return tokenString, err
-
+	return t.SignedString(op.PrivateKey)
 }
 
 // validateToken Validates the token that is passed in the request with the Authorization header
 // Authorization: Bearer eyJhbGciOiJub25lIn0
 //
 // Returns the userId, token (base64 encoded), error
-func validateToken(r *http.Request, publicKey string) (int64, string, error) {
+func validateToken(r *http.Request, options JWTOptions) (int64, string, error) {
 	tokenString := r.Header.Get("Authorization")
 	if tokenString == "" {
 		return 0, "", errors.New("Unauthorized")
 	}
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(publicKey), nil
+		switch token.Method {
+		case jwt.SigningMethodHS256:
+			return options.PrivateKey, nil
+		case jwt.SigningMethodRS256:
+			return options.PublicKey, nil
+		default:
+			return nil, errors.New("JWT Token is not Valid")
+		}
 	})
 
 	if err != nil {
@@ -71,28 +63,18 @@ func validateToken(r *http.Request, publicKey string) (int64, string, error) {
 
 			switch vErr.Errors {
 			case jwt.ValidationErrorExpired:
-				logError("ERROR: JWT Token Expired: %+v\n", vErr.Errors)
-				return 0, "", ErrTokenExpired
+				return 0, "", errors.New("Token Expired, get a new one")
 			default:
-				logError("ERROR: JWT Token ValidationError: %+v\n", vErr.Errors)
-				return 0, "", ErrTokenValidation
+				return 0, "", errors.New("JWT Token ValidationError")
 			}
 		}
-		logError("ERROR: Token parse error: %v\n", err)
-		return 0, "", ErrTokenParse
+		return 0, "", errors.New("JWT Token Error Parsing the token or empty token")
 	}
 	claims, ok := token.Claims.(jwt.StandardClaims)
-	if ok && token.Valid {
-		r.Header.Add("user_id", claims.Subject)
-	} else {
-		return 0, "", ErrTokenInvalid
+	if !ok || !token.Valid {
+		return 0, "", errors.New("JWT Token is not Valid")
 	}
+	r.Header.Add("user_id", claims.Subject)
 	userID, err := strconv.Atoi(claims.Subject)
 	return int64(userID), token.Raw, err
-}
-
-func logError(format string, err interface{}) {
-	if logOn && err != nil {
-		log.Printf(format, err)
-	}
 }
