@@ -9,7 +9,7 @@ import CategoriesItem from '../../components/CategoriesItem'
 
 const Categories = () => {
 
-  const style = { padding: '10px 30px' };
+  const style = { padding: '0 30px' };
 
   return (
     <Container>
@@ -52,6 +52,23 @@ const Categories = () => {
         </Column>
         <Column>
           <CategoriesItem title="Artigos Domésticos" image="papelaria" />
+        </Column>
+      </Columns>
+      <Columns style={style}>
+        <Column>
+          <CategoriesItem title="Artigos Domésticos" image="pet" />
+        </Column>
+        <Column>
+          <CategoriesItem title="Artigos Domésticos" image="roupas" />
+        </Column>
+        <Column>
+          <CategoriesItem title="Artigos Domésticos" image="saude" />
+        </Column>
+        <Column>
+          <CategoriesItem title="Artigos Domésticos" image="servicos" />
+        </Column>
+        <Column>
+          <CategoriesItem title="Artigos Domésticos" image="voluntarios" />
         </Column>
       </Columns>
     </Container>

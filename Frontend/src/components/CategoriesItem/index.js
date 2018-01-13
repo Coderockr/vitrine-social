@@ -17,7 +17,8 @@ const CategoriesItem = ({ image, title }) => {
       <CardImage className="categoriesImage">
         <Icon
           icon={ image }
-          size={60}
+          size={70}
+          color='#FF974B'
         />
       </CardImage>
       <CardContent className="categoriesCard">
