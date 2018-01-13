@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -10,49 +9,6 @@ import (
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/gorilla/mux"
 )
-
-type baseOrganizationJSON struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-	Logo string `json:"logo"`
-	Slug string `json:"slug"`
-}
-
-type organizationJSON struct {
-	baseOrganizationJSON
-	Address string      `json:"address"`
-	Phone   string      `json:"phone"`
-	Resume  string      `json:"resume"`
-	Video   string      `json:"video"`
-	Email   string      `json:"email"`
-	Needs   []needJSON  `json:"needs"`
-	Images  []imageJSON `json:"images"`
-}
-
-type categoryJSON struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-	Icon string `json:"icon"`
-}
-
-type imageJSON struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-	URL  string `json:"url"`
-}
-
-type needJSON struct {
-	ID               int64                `json:"id"`
-	Category         categoryJSON         `json:"category"`
-	Organization     baseOrganizationJSON `json:"organization"`
-	Images           []imageJSON          `json:"images"`
-	Title            string               `json:"title"`
-	Description      string               `json:"description"`
-	RequiredQuantity int                  `json:"requiredQuantity"`
-	ReachedQuantity  int                  `json:"reachedQuantity"`
-	Unity            string               `json:"unity"`
-	DueDate          *string              `json:"dueDate"`
-}
 
 // OrganizationRepository has the commands needed for this route
 type OrganizationRepository interface {
@@ -77,7 +33,7 @@ func (oR *OrganizationHandler) Get(w http.ResponseWriter, req *http.Request) {
 
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		HandleHttpError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+		HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
 		return
 	}
 
@@ -85,10 +41,10 @@ func (oR *OrganizationHandler) Get(w http.ResponseWriter, req *http.Request) {
 
 	switch {
 	case err == sql.ErrNoRows:
-		HandleHttpError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Organização com ID: %d", id))
+		HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Organização com ID: %d", id))
 		return
 	case err != nil:
-		HandleHttpError(w, http.StatusForbidden, err)
+		HandleHTTPError(w, http.StatusForbidden, err)
 		return
 	}
 
@@ -119,6 +75,10 @@ func (oR *OrganizationHandler) Get(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 
+		var dueDate *jsonTime
+		if n.DueDate != nil {
+			dueDate = &jsonTime{*n.DueDate}
+		}
 		oJSON.Needs = append(oJSON.Needs, needJSON{
 			ID:               n.ID,
 			Title:            n.Title,
@@ -126,15 +86,14 @@ func (oR *OrganizationHandler) Get(w http.ResponseWriter, req *http.Request) {
 			RequiredQuantity: n.RequiredQuantity,
 			ReachedQuantity:  n.ReachedQuantity,
 			Unity:            n.Unity,
-			DueDate:          n.DueDate,
+			DueDate:          dueDate,
 			Category:         catMap[n.CategoryID],
 			Organization:     oJSON.baseOrganizationJSON,
 			Images:           needImagesToImageJSON(n.Images),
+			Status:           n.Status,
 		})
 	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(oJSON)
+	HandleHTTPSuccess(w, oJSON)
 }
 
 func needImagesToImageJSON(images []model.NeedImage) []imageJSON {
