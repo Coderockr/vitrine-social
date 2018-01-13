@@ -13,6 +13,7 @@ import {
 } from 're-bulma';
 
 import Icon from '../Icons';
+import ProgressCircle from '../ProgressCircle';
 
 import './style.css';
 
@@ -20,13 +21,9 @@ const ClassifiedCard = ({ organization }) => (
   <Container isFullwidth>
     <Media className="classifiedCard">
       <MediaLeft className="classifiedIcon">
-        <Icon
-          icon={organization.category}
-          size={60}
-          color='#FF974B'
-        />
+        <Icon icon={organization.category} size={60} color="#FF974B" />
         <div className="progress-circle-container">
-          <div className="progress-circle progress-80" />
+          <ProgressCircle progress={30} />
           <div className="laste-qtd">
             <p>
               Faltam 4
@@ -34,9 +31,9 @@ const ClassifiedCard = ({ organization }) => (
           </div>
         </div>
       </MediaLeft>
-      <MediaContent className="organizationContent">
+      <div className="organizationContent">
         <Title size="is5">{organization.item}</Title>
-        <a href={organization.link} target='_blank'>
+        <a href={organization.link} target="_blank">
           {organization.name}
         </a>
         <p>
@@ -44,7 +41,7 @@ const ClassifiedCard = ({ organization }) => (
             moment(organization.data).format('DD / MMMM / YYYY').replace(/(\/)/g, 'de')
           }
         </p>
-      </MediaContent>
+      </div>
       <MediaRight className="interestedContent">
         <Button color="isPrimary">
           MAIS DETALHES
