@@ -13,7 +13,7 @@ type Service interface {
 //Data to be indexed
 type Data struct {
 	Key  string
-	ID   string
+	ID   int64
 	Data interface{}
 }
 
@@ -37,7 +37,7 @@ type SearchStatus struct {
 type DocumentMatch struct {
 	Index     string   `json:"index,omitempty"`
 	Key       string   `json:"key"`
-	ID        string   `json:"id"`
+	ID        int64    `json:"id"`
 	Score     float64  `json:"score"`
 	Sort      []string `json:"sort,omitempty"`
 	HitNumber uint64   `json:"-"`

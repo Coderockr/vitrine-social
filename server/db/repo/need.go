@@ -41,3 +41,10 @@ func (r *NeedRepository) getNeedImages(n *model.Need) ([]model.NeedImage, error)
 
 	return images, nil
 }
+
+//Insert insert a need
+func (r *NeedRepository) Insert(n *model.Need) (int64, error) {
+	query := `insert into need (title, description, required_qtd, reached_qtd, unity, due_date, category_id, organization_id) values (?,?,?,?,?,?,?,?)`
+	res := r.db.MustExec(query, n.Title, n.Description, n.RequiredQuantity, n.ReachedQuantity, n.Unity, n.DueDate, n.CategoryID, n.OrganizationID)
+	return res.LastInsertId()
+}

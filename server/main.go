@@ -62,18 +62,19 @@ func StartServer() {
 
 	v1.HandleFunc("/auth/login", authRoute.Login)
 
-	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {})
-
 	organizationRoute := handlers.NewOrganizationHandler(oR)
-	v1.HandleFunc("/organization/{id:[0-9]+}", organizationRoute.Get)
+	v1.HandleFunc("/organization/{id:[0-9]+}", organizationRoute.Get).Methods("GET", "OPTIONS")
 
-	indexService := index.NewService()
+	indexService, err := index.NewService()
+	if err != nil {
+		log.Fatal(err)
+	}
 	searchRoute := handlers.NewSearchHandler(indexService, nR)
 	v1.HandleFunc("/search", searchRoute.Get)
 
-	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), mux)
-	needRoute := handlers.NewNeedHandler(nR, oR)
-	v1.Handle("/need/{id}", needRoute.NeedGet())
+	needRoute := handlers.NewNeedHandler(nR, oR, indexService)
+	v1.HandleFunc("/need", needRoute.NeedPost).Methods("POST", "OPTIONS")
+	v1.HandleFunc("/need/{id}", needRoute.NeedGet).Methods("GET", "OPTIONS")
 
 	n := negroni.Classic()
 	n.Use(negroni.HandlerFunc(middlewares.Cors))

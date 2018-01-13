@@ -6,6 +6,7 @@ import (
 
 	"github.com/Coderockr/vitrine-social/server/db/repo"
 	"github.com/Coderockr/vitrine-social/server/index"
+	"github.com/Coderockr/vitrine-social/server/model"
 )
 
 // SearchHandler handles requests about organizations
@@ -28,25 +29,50 @@ func (sR *SearchHandler) Get(w http.ResponseWriter, req *http.Request) {
 
 	if !ok || len(keys) < 1 {
 		err := errors.New("Invalid parameters")
-		HandleHttpError(w, http.StatusBadRequest, err)
+		HandleHTTPError(w, http.StatusBadRequest, err)
 		return
 	}
 	query := keys[0]
 	docs, err := sR.indexService.Search(query)
 	if err != nil {
-		return nil, err
+		HandleHTTPError(w, http.StatusBadRequest, err)
 	}
 	var needs []*needJSON
 	for _, j := range docs.Hits {
-		p, err := sr.needRepo.Get(j.ID)
+		p, err := sR.needRepo.Get(j.ID)
 		if err != nil {
 			continue
 		}
 
 		if p != nil {
-			needs = append(needs, p)
+			needs = append(needs, needToJSON(p))
 		}
 	}
 
-	return needs, nil
+	HandleHTTPSuccess(w, needs)
+}
+
+func needToJSON(n *model.Need) *needJSON {
+	nJSON := &needJSON{
+		ID:               n.ID,
+		Title:            n.Title,
+		Description:      n.Description,
+		RequiredQuantity: n.RequiredQuantity,
+		ReachedQuantity:  n.ReachedQuantity,
+		Unity:            n.Unity,
+		Category: categoryJSON{
+			ID:   n.Category.ID,
+			Name: n.Category.Name,
+			Icon: n.Category.Icon,
+		},
+		// Organization: baseOrganizationJSON{
+		// 	ID:   o.ID,
+		// 	Name: o.Name,
+		// 	Logo: o.Logo,
+		// 	Slug: o.Slug,
+		// },
+		Images: needImagesToImageJSON(n.Images),
+		Status: n.Status,
+	}
+	return nJSON
 }

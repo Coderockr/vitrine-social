@@ -371,13 +371,20 @@ Realizar busca das necessidades
 + message (string) - Mensagem do status
 
 ## NeedPayload (object)
-+ category (number) - ID da Categoria da necessidade
-+ organization (number) - ID da ONG
++ category (CategoryPayload) - ID da Categoria da necessidade
++ organization (OrganizationPayload) - ID da ONG
 + title (string) - Resumo da necessidade
 + description (string) - Descrição detalhada da necessidade
 + requiredQuantity (number) - Quantidade necessária
 + reachedQuantity (number) - Quantidade alcançada
 + dueDate: `2017-08-17` (string) - Data final da necessidade
++ unity: kg (string) - Unidade da necessidade
+
+## CategoryPayload (object)
++ id (number) - Código da categoria
+
+## OrganizationPayload (object)
++ id (number) - Código da organização
 
 ## BaseNeed (object)
 + id (number) - Código da necessidade

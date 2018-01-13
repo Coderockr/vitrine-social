@@ -10,7 +10,16 @@ type jsonTime struct {
 }
 
 func (t jsonTime) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("\"%s\"", t.Format(time.RFC3339))), nil
+	return []byte(fmt.Sprintf("\"%s\"", t.Format("2006-01-02"))), nil
+}
+
+func (t jsonTime) UnmarshalJSON(b []byte) error {
+	t1, err := time.Parse("2006-01-02", string(b[1:][:len(b)-2]))
+	if err != nil {
+		return err
+	}
+	t.Time = t1
+	return nil
 }
 
 type baseOrganizationJSON struct {

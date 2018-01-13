@@ -2,6 +2,7 @@ package index
 
 import (
 	"os"
+	"strconv"
 
 	"github.com/blevesearch/bleve"
 )
@@ -57,10 +58,14 @@ func (s *service) Search(q string) (*SearchResult, error) {
 	r.MaxScore = searchResults.MaxScore
 	r.Took = searchResults.Took
 	for _, i := range searchResults.Hits {
+		id, err := strconv.ParseInt(i.ID, 10, 64)
+		if err != nil {
+			continue
+		}
 		d := &DocumentMatch{}
 		d.Index = i.Index
 		d.Key = i.ID
-		d.ID = i.ID
+		d.ID = id
 		d.Score = i.Score
 		d.Sort = i.Sort
 		d.HitNumber = i.HitNumber
