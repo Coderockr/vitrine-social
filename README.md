@@ -3,9 +3,9 @@
 # Instalação
 
 ```
-    go get github.com/Coderockr/vitrine-social;
+    git clone git@github.com:Coderockr/vitrine-social.git $GOPATH/src/Coderockr/vitrine-social;
 
-    cd $GOPATH/Coderockr/vitrine-social;
+    cd $GOPATH/src/Coderockr/vitrine-social;
 
     make install;
 
