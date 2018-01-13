@@ -33,6 +33,15 @@ serve-watch: ## start server with hot reload
 postgres-cmd: ## open the postgresql command line
 	docker-compose exec postgres psql -h $$DATABASE_HOST -U postgres vitrine
 
+docs-serve: ## start a server with the docs
+	cd docs && make serve
+
+docs-build: ## build the docs
+	cd docs && make build
+
+docs-open:
+	$$BROWSER docs/index.html
+
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help: ## show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
