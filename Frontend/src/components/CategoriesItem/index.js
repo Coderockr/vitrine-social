@@ -6,22 +6,22 @@ import {
   Content ,
   Image,
   Title
-} from 're-bulma'
-
+} from 're-bulma';
+import cx from 'classnames';
 import style from  './style.css';
 import Icon from '../Icons';
 
-const CategoriesItem = ({ image, title }) => {
+const CategoriesItem = ({ image, title, active }) => {
   return (
     <Card isFullwidth className="categoriesItem">
-      <CardImage className="categoriesImage">
+      <CardImage className={cx('categoriesImage', { active })}>
         <Icon
           icon={ image }
           size={70}
-          color='#FF974B'
+          color={active ? '#FFFFFF' : '#FF974B'}
         />
       </CardImage>
-      <CardContent className="categoriesCard">
+      <CardContent className={cx('categoriesCard', { active })}>
         <Content className="categoriesContainer">
           <p className="categoriesTitle">{ title }</p>
         </Content>

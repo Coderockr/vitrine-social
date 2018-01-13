@@ -1,20 +1,33 @@
 import React from 'react'
 import {
+  Button,
   Card,
+  Column,
+  Columns,
   CardImage,
   CardContent,
-  Content ,
-  Image,
+  Container,
+  Section,
   Title
 } from 're-bulma'
+import Icon from '../Icons';
 
 import style from  './style.css';
-import Icon from '../Icons';
 
 const Search = () => {
   return (
-    <Card isFullwidth className="categoriesItem">
-    </Card>
+    <Section className="search">
+      <Container className="container">
+        <Columns className="row">
+          <Column size="is8" offset="isOffset2" className="col">
+            <input type="text" placeholder="Como você gostaria de ajudar?" />
+            <button className="searchButton">
+              <Icon icon="lupa" size={32} color="#444F60" />
+            </button>
+          </Column>
+        </Columns>
+      </Container>
+    </Section>
   )
 }
 

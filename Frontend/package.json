@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "classnames": "^2.2.5",
     "font-awesome": "^4.7.0",
     "moment": "^2.18.1",
     "re-bulma": "^0.4.5",

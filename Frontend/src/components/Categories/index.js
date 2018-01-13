@@ -1,77 +1,82 @@
-import React from 'react'
+import React from 'react';
 import {
   Container,
   Column,
   Columns,
+  Section,
   Title
-} from 're-bulma'
-import CategoriesItem from '../../components/CategoriesItem'
+} from 're-bulma';
+import CategoriesItem from '../../components/CategoriesItem';
+
+import './style.css';
 
 const Categories = () => {
-
-  const style = { padding: '0 30px' };
-
   return (
-    <Container>
-      <Columns>
-        <Column>
-          <h2 className="containerTitle">
-            <span>Doações por tipo</span>
-          </h2>
-        </Column>
-      </Columns>
-      <Columns style={style}>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="alimentos" />
-        </Column>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="brinquedos" />
-        </Column>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="construcao" />
-        </Column>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="domesticos" />
-        </Column>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="equipamentos" />
-        </Column>
-      </Columns>
-      <Columns style={style}>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="higiene" />
-        </Column>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="livros" />
-        </Column>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="moveis" />
-        </Column>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="outros" />
-        </Column>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="papelaria" />
-        </Column>
-      </Columns>
-      <Columns style={style}>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="pet" />
-        </Column>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="roupas" />
-        </Column>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="saude" />
-        </Column>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="servicos" />
-        </Column>
-        <Column>
-          <CategoriesItem title="Artigos Domésticos" image="voluntarios" />
-        </Column>
-      </Columns>
-    </Container>
+    <Section className="categories">
+      <Container>
+        <Columns>
+          <Column>
+            <h2 className="containerTitle">
+              <span>Doações por tipo</span>
+            </h2>
+          </Column>
+        </Columns>
+
+        <Columns className="row">
+          <Column>
+            <CategoriesItem title="Alimentos" image="alimentos" />
+          </Column>
+          <Column>
+            <CategoriesItem title="Roupas" image="roupas" />
+          </Column>
+          <Column>
+            <CategoriesItem title="Brinquedos" image="brinquedos" active />
+          </Column>
+          <Column>
+            <CategoriesItem title="Saúde" image="saude" />
+          </Column>
+          <Column>
+            <CategoriesItem title="Higiene Pessoal" image="higiene" />
+          </Column>
+        </Columns>
+
+        <Columns className="row">
+          <Column>
+            <CategoriesItem title="Serviços" image="servicos" />
+          </Column>
+          <Column>
+            <CategoriesItem title="Materiais de Construção" image="construcao" />
+          </Column>
+          <Column>
+            <CategoriesItem title="Voluntários" image="voluntarios" />
+          </Column>
+          <Column>
+            <CategoriesItem title="Móveis" image="moveis" />
+          </Column>
+          <Column>
+            <CategoriesItem title="Equipamentos" image="equipamentos" />
+          </Column>
+        </Columns>
+
+        <Columns className="row">
+          <Column>
+            <CategoriesItem title="Artigos Domésticos" image="domesticos" />
+          </Column>
+          <Column>
+            <CategoriesItem title="Livros" image="livros" />
+          </Column>
+          <Column>
+            <CategoriesItem title="Papelaria" image="papelaria" />
+          </Column>
+          <Column>
+            <CategoriesItem title="Pets" image="pet" />
+          </Column>
+          <Column>
+            <CategoriesItem title="Outros" image="outros" />
+          </Column>
+        </Columns>
+      </Container>
+    </Section>
   )
 }
 

@@ -1,0 +1,21 @@
+.header {
+  display: flex;
+  align-items: center;
+  height: 85px;
+  background-color: #948CF9;
+}
+
+.nav {
+  width: 100%;
+  background-color: transparent;
+}
+
+.navItem a {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+.navItem a:hover {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
