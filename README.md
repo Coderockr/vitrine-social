@@ -1,5 +1,17 @@
 # vitrine-social
 
+# Instalação
+
+```
+    go get github.com/Coderockr/vitrine-social;
+
+    cd $GOPATH/Coderockr/vitrine-social;
+
+    make install;
+
+    make serve;
+```
+
 # Migrations
 
 ## Criar uma migration
