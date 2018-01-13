@@ -74,7 +74,6 @@ func StartServer() {
 
 	// router goes last
 	n.UseHandler(mux)
-	// err = http.ListenAndServe(":"+os.Getenv("API_PORT"), n)
 
 	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), context.ClearHandler(n))
 	if err != nil {
