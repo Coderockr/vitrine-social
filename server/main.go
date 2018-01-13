@@ -1,7 +1,6 @@
 package main
 
 import (
-	"Coderockr/vitrine-social/server/handlers"
 	"log"
 	"net/http"
 	"time"
@@ -11,6 +10,8 @@ import (
 	"github.com/Coderockr/vitrine-social/server/auth"
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/inmemory"
+	"github.com/Coderockr/vitrine-social/server/db/repo"
+	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -19,9 +20,9 @@ import (
 func main() {
 
 	env := os.Getenv("VITRINESOCIAL_ENV")
-	err := godotenv.Load("config/" + env + ".env")
+	err := godotenv.Load("server/config/" + env + ".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading file ", "server/config/"+env+".env")
 	}
 	StartServer()
 }
@@ -29,19 +30,21 @@ func main() {
 //StartServer rotas e handlers
 func StartServer() {
 	dbConf := db.DBConfig{
-		os.Getenv("DATABASE_USER"),
-		os.Getenv("DATABASE_PASSWORD"),
-		os.Getenv("DATABASE_NAME"),
-		os.Getenv("DATABASE_HOST"),
-		os.Getenv("DATABASE_PORT"),
-		10,
+		User:     os.Getenv("DATABASE_USER"),
+		Passwd:   os.Getenv("DATABASE_PASSWORD"),
+		DBName:   os.Getenv("DATABASE_NAME"),
+		DBHost:   os.Getenv("DATABASE_HOST"),
+		DBPort:   os.Getenv("DATABASE_PORT"),
+		Attempts: 10,
 	}
-	_, err := db.InitDb(dbConf)
+	conn, err := db.InitDb(dbConf)
 	if err != nil {
 		log.Fatalf("Error initializing database: %v\n", err)
 	}
 
-	muxR := mux.NewRouter()
+	oR := repo.NewOrganizationRepository(conn)
+
+	mux := mux.NewRouter()
 	options := auth.Options{
 		SigningMethod: "RS256",
 		PrivateKey:    os.Getenv("VITRINESOCIAL_PRIVATE_KEY"), // $ openssl genrsa -out app.rsa keysize
@@ -51,12 +54,15 @@ func StartServer() {
 
 	// creates the route with Bolt and JWT options
 	authRoute := auth.NewAuthRoute(inmemory.NewUserRepository(), options)
-	v1 := muxR.PathPrefix("/v1").Subrouter()
-	authSub := v1.PathPrefix("/auth").Subrouter()
-	authSub.HandleFunc("/login", authRoute.Login)
-	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {
 
-	})
+	v1 := mux.PathPrefix("/v1").Subrouter()
+
+	v1.HandleFunc("/auth/login", authRoute.Login)
+
+	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {})
+
+	organizationRoute := handlers.NewOrganizationHandler(oR)
+	v1.HandleFunc("/organization/{id:[0-9]+}", organizationRoute.Get)
 
 	v1.Handle("/need/{id}", handlers.NeedGet())
 

@@ -1,3 +1,5 @@
+
+-- +migrate Up
 CREATE TABLE categories (
     id      SERIAL PRIMARY KEY,
     name    VARCHAR(255) NOT NULL UNIQUE,
@@ -42,3 +44,4 @@ CREATE TABLE needs_images (
     name            VARCHAR(255) NOT NULL,
     url             VARCHAR(255) NOT NULL
 );
+-- +migrate Down

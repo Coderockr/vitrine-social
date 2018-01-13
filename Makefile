@@ -1,16 +1,47 @@
 .PHONY: all
-all: build
+all: help
+
+# set default as dev if not set
+export VITRINESOCIAL_ENV ?= dev
+export DATABASE_HOST ?= 0.0.0.0
+export m ?= default
 
 .PHONY: build
 
-install-db:
-	# docker run -it --rm --link postgres:postgres postgres:9-alpine psql -h postgres -U postgres -c "create database vitrine"
-	docker run -it --rm --link postgres:postgres -v ${PWD}:/vitrine postgres:9-alpine psql -h postgres -U postgres vitrine -f /vitrine/devops/database.sql
-install:
+install: ## install project dependences
 	go get github.com/rubenv/sql-migrate/...
 	go get -u github.com/golang/dep/cmd/dep
 	cd server; dep ensure
-migrations:
-	sql-migrate up -config=devops/dbconfig.yml -env=production 
-serve:
+
+new-migration: ## create a new migration, use make new-migration m=message to set the message
+	sql-migrate new -config=./devops/dbconfig.yml -env=production "$(m)"
+
+migrations: ## run pending migrations
+	docker-compose up -d
+	go get github.com/rubenv/sql-migrate/...
+	sql-migrate up -config=devops/dbconfig.yml -env=production
+
+serve: ## start server
+	docker-compose up -d
 	cd server && go run main.go
+
+serve-watch: ## start server with hot reload
+	docker-compose up -d
+	go get github.com/codegangsta/gin
+	gin --port 8081 --appPort 8000 --path ${PWD}/server --bin server-cmd run server/main.go
+
+postgres-cmd: ## open the postgresql command line
+	docker-compose exec postgres psql -h $$DATABASE_HOST -U postgres vitrine
+
+docs-serve: ## start a server with the docs
+	cd docs && make serve
+
+docs-build: ## build the docs
+	cd docs && make build
+
+docs-open:
+	$$BROWSER docs/index.html
+
+# Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
+help: ## show this help
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

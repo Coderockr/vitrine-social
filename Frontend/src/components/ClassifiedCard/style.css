@@ -1,23 +1,15 @@
 .classifiedCard {
   background: #FFF;
-  border-radius: 3px;
-  align-items: stretch;
+  border: 2px solid #DBDBDB;
+  border-radius: 6px;
+  align-items: center;
   overflow: hidden;
-}
-
-.classifiedCard > figure,
-.classifiedCard > div {
-  margin: 0;
-  padding: 10px;
 }
 
 .organizationContent {
   flex: 1;
-}
-
-.interestedContent {
-  background-color: #FAFAFA;
-  border-left: 1px solid #EBEBEB;
+  padding: 10px;
+  width: calc(100% - 317px);
 }
 
 .classifiedCard > .classifiedIcon {
@@ -25,15 +17,115 @@
   border-radius: 50%;
   border: 1px solid #FF974B;
   display: flex;
-  height: 120px;
+  height: 90px;
+  margin: 10px;
   justify-content: center;
-  padding: 0;
-  width: 120px;
+  width: 90px;
 }
 
-.__re-bulma_title {
-  font-weight: bold;
+.organizationContent .__re-bulma_title {
+  color: #3E4C63;
+  font-size: 20px;
+  font-weight: normal;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  overflow: hidden;
 }
 
-.classifiedCard > .classifiedIcon svg {
+.organizationContent a {
+  color: #3E4C63;
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.organizationContent p {
+  color: #3E4C63;
+  font-size: 14px;
+  font-weight: normal;
+  margin-bottom: 0;
+}
+
+.interestedContent {
+  border-left: 2px solid #EBEBEB;
+  padding: 10px;
+  padding-left: 20px;
+}
+
+.interestedContent button{
+  border-radius: 20px;
+}
+
+.progress-circle-container {
+  position: absolute;
+  background-color: #FFF;
+  border: 2px solid #FA578A;
+  border-radius: 50%;
+  left: 70px;
+  bottom: 10px;
+  width: 28px;
+  height: 28px;
+}
+
+.laste-qtd {
+  background-color: #FBBED1;
+  border-radius: 4px;
+  color: #D53063;
+  position: absolute;
+  margin-left: 46px;
+  margin-top: -25px;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.6s;
+}
+
+.progress-circle-container:hover .laste-qtd {
+  opacity: 1;
+  visibility: visible;
+}
+
+.laste-qtd:before {
+  content: '';
+  background-color: transparent;
+  border-right: 15px solid #FBBED1;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  position: absolute;
+  margin-left: -12px;
+  margin-top: 5px;
+  height: 0;
+  width: 0;
+}
+
+.laste-qtd p{
+  margin: 5px 10px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .classifiedCard {
+    flex-direction: column;
+  }
+
+  .organizationContent {
+    align-items: center;
+    text-align: center;
+    padding: 0 10px;
+    width: calc(100% - 30px);
+  }
+
+  .progress-circle-container {
+    bottom: initial;
+    left: initial;
+    margin-left: 35px;
+    margin-top: 30px;
+  }
+
+  .interestedContent{
+    border: none;
+    margin: 10px;
+    padding-left: 0;
+  }
 }

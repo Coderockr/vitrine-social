@@ -4,5 +4,10 @@ services:
     image: postgres:9-alpine
     container_name: postgres
     network_mode: "bridge"
+    volumes:
+      - ./:/vitrine
+      - ./.data/postgres:/var/lib/postgresql
     ports:
-        - "5432:5432"
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=vitrine
