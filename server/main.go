@@ -18,7 +18,6 @@ import (
 )
 
 func main() {
-
 	env := os.Getenv("VITRINESOCIAL_ENV")
 	err := godotenv.Load("server/config/" + env + ".env")
 	if err != nil {
@@ -43,6 +42,7 @@ func StartServer() {
 	}
 
 	oR := repo.NewOrganizationRepository(conn)
+	nR := repo.NewNeedRepository(conn)
 
 	mux := mux.NewRouter()
 	options := auth.Options{
@@ -64,9 +64,10 @@ func StartServer() {
 	organizationRoute := handlers.NewOrganizationHandler(oR)
 	v1.HandleFunc("/organization/{id:[0-9]+}", organizationRoute.Get)
 
-	v1.Handle("/need/{id}", handlers.NeedGet())
+	needRoute := handlers.NewNeedHandler(nR, oR)
+	v1.Handle("/need/{id}", needRoute.NeedGet())
 
-	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), context.ClearHandler(muxR))
+	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), context.ClearHandler(mux))
 	if err != nil {
 		log.Fatal(err)
 	}

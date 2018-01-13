@@ -36,30 +36,18 @@ type OrganizationImage struct {
 	OrganizationID int64 `valid:"required" db:"organization_id"`
 }
 
-//Need
-type Need struct {
-	OrganizationID int64     `db:"organization_id"`
-	Title          string    `db:"title"`
-	Description    string    `db:"description"`
-	RequiredQTD    int64     `db:"required_qtd"`
-	ReachedQTD     int64     `db:"reached_qtd"`
-	DueDate        time.Time `db:"due_date"`
-	Status         string    `db:"status"`
-	Unity          string    `db:"unity"`
-}
-
 // Need uma necessidade da organização
 type Need struct {
-	ID               int64   `valid:"required" db:"id"`
-	Title            string  `valid:"required" db:"title"`
-	Description      string  `valid:"required" db:"description"`
-	RequiredQuantity int     `db:"required_qtd"`
-	ReachedQuantity  int     `db:"reached_qtd"`
-	Unity            string  `valid:"required" db:"unity"`
-	DueDate          *string `db:"due_date"`
-	Status           string  `valid:"required" db:"status"`
-	CategoryID       int64   `valid:"required" db:"category_id"`
-	OrganizationID   int64   `valid:"required" db:"organization_id"`
+	ID               int64      `valid:"required" db:"id"`
+	Title            string     `valid:"required" db:"title"`
+	Description      string     `valid:"required" db:"description"`
+	RequiredQuantity int        `db:"required_qtd"`
+	ReachedQuantity  int        `db:"reached_qtd"`
+	Unity            string     `valid:"required" db:"unity"`
+	DueDate          *time.Time `db:"due_date"`
+	Status           string     `valid:"required" db:"status"`
+	CategoryID       int64      `valid:"required" db:"category_id"`
+	OrganizationID   int64      `valid:"required" db:"organization_id"`
 	Category         Category
 	Images           []NeedImage
 }

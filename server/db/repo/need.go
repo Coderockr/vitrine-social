@@ -21,7 +21,7 @@ func NewNeedRepository(db *sqlx.DB) *NeedRepository {
 
 // Get one Need from database
 func (r *NeedRepository) Get(id int64) (*model.Need, error) {
-	var n *model.Need
+	n := &model.Need{}
 	err := r.db.Get(n, "SELECT * FROM needs WHERE id = $1", id)
 	if err != nil {
 		return nil, err

@@ -1,5 +1,18 @@
 package handlers
 
+import (
+	"fmt"
+	"time"
+)
+
+type jsonTime struct {
+	time.Time
+}
+
+func (t jsonTime) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("\"%s\"", t.Format(time.RFC3339))), nil
+}
+
 type baseOrganizationJSON struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
@@ -40,6 +53,6 @@ type needJSON struct {
 	RequiredQuantity int                  `json:"requiredQuantity"`
 	ReachedQuantity  int                  `json:"reachedQuantity"`
 	Unity            string               `json:"unity"`
-	DueDate          *string              `json:"dueDate"`
+	DueDate          *jsonTime            `json:"dueDate"`
 	Status           string               `json:"status"`
 }

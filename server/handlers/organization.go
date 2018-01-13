@@ -76,6 +76,10 @@ func (oR *OrganizationHandler) Get(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 
+		var dueDate *jsonTime
+		if n.DueDate != nil {
+			dueDate = &jsonTime{*n.DueDate}
+		}
 		oJSON.Needs = append(oJSON.Needs, needJSON{
 			ID:               n.ID,
 			Title:            n.Title,
@@ -83,7 +87,7 @@ func (oR *OrganizationHandler) Get(w http.ResponseWriter, req *http.Request) {
 			RequiredQuantity: n.RequiredQuantity,
 			ReachedQuantity:  n.ReachedQuantity,
 			Unity:            n.Unity,
-			DueDate:          n.DueDate,
+			DueDate:          dueDate,
 			Category:         catMap[n.CategoryID],
 			Organization:     oJSON.baseOrganizationJSON,
 			Images:           needImagesToImageJSON(n.Images),
@@ -91,8 +95,10 @@ func (oR *OrganizationHandler) Get(w http.ResponseWriter, req *http.Request) {
 		})
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(oJSON)
+	if err := json.NewEncoder(w).Encode(oJSON); err != nil {
+		HandleHttpError(w, http.StatusInternalServerError, err)
+		return
+	}
 }
 
 func needImagesToImageJSON(images []model.NeedImage) []imageJSON {
