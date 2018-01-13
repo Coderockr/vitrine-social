@@ -12,6 +12,7 @@ import (
 	"github.com/Coderockr/vitrine-social/server/db/inmemory"
 	"github.com/Coderockr/vitrine-social/server/db/repo"
 	"github.com/Coderockr/vitrine-social/server/handlers"
+	"github.com/Coderockr/vitrine-social/server/index"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
@@ -61,6 +62,10 @@ func StartServer() {
 
 	organizationRoute := handlers.NewOrganizationHandler(oR)
 	v1.HandleFunc("/organization/{id:[0-9]+}", organizationRoute.Get)
+
+	indexService := index.NewService()
+	searchRoute := handlers.NewSearchHandler(indexService)
+	v1.HandleFunc("/search", searchRoute.Get)
 
 	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), mux)
 	if err != nil {
