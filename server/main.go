@@ -43,6 +43,7 @@ func StartServer() {
 	}
 
 	oR := repo.NewOrganizationRepository(conn)
+	nR := repo.NewNeedRepository(conn)
 
 	mux := mux.NewRouter()
 	options := auth.Options{
@@ -64,7 +65,7 @@ func StartServer() {
 	v1.HandleFunc("/organization/{id:[0-9]+}", organizationRoute.Get)
 
 	indexService := index.NewService()
-	searchRoute := handlers.NewSearchHandler(indexService)
+	searchRoute := handlers.NewSearchHandler(indexService, nR)
 	v1.HandleFunc("/search", searchRoute.Get)
 
 	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), mux)

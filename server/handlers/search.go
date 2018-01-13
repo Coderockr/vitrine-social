@@ -4,18 +4,21 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/coderockr/vitrine-social/server/index"
+	"github.com/Coderockr/vitrine-social/server/db/repo"
+	"github.com/Coderockr/vitrine-social/server/index"
 )
 
 // SearchHandler handles requests about organizations
 type SearchHandler struct {
 	indexService index.Service
+	needRepo     *repo.NeedRepository
 }
 
 //NewSearchHandler search handler
-func NewSearchHandler(indexService index.Service) *SearchHandler {
+func NewSearchHandler(indexService index.Service, needRepo *repo.NeedRepository) *SearchHandler {
 	return &SearchHandler{
 		indexService: indexService,
+		needRepo:     needRepo,
 	}
 }
 
@@ -29,21 +32,21 @@ func (sR *SearchHandler) Get(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	query := keys[0]
-	docs, err := sR.indexService.Search(q)
+	docs, err := sR.indexService.Search(query)
 	if err != nil {
 		return nil, err
 	}
-	var pos []*Position
+	var needs []*needJSON
 	for _, j := range docs.Hits {
-		p, err := s.Find(bson.ObjectIdHex(j.ID))
+		p, err := sr.needRepo.Get(j.ID)
 		if err != nil {
 			continue
 		}
 
 		if p != nil {
-			pos = append(pos, p)
+			needs = append(needs, p)
 		}
 	}
 
-	return pos, nil
+	return needs, nil
 }
