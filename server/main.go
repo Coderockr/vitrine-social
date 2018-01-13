@@ -12,8 +12,10 @@ import (
 	"github.com/Coderockr/vitrine-social/server/db/inmemory"
 	"github.com/Coderockr/vitrine-social/server/db/repo"
 	"github.com/Coderockr/vitrine-social/server/handlers"
+	"github.com/Coderockr/vitrine-social/server/middlewares"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/urfave/negroni"
 )
 
 func main() {
@@ -62,7 +64,12 @@ func StartServer() {
 	organizationRoute := handlers.NewOrganizationHandler(oR)
 	v1.HandleFunc("/organization/{id:[0-9]+}", organizationRoute.Get)
 
-	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), mux)
+	n := negroni.Classic()
+	n.Use(negroni.HandlerFunc(middlewares.Cors))
+
+	// router goes last
+	n.UseHandler(mux)
+	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), n)
 	if err != nil {
 		log.Fatal(err)
 	}

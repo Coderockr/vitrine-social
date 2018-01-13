@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -77,7 +76,7 @@ func (oR *OrganizationHandler) Get(w http.ResponseWriter, req *http.Request) {
 
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		HandleHttpError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+		HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
 		return
 	}
 
@@ -85,10 +84,10 @@ func (oR *OrganizationHandler) Get(w http.ResponseWriter, req *http.Request) {
 
 	switch {
 	case err == sql.ErrNoRows:
-		HandleHttpError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Organização com ID: %d", id))
+		HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Organização com ID: %d", id))
 		return
 	case err != nil:
-		HandleHttpError(w, http.StatusForbidden, err)
+		HandleHTTPError(w, http.StatusForbidden, err)
 		return
 	}
 
@@ -132,10 +131,7 @@ func (oR *OrganizationHandler) Get(w http.ResponseWriter, req *http.Request) {
 			Images:           needImagesToImageJSON(n.Images),
 		})
 	}
-
-	w.Header().Add("Content-type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(oJSON)
+	HandleHTTPSuccess(w, oJSON)
 }
 
 func needImagesToImageJSON(images []model.NeedImage) []imageJSON {
