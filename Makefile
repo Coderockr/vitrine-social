@@ -1,5 +1,5 @@
 .PHONY: all
-all: build
+all: help
 
 # set default as dev if not set
 export VITRINESOCIAL_ENV ?= dev

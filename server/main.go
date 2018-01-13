@@ -13,13 +13,13 @@ import (
 	"github.com/Coderockr/vitrine-social/server/db/repo"
 	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/middlewares"
+	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/urfave/negroni"
 )
 
 func main() {
-
 	env := os.Getenv("VITRINESOCIAL_ENV")
 	err := godotenv.Load("server/config/" + env + ".env")
 	if err != nil {
@@ -44,6 +44,7 @@ func StartServer() {
 	}
 
 	oR := repo.NewOrganizationRepository(conn)
+	nR := repo.NewNeedRepository(conn)
 
 	mux := mux.NewRouter()
 	options := auth.Options{
@@ -55,6 +56,7 @@ func StartServer() {
 
 	// creates the route with Bolt and JWT options
 	authRoute := auth.NewAuthRoute(inmemory.NewUserRepository(), options)
+
 	v1 := mux.PathPrefix("/v1").Subrouter()
 
 	v1.HandleFunc("/auth/login", authRoute.Login)
@@ -64,12 +66,17 @@ func StartServer() {
 	organizationRoute := handlers.NewOrganizationHandler(oR)
 	v1.HandleFunc("/organization/{id:[0-9]+}", organizationRoute.Get)
 
+	needRoute := handlers.NewNeedHandler(nR, oR)
+	v1.Handle("/need/{id}", needRoute.NeedGet())
+
 	n := negroni.Classic()
 	n.Use(negroni.HandlerFunc(middlewares.Cors))
 
 	// router goes last
 	n.UseHandler(mux)
-	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), n)
+	// err = http.ListenAndServe(":"+os.Getenv("API_PORT"), n)
+
+	err = http.ListenAndServe(":"+os.Getenv("API_PORT"), context.ClearHandler(n))
 	if err != nil {
 		log.Fatal(err)
 	}
