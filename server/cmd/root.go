@@ -16,8 +16,11 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"strings"
 
+	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 )
 
@@ -45,6 +48,15 @@ func init() {
 	serveCmd.Flags().StringP("env", "e", os.Getenv("VITRINESOCIAL_ENV"), "Informe qual ambiente deve ser iniciado (dev ou production)")
 }
 
-func withEnvironment(run func(*cobra.Command, []string)) {
+func withEnvironment(run func(*cobra.Command, []string)) func(*cobra.Command, []string) {
+	return func(cmd *cobra.Command, args []string) {
+		env := strings.ToLower(cmd.Flag("env").Value.String())
 
+		err := godotenv.Load("config/" + env + ".env")
+		if err != nil {
+			log.Print("Error loading file config/" + env + ".env")
+		}
+
+		run(cmd, args)
+	}
 }

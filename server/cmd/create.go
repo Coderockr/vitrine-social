@@ -22,7 +22,7 @@ import (
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a new organization (ONG) and returns a URL for confirmation",
-	Run:   createCmdFunc,
+	Run:   withEnvironment(createCmdFunc),
 }
 
 func init() {

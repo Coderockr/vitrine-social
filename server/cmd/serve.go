@@ -15,11 +15,7 @@
 package cmd
 
 import (
-	"log"
-	"strings"
-
 	"github.com/Coderockr/vitrine-social/server/server"
-	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 )
 
@@ -27,7 +23,7 @@ import (
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Iniciar o servidor HTTP",
-	Run:   serveCmdFunc,
+	Run:   withEnvironment(serveCmdFunc),
 }
 
 func init() {
@@ -35,12 +31,5 @@ func init() {
 }
 
 func serveCmdFunc(cmd *cobra.Command, args []string) {
-	env := strings.ToLower(cmd.Flag("env").Value.String())
-
-	err := godotenv.Load("config/" + env + ".env")
-	if err != nil {
-		log.Print("Error loading file config/" + env + ".env")
-	}
-
 	server.StartServer()
 }
