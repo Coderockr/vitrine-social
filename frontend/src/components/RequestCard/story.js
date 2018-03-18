@@ -10,8 +10,8 @@ const organization = {
   category: 'voluntarios',
   data: moment().subtract(2, 'days'),
   item: '10 voluntarios para ler para criancinhas felizes',
-  description: 'v-governmental organizations, nongovernmental organizations, or nongovernment organizations, commonly referred to as NGOs, are nonprofit organizations independent of governments and international'
-}
+  description: 'v-governmental organizations, nongovernmental organizations, or nongovernment organizations, commonly referred to as NGOs, are nonprofit organizations independent of governments and international',
+};
 
 storiesOf('RequestCard', module)
   .add('Default View', () => (

@@ -4,12 +4,8 @@ import {
   Container,
   Media,
   MediaLeft,
-  MediaContent,
   MediaRight,
-  Image,
   Title,
-  Content,
-  Button,
 } from 're-bulma';
 
 import Icon from '../Icons';
@@ -49,6 +45,6 @@ const RequestCard = ({ organization }) => (
       </MediaRight>
     </Media>
   </Container>
-)
+);
 
-export default RequestCard
+export default RequestCard;

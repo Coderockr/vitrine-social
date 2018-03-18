@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import classified from './classified'
+import requests from './requests';
 
 export default combineReducers({
-  classified,
+  requests,
 });
