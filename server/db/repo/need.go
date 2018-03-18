@@ -41,3 +41,8 @@ func (r *NeedRepository) getNeedImages(n *model.Need) ([]model.NeedImage, error)
 
 	return images, nil
 }
+
+// Create creates a new need based on the struct
+func (r *NeedRepository) Create(n model.Need) (model.Need, error) {
+	return n, nil
+}

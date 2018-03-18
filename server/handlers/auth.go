@@ -69,8 +69,8 @@ func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 }
 
 // GetUserID retorna o id do usuário logado.
-func GetUserID(r *http.Request) string {
-	return context.Get(r, userKey).(string)
+func GetUserID(r *http.Request) int64 {
+	return context.Get(r, userKey).(int64)
 }
 
 // GetToken retorna o token do usuário logado

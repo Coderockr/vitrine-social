@@ -49,6 +49,8 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	oR := repo.NewOrganizationRepository(conn)
 	nR := repo.NewNeedRepository(conn)
+	cR := repo.NewCategoryRepository(conn)
+
 	needResponseRepo := repo.NewNeedResponseRepository(conn)
 
 	mux := mux.NewRouter()
@@ -67,8 +69,9 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	organizationRoute := handlers.NewOrganizationHandler(oR)
 	v1.HandleFunc("/organization/{id:[0-9]+}", organizationRoute.Get)
 
-	needRoute := handlers.NewNeedHandler(nR, oR)
-	v1.Handle("/need/{id}", needRoute.NeedGet())
+	v1.HandleFunc("/need/{id}", handlers.GetNeedHandler(nR, oR)).Methods("GET")
+
+	v1.HandleFunc("/need", handlers.CreateNeedHandler(nR.Create, oR.Get, cR.Get)).Methods("POST")
 
 	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo)).
 		Methods("POST")
