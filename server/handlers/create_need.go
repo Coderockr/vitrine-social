@@ -1,11 +1,9 @@
 package handlers
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -43,40 +41,11 @@ func CreateNeedHandler(
 			return
 		}
 
-		cat, err := getCat(catID)
-		switch {
-		case err == sql.ErrNoRows:
-			HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada categoria com ID: %d", catID))
-			return
-		case err != nil:
-			HandleHTTPError(w, http.StatusForbidden, err)
-			return
-		}
-
-		org, err := getOrg(orgID)
-		switch {
-		case err == sql.ErrNoRows:
-			HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Organização com ID: %d", catID))
-			return
-		case err != nil:
-			HandleHTTPError(w, http.StatusForbidden, err)
-			return
-		}
-
-		var title, description string
 		var requiredQuantity, reachedQuantity int
 		var dueDate *time.Time
-		var ok bool
 
-		if title, ok = bodyVars["title"]; !ok || len(strings.TrimSpace(title)) == 0 {
-			HandleHTTPError(w, http.StatusForbidden, fmt.Errorf("Deve ser informado um título para a Necessidade"))
-			return
-		}
-
-		if description, ok = bodyVars["description"]; !ok || len(strings.TrimSpace(description)) == 0 {
-			HandleHTTPError(w, http.StatusForbidden, fmt.Errorf("Deve ser informado um descrição para a Necessidade"))
-			return
-		}
+		title := bodyVars["title"]
+		description := bodyVars["description"]
 
 		if str, ok := bodyVars["requiredQuantity"]; ok {
 			i, err := strconv.ParseInt(str, 10, 64)
@@ -106,8 +75,8 @@ func CreateNeedHandler(
 		}
 
 		n, err := create(model.Need{
-			OrganizationID:   org.ID,
-			CategoryID:       cat.ID,
+			OrganizationID:   orgID,
+			CategoryID:       catID,
 			Title:            title,
 			Description:      description,
 			RequiredQuantity: requiredQuantity,

@@ -18,11 +18,13 @@ type OrganizationRepository struct {
 
 // NewOrganizationRepository creates a new repository
 func NewOrganizationRepository(db *sqlx.DB) *OrganizationRepository {
-	return &OrganizationRepository{
-		db:       db,
-		catRepo:  NewCategoryRepository(db),
-		needRepo: NewNeedRepository(db),
+	r := &OrganizationRepository{
+		db:      db,
+		catRepo: NewCategoryRepository(db),
 	}
+	r.needRepo = NewNeedRepository(db, r)
+
+	return r
 }
 
 // Get one Organization from database

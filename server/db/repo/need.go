@@ -1,6 +1,11 @@
 package repo
 
 import (
+	"database/sql"
+	"errors"
+	"fmt"
+	"strings"
+
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/jmoiron/sqlx"
 )
@@ -8,13 +13,15 @@ import (
 // NeedRepository is a implementation for Postgres
 type NeedRepository struct {
 	db      *sqlx.DB
+	orgRepo *OrganizationRepository
 	catRepo *CategoryRepository
 }
 
 // NewNeedRepository creates a new repository
-func NewNeedRepository(db *sqlx.DB) *NeedRepository {
+func NewNeedRepository(db *sqlx.DB, orgRepo *OrganizationRepository) *NeedRepository {
 	return &NeedRepository{
 		db:      db,
+		orgRepo: orgRepo,
 		catRepo: NewCategoryRepository(db),
 	}
 }
@@ -44,5 +51,53 @@ func (r *NeedRepository) getNeedImages(n *model.Need) ([]model.NeedImage, error)
 
 // Create creates a new need based on the struct
 func (r *NeedRepository) Create(n model.Need) (model.Need, error) {
+	n.Title = strings.TrimSpace(n.Title)
+	if len(n.Title) == 0 {
+		return n, errors.New("Deve ser informado um título para a Necessidade")
+	}
+
+	n.Description = strings.TrimSpace(n.Description)
+	if len(n.Description) == 0 {
+		return n, errors.New("Deve ser informada uma descrição para a Necessidade")
+	}
+
+	_, err := r.catRepo.Get(n.CategoryID)
+	switch {
+	case err == sql.ErrNoRows:
+		return n, fmt.Errorf("Não foi encontrada categoria com ID: %d", n.CategoryID)
+	case err != nil:
+		return n, err
+	}
+
+	_, err = r.orgRepo.Get(n.OrganizationID)
+	switch {
+	case err == sql.ErrNoRows:
+		return n, fmt.Errorf("Não foi encontrada Organização com ID: %d", n.OrganizationID)
+	case err != nil:
+		return n, err
+	}
+
+	n.Status = model.NeedStatusActive
+
+	err = r.db.QueryRow(
+		`INSERT INTO needs (category_id, organization_id, title, description, required_qtd, reached_qtd, due_date, status, unity)
+			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
+			RETURNING id
+		`,
+		n.CategoryID,
+		n.OrganizationID,
+		n.Title,
+		n.Description,
+		n.RequiredQuantity,
+		n.ReachedQuantity,
+		n.DueDate,
+		n.Status,
+		n.Unity,
+	).Scan(&n.ID)
+
+	if err != nil {
+		return n, err
+	}
+
 	return n, nil
 }
