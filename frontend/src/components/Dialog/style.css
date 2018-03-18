@@ -29,4 +29,6 @@
 .close-button {
   display: block;
   float: right;
+  cursor: pointer;
+  outline: none;
 }
