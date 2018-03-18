@@ -7,11 +7,11 @@ Vitrine Social.
 
 # Group API
 
-## Sobre [/]
+## Sobre [/v1/]
 
 Aqui podemos descrever detalhes que são comuns a todos os serviços como formatos, headers, tipos de erros, etc
 
-## Retornos [/returns]
+## Retornos [/v1/returns]
 
 ### Tipos de retorno esperado
 
@@ -68,7 +68,7 @@ O status code deve ser 200 ou 201
 
 # Group Autenticação
 
-## Login [/auth/login]
+## Login [/v1/auth/login]
 
 ### Realizar login [POST]
 
@@ -89,7 +89,7 @@ O status code deve ser 200 ou 201
 + Response 404 (application/json)
     + Attributes (Error)
 
-## Logout [/auth/logout]
+## Logout [/v1/auth/logout]
 
 ### Realizar logout [POST]
 
@@ -107,7 +107,7 @@ O status code deve ser 200 ou 201
 
 Realizar busca das necessidades
 
-## Search [/search?text={text}&category={categories}&org={org}&page={page}]
+## Search [/v1/search?text={text}&category={categories}&org={org}&page={page}]
 
 ### Fazer busca [GET]
 
@@ -129,7 +129,7 @@ Realizar busca das necessidades
 
 # Group Organization
 
-## Organização [/organization/{id}]
+## Organização [/v1/organization/{id}]
 
 ### Perfil da ONG [GET]
 
@@ -163,7 +163,7 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Subscribe [/organization/{id}/subscribe]
+## Subscribe [/v1/organization/{id}/subscribe]
 
 ### Receber notificações [POST]
 
@@ -181,7 +181,7 @@ Realizar busca das necessidades
 + Response 404 (application/json)
     + Attributes (Error)
 
-## Unsubscribe [/organization/{id}/unsubscribe/{email}]
+## Unsubscribe [/v1/organization/{id}/unsubscribe/{email}]
 
 ### Parar de receber notificações [GET]
 
@@ -195,7 +195,7 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Upload [/organization/{id}/upload]
+## Upload [/v1/organization/{id}/upload]
 
 ### Fazer upload [POST]
 
@@ -218,7 +218,7 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Remover imagem [/organization/{id}/image/{image_id}]
+## Remover imagem [/v1/organization/{id}/image/{image_id}]
 
 ### Remover imagem [DELETE]
 
@@ -242,7 +242,7 @@ Realizar busca das necessidades
 
 # Group Need
 
-## Necessidade [/need/{id}]
+## Necessidade [/v1/need/{id}]
 
 ### Dados da necessidade [GET]
 
@@ -275,7 +275,7 @@ Realizar busca das necessidades
 + Response 400 (application/json)
     + Attributes (Error)
 
-## Criar [/need]
+## Criar [/v1/need]
 
 ### Criar Need [POST]
 
@@ -296,7 +296,7 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Upload [/need/{id}/upload]
+## Upload [/v1/need/{id}/upload]
 
 ### Fazer upload [POST]
 
@@ -318,7 +318,7 @@ Realizar busca das necessidades
 + Response 400 (application/json)
     + Attributes (Error)
 
-## Remover imagem [/need/{id}/image/{image_id}]
+## Remover imagem [/v1/need/{id}/image/{image_id}]
 
 ### Remover imagem [DELETE]
 
@@ -341,7 +341,7 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Response [/need/{id}/response]
+## Response [/v1/need/{id}/response]
 
 ### Responder a uma necessidade [POST]
 

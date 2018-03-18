@@ -1,4 +1,4 @@
-.classifiedCard {
+.requestCard {
   background: #FFF;
   border: 2px solid #DBDBDB;
   border-radius: 6px;
@@ -12,10 +12,10 @@
   width: calc(100% - 317px);
 }
 
-.classifiedCard > .classifiedIcon {
+.requestCard > .requestIcon {
   align-items: center;
   border-radius: 50%;
-  border: 1px solid #FF974B;
+  border: 2px solid #FF974B;
   display: flex;
   height: 90px;
   margin: 10px;
@@ -70,6 +70,7 @@
 
 .laste-qtd {
   background-color: #FBBED1;
+  font-weight: 300;
   border-radius: 4px;
   color: #D53063;
   position: absolute;
@@ -104,8 +105,22 @@
   white-space: nowrap;
 }
 
+.button {
+  outline: none;
+  cursor: pointer;
+  background-color: #31E0D5;
+  font-size: 16px;
+  color: #FFFFFF;
+  padding: 10px 20px;
+  border: none;
+}
+
+.button:hover {
+  background-color: #20B8AF;
+}
+
 @media (max-width: 600px) {
-  .classifiedCard {
+  .requestCard {
     flex-direction: column;
   }
 

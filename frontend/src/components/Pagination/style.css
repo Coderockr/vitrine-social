@@ -1,0 +1,26 @@
+.pagination,
+.pagination .wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.pagination {
+  background-color: #F8F8F8;
+  padding-bottom: 30px;
+}
+
+.pagination a {
+  display: block;
+  border: 2px solid #948CF9;
+  background-color: #FFFFFF;
+  color: #948CF9;
+  padding: 8px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.pagination a:hover {
+  background-color: #948CF9;
+  color: #FFFFFF;
+}
