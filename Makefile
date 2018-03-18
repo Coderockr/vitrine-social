@@ -56,6 +56,7 @@ coverage: ## outputs coverage to coverage.out
 	cd server && goverage -v -race -coverprofile=coverage.out ./...
 
 send-statiscs: ## send statistics to code quality services
+	cd server
 	bash -c "$$(curl -s https://codecov.io/bash)"
 	go get -u github.com/schrej/godacov
 	godacov -t ${CODACY_TOKEN} -r ./coverage.out -c $(commit)
