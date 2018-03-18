@@ -10,9 +10,11 @@ import RequestCard from '../../components/RequestCard';
 
 import './style.css';
 
-const organization = {
-  name: 'Lar Abdon batista',
-  link: 'http://coderockr.com/',
+const request = {
+  organization: {
+    name: 'Lar Abdon batista',
+    link: 'http://coderockr.com/',
+  },
   category: 'voluntarios',
   data: moment().subtract(2, 'days'),
   item: '10 voluntarios para ler para criancinhas felizes',
@@ -31,22 +33,22 @@ const Requests = () => (
       </Columns>
 
       <Columns className="row">
-        <RequestCard organization={organization} />
+        <RequestCard request={request} />
       </Columns>
       <Columns className="row">
-        <RequestCard organization={organization} />
+        <RequestCard request={request} />
       </Columns>
       <Columns className="row">
-        <RequestCard organization={organization} />
+        <RequestCard request={request} />
       </Columns>
       <Columns className="row">
-        <RequestCard organization={organization} />
+        <RequestCard request={request} />
       </Columns>
       <Columns className="row">
-        <RequestCard organization={organization} />
+        <RequestCard request={request} />
       </Columns>
       <Columns className="row">
-        <RequestCard organization={organization} />
+        <RequestCard request={request} />
       </Columns>
 
     </Container>

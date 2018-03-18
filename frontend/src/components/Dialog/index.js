@@ -3,7 +3,6 @@ import cx from 'classnames';
 import Icon from '../Icons';
 import './style.css';
 
-
 class Dialog extends Component {
   constructor(props) {
     super(props);

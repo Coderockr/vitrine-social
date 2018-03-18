@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@kadira/storybook';
 import moment from 'moment';
 
-import RequestCard from './';
+import ItemIndicator from './';
 
 const request = {
   organization: {
@@ -15,7 +15,7 @@ const request = {
   description: 'v-governmental organizations, nongovernmental organizations, or nongovernment organizations, commonly referred to as NGOs, are nonprofit organizations independent of governments and international',
 };
 
-storiesOf('RequestCard', module)
+storiesOf('ItemIndicator', module)
   .add('Default View', () => (
-    <RequestCard request={request} />
+    <ItemIndicator request={request} />
   ));

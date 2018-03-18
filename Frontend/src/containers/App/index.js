@@ -4,7 +4,7 @@ import Header from '../../components/Header';
 import Pagination from '../../components/Pagination';
 import Search from '../../components/Search';
 import Requests from '../../components/Requests';
-import Dialog from '../../components/Dialog';
+import RequestDetails from '../RequestDetails';
 
 const App = () => (
   <div>
@@ -13,9 +13,7 @@ const App = () => (
     <Categories />
     <Requests />
     <Pagination />
-    <Dialog active>
-      <h1>Teste</h1>
-    </Dialog>
+    <RequestDetails />
   </div>
 );
 
