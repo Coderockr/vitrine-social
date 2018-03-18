@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -18,17 +19,12 @@ type needResponseRepository interface {
 // NeedResponse responde uma necessidade pelo ID
 func NeedResponse(needRepo needRepository, needResponseRepo needResponseRepository) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-		id, err := strconv.ParseInt(vars["id"], 10, 64)
+		urlVars := mux.Vars(r)
+		id, err := strconv.ParseInt(urlVars["id"], 10, 64)
 		if err != nil {
-			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", urlVars["id"]))
 			return
 		}
-		email := vars["email"]
-		name := vars["name"]
-		phone := vars["phone"]
-		address := vars["address"]
-		message := vars["message"]
 
 		n, err := needRepo.Get(id)
 		switch {
@@ -39,14 +35,22 @@ func NeedResponse(needRepo needRepository, needResponseRepo needResponseReposito
 			HandleHTTPError(w, http.StatusForbidden, err)
 			return
 		}
+
+		var bodyVars map[string]string
+		err = requestToJSONObject(r, &bodyVars)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
+			return
+		}
+
 		now := time.Now()
 		newID, err := needResponseRepo.CreateResponse(&model.NeedResponse{
 			Date:    &now,
-			Email:   email,
-			Name:    name,
-			Phone:   phone,
-			Address: address,
-			Message: message,
+			Email:   bodyVars["email"],
+			Name:    bodyVars["name"],
+			Phone:   bodyVars["phone"],
+			Address: bodyVars["address"],
+			Message: bodyVars["message"],
 			NeedID:  n.ID,
 		})
 		if err != nil {
@@ -56,4 +60,11 @@ func NeedResponse(needRepo needRepository, needResponseRepo needResponseReposito
 		HandleHTTPSuccess(w, newID)
 
 	}
+
+}
+func requestToJSONObject(req *http.Request, jsonDoc interface{}) error {
+	defer req.Body.Close()
+
+	decoder := json.NewDecoder(req.Body)
+	return decoder.Decode(jsonDoc)
 }
