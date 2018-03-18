@@ -12,7 +12,7 @@ import (
 )
 
 func TestDial(t *testing.T) {
-	env := os.Getenv("CODENATION_ENV")
+	env := os.Getenv("VITRINESOCIAL_ENV")
 	err := godotenv.Load("../config/" + env + ".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
