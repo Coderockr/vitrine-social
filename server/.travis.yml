@@ -1,0 +1,15 @@
+language: go
+go:
+ - "1.10.x"
+
+script:
+ - make install
+ - make coverage
+
+after_success:
+- make send-statiscs commit=$TRAVIS_COMMIT
+
+notifications:
+  email:
+    on_success: never # default: change
+    on_failure: always # default: always
