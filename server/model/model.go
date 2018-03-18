@@ -61,7 +61,7 @@ type NeedImage struct {
 // NeedResponse resposta a necessidade cadastrada da organização
 type NeedResponse struct {
 	ID      int64      `valid:"required" db:"id"`
-	Date    *time.Time `db:"date"`
+	Date    *time.Time `valid:"required" db:"date"`
 	Email   string     `valid:"required" db:"email"`
 	Name    string     `valid:"required" db:"name"`
 	Phone   string     `valid:"required" db:"phone"`
