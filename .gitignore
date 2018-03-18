@@ -19,3 +19,6 @@ vendor.orig
 coverage.txt
 server-cmd
 .data/
+
+#Mac OS Thumb
+.DS_Store

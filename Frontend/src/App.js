@@ -17,9 +17,9 @@ import './App.css';
 import reducers from './reducers';
 
 try {
-  if (typeof document !== 'undefined' || document !== null) insertCss(css, { prepend: true });
+  if (typeof document !== 'undefined') insertCss(css, { prepend: true });
 } catch (e) {
-  console.log(e)
+  // console.log(e);
 }
 
 updateLocale('pt-br', ptBr);
@@ -33,8 +33,8 @@ const store = createStore(
 const App = () => (
   <Router>
     <Provider store={store}>
-      <div className='App'>
-        <Route exact path='/' component={AppContainer} />
+      <div className="App">
+        <Route exact path="/" component={AppContainer} />
       </div>
     </Provider>
   </Router>

@@ -12,4 +12,10 @@ try {
   console.log(e)
 }
 
-import ClassifiedCard from '../src/components/ClassifiedCard/story';
+import App from '../src/containers/App/story';
+import Categories from '../src/components/Categories/story';
+import Pagination from '../src/components/Pagination/story';
+import RequestCard from '../src/components/RequestCard/story';
+import Requests from '../src/components/Requests/story';
+import Header from '../src/components/Header/story';
+import Search from '../src/components/Search/story';

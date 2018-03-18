@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "classnames": "^2.2.5",
+    "eslint": "^4.15.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.5.1",
     "font-awesome": "^4.7.0",
     "moment": "^2.18.1",
     "re-bulma": "^0.4.5",
@@ -15,12 +21,14 @@
   },
   "devDependencies": {
     "@kadira/storybook": "^2.21.0",
+    "babel-eslint": "^8.2.1",
     "react-scripts": "1.0.11",
     "reicons": "^0.4.7"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "lint": "eslint ./",
     "reicons": "node scripts/icons",
     "prebuild": "yarn reicons",
     "test": "react-scripts test --env=jsdom",
