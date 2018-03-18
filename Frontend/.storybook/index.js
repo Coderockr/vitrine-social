@@ -14,6 +14,7 @@ try {
 
 import App from '../src/containers/App/story';
 import Categories from '../src/components/Categories/story';
+import Dialog from '../src/components/Dialog/story';
 import Pagination from '../src/components/Pagination/story';
 import RequestCard from '../src/components/RequestCard/story';
 import Requests from '../src/components/Requests/story';
