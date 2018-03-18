@@ -68,7 +68,7 @@ func GetNeedHandler(repo needRepository, oRepo needOrganizationRepository) func(
 				Slug: o.Slug,
 			},
 			Images: needImagesToImageJSON(n.Images),
-			Status: n.Status,
+			Status: string(n.Status),
 		}
 
 		HandleHTTPSuccess(w, nJSON)

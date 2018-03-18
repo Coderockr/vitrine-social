@@ -90,7 +90,7 @@ func (oR *OrganizationHandler) Get(w http.ResponseWriter, req *http.Request) {
 			Category:         catMap[n.CategoryID],
 			Organization:     oJSON.baseOrganizationJSON,
 			Images:           needImagesToImageJSON(n.Images),
-			Status:           n.Status,
+			Status:           string(n.Status),
 		})
 	}
 	HandleHTTPSuccess(w, oJSON)
