@@ -4,12 +4,8 @@ import {
   Container,
   Media,
   MediaLeft,
-  MediaContent,
   MediaRight,
-  Image,
   Title,
-  Content,
-  Button,
 } from 're-bulma';
 
 import Icon from '../Icons';
@@ -17,10 +13,10 @@ import ProgressCircle from '../ProgressCircle';
 
 import './style.css';
 
-const ClassifiedCard = ({ organization }) => (
+const RequestCard = ({ organization }) => (
   <Container isFullwidth>
-    <Media className="classifiedCard">
-      <MediaLeft className="classifiedIcon">
+    <Media className="requestCard">
+      <MediaLeft className="requestIcon">
         <Icon icon={organization.category} size={60} color="#FF974B" />
         <div className="progress-circle-container">
           <ProgressCircle progress={30} />
@@ -43,12 +39,12 @@ const ClassifiedCard = ({ organization }) => (
         </p>
       </div>
       <MediaRight className="interestedContent">
-        <Button color="isPrimary">
+        <button className="button">
           MAIS DETALHES
-        </Button>
+        </button>
       </MediaRight>
     </Media>
   </Container>
-)
+);
 
-export default ClassifiedCard
+export default RequestCard;
