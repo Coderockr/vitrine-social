@@ -24,6 +24,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var env = os.Getenv("VITRINESOCIAL_ENV")
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "vitrine-social",
@@ -45,12 +47,12 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.vitrine-social.yaml)")
-	serveCmd.Flags().StringP("env", "e", os.Getenv("VITRINESOCIAL_ENV"), "Informe qual ambiente deve ser iniciado (dev ou production)")
+	rootCmd.Flags().StringVarP(&env, "env", "e", os.Getenv("VITRINESOCIAL_ENV"), "Informe qual ambiente deve ser iniciado (dev ou production)")
 }
 
 func withEnvironment(run func(*cobra.Command, []string)) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
-		env := strings.ToLower(cmd.Flag("env").Value.String())
+		env := strings.ToLower(env)
 
 		err := godotenv.Load("config/" + env + ".env")
 		if err != nil {

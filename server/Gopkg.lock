@@ -40,6 +40,12 @@
   version = "v1.10.33"
 
 [[projects]]
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
   revision = "d2709f9f1f31ebcda9651b03077758c1f3a0018c"
@@ -129,6 +135,12 @@
   version = "v0.8.0"
 
 [[projects]]
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/spf13/cobra"
   packages = ["."]
   revision = "7b2c5ac9fc04fc5efafb60700713d4fa609b777b"
@@ -141,6 +153,15 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/stretchr/testify"
+  packages = [
+    "assert",
+    "require"
+  ]
+  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
+  version = "v1.2.1"
+
+[[projects]]
   name = "github.com/urfave/negroni"
   packages = ["."]
   revision = "5dbbc83f748fc3ad38585842b0aedab546d0ea1e"
@@ -151,9 +172,7 @@
   name = "golang.org/x/crypto"
   packages = [
     "bcrypt",
-    "blowfish",
-    "pbkdf2",
-    "scrypt"
+    "blowfish"
   ]
   revision = "81e90905daefcd6fd217b62423c0908922eadb30"
 
@@ -209,6 +228,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f59d3c27aba810748b00d3a7cd5161f35bedbb0ea84303efe4ed7fe8554b02a2"
+  inputs-digest = "d094e9a76e55a28524d9ffdcc961a04390b5c0e3a7a30f9b7bf101cbec2ad2e8"
   solver-name = "gps-cdcl"
   solver-version = 1
