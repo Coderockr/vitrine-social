@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -77,10 +76,4 @@ func NeedResponse(needRepo needRepository, needResponseRepo needResponseReposito
 
 	}
 
-}
-func requestToJSONObject(req *http.Request, jsonDoc interface{}) error {
-	defer req.Body.Close()
-
-	decoder := json.NewDecoder(req.Body)
-	return decoder.Decode(jsonDoc)
 }

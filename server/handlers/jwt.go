@@ -3,15 +3,17 @@ package handlers
 import (
 	"crypto/rand"
 	"errors"
-	"github.com/Coderockr/vitrine-social/server/model"
 	"io"
 	"strconv"
 	"time"
+
+	"github.com/Coderockr/vitrine-social/server/model"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
 type (
+	// JWTOptions contains the needed information to validate and generate jwt tokens
 	JWTOptions struct {
 		SigningMethod string
 		PublicKey     []byte
@@ -19,6 +21,7 @@ type (
 		Expiration    time.Duration
 	}
 
+	// JWTManager actually validate and generate the tokens
 	JWTManager struct {
 		OP JWTOptions
 	}

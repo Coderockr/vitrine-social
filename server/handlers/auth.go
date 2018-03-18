@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -34,6 +33,7 @@ type (
 	}
 )
 
+// Login process the login requests, returning a JWT token and organization data
 func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 	var authForm map[string]string
 
@@ -95,11 +95,4 @@ func (a *AuthHandler) AuthMiddleware(w http.ResponseWriter, r *http.Request, nex
 	next(w, r)
 	context.Clear(r)
 
-}
-
-func requestToJSONObject(req *http.Request, jsonDoc interface{}) error {
-	defer req.Body.Close()
-
-	decoder := json.NewDecoder(req.Body)
-	return decoder.Decode(jsonDoc)
 }

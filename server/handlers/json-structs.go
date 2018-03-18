@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -55,4 +57,11 @@ type needJSON struct {
 	Unity            string               `json:"unity"`
 	DueDate          *jsonTime            `json:"dueDate"`
 	Status           string               `json:"status"`
+}
+
+func requestToJSONObject(req *http.Request, jsonDoc interface{}) error {
+	defer req.Body.Close()
+
+	decoder := json.NewDecoder(req.Body)
+	return decoder.Decode(jsonDoc)
 }
