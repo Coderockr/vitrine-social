@@ -1,56 +1,60 @@
 package handlers
 
 import (
+	"crypto/rand"
 	"errors"
-	"net/http"
+	"github.com/Coderockr/vitrine-social/server/model"
+	"io"
 	"strconv"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-type JWTOptions struct {
-	SigningMethod string
-	PublicKey     []byte
-	PrivateKey    []byte
-	Expiration    time.Duration
-}
+type (
+	JWTOptions struct {
+		SigningMethod string
+		PublicKey     []byte
+		PrivateKey    []byte
+		Expiration    time.Duration
+	}
 
-// generateJWTToken Generates a JSON Web Token given an userId (typically an id or an email), and the JWT options
+	JWTManager struct {
+		OP JWTOptions
+	}
+)
+
+// CreateToken Generates a JSON Web Token given an userId (typically an id or an email), and the JWT options
 // to set SigningMethod and the keys you can check
 // http://github.com/dgrijalva/jwt-go
 //
 // In case you use an symmetric-key algorithm set PublicKey and PrivateKey equal to the SecretKey ,
-func generateJWTToken(userID int64, op JWTOptions) (string, error) {
+func (m *JWTManager) CreateToken(u model.User) (string, error) {
 
 	now := time.Now()
 	// set claims
 	claims := jwt.StandardClaims{
 		IssuedAt:  now.Unix(),
-		ExpiresAt: now.Add(op.Expiration).Unix(),
-		Subject:   strconv.Itoa(int(userID)),
+		ExpiresAt: now.Add(m.OP.Expiration).Unix(),
+		Subject:   strconv.FormatInt(u.ID, 10),
 		Id:        string(generateRandomKey(32)),
 	}
-	t := jwt.NewWithClaims(jwt.GetSigningMethod(op.SigningMethod), claims)
+	t := jwt.NewWithClaims(jwt.GetSigningMethod(m.OP.SigningMethod), claims)
 
-	return t.SignedString(op.PrivateKey)
+	return t.SignedString(m.OP.PrivateKey)
 }
 
-// validateToken Validates the token that is passed in the request with the Authorization header
+// ValidateToken Validates the token that is passed in the request with the Authorization header
 // Authorization: Bearer eyJhbGciOiJub25lIn0
 //
 // Returns the userId, token (base64 encoded), error
-func validateToken(r *http.Request, options JWTOptions) (int64, string, error) {
-	tokenString := r.Header.Get("Authorization")
-	if tokenString == "" {
-		return 0, "", errors.New("Unauthorized")
-	}
+func (m *JWTManager) ValidateToken(tokenString string) (int64, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		switch token.Method {
 		case jwt.SigningMethodHS256:
-			return options.PrivateKey, nil
+			return m.OP.PrivateKey, nil
 		case jwt.SigningMethodRS256:
-			return options.PublicKey, nil
+			return m.OP.PublicKey, nil
 		default:
 			return nil, errors.New("JWT Token is not Valid")
 		}
@@ -63,18 +67,25 @@ func validateToken(r *http.Request, options JWTOptions) (int64, string, error) {
 
 			switch vErr.Errors {
 			case jwt.ValidationErrorExpired:
-				return 0, "", errors.New("Token Expired, get a new one")
+				return 0, errors.New("Token Expired, get a new one")
 			default:
-				return 0, "", errors.New("JWT Token ValidationError")
+				return 0, errors.New("JWT Token ValidationError")
 			}
 		}
-		return 0, "", errors.New("JWT Token Error Parsing the token or empty token")
+		return 0, errors.New("JWT Token Error Parsing the token or empty token")
 	}
 	claims, ok := token.Claims.(jwt.StandardClaims)
 	if !ok || !token.Valid {
-		return 0, "", errors.New("JWT Token is not Valid")
+		return 0, errors.New("JWT Token is not Valid")
 	}
-	r.Header.Add("user_id", claims.Subject)
 	userID, err := strconv.Atoi(claims.Subject)
-	return int64(userID), token.Raw, err
+	return int64(userID), err
+}
+
+func generateRandomKey(strength int) []byte {
+	k := make([]byte, strength)
+	if _, err := io.ReadFull(rand.Reader, k); err != nil {
+		return nil
+	}
+	return k
 }

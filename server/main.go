@@ -7,7 +7,6 @@ import (
 
 	"os"
 
-	"github.com/Coderockr/vitrine-social/server/auth"
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/inmemory"
 	"github.com/Coderockr/vitrine-social/server/db/repo"
@@ -47,19 +46,24 @@ func StartServer() {
 	nR := repo.NewNeedRepository(conn)
 
 	mux := mux.NewRouter()
-	options := auth.Options{
+	options := handlers.JWTOptions{
 		SigningMethod: "RS256",
-		PrivateKey:    os.Getenv("VITRINESOCIAL_PRIVATE_KEY"), // $ openssl genrsa -out app.rsa keysize
-		PublicKey:     os.Getenv("VITRINESOCIAL_PUBLIC_KEY"),  // $ openssl rsa -in app.rsa -pubout > app.rsa.pub
+		PrivateKey:    []byte(os.Getenv("VITRINESOCIAL_PRIVATE_KEY")), // $ openssl genrsa -out app.rsa keysize
+		PublicKey:     []byte(os.Getenv("VITRINESOCIAL_PUBLIC_KEY")),  // $ openssl rsa -in app.rsa -pubout > app.rsa.pub
 		Expiration:    60 * time.Minute,
 	}
 
 	// creates the route with Bolt and JWT options
-	authRoute := auth.NewAuthRoute(inmemory.NewUserRepository(), options)
+	AuthHandler := handlers.AuthHandler{
+		UserGetter: &repo.UserRepository{
+			DB: conn,
+		},
+		TokenManager: &handlers.JWTManager{options},
+	}
 
 	v1 := mux.PathPrefix("/v1").Subrouter()
 
-	v1.HandleFunc("/auth/login", authRoute.Login)
+	v1.HandleFunc("/auth/login", AuthHandler.Login)
 
 	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {})
 

@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 
 	"github.com/Coderockr/vitrine-social/server/db/inmemory"
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -14,22 +13,29 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func TestAuthRoute_Login(t *testing.T) {
+type (
+	tokenManagerMock struct {
+		CreateTokenFN   func(model.User) (string, error)
+		ValidateTokenFN func(string) (int64, error)
+	}
+)
+
+func TestAuthHandler_Login(t *testing.T) {
 	password, err := bcrypt.GenerateFromPassword([]byte("this is my password"), bcrypt.DefaultCost)
 	userStorage := &inmemory.UserRepository{
 		Storage: map[string]model.User{
-			"jhon_doe": model.User{Email: "jhon_doe@gmail.com", ID: 1554, Password: string(password)},
+			"jhon_doe": {Email: "jhon_doe@gmail.com", ID: 1554, Password: string(password)},
 		},
 	}
 	require.NoError(t, err)
 	type fields struct {
-		userStore UserRepository
-		options   JWTOptions
+		tokenManager TokenManager
 	}
 	type args struct {
 		req  *http.Request
 		resp string
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -38,12 +44,7 @@ func TestAuthRoute_Login(t *testing.T) {
 		{
 			"email_invalido",
 			fields{
-				userStore: userStorage,
-				options: JWTOptions{
-					Expiration:    time.Hour,
-					PrivateKey:    []byte("this is my secure key"),
-					SigningMethod: "HS256",
-				},
+				tokenManager: &tokenManagerMock{},
 			},
 			args{
 				req: httptest.NewRequest("POST", "http://vitrine/login",
@@ -54,12 +55,7 @@ func TestAuthRoute_Login(t *testing.T) {
 		{
 			"senha_invalida",
 			fields{
-				userStore: userStorage,
-				options: JWTOptions{
-					Expiration:    time.Hour,
-					PrivateKey:    []byte("this is my secure key"),
-					SigningMethod: "HS256",
-				},
+				tokenManager: &tokenManagerMock{},
 			},
 			args{
 				req: httptest.NewRequest("POST", "http://vitrine/login",
@@ -70,25 +66,24 @@ func TestAuthRoute_Login(t *testing.T) {
 		{
 			"email_senha_valido",
 			fields{
-				userStore: userStorage,
-				options: JWTOptions{
-					Expiration:    time.Hour,
-					PrivateKey:    []byte("this is my secure key"),
-					SigningMethod: "HS256",
+				tokenManager: &tokenManagerMock{
+					CreateTokenFN: func(u model.User) (string, error) {
+						return "this-is-my-token", nil
+					},
 				},
 			},
 			args{
 				req: httptest.NewRequest("POST", "http://vitrine/login",
 					bytes.NewReader([]byte(`{"email": "jhon_doe@gmail.com", "password": "this is my password"}`))),
-				resp: `?`,
+				resp: `{"token": "this-is-my-token"}`,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := &AuthRoute{
-				userStore: tt.fields.userStore,
-				options:   tt.fields.options,
+			a := &AuthHandler{
+				UserGetter:   userStorage,
+				TokenManager: tt.fields.tokenManager,
 			}
 			w := httptest.NewRecorder()
 			a.Login(w, tt.args.req)
@@ -97,4 +92,12 @@ func TestAuthRoute_Login(t *testing.T) {
 			require.JSONEq(t, tt.args.resp, string(body))
 		})
 	}
+}
+
+func (t *tokenManagerMock) CreateToken(user model.User) (string, error) {
+	return t.CreateTokenFN(user)
+}
+
+func (t *tokenManagerMock) ValidateToken(token string) (int64, error) {
+	return t.ValidateTokenFN(token)
 }

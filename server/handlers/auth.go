@@ -1,10 +1,8 @@
 package handlers
 
 import (
-	"crypto/rand"
 	"encoding/json"
 	"errors"
-	"io"
 	"net/http"
 
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -17,16 +15,26 @@ const (
 	userKey  = "user"
 )
 
-type UserRepository interface {
-	GetUserByEmail(email string) (model.User, error)
-}
+type (
+	// UserGetter represent the operations for retrieve some application user.
+	UserGetter interface {
+		GetUserByEmail(email string) (model.User, error)
+	}
 
-type AuthRoute struct {
-	userStore UserRepository
-	options   JWTOptions
-}
+	// TokenManager represet operations for application tokens.
+	TokenManager interface {
+		CreateToken(model.User) (string, error)
+		ValidateToken(string) (int64, error)
+	}
 
-func (a *AuthRoute) Login(w http.ResponseWriter, req *http.Request) {
+	// AuthHandler represent all the handler endpoints and middlewares.
+	AuthHandler struct {
+		UserGetter   UserGetter
+		TokenManager TokenManager
+	}
+)
+
+func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 	var authForm map[string]string
 
 	err := requestToJSONObject(req, &authForm)
@@ -38,7 +46,7 @@ func (a *AuthRoute) Login(w http.ResponseWriter, req *http.Request) {
 	email := authForm["email"]
 	pass := authForm["password"]
 
-	user, err := a.userStore.GetUserByEmail(email)
+	user, err := a.UserGetter.GetUserByEmail(email)
 	if err != nil {
 		HandleHTTPError(w, http.StatusUnauthorized, errors.New("Email não encontrado"))
 		return
@@ -49,25 +57,13 @@ func (a *AuthRoute) Login(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	token, err := generateJWTToken(100, a.options)
+	token, err := a.TokenManager.CreateToken(user)
 	if err != nil {
 		HandleHTTPError(w, http.StatusInternalServerError, errors.New("Error while Signing Token"))
 		return
 	}
 
 	HandleHTTPSuccess(w, map[string]string{"token": token})
-}
-
-func (a *AuthRoute) authenticate(w http.ResponseWriter, r *http.Request) (int64, string, error) {
-	auth := r.Header.Get("Authorization")
-	if auth == "" {
-		return 0, "", errors.New("Error no token is provided")
-	}
-	userID, token, err := validateToken(r, a.options)
-	if err != nil {
-		return 0, "", err
-	}
-	return userID, token, nil
 }
 
 // GetUserID retorna o id do usuário logado.
@@ -81,8 +77,13 @@ func GetToken(r *http.Request) string {
 }
 
 // AuthMiddleware valida o token e filtra usuários não logados corretamente
-func (a *AuthRoute) AuthMiddleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	userID, token, err := a.authenticate(w, r)
+func (a *AuthHandler) AuthMiddleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	token := r.Header.Get("Authorization")
+	if token == "" {
+		HandleHTTPError(w, http.StatusUnauthorized, errors.New("Error no token is provided"))
+		return
+	}
+	userID, err := a.TokenManager.ValidateToken(token)
 
 	if err != nil {
 		HandleHTTPError(w, http.StatusUnauthorized, err)
@@ -101,12 +102,4 @@ func requestToJSONObject(req *http.Request, jsonDoc interface{}) error {
 
 	decoder := json.NewDecoder(req.Body)
 	return decoder.Decode(jsonDoc)
-}
-
-func generateRandomKey(strength int) []byte {
-	k := make([]byte, strength)
-	if _, err := io.ReadFull(rand.Reader, k); err != nil {
-		return nil
-	}
-	return k
 }
