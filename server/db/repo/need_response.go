@@ -21,7 +21,7 @@ func NewNeedResponseRepository(db *sqlx.DB) *NeedResponseRepository {
 func (r *NeedResponseRepository) CreateResponse(nr *model.NeedResponse) (sql.Result, error) {
 	id, err := r.db.NamedExec(`INSERT INTO need_response 
 		(email, name, phone, address, message, need_id)
-		 VALUES (:Email, :Name, :Phone, :Address, :Message, :NeedID)`, nr)
+		 VALUES (:email, :name, :phone, :address, :message, :need_id)`, nr)
 	if err != nil {
 		return nil, err
 	}
