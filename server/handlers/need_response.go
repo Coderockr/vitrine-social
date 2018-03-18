@@ -13,7 +13,7 @@ import (
 )
 
 type needResponseRepository interface {
-	CreateResponse(*model.NeedResponse) (sql.Result, error)
+	CreateResponse(*model.NeedResponse) (int64, error)
 }
 
 // NeedResponse responde uma necessidade pelo ID
@@ -43,6 +43,21 @@ func NeedResponse(needRepo needRepository, needResponseRepo needResponseReposito
 			return
 		}
 
+		if bodyVars["email"] == "" {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf(" O campo 'email' é obrigatório! "))
+			return
+		}
+
+		if bodyVars["name"] == "" {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf(" O campo 'name' é obrigatório! "))
+			return
+		}
+
+		if bodyVars["phone"] == "" {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf(" O campo 'phone' é obrigatório! "))
+			return
+		}
+
 		now := time.Now()
 		newID, err := needResponseRepo.CreateResponse(&model.NeedResponse{
 			Date:    &now,
@@ -57,7 +72,8 @@ func NeedResponse(needRepo needRepository, needResponseRepo needResponseReposito
 			HandleHTTPError(w, http.StatusForbidden, err)
 			return
 		}
-		HandleHTTPSuccess(w, newID)
+
+		HandleHTTPSuccess(w, map[string]int64{"id": newID})
 
 	}
 

@@ -1,8 +1,6 @@
 package repo
 
 import (
-	"database/sql"
-
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/jmoiron/sqlx"
 )
@@ -18,13 +16,14 @@ func NewNeedResponseRepository(db *sqlx.DB) *NeedResponseRepository {
 }
 
 // CreateResponse create NeedResponse in database
-func (r *NeedResponseRepository) CreateResponse(nr *model.NeedResponse) (sql.Result, error) {
-	id, err := r.db.NamedExec(`INSERT INTO need_response 
-		(email, name, phone, address, message, need_id)
-		 VALUES (:email, :name, :phone, :address, :message, :need_id)`, nr)
+func (r *NeedResponseRepository) CreateResponse(nr *model.NeedResponse) (int64, error) {
+	var newID int64
+	var query = `INSERT INTO need_response 
+	(email, name, phone, address, message, need_id)
+	 VALUES ($1, $2, $3, $4, $5, $6) returning id;`
+	err := r.db.QueryRow(query, nr.Email, nr.Name, nr.Phone, nr.Address, nr.Message, nr.NeedID).Scan(&newID)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-
-	return id, nil
+	return newID, nil
 }
