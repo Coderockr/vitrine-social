@@ -59,6 +59,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	oR := repo.NewOrganizationRepository(conn)
 	nR := repo.NewNeedRepository(conn)
+	needResponseRepo := repo.NewNeedResponseRepository(conn)
 
 	mux := mux.NewRouter()
 
@@ -80,6 +81,9 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	needRoute := handlers.NewNeedHandler(nR, oR)
 	v1.Handle("/need/{id}", needRoute.NeedGet())
+
+	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo)).
+		Methods("POST")
 
 	n := negroni.Classic()
 	n.Use(negroni.HandlerFunc(middlewares.Cors))
