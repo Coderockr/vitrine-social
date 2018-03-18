@@ -18,7 +18,7 @@ func NewNeedResponseRepository(db *sqlx.DB) *NeedResponseRepository {
 }
 
 // CreateResponse create NeedResponse in database
-func (r *NeedRepository) CreateResponse(nr *model.NeedResponse) (sql.Result, error) {
+func (r *NeedResponseRepository) CreateResponse(nr *model.NeedResponse) (sql.Result, error) {
 	id, err := r.db.NamedExec(`INSERT INTO need_response 
 		(email, name, phone, address, message, need_id)
 		 VALUES (:Email, :Name, :Phone, :Address, :Message, :NeedID)`, nr)
