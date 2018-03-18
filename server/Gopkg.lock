@@ -141,6 +141,12 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/urfave/negroni"
+  packages = ["."]
+  revision = "5dbbc83f748fc3ad38585842b0aedab546d0ea1e"
+  version = "v0.3.0"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = [
@@ -203,6 +209,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "803b81197029fff10c8f2aade2ae15b9a5b217416d03132058bc923da5f31c35"
+  inputs-digest = "f59d3c27aba810748b00d3a7cd5161f35bedbb0ea84303efe4ed7fe8554b02a2"
   solver-name = "gps-cdcl"
   solver-version = 1

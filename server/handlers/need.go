@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -39,23 +38,23 @@ func (h NeedHandler) NeedGet() http.Handler {
 		vars := mux.Vars(r)
 		id, err := strconv.ParseInt(vars["id"], 10, 64)
 		if err != nil {
-			HandleHttpError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
 			return
 		}
 
 		n, err := h.repo.Get(id)
 		switch {
 		case err == sql.ErrNoRows:
-			HandleHttpError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Necessidade com ID: %d", id))
+			HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Necessidade com ID: %d", id))
 			return
 		case err != nil:
-			HandleHttpError(w, http.StatusForbidden, err)
+			HandleHTTPError(w, http.StatusForbidden, err)
 			return
 		}
 
 		o, err := h.oRepo.Get(n.OrganizationID)
 		if err != nil {
-			HandleHttpError(w, http.StatusForbidden, err)
+			HandleHTTPError(w, http.StatusForbidden, err)
 			return
 		}
 
@@ -86,9 +85,6 @@ func (h NeedHandler) NeedGet() http.Handler {
 			Status: n.Status,
 		}
 
-		if err := json.NewEncoder(w).Encode(nJSON); err != nil {
-			HandleHttpError(w, http.StatusInternalServerError, err)
-			return
-		}
+		HandleHTTPSuccess(w, nJSON)
 	})
 }

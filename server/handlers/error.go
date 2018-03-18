@@ -11,8 +11,9 @@ type ErrorMessage struct {
 	Message string `json:"message"`
 }
 
-// HandleHttpError formats and returns errors
-func HandleHttpError(w http.ResponseWriter, errno int, err error) {
+// HandleHTTPError formats and returns errors
+func HandleHTTPError(w http.ResponseWriter, errno int, err error) {
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(errno)
 	json.NewEncoder(w).Encode(&ErrorMessage{
 		Code:    errno,
