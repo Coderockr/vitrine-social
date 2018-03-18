@@ -12,10 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package cmd
 
-import "github.com/Coderockr/vitrine-social/server/cmd"
+import (
+	"github.com/Coderockr/vitrine-social/server/server"
+	"github.com/spf13/cobra"
+)
 
-func main() {
-	cmd.Execute()
+// serveCmd represents the serve command
+var serveCmd = &cobra.Command{
+	Use:   "serve",
+	Short: "Iniciar o servidor HTTP",
+	Run:   withEnvironment(serveCmdFunc),
+}
+
+func init() {
+	rootCmd.AddCommand(serveCmd)
+}
+
+func serveCmdFunc(cmd *cobra.Command, args []string) {
+	server.StartServer()
 }

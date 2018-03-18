@@ -23,12 +23,12 @@ migrations: ## run pending migrations
 
 serve: ## start server
 	docker-compose up -d
-	cd server && go run main.go
+	cd server && go run main.go serve
 
 serve-watch: ## start server with hot reload
 	docker-compose up -d
-	go get github.com/codegangsta/gin
-	gin --port 8081 --appPort 8000 --path ${PWD}/server --bin server-cmd run server/main.go
+	go get -u github.com/codegangsta/gin
+	cd server; API_PORT=8000 gin --port 8081 --appPort 8000 --bin server-cmd run serve
 
 postgres-cmd: ## open the postgresql command line
 	docker-compose exec postgres psql -h $$DATABASE_HOST -U postgres vitrine
