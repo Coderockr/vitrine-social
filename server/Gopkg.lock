@@ -141,13 +141,6 @@
   version = "v1.0.0"
 
 [[projects]]
-  name = "github.com/stretchr/testify"
-  packages = [
-    "assert",
-    "require"
-  ]
-  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
-  version = "v1.2.1"
   name = "github.com/spf13/cobra"
   packages = ["."]
   revision = "7b2c5ac9fc04fc5efafb60700713d4fa609b777b"
@@ -158,6 +151,15 @@
   packages = ["."]
   revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/stretchr/testify"
+  packages = [
+    "assert",
+    "require"
+  ]
+  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
+  version = "v1.2.1"
 
 [[projects]]
   name = "github.com/urfave/negroni"
@@ -226,6 +228,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9be166f14bae9613edbdfb7e6b0a7b4928ba359fd4ceb0a3e9d160c472983c28"
+  inputs-digest = "d094e9a76e55a28524d9ffdcc961a04390b5c0e3a7a30f9b7bf101cbec2ad2e8"
   solver-name = "gps-cdcl"
   solver-version = 1
