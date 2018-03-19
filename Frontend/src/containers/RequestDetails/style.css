@@ -1,0 +1,80 @@
+.updatedAt {
+  background-color: #948CF9;
+  font-size: 12px;
+  font-weight: lighter;
+  color: white;
+  padding: 3px;
+  padding-right: 8px;
+  padding-left: 8px;
+  border-radius: 10px;
+}
+
+.title {
+  background-color: transparent;
+  font-size: 32px;
+  font-weight: lighter;
+  color: #3E4C63;
+  padding-left: 90px;
+  padding-right: 90px;
+  padding-top: 10px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.organizationBox {
+  padding-left: 80px;
+}
+
+.organizationBorder {
+  border-left: 5px solid #FF974B;
+  padding-left: 10px;
+}
+
+.organization {
+  background-color: transparent;
+  font-size: 26px;
+  font-weight: lighter;
+  color: #3E4C63;
+  padding-top: 15px;
+  padding-left: 10px;
+  margin: 0;
+}
+
+.description {
+  background-color: transparent;
+  font-size: 20px;
+  font-weight: lighter;
+  color: #69778D;
+  text-align: left;
+  padding-top: 15px;
+  padding-left: 10px;
+  padding-right: 90px;
+  padding-bottom: 10px;
+  margin: 0;
+}
+
+.button {
+  background-color: #FA578A;
+  border: 2px solid #FA578A;
+  border-radius: 30px;
+  font-size: 23px;
+  font-weight: normal;
+  color: white;
+  text-align: center;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 20px;
+  padding-right: 20px;
+  outline: none;
+  cursor: pointer;
+  margin-top: 40px;
+}
+
+ .button:hover {
+  background-color: white;
+  border-color: #FA578A;
+  color: #FA578A;
+ }
+
+
+

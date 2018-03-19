@@ -10,31 +10,22 @@ import {
 
 import Icon from '../Icons';
 import ProgressCircle from '../ProgressCircle';
+import ItemIndicator from '../ItemIndicator';
 
 import './style.css';
 
-const RequestCard = ({ organization }) => (
+const RequestCard = ({ request }) => (
   <Container isFullwidth>
     <Media className="requestCard">
-      <MediaLeft className="requestIcon">
-        <Icon icon={organization.category} size={60} color="#FF974B" />
-        <div className="progress-circle-container">
-          <ProgressCircle progress={30} />
-          <div className="laste-qtd">
-            <p>
-              Faltam 4
-            </p>
-          </div>
-        </div>
-      </MediaLeft>
+      <ItemIndicator request={request} />
       <div className="organizationContent">
-        <Title size="is5">{organization.item}</Title>
-        <a href={organization.link} target="_blank">
-          {organization.name}
+        <Title size="is5">{request.item}</Title>
+        <a href={request.organization.link} target="_blank">
+          {request.organization.name}
         </a>
         <p>
           Atualizado em: {
-            moment(organization.data).format('DD / MMMM / YYYY').replace(/(\/)/g, 'de')
+            moment(request.data).format('DD / MMMM / YYYY').replace(/(\/)/g, 'de')
           }
         </p>
       </div>

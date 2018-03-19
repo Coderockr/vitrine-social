@@ -19,6 +19,11 @@
   border-radius: 50%;
 }
 
+.progress-circle.lg {
+  width: 32px;
+  height: 32px;
+}
+
 .progress-circle.progress-0:after {
   background-image: linear-gradient(90deg, var(--color-bg) 50%, transparent 50%, transparent), linear-gradient(90deg, var(--color-cp) 50%, var(--color-bg) 50%, var(--color-bg));
 }
