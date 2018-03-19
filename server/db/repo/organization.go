@@ -56,3 +56,30 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 
 	return o, nil
 }
+
+// Create receives a Organization and creates it in the database, returning the updated Organization or error if failed
+func (r *OrganizationRepository) Create(o model.Organization) (model.Organization, error) {
+	row := r.db.QueryRow(
+		`INSERT INTO organizations (name, logo, address, phone, resume, video, email, slug, password)
+			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
+			RETURNING id
+		`,
+		o.Name,
+		o.Logo,
+		o.Address,
+		o.Phone,
+		o.Resume,
+		o.Video,
+		o.Email,
+		o.Slug,
+		o.Password,
+	)
+
+	err := row.Scan(&o.ID)
+
+	if err != nil {
+		return o, err
+	}
+
+	return o, nil
+}

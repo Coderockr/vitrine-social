@@ -15,6 +15,16 @@
 package cmd
 
 import (
+	"fmt"
+	"log"
+	"os"
+	"time"
+
+	"github.com/Coderockr/vitrine-social/server/handlers"
+	"github.com/Coderockr/vitrine-social/server/model"
+
+	"github.com/Coderockr/vitrine-social/server/db"
+	"github.com/Coderockr/vitrine-social/server/db/repo"
 	"github.com/spf13/cobra"
 )
 
@@ -25,19 +35,74 @@ var createCmd = &cobra.Command{
 	Run:   withEnvironment(createCmdFunc),
 }
 
+var (
+	email   string
+	name    string
+	logo    string
+	address string
+	phone   string
+	resume  string
+	video   string
+	slug    string
+)
+
 func init() {
 	ongCmd.AddCommand(createCmd)
 
-	createCmd.Flags().StringP("email", "e", "", "organization's e-mail")
-	createCmd.Flags().StringP("name", "n", "", "organization's name")
-	createCmd.Flags().StringP("logo", "l", "", "organization's logo")
-	createCmd.Flags().StringP("address", "a", "", "organization's address")
-	createCmd.Flags().StringP("phone", "p", "", "organization's phone")
-	createCmd.Flags().StringP("resume", "r", "", "organization's resume")
-	createCmd.Flags().StringP("video", "v", "", "organization's video")
-	createCmd.Flags().StringP("slug", "s", "", "organization's slug")
+	createCmd.Flags().StringVarP(&email, "email", "e", "", "organization's e-mail")
+	createCmd.Flags().StringVarP(&name, "name", "n", "", "organization's name")
+	createCmd.Flags().StringVarP(&logo, "logo", "l", "", "organization's logo")
+	createCmd.Flags().StringVarP(&address, "address", "a", "", "organization's address")
+	createCmd.Flags().StringVarP(&phone, "phone", "p", "", "organization's phone")
+	createCmd.Flags().StringVarP(&slug, "slug", "s", "", "organization's slug")
+	createCmd.Flags().StringVarP(&resume, "resume", "r", "", "organization's resume")
+	createCmd.Flags().StringVarP(&video, "video", "v", "", "organization's video")
+
+	createCmd.MarkFlagRequired("email")
+	createCmd.MarkFlagRequired("name")
+	createCmd.MarkFlagRequired("logo")
+	createCmd.MarkFlagRequired("address")
+	createCmd.MarkFlagRequired("phone")
+	createCmd.MarkFlagRequired("slug")
 }
 
 func createCmdFunc(cmd *cobra.Command, args []string) {
+	conn, err := db.GetFromEnv()
+	if err != nil {
+		log.Fatalf("Error initializing database: %v\n", err)
+	}
 
+	oR := repo.NewOrganizationRepository(conn)
+
+	o, err := oR.Create(model.Organization{
+		User: model.User{
+			Email:    email,
+			Password: "",
+		},
+		Name:    name,
+		Logo:    logo,
+		Address: address,
+		Phone:   phone,
+		Slug:    slug,
+		Resume:  resume,
+		Video:   video,
+	})
+
+	if err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
+
+	options := getJWTOptions()
+	options.Expiration = 24 * 3 * time.Hour
+
+	manager := handlers.JWTManager{OP: options}
+
+	token, err := manager.CreateToken(o.User)
+	if err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("%s/complete-register/%s", os.Getenv("FRONTEND_URL"), token)
 }
