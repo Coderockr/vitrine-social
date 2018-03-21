@@ -16,12 +16,13 @@ package cmd
 
 import "github.com/spf13/cobra"
 
-// ongCmd represents the ong command
-var ongCmd = &cobra.Command{
-	Use:   "ong",
-	Short: "Organization (ONG) related commands",
+// orgCmd represents the org command
+var orgCmd = &cobra.Command{
+	Use:     "org",
+	Aliases: []string{"organization"},
+	Short:   "Organization (ORG) related commands",
 }
 
 func init() {
-	rootCmd.AddCommand(ongCmd)
+	rootCmd.AddCommand(orgCmd)
 }

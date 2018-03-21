@@ -3,6 +3,8 @@ package repo
 import (
 	"fmt"
 
+	"github.com/Coderockr/vitrine-social/server/security"
+
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/jmoiron/sqlx"
 )
@@ -84,9 +86,33 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 	return o, nil
 }
 
+// GetByEmail returns a organization by its email
+func (r *OrganizationRepository) GetByEmail(email string) (*model.Organization, error) {
+	o := model.Organization{}
+	err := r.db.Get(&o, `SELECT * FROM organizations WHERE email = $1`, email)
+	return &o, err
+}
+
 // GetUserByEmail returns a organization user by its email
 func (r *OrganizationRepository) GetUserByEmail(email string) (model.User, error) {
-	o := model.Organization{}
-	err := r.db.Get(&o.User, `SELECT * FROM organizations WHERE email = $1`, email)
-	return o.User, err
+	o, err := r.GetByEmail(email)
+	if err != nil {
+		return model.User{}, err
+	}
+	return o.User, nil
+}
+
+// ResetPasswordTo resets the organization password to the value informed
+func (r *OrganizationRepository) ResetPasswordTo(o *model.Organization, password string) error {
+	hash, err := security.GenerateHash(password)
+	if err != nil {
+		return err
+	}
+
+	_, err = r.db.Exec(`UPDATE organizations SET password = $1 WHERE id = $2`, hash, o.ID)
+	if err != nil {
+		return err
+	}
+	o.Password = hash
+	return nil
 }
