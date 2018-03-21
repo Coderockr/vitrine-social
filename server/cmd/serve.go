@@ -67,9 +67,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	options := getJWTOptions()
 
 	AuthHandler := handlers.AuthHandler{
-		UserGetter: &repo.UserRepository{
-			DB: conn,
-		},
+		UserGetter:   oR,
 		TokenManager: &handlers.JWTManager{OP: options},
 	}
 	v1.HandleFunc("/auth/login", AuthHandler.Login)

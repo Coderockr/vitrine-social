@@ -83,3 +83,10 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 
 	return o, nil
 }
+
+// GetUserByEmail returns a organization user by its email
+func (r *OrganizationRepository) GetUserByEmail(email string) (model.User, error) {
+	o := model.Organization{}
+	err := r.db.Get(&o.User, `SELECT * FROM organizations WHERE email = $1`, email)
+	return o.User, err
+}
