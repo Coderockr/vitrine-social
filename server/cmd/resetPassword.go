@@ -16,7 +16,6 @@ package cmd
 
 import (
 	"log"
-	"math/rand"
 	"os"
 	"strconv"
 	"strings"
@@ -78,14 +77,4 @@ func resetPasswordCmdFunc(cmd *cobra.Command, args []string) {
 	}
 
 	r.ResetPasswordTo(o, pass)
-}
-
-const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-func randSeq(n int) string {
-	b := make([]byte, n)
-	for i := range b {
-		b[i] = letters[rand.Int63()%int64(len(letters))]
-	}
-	return string(b)
 }

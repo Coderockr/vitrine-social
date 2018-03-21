@@ -18,7 +18,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/repo"
@@ -39,15 +38,6 @@ var serveCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(serveCmd)
-}
-
-func getJWTOptions() handlers.JWTOptions {
-	return handlers.JWTOptions{
-		SigningMethod: os.Getenv("VITRINESOCIAL_SIGNING_METHOD"),
-		PrivateKey:    []byte(os.Getenv("VITRINESOCIAL_PRIVATE_KEY")), // $ openssl genrsa -out app.rsa keysize
-		PublicKey:     []byte(os.Getenv("VITRINESOCIAL_PUBLIC_KEY")),  // $ openssl rsa -in app.rsa -pubout > app.rsa.pub
-		Expiration:    60 * time.Minute,
-	}
 }
 
 func serveCmdFunc(cmd *cobra.Command, args []string) {
