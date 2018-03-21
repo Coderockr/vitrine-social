@@ -55,7 +55,6 @@ As requisições que finalizaram com sucesso devem ter as informações abaixo n
 
 ```
 
-
 O status code deve ser 200 ou 201
 
 ### Headers padrão
@@ -86,7 +85,7 @@ O status code deve ser 200 ou 201
         + organization (BaseOrganization)
         + token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ (string)
 
-+ Response 404 (application/json)
++ Response 401 (application/json)
     + Attributes (Error)
 
 ## Logout [/v1/auth/logout]
@@ -102,6 +101,25 @@ O status code deve ser 200 ou 201
             Authorization: JWT
 
 + Response 204
+
+## Atualizar Senha [/v1/auth/update-password]
+
+### Atualizar Senha [POST]
+
++ Request Atualizar Senha
+
+    + Headers
+
+            Accept: application/json
+            Content-Type: application/json
+            Authorization: JWT
+
+    + Attributes (PasswordUpdate)
+
++ Response 200
+
++ Response 400 (application/json)
+    + Attributes (Error)
 
 # Group Search
 
@@ -422,6 +440,10 @@ Realizar busca das necessidades
 ## Login (object)
 + username: admin@vitrine.org.br (string) - Username do usuário
 + password: 123 (string) - Senha
+
+## PasswordUpdate (object)
++ currentPassword: 123 (string) - Senha Atual
++ newPassword: 1234 (string) - Nova Senha
 
 ## Image (object)
 + id (number) - Código da imagem
