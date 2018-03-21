@@ -43,7 +43,7 @@ func init() {
 
 func getJWTOptions() handlers.JWTOptions {
 	return handlers.JWTOptions{
-		SigningMethod: "HS256",
+		SigningMethod: os.Getenv("VITRINESOCIAL_SIGNING_METHOD"),
 		PrivateKey:    []byte(os.Getenv("VITRINESOCIAL_PRIVATE_KEY")), // $ openssl genrsa -out app.rsa keysize
 		PublicKey:     []byte(os.Getenv("VITRINESOCIAL_PUBLIC_KEY")),  // $ openssl rsa -in app.rsa -pubout > app.rsa.pub
 		Expiration:    60 * time.Minute,
