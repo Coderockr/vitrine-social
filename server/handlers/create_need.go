@@ -10,11 +10,7 @@ import (
 )
 
 // CreateNeedHandler creates a new need based on the payload
-func CreateNeedHandler(
-	create func(model.Need) (model.Need, error),
-	getOrg func(id int64) (*model.Organization, error),
-	getCat func(id int64) (model.Category, error),
-) func(w http.ResponseWriter, r *http.Request) {
+func CreateNeedHandler(create func(model.Need) (model.Need, error)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var bodyVars map[string]string
 		err := requestToJSONObject(r, &bodyVars)
