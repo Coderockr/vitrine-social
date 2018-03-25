@@ -4,35 +4,43 @@ Vitrine Social [![Codacy Badge](https://api.codacy.com/project/badge/Grade/94149
 ## Instalação Backend
 
 ```sh
-    git clone git@github.com:Coderockr/vitrine-social.git $GOPATH/src/Coderockr/vitrine-social;
+git clone git@github.com:Coderockr/vitrine-social.git $GOPATH/src/Coderockr/vitrine-social;
 
-    cd $GOPATH/src/Coderockr/vitrine-social;
+cd $GOPATH/src/Coderockr/vitrine-social;
 
-    make install;
+make install;
 
-    make serve;
+make serve;
 ```
 
 ### Migrations
 
-### Criar uma migration
+#### Criar uma migration
+
 ```sh
-    sql-migrate new -config=./devops/dbconfig.yml -env=production default-categories
+sql-migrate new -config=./devops/dbconfig.yml -env=production default-categories
+```
 
 ## Instalação Frontend
 
-```
-    cd Frontend
+```sh
+cd Frontend
 
-    yarn
+yarn
 
-    yarn start
+yarn start
 ```
 
 ### Reicons
 
-```
-    Mover ícones para assets/icons
+Mover ícones para assets/icons
 
-    yarn reicons
+```sh
+yarn reicons
 ```
+
+## Documentação API
+
+Para acessar a versão mais recente da definição acesse: 
+
+http://coderockr.com/vitrine-social/
