@@ -15,6 +15,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -40,7 +41,7 @@ var impersonateCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		println(token)
+		fmt.Print(token)
 	}),
 }
 
