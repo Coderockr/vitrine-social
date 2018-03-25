@@ -61,6 +61,10 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		UserGetter:   oR,
 		TokenManager: &handlers.JWTManager{OP: options},
 	}
+
+	authMiddleware := negroni.New()
+	authMiddleware.UseFunc(AuthHandler.AuthMiddleware)
+
 	v1.HandleFunc("/auth/login", AuthHandler.Login)
 
 	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {})
@@ -70,7 +74,9 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	v1.HandleFunc("/need/{id}", handlers.GetNeedHandler(nR, oR)).Methods("GET")
 
-	v1.HandleFunc("/need", handlers.CreateNeedHandler(nR.Create)).Methods("POST")
+	v1.Path("/need").Handler(authMiddleware.With(
+		negroni.WrapFunc(handlers.CreateNeedHandler(nR.Create)),
+	)).Methods("POST")
 
 	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo)).
 		Methods("POST")

@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"errors"
 	"io"
+	"log"
 	"strconv"
 	"time"
 
@@ -72,6 +73,7 @@ func (m *JWTManager) ValidateToken(tokenString string) (int64, error) {
 			case jwt.ValidationErrorExpired:
 				return 0, errors.New("Token Expired, get a new one")
 			default:
+				log.Printf("[INFO][Auth Middleware] %s", vErr.Error())
 				return 0, errors.New("JWT Token ValidationError")
 			}
 		}
@@ -79,6 +81,7 @@ func (m *JWTManager) ValidateToken(tokenString string) (int64, error) {
 	}
 	claims, ok := token.Claims.(*jwt.StandardClaims)
 	if !ok || !token.Valid {
+		log.Printf("%#v",token.Claims)
 		return 0, errors.New("JWT Token is not Valid")
 	}
 	userID, err := strconv.Atoi(claims.Subject)
