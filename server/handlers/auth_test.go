@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/Coderockr/vitrine-social/server/db/inmemory"
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -92,6 +93,38 @@ func TestAuthHandler_Login(t *testing.T) {
 			require.JSONEq(t, tt.args.resp, string(body))
 		})
 	}
+}
+
+func TestJWTManager_CanReadItsOwnTokens(t *testing.T) {
+	jwtOptions := map[string]JWTOptions{
+		"using HS256": JWTOptions{
+			SigningMethod: "HS256",
+			PrivateKey:    []byte("ThisIsASecretSalt"),
+			Expiration:    time.Hour,
+		},
+		// todo add tests to other supported methods
+	}
+
+	u := model.User{ID: 333}
+	for name, opt := range jwtOptions {
+		t.Run(name, func(t *testing.T) {
+			tm := JWTManager{OP: opt}
+			token, err := tm.CreateToken(u)
+			if err != nil {
+				t.Fatalf("Should not fail with: %s", err.Error())
+				t.FailNow()
+			}
+
+			id, err := tm.ValidateToken(token)
+			if err != nil {
+				t.Fatalf("Should not fail with: %s", err.Error())
+				t.FailNow()
+			}
+
+			require.Equal(t, id, u.ID)
+		})
+	}
+
 }
 
 func (t *tokenManagerMock) CreateToken(user model.User) (string, error) {
