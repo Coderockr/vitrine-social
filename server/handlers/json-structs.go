@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -12,7 +11,12 @@ type jsonTime struct {
 }
 
 func (t jsonTime) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("\"%s\"", t.Format(time.RFC3339))), nil
+	return []byte(t.Time.Format("\"2006-01-02\"")), nil
+}
+
+func (t *jsonTime) UnmarshalJSON(b []byte) (err error) {
+	t.Time, err = time.Parse("\"2006-01-02\"", string(b))
+	return
 }
 
 type baseOrganizationJSON struct {
