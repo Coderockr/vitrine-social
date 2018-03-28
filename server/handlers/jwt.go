@@ -52,7 +52,7 @@ func (m *JWTManager) CreateToken(u model.User) (string, error) {
 //
 // Returns the userId, token (base64 encoded), error
 func (m *JWTManager) ValidateToken(tokenString string) (int64, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
 		switch token.Method {
 		case jwt.SigningMethodHS256:
 			return m.OP.PrivateKey, nil
@@ -77,7 +77,7 @@ func (m *JWTManager) ValidateToken(tokenString string) (int64, error) {
 		}
 		return 0, errors.New("JWT Token Error Parsing the token or empty token")
 	}
-	claims, ok := token.Claims.(jwt.StandardClaims)
+	claims, ok := token.Claims.(*jwt.StandardClaims)
 	if !ok || !token.Valid {
 		return 0, errors.New("JWT Token is not Valid")
 	}

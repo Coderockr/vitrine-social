@@ -16,11 +16,8 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"strings"
 
-	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 )
 
@@ -48,17 +45,4 @@ func init() {
 	// will be global for your application.
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.vitrine-social.yaml)")
 	rootCmd.Flags().StringVarP(&env, "env", "e", os.Getenv("VITRINESOCIAL_ENV"), "Informe qual ambiente deve ser iniciado (dev ou production)")
-}
-
-func withEnvironment(run func(*cobra.Command, []string)) func(*cobra.Command, []string) {
-	return func(cmd *cobra.Command, args []string) {
-		env := strings.ToLower(env)
-
-		err := godotenv.Load("config/" + env + ".env")
-		if err != nil {
-			log.Print("Error loading file config/" + env + ".env")
-		}
-
-		run(cmd, args)
-	}
 }

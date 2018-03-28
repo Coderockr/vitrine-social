@@ -2,11 +2,12 @@ package handlers
 
 import (
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/Coderockr/vitrine-social/server/security"
 	"github.com/gorilla/context"
-	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -48,10 +49,11 @@ func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 
 	user, err := a.UserGetter.GetUserByEmail(email)
 	if err != nil {
+		log.Printf("[INFO][Auth Handler] %s", err.Error())
 		HandleHTTPError(w, http.StatusUnauthorized, errors.New("Email não encontrado"))
 		return
 	}
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass))
+	err = security.CompareHashAndPassword(user.Password, pass)
 	if err != nil {
 		HandleHTTPError(w, http.StatusUnauthorized, errors.New("Senha inválida"))
 		return

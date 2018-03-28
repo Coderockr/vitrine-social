@@ -31,7 +31,7 @@ import (
 // createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a new organization (ONG) and returns a URL for confirmation",
+	Short: "Create a new organization (ORG) and returns a URL for confirmation",
 	Run:   withEnvironment(createCmdFunc),
 }
 
@@ -47,7 +47,7 @@ var (
 )
 
 func init() {
-	ongCmd.AddCommand(createCmd)
+	orgCmd.AddCommand(createCmd)
 
 	createCmd.Flags().StringVarP(&email, "email", "e", "", "organization's e-mail")
 	createCmd.Flags().StringVarP(&name, "name", "n", "", "organization's name")

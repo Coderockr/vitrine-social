@@ -18,7 +18,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/repo"
@@ -41,15 +40,6 @@ func init() {
 	rootCmd.AddCommand(serveCmd)
 }
 
-func getJWTOptions() handlers.JWTOptions {
-	return handlers.JWTOptions{
-		SigningMethod: "HS256",
-		PrivateKey:    []byte(os.Getenv("VITRINESOCIAL_PRIVATE_KEY")), // $ openssl genrsa -out app.rsa keysize
-		PublicKey:     []byte(os.Getenv("VITRINESOCIAL_PUBLIC_KEY")),  // $ openssl rsa -in app.rsa -pubout > app.rsa.pub
-		Expiration:    60 * time.Minute,
-	}
-}
-
 func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	conn, err := db.GetFromEnv()
@@ -67,9 +57,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	options := getJWTOptions()
 
 	AuthHandler := handlers.AuthHandler{
-		UserGetter: &repo.UserRepository{
-			DB: conn,
-		},
+		UserGetter:   oR,
 		TokenManager: &handlers.JWTManager{OP: options},
 	}
 	v1.HandleFunc("/auth/login", AuthHandler.Login)
