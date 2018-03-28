@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -33,8 +34,14 @@ var impersonateCmd = &cobra.Command{
 
 		manager := handlers.JWTManager{OP: options}
 
+		id, err := strconv.ParseInt(args[0], 10, 64)
+		if err != nil {
+			log.Fatal(err)
+			os.Exit(1)
+		}
+
 		token, err := manager.CreateToken(model.User{
-			ID: 1,
+			ID: id,
 		})
 		if err != nil {
 			log.Fatal(err)
