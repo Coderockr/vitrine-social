@@ -9,8 +9,8 @@ import (
 )
 
 // CreateNeedHandler creates a new need based on the payload
-func CreateNeedHandler(create func(model.Need) (model.Need, error)) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func CreateNeedHandler(create func(model.Need) (model.Need, error)) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		var bodyVars struct {
 			Organization     int64
 			Category         int64
@@ -53,5 +53,5 @@ func CreateNeedHandler(create func(model.Need) (model.Need, error)) http.Handler
 		}
 
 		HandleHTTPSuccess(w, map[string]int64{"id": n.ID})
-	})
+	}
 }
