@@ -81,7 +81,6 @@ func (m *JWTManager) ValidateToken(tokenString string) (int64, error) {
 	}
 	claims, ok := token.Claims.(*jwt.StandardClaims)
 	if !ok || !token.Valid {
-		log.Printf("%#v",token.Claims)
 		return 0, errors.New("JWT Token is not Valid")
 	}
 	userID, err := strconv.Atoi(claims.Subject)
