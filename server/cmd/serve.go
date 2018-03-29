@@ -48,7 +48,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	}
 
 	oR := repo.NewOrganizationRepository(conn)
-	nR := repo.NewNeedRepository(conn, oR)
+	nR := repo.NewNeedRepository(conn)
 
 	needResponseRepo := repo.NewNeedResponseRepository(conn)
 

@@ -18,10 +18,9 @@ type NeedRepository struct {
 }
 
 // NewNeedRepository creates a new repository
-func NewNeedRepository(db *sqlx.DB, orgRepo *OrganizationRepository) *NeedRepository {
+func NewNeedRepository(db *sqlx.DB) *NeedRepository {
 	return &NeedRepository{
 		db:      db,
-		orgRepo: orgRepo,
 		catRepo: NewCategoryRepository(db),
 	}
 }
@@ -38,10 +37,10 @@ func (r *NeedRepository) Get(id int64) (*model.Need, error) {
 	return n, nil
 }
 
-// GetNeedImages without the need data
-func (r *NeedRepository) getNeedImages(n *model.Need) ([]model.NeedImage, error) {
+// getNeedImages without the need data
+func getNeedImages(db *sqlx.DB, n *model.Need) ([]model.NeedImage, error) {
 	images := []model.NeedImage{}
-	err := r.db.Select(&images, "SELECT * FROM needs_images WHERE need_id = $1", n.ID)
+	err := db.Select(&images, "SELECT * FROM needs_images WHERE need_id = $1", n.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +68,7 @@ func (r *NeedRepository) Create(n model.Need) (model.Need, error) {
 		return n, err
 	}
 
-	_, err = r.orgRepo.Get(n.OrganizationID)
+	_, err = getBaseOrganization(r.db, n.OrganizationID)
 	switch {
 	case err == sql.ErrNoRows:
 		return n, fmt.Errorf("Não foi encontrada Organização com ID: %d", n.OrganizationID)
