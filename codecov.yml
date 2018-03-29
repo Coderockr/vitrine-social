@@ -6,6 +6,8 @@ coverage:
   patch:
     default:
       enabled: false
+      target: 0%
+      only_pulls: true
 
 status:
  project: yes
