@@ -75,7 +75,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	v1.HandleFunc("/need/{id}", handlers.GetNeedHandler(nR, oR)).Methods("GET")
 
 	v1.Path("/need").Handler(authMiddleware.With(
-		negroni.WrapFunc(handlers.CreateNeedHandler(nR.Create)),
+		negroni.Wrap(handlers.CreateNeedHandler(nR.Create)),
 	)).Methods("POST")
 
 	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo)).
