@@ -61,7 +61,30 @@ func TestCreateNeedHandler(t *testing.T) {
 					n.Title != "test 1" ||
 					n.Description != "test 2" ||
 					n.RequiredQuantity != 3 ||
-					n.ReachedQuantity != 0 {
+					n.ReachedQuantity != 0 ||
+					n.DueDate == nil ||
+					n.DueDate.Format("2006-01-02") != "2017-10-01" {
+					return n, fmt.Errorf("some values are not matching, values sent: %#v", n)
+				}
+
+				n.ID = 1
+				return n, nil
+
+			},
+			response: `{"id":1}`,
+		},
+		"right values were sent (duedate is nil)": {
+			body:   `{"organization": 1, "category": 99, "title": "test 1", "description": "test 2","requiredQuantity":3}`,
+			userID: 1,
+			status: http.StatusOK,
+			create: func(n model.Need) (model.Need, error) {
+				if n.OrganizationID != 1 ||
+					n.CategoryID != 99 ||
+					n.Title != "test 1" ||
+					n.Description != "test 2" ||
+					n.RequiredQuantity != 3 ||
+					n.ReachedQuantity != 0 ||
+					n.DueDate != nil {
 					return n, fmt.Errorf("some values are not matching, values sent: %#v", n)
 				}
 
