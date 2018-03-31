@@ -42,8 +42,8 @@ func CreateNeedHandler(create func(model.Need) (model.Need, error)) func(http.Re
 			CategoryID:       bodyVars.Category,
 			Title:            bodyVars.Title,
 			Description:      bodyVars.Description,
-			RequiredQuantity: bodyVars.ReachedQuantity,
-			ReachedQuantity:  bodyVars.RequiredQuantity,
+			RequiredQuantity: bodyVars.RequiredQuantity,
+			ReachedQuantity:  bodyVars.ReachedQuantity,
 			DueDate:          dueDate,
 		})
 
