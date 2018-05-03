@@ -1,26 +1,45 @@
-.pagination,
-.pagination .wrapper {
+.wrapper {
   display: flex;
   flex-direction: row;
   justify-content: center;
-}
-
-.pagination {
-  background-color: #F8F8F8;
   padding-bottom: 30px;
 }
 
-.pagination a {
-  display: block;
+.mypagination .ant-pagination-item {
   border: 2px solid #948CF9;
   background-color: #FFFFFF;
-  color: #948CF9;
-  padding: 8px 15px;
-  border-radius: 5px;
-  text-decoration: none;
 }
 
-.pagination a:hover {
+.mypagination .ant-pagination-item a {
+  color: #948CF9;
+}
+
+.mypagination .ant-pagination-item:hover,
+.mypagination .ant-pagination-item-active,
+.mypagination .ant-pagination-item-active:focus {
   background-color: #948CF9;
+  border: 2px solid #948CF9;
+}
+
+.mypagination .ant-pagination-item-active a,
+.mypagination .ant-pagination-item:hover a,
+.mypagination .ant-pagination-item-active:focus a {
   color: #FFFFFF;
+}
+
+.mypagination .ant-pagination-next:hover a,
+.mypagination .ant-pagination-prev:hover a {
+  background-color: #948CF9;
+  border: 1px solid #948CF9;
+  color: #FFFFFF;
+}
+
+.mypagination .ant-pagination-next a,
+.mypagination .ant-pagination-prev a,
+.mypagination .ant-pagination-next:focus a,
+.mypagination .ant-pagination-prev:focus a,
+.mypagination .ant-pagination-disabled:hover a {
+  color: #948CF9;
+  border: 1px solid #948CF9;
+  background-color: #FFFFFF;
 }
