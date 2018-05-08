@@ -1,32 +1,13 @@
 import React from 'react';
-import {
-  Nav,
-  NavItem,
-  NavGroup,
-} from 're-bulma';
+import cx from 'classnames';
+import { Pagination as AntPagination } from 'antd';
 
 import './style.css';
 
 const Pagination = () => (
-  <Nav className="pagination">
-    <NavGroup className="wrapper">
-      <NavItem>
-        <a href="#">1</a>
-      </NavItem>
-      <NavItem>
-        <a href="#">2</a>
-      </NavItem>
-      <NavItem>
-        <a href="#">3</a>
-      </NavItem>
-      <NavItem>
-        <a href="#">4</a>
-      </NavItem>
-      <NavItem>
-        <a href="#">{'>'}</a>
-      </NavItem>
-    </NavGroup>
-  </Nav>
+  <div className={cx('wrapper')}>
+    <AntPagination className="mypagination" total={50} />
+  </div>
 );
 
 export default Pagination;
