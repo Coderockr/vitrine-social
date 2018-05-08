@@ -1,21 +1,28 @@
-.header {
+.appHeader {
+  background-color: #948CF9;
+  height: 85px;
+}
+
+.logo {
+  width: 120px;
+  height: 31px;
+  background: rgba(255,255,255,.2);
+  margin: 26px 24px 16px 0;
+  float: left;
+}
+
+.ant-layout-header {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.ant-menu {
   display: flex;
   align-items: center;
-  height: 85px;
-  background-color: #948CF9;
+  border-bottom: none;
 }
 
-.nav {
-  width: 100%;
-  background-color: transparent;
-}
-
-.navItem a {
-  color: #FFFFFF;
-  text-decoration: none;
-}
-
-.navItem a:hover {
-  color: #FFFFFF;
-  text-decoration: underline;
+.ant-menu.ant-menu-dark .ant-menu-item-selected,
+.ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+  background: transparent
 }
