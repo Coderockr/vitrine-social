@@ -6,7 +6,6 @@ import {
   MediaRight,
   Title,
 } from 're-bulma';
-
 import ItemIndicator from '../ItemIndicator';
 
 import './style.css';

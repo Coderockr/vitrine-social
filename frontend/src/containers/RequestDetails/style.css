@@ -1,3 +1,9 @@
+.itemDetails {
+  display: flex;
+  flex-direction: row;
+  margin-left: 80px;
+}
+
 .updatedAt {
   background-color: #948CF9;
   font-size: 12px;
@@ -7,6 +13,8 @@
   padding-right: 8px;
   padding-left: 8px;
   border-radius: 10px;
+  margin-top: -35px;
+  margin-bottom: 40px;
 }
 
 .title {
@@ -14,10 +22,9 @@
   font-size: 32px;
   font-weight: lighter;
   color: #3E4C63;
-  padding-left: 90px;
-  padding-right: 90px;
+  padding-left: 20px;
+  padding-right: 20px;
   padding-top: 10px;
-  text-align: center;
   text-transform: uppercase;
 }
 
@@ -68,6 +75,7 @@
   outline: none;
   cursor: pointer;
   margin-top: 40px;
+  margin-bottom: 20px;
 }
 
  .button:hover {
@@ -76,5 +84,23 @@
   color: #FA578A;
  }
 
+@media (max-width: 720px) {
+  .itemDetails {
+    display: inline;
+    margin-left: 20px;
+    text-align: center;
+  }
 
+  .itemIndicator {
+    display: flex;
+    justify-content: center;
+  }
 
+  .updatedAt {
+    margin-top: 0;
+  }
+
+  .organizationBox {
+    padding-left: 20px;
+  }
+}

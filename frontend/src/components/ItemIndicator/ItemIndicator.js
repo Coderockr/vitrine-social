@@ -4,8 +4,8 @@ import ProgressCircle from '../ProgressCircle';
 
 import './style.css';
 
-const ItemIndicator = ({ request, size }) => (
-  <div className={`requestCircle ${size}`}>
+const ItemIndicator = ({ request, size, className }) => (
+  <div className={`requestCircle ${size} ${className}`}>
     <div className={`requestIcon ${size}`}>
       <Icon icon={request.category} size={size === 'lg' ? 85 : 60} color="#FF974B" />
       <div className={`progress-circle-container ${size}`}>

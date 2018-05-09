@@ -17,13 +17,15 @@ const request = {
 
 const RequestDetails = () => (
   <Dialog active>
-    <ItemIndicator request={request} size="lg" />
+    <div className="itemDetails">
+      <ItemIndicator className="itemIndicator" request={request} size="lg" />
+      <h1 className="title">{request.item}</h1>
+    </div>
     <p className="updatedAt">
       Atualizado em {
         moment(request.data).format('DD / MMMM / YYYY').replace(/(\/)/g, 'de')
       }
     </p>
-    <h1 className="title">{request.item}</h1>
     <div className="organizationBox">
       <div className="organizationBorder">
         <p className="organization">{request.organization.name}</p>
