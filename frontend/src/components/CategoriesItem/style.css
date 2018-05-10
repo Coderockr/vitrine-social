@@ -2,8 +2,8 @@
   text-align: center;
   width: 170px;
   height: 170px;
-
 }
+
 .categoriesItem:hover > .categoriesCard {
   opacity: 1;
 }
@@ -43,4 +43,17 @@
 
 .categoriesImage svg {
   display: inline-flex;
+}
+
+@media (max-width: 731px) {
+  .categoriesItem {
+    width: 140px;
+    height: 140px;
+  }
+
+  .categoriesImage {
+    border: 4px solid #FF974B;
+    width: 100px;
+    height: 100px;
+  }
 }

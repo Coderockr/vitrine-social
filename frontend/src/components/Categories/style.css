@@ -16,3 +16,15 @@
 .categoryWrapper {
   margin: 10px 30px;
 }
+
+@media (max-width: 812px) {
+  .categoryWrapper {
+    margin: 10px 20px;
+  }
+}
+
+@media (max-width: 747px) {
+  .categoryWrapper {
+    margin: 10px 7px;
+  }
+}

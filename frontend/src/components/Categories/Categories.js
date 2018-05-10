@@ -32,7 +32,7 @@ const Categories = () => (
       </Col>
     </Row>
     <Row className="row">
-      <Col span={20} offset={2}>
+      <Col span={22} offset={1}>
         <div className="categoriesWrapper">
           {renderCategories(allCategories)}
         </div>
