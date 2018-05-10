@@ -1,13 +1,10 @@
 .requests {
   padding-top: 20px;
+  margin: 50px 0;
 }
 
 .requests .row {
   padding: 0 30px 30px;
-}
-
-.requests {
-  background-color: #F8F8F8;
 }
 
 .requests .containerTitle {

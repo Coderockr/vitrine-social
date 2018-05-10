@@ -8,19 +8,11 @@ import {
   BrowserRouter as Router,
   Route,
 } from 'react-router-dom';
-import insertCss from 'insert-css';
-import css from 're-bulma/build/css';
 
 import AppContainer from './containers/App';
 
 import './App.css';
 import reducers from './reducers';
-
-try {
-  if (typeof document !== 'undefined') insertCss(css, { prepend: true });
-} catch (e) {
-  // console.log(e);
-}
 
 updateLocale('pt-br', ptBr);
 
