@@ -1,4 +1,5 @@
 .search {
+  display: flex;
   background-color: #16C0DB;
 }
 
@@ -26,7 +27,6 @@ input::placeholder {
   outline: none;
   position: relative;
   float: right;
-  // border-radius: 50px;
   padding: 0 20px;
   background-color: transparent;
   border: none;
@@ -38,4 +38,5 @@ input::placeholder {
   border: 2px solid #2BA4B7;
   border-radius: 50px;
   background-color: #FFFFFF;
+  margin: 30px auto;
 }

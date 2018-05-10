@@ -4,4 +4,15 @@
 
 .categories {
   background-color: #F8F8F8;
+  margin: 50px 0;
+}
+
+.categoriesWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.categoryWrapper {
+  margin: 10px 30px;
 }

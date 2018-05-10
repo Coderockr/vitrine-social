@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Column,
-  Columns,
-  Container,
-  Section,
-} from 're-bulma';
+import { Row, Col } from 'antd';
 import Icon from '../Icons';
 
 import './style.css';
@@ -12,18 +7,14 @@ import './style.css';
 const Search = () => {
   const screenWidth = window.innerWidth;
   return (
-    <Section className="search">
-      <Container className="container">
-        <Columns className="row">
-          <Column size="is8" offset="isOffset2" className="col">
-            <input type="text" placeholder={screenWidth < 720 ? 'Como quer ajudar?' : 'Como você gostaria de ajudar?'} />
-            <button className="searchButton">
-              <Icon icon="lupa" size={32} color="#444F60" />
-            </button>
-          </Column>
-        </Columns>
-      </Container>
-    </Section>
+    <Row className="search">
+      <Col md={{ span: 14, offset: 5 }} sm={{ span: 16, offset: 4 }} xs={{ span: 20, offset: 2 }} className="col">
+        <input type="text" placeholder={screenWidth < 720 ? 'Como quer ajudar?' : 'Como você gostaria de ajudar?'} />
+        <button className="searchButton">
+          <Icon icon="lupa" size={32} color="#444F60" />
+        </button>
+      </Col>
+    </Row>
   );
 };
 
