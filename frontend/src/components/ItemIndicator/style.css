@@ -38,7 +38,7 @@
   border-radius: 4px;
   color: #D53063;
   position: absolute;
-  margin-left: 46px;
+  margin-left: 40px;
   margin-top: -25px;
   visibility: hidden;
   opacity: 0;
@@ -46,7 +46,7 @@
 }
 
 .laste-qtd.lg {
-  margin-left: 58px;
+  margin-left: 52px;
   margin-top: -30px;
 }
 
@@ -74,11 +74,14 @@
   white-space: nowrap;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 720px) {
   .progress-circle-container {
     bottom: initial;
     left: initial;
     margin-left: 35px;
     margin-top: 30px;
+  }
+  .laste-qtd.lg:before {
+    margin-left: -50px;
   }
 }

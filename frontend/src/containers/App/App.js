@@ -13,7 +13,7 @@ const App = () => (
     <Categories />
     <Requests />
     <Pagination />
-    <RequestDetails />
+    <RequestDetails visible />
   </div>
 );
 
