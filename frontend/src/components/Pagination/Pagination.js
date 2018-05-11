@@ -1,12 +1,11 @@
 import React from 'react';
-import cx from 'classnames';
 import { Pagination as AntPagination } from 'antd';
 
-import './style.css';
+import styles from './styles.module.scss';
 
 const Pagination = () => (
-  <div className={cx('wrapper')}>
-    <AntPagination className="mypagination" total={50} />
+  <div className={styles.wrapper}>
+    <AntPagination total={50} />
   </div>
 );
 

@@ -39,3 +39,42 @@ body {
 
   background: #3e4c63;
 }
+
+.ant-pagination-item {
+  border: 2px solid #948CF9;
+  background-color: #FFFFFF;
+}
+
+.ant-pagination-item a {
+  color: #948CF9;
+}
+
+.ant-pagination-item:hover,
+.ant-pagination-item-active,
+.ant-pagination-item-active:focus {
+  background-color: #948CF9;
+  border: 2px solid #948CF9;
+}
+
+.ant-pagination-item-active a,
+.ant-pagination-item:hover a,
+.ant-pagination-item-active:focus a {
+  color: #FFFFFF;
+}
+
+.ant-pagination-next:hover a,
+.ant-pagination-prev:hover a {
+  background-color: #948CF9;
+  border: 1px solid #948CF9;
+  color: #FFFFFF;
+}
+
+.ant-pagination-next a,
+.ant-pagination-prev a,
+.ant-pagination-next:focus a,
+.ant-pagination-prev:focus a,
+.ant-pagination-disabled:hover a {
+  color: #948CF9;
+  border: 1px solid #948CF9;
+  background-color: #FFFFFF;
+}
