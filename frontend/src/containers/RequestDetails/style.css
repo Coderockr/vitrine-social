@@ -1,4 +1,17 @@
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.itemDetails {
+  display: flex;
+  flex-direction: row;
+  margin-left: 80px;
+}
+
 .updatedAt {
+  display: inline-block;
   background-color: #948CF9;
   font-size: 12px;
   font-weight: lighter;
@@ -7,6 +20,8 @@
   padding-right: 8px;
   padding-left: 8px;
   border-radius: 10px;
+  margin-bottom: 40px;
+  margin-left: 20px;
 }
 
 .title {
@@ -14,10 +29,10 @@
   font-size: 32px;
   font-weight: lighter;
   color: #3E4C63;
-  padding-left: 90px;
-  padding-right: 90px;
+  padding-left: 20px;
+  padding-right: 20px;
   padding-top: 10px;
-  text-align: center;
+  margin-bottom: 5px; 
   text-transform: uppercase;
 }
 
@@ -68,6 +83,7 @@
   outline: none;
   cursor: pointer;
   margin-top: 40px;
+  margin-bottom: 20px;
 }
 
  .button:hover {
@@ -76,5 +92,34 @@
   color: #FA578A;
  }
 
+@media (max-width: 696px) {
+  .modal {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+  }
 
+  .ant-modal-content {
+    border-radius: 0;
+  }
 
+  .itemDetails {
+    display: inline;
+    margin-left: 20px;
+    text-align: center;
+  }
+
+  .itemIndicator {
+    display: flex;
+    justify-content: center;
+  }
+
+  .updatedAt {
+    margin-top: 0;
+  }
+
+  .organizationBox {
+    padding-left: 20px;
+  }
+}

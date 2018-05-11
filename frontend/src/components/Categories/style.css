@@ -4,4 +4,27 @@
 
 .categories {
   background-color: #F8F8F8;
+  margin: 50px 0;
+}
+
+.categoriesWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.categoryWrapper {
+  margin: 10px 30px;
+}
+
+@media (max-width: 812px) {
+  .categoryWrapper {
+    margin: 10px 20px;
+  }
+}
+
+@media (max-width: 747px) {
+  .categoryWrapper {
+    margin: 10px 7px;
+  }
 }

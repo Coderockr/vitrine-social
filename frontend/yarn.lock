@@ -7887,7 +7887,7 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
     ini "~1.3.0"
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
-
+    
 react-app-rewire-css-modules@codebandits/react-app-rewire-css-modules:
   version "1.0.0"
   resolved "https://codeload.github.com/codebandits/react-app-rewire-css-modules/tar.gz/956a2330c2eb70cb5bc0795c0e83604e271d4a03"
