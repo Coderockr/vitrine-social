@@ -1,3 +1,9 @@
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .itemDetails {
   display: flex;
   flex-direction: row;
@@ -5,6 +11,7 @@
 }
 
 .updatedAt {
+  display: inline-block;
   background-color: #948CF9;
   font-size: 12px;
   font-weight: lighter;
@@ -13,8 +20,8 @@
   padding-right: 8px;
   padding-left: 8px;
   border-radius: 10px;
-  margin-top: -35px;
   margin-bottom: 40px;
+  margin-left: 20px;
 }
 
 .title {
@@ -25,6 +32,7 @@
   padding-left: 20px;
   padding-right: 20px;
   padding-top: 10px;
+  margin-bottom: 5px; 
   text-transform: uppercase;
 }
 
@@ -84,7 +92,18 @@
   color: #FA578A;
  }
 
-@media (max-width: 720px) {
+@media (max-width: 696px) {
+  .modal {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+  }
+
+  .ant-modal-content {
+    border-radius: 0;
+  }
+
   .itemDetails {
     display: inline;
     margin-left: 20px;
