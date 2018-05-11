@@ -56,7 +56,7 @@ class RequestDetails extends React.Component {
                 ref={(ref) => { this.carousel = ref; }}
                 infinite={false}
                 slidesToShow={3}
-            >
+              >
                 <div>
                   <img src="assets/images/leitura-infantil.jpg" alt="Leitura Infantil" />
                 </div>
