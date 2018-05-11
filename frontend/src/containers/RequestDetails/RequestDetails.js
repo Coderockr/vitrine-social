@@ -1,8 +1,9 @@
 import React from 'react';
 import moment from 'moment';
-import { Modal } from 'antd';
+import { Modal, Carousel } from 'antd';
 import './style.css';
 import ItemIndicator from '../../components/ItemIndicator';
+import Arrow from '../../components/Arrow';
 
 const request = {
   organization: {
@@ -47,6 +48,33 @@ class RequestDetails extends React.Component {
               <p className="organization">{request.organization.name}</p>
               <p className="description">{request.description}</p>
             </div>
+          </div>
+          <div className="arrowWrapper">
+            <Arrow size={32} color="#948CF9" onClick={() => this.carousel.prev()} left />
+            <div className="carouselWrapper">
+              <Carousel
+                ref={(ref) => { this.carousel = ref; }}
+                infinite={false}
+                slidesToShow={3}
+            >
+                <div>
+                  <img src="assets/images/leitura-infantil.jpg" alt="Leitura Infantil" />
+                </div>
+                <div>
+                  <img src="assets/images/leitura-infantil 2.jpg" alt="Leitura Infantil 2" />
+                </div>
+                <div>
+                  <img src="assets/images/leitura-infantil 3.jpg" alt="Leitura Infantil 3" />
+                </div>
+                <div>
+                  <img src="assets/images/leitura-infantil 2.jpg" alt="Leitura Infantil 2" />
+                </div>
+                <div>
+                  <img src="assets/images/leitura-infantil 3.jpg" alt="Leitura Infantil 3" />
+                </div>
+              </Carousel>
+            </div>
+            <Arrow size={32} color="#948CF9" onClick={() => this.carousel.next()} />
           </div>
           <button className="button">QUERO AJUDAR!</button>
         </div>
