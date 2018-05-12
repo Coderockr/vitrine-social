@@ -8,11 +8,17 @@ class Arrow extends React.PureComponent {
   renderIcon() {
     if (this.props.left) {
       return (
-        <Icon icon="arrow-left-drop-circle-outline" size={this.props.size} color={this.props.color} />
+        <div className="arrowButton">
+          <Icon icon="arrow-left-drop-circle-outline" size={this.props.size} color={this.props.color} className="img-bottom" />
+          <Icon icon="arrow-left-drop-circle" size={this.props.size} color={this.props.color} className="img-top" />
+        </div>
       );
     }
     return (
-      <Icon icon="arrow-right-drop-circle-outline" size={this.props.size} color={this.props.color} />
+      <div className="arrowButton">
+        <Icon icon="arrow-right-drop-circle-outline" size={this.props.size} color={this.props.color} className="img-bottom" />
+        <Icon icon="arrow-right-drop-circle" size={this.props.size} color={this.props.color} className="img-top" />
+      </div>
     );
   }
 
