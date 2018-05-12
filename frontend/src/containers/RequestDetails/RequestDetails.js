@@ -16,9 +16,42 @@ const request = {
   description: 'v-governmental organizations, nongovernmental organizations, or nongovernment organizations, commonly referred to as NGOs, are nonprofit organizations independent of governments and international',
 };
 
+const carouselSettings = {
+  slidesToShow: 3,
+  responsive: [
+    {
+      breakpoint: 801,
+      settings: {
+        slidesToShow: 2,
+      },
+    },
+    {
+      breakpoint: 696,
+      settings: {
+        slidesToShow: 1,
+      },
+    },
+  ],
+};
+
+const imagesArray = [
+  { title: 'Leitura Infantil', image: <img src="assets/images/leitura-infantil.jpg" alt="Leitura Infantil" /> },
+  { title: 'Leitura Infantil 2', image: <img src="assets/images/leitura-infantil 2.jpg" alt="Leitura Infantil 2" /> },
+  { title: 'Leitura Infantil 3', image: <img src="assets/images/leitura-infantil 3.jpg" alt="Leitura Infantil 3" /> },
+  { title: 'Leitura Infantil 4', image: <img src="assets/images/leitura-infantil.jpg" alt="Leitura Infantil 4" /> },
+  { title: 'Leitura Infantil 5', image: <img src="assets/images/leitura-infantil 2.jpg" alt="Leitura Infantil 5" /> },
+  { title: 'Leitura Infantil 6', image: <img src="assets/images/leitura-infantil 3.jpg" alt="Leitura Infantil 6" /> },
+];
+
 class RequestDetails extends React.Component {
   state = {
     visible: this.props.visible,
+  }
+
+  renderImages(images) {
+    return (
+      images.map(imageObj => imageObj.image)
+    );
   }
 
   render() {
@@ -55,23 +88,9 @@ class RequestDetails extends React.Component {
               <Carousel
                 ref={(ref) => { this.carousel = ref; }}
                 infinite={false}
-                slidesToShow={3}
+                {...carouselSettings}
               >
-                <div>
-                  <img src="assets/images/leitura-infantil.jpg" alt="Leitura Infantil" />
-                </div>
-                <div>
-                  <img src="assets/images/leitura-infantil 2.jpg" alt="Leitura Infantil 2" />
-                </div>
-                <div>
-                  <img src="assets/images/leitura-infantil 3.jpg" alt="Leitura Infantil 3" />
-                </div>
-                <div>
-                  <img src="assets/images/leitura-infantil 2.jpg" alt="Leitura Infantil 2" />
-                </div>
-                <div>
-                  <img src="assets/images/leitura-infantil 3.jpg" alt="Leitura Infantil 3" />
-                </div>
+                {this.renderImages(imagesArray)}
               </Carousel>
             </div>
             <Arrow size={32} color="#948CF9" onClick={() => this.carousel.next()} />
