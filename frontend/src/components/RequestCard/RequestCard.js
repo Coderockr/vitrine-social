@@ -3,14 +3,14 @@ import moment from 'moment';
 import { Row, Col } from 'antd';
 import ItemIndicator from '../ItemIndicator';
 
-import './style.css';
+import styles from './styles.module.scss';
 
 const RequestCard = ({ request }) => (
   <Row>
     <Col>
-      <div className="requestCard">
+      <div className={styles.requestCard}>
         <ItemIndicator request={request} />
-        <div className="organizationContent">
+        <div className={styles.organizationContent}>
           <h2>{request.item}</h2>
           <a href={request.organization.link} target="_blank">
             {request.organization.name}
@@ -21,8 +21,8 @@ const RequestCard = ({ request }) => (
             }
           </p>
         </div>
-        <div className="interestedContent">
-          <button className="button">
+        <div className={styles.interestedContent}>
+          <button className={styles.button}>
             MAIS DETALHES
           </button>
         </div>
