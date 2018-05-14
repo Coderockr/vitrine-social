@@ -18,23 +18,9 @@ type needOrganizationRepository interface {
 	Get(id int64) (*model.Organization, error)
 }
 
-// NeedHandler handles requests about Needs
-type NeedHandler struct {
-	repo  needRepository
-	oRepo OrganizationRepository
-}
-
-// NewNeedHandler creates a new NeedHandler
-func NewNeedHandler(repo needRepository, oRepo needOrganizationRepository) NeedHandler {
-	return NeedHandler{
-		repo:  repo,
-		oRepo: oRepo,
-	}
-}
-
-// NeedGet retorna uma necessidade pelo ID
-func (h NeedHandler) NeedGet() http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// GetNeedHandler retorna uma necessidade pelo ID
+func GetNeedHandler(repo needRepository, oRepo needOrganizationRepository) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id, err := strconv.ParseInt(vars["id"], 10, 64)
 		if err != nil {
@@ -42,7 +28,7 @@ func (h NeedHandler) NeedGet() http.Handler {
 			return
 		}
 
-		n, err := h.repo.Get(id)
+		n, err := repo.Get(id)
 		switch {
 		case err == sql.ErrNoRows:
 			HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Necessidade com ID: %d", id))
@@ -52,7 +38,7 @@ func (h NeedHandler) NeedGet() http.Handler {
 			return
 		}
 
-		o, err := h.oRepo.Get(n.OrganizationID)
+		o, err := oRepo.Get(n.OrganizationID)
 		if err != nil {
 			HandleHTTPError(w, http.StatusForbidden, err)
 			return
@@ -82,9 +68,9 @@ func (h NeedHandler) NeedGet() http.Handler {
 				Slug: o.Slug,
 			},
 			Images: needImagesToImageJSON(n.Images),
-			Status: n.Status,
+			Status: string(n.Status),
 		}
 
 		HandleHTTPSuccess(w, nJSON)
-	})
+	}
 }

@@ -11,24 +11,28 @@ import (
 
 // OrganizationRepository is a implementation for Postgres
 type OrganizationRepository struct {
-	db       *sqlx.DB
-	catRepo  *CategoryRepository
-	needRepo *NeedRepository
+	db      *sqlx.DB
+	catRepo *CategoryRepository
 }
 
 // NewOrganizationRepository creates a new repository
 func NewOrganizationRepository(db *sqlx.DB) *OrganizationRepository {
 	return &OrganizationRepository{
-		db:       db,
-		catRepo:  NewCategoryRepository(db),
-		needRepo: NewNeedRepository(db),
+		db:      db,
+		catRepo: NewCategoryRepository(db),
 	}
+}
+
+// getBaseOrganization returns only the data about a organization, not its relations
+func getBaseOrganization(db *sqlx.DB, id int64) (*model.Organization, error) {
+	o := &model.Organization{}
+	err := db.Get(o, "SELECT * FROM organizations WHERE id = $1", id)
+	return o, err
 }
 
 // Get one Organization from database
 func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
-	o := &model.Organization{}
-	err := r.db.Get(o, "SELECT * FROM organizations WHERE id = $1", id)
+	o, err := getBaseOrganization(r.db, id)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +54,7 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 			return nil, err
 		}
 
-		o.Needs[i].Images, err = r.needRepo.getNeedImages(&o.Needs[i])
+		o.Needs[i].Images, err = getNeedImages(r.db, &o.Needs[i])
 		if err != nil {
 			return nil, err
 		}

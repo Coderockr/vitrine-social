@@ -49,6 +49,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	oR := repo.NewOrganizationRepository(conn)
 	nR := repo.NewNeedRepository(conn)
+
 	needResponseRepo := repo.NewNeedResponseRepository(conn)
 
 	mux := mux.NewRouter()
@@ -60,15 +61,21 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		UserGetter:   oR,
 		TokenManager: &handlers.JWTManager{OP: options},
 	}
+
+	authMiddleware := negroni.New()
+	authMiddleware.UseFunc(AuthHandler.AuthMiddleware)
+
 	v1.HandleFunc("/auth/login", AuthHandler.Login)
 
 	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {})
 
-	organizationRoute := handlers.NewOrganizationHandler(oR)
-	v1.HandleFunc("/organization/{id:[0-9]+}", organizationRoute.Get)
+	v1.HandleFunc("/organization/{id:[0-9]+}", handlers.GetOrganizationHandler(oR.Get))
 
-	needRoute := handlers.NewNeedHandler(nR, oR)
-	v1.Handle("/need/{id}", needRoute.NeedGet())
+	v1.HandleFunc("/need/{id}", handlers.GetNeedHandler(nR, oR)).Methods("GET")
+
+	v1.Path("/need").Handler(authMiddleware.With(
+		negroni.WrapFunc(handlers.CreateNeedHandler(nR.Create)),
+	)).Methods("POST")
 
 	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo)).
 		Methods("POST")

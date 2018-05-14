@@ -1,11 +1,13 @@
-codecov:
- notify:
- require_ci_to_pass: yes
-
 coverage:
  precision: 2
  round: down
  range: "70...100"
+ status:
+  patch:
+    default:
+      enabled: false
+      target: 0%
+      only_pulls: true
 
 status:
  project: yes
@@ -13,6 +15,5 @@ status:
  changes: no
 
 comment:
- layout: "reach, diff, flags, files, footer"
- behavior: default
+ behavior: new
  require_changes: no
