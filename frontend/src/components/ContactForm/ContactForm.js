@@ -22,7 +22,18 @@ class ContactForm extends React.Component {
   state = {
   }
 
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        return values;
+      }
+      return null;
+    });
+  }
+
   render() {
+    const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       wrapperCol: {
         xs: { span: 24 },
@@ -39,29 +50,57 @@ class ContactForm extends React.Component {
             <p className={styles.organizationName}>{request.organization.name}</p>
             <p>Telefone: <span>{request.organization.phoneNumber}</span></p>
             <p className={styles.fillLabel}>Ou preencha o formulário:</p>
-            <Form>
+            <Form onSubmit={this.handleSubmit}>
               <FormItem
                 {...formItemLayout}
               >
-                <Input size="large" placeholder="Nome" />
+                {getFieldDecorator('name', {
+                  rules: [{ required: true, message: 'Preencha com o seu nome' }],
+                })(
+                  <Input size="large" placeholder="Nome" />,
+                )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
               >
-                <Input size="large" placeholder="E-mail" />
+                {getFieldDecorator('email', {
+                  rules: [{
+                    type: 'email', message: 'E-mail inválido',
+                  }, {
+                    required: true, message: 'Preencha com o seu e-mail',
+                  }],
+                })(
+                  <Input size="large" placeholder="E-mail" />,
+                )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
               >
-                <Input size="large" placeholder="Telefone" />
+                {getFieldDecorator('phone', {
+                  rules: [{
+                    required: true, message: 'Preencha com o seu telefone',
+                  }, {
+                      pattern: /^1\d\d(\d\d)?$|^0800 ?\d{3} ?\d{4}$|^(\(0?([1-9a-zA-Z][0-9a-zA-Z])?[1-9]\d\) ?|0?([1-9a-zA-Z][0-9a-zA-Z])?[1-9]\d[ .-]?)?(9|9[ .-])?[2-9]\d{3}[ .-]?\d{4}$/gm, message: 'Telefone Inválido',
+                }],
+                })(
+                  <Input size="large" placeholder="Telefone" />,
+                )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
               >
                 <TextArea rows={5} placeholder="Mensagem" />
               </FormItem>
+              <FormItem>
+                <button
+                  type="primary"
+                  htmlType="submit"
+                  className={styles.button}
+                >
+                  ENVIAR
+                </button>
+              </FormItem>
             </Form>
-            <button className={styles.button}>ENVIAR</button>
           </div>
         </Col>
       </Row>
@@ -69,4 +108,6 @@ class ContactForm extends React.Component {
   }
 }
 
-export default ContactForm;
+const WrappedContactForm = Form.create()(ContactForm);
+
+export default WrappedContactForm;

@@ -109,6 +109,22 @@ body {
   color: #948CF9;
 }
 
+.has-error .ant-input,
+.has-error .ant-input:focus {
+  box-shadow: none;
+  border-color: #D0021B;
+}
+
+.has-error .ant-input::placeholder {
+  color: #D0021B;
+}
+
+.has-error .ant-form-explain {
+  color: #D0021B;
+  text-align: end;
+  padding-right: 15px;
+}
+
 @media (max-width: 800px) {
   .ant-modal {
     top: 0;
