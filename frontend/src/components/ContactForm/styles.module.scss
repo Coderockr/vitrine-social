@@ -1,0 +1,67 @@
+@import 'src/utils/styles/colors.scss';
+
+.contactWrapper {
+  text-align: center;
+  margin: 20px 5px 0 5px;
+
+  p {
+    font-size: 28px;
+    margin: 0;
+
+    span {
+      font-family: 'Roboto-Bold';
+      font-size: 45px;
+      color: $teal_400;
+    }
+  }
+}
+
+p.organizationName {
+  text-transform: uppercase;
+  font-family: 'Roboto-Bold';
+  font-size: 45px;
+  margin-top: 20px;
+}
+
+p.fillLabel {
+  margin: 20px 0;
+}
+
+.button {
+  background-color: $pink_400;
+  border: 2px solid $pink_400;
+  border-radius: 30px;
+  font-size: 23px;
+  font-weight: normal;
+  color: $white;
+  text-align: center;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 30px;
+  padding-right: 30px;
+  outline: none;
+  cursor: pointer;
+  margin: 20px 0;
+}
+
+ .button:hover {
+  background-color: $white;
+  border-color: $pink_400;
+  color: $pink_400;
+ }
+
+ @media (max-width: 587px) {
+  .contactWrapper p {
+    font-size: 20px;
+
+    span {
+      font-size: 30px;
+      display: block;
+      clear: both;
+    }
+  }
+  
+  p.organizationName {
+    font-size: 35px;
+  }
+}
