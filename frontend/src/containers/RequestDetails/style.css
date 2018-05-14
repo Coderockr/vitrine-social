@@ -68,6 +68,23 @@
   margin: 0;
 }
 
+.carouselWrapper {
+  width: 80%;
+  padding: 20px;
+}
+
+.arrowWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.carouselWrapper img {
+  width: 100%;
+  padding: 10px;
+}
+
 .button {
   background-color: #FA578A;
   border: 2px solid #FA578A;
@@ -92,14 +109,22 @@
   color: #FA578A;
  }
 
-@media (max-width: 696px) {
-  .modal {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin: 0;
-  }
+ .ant-carousel .slick-slide {
+  text-align: center;
+  height: 100%;
+  line-height: 100%;
+}
 
+@media (max-width: 800px) {
+  .modal {
+    position: relative;
+    top: 0;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@media (max-width: 696px) {
   .ant-modal-content {
     border-radius: 0;
   }
@@ -121,5 +146,10 @@
 
   .organizationBox {
     padding-left: 20px;
+  }
+
+  .carouselWrapper img {
+    margin-top: 30px;
+    padding: 0;
   }
 }
