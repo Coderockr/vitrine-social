@@ -1,8 +1,15 @@
 import React from 'react';
-import './style.css';
+import cx from 'classnames';
+import styles from './styles.module.scss';
 
 const ProgressCircle = ({ progress, size }) => (
-  <div className={`progress-circle progress-${progress} ${size}`} />
+  <div
+    className={cx(
+      styles.progress_circle,
+      styles[`progress_${progress}`],
+      styles[`${size}`],
+    )}
+  />
 );
 
 export default ProgressCircle;

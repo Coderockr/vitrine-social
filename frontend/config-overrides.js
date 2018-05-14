@@ -5,7 +5,7 @@ const rewireLess = require('react-app-rewire-less');
 const { injectBabelPlugin } = require('react-app-rewired');
 const rewireCssModules = require('react-app-rewire-css-modules');
 
-const themeVars = lessToJs(fs.readFileSync(path.join(__dirname, './src/utils/antTheme.less'), 'utf8'));
+const themeVars = lessToJs(fs.readFileSync(path.join(__dirname, './src/utils/styles/antTheme.less'), 'utf8'));
 
 /* config-overrides.js */
 module.exports = function override(config, env) {
