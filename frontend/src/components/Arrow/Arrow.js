@@ -1,23 +1,41 @@
 import React from 'react';
 import Icon from '../../components/Icons';
-import './style.css';
+import styles from './styles.module.scss';
 
 class Arrow extends React.PureComponent {
-  state = {}
-
   renderIcon() {
     if (this.props.left) {
       return (
-        <div className="arrowButton">
-          <Icon icon="arrow-left-drop-circle-outline" size={this.props.size} color={this.props.color} className="img-bottom" />
-          <Icon icon="arrow-left-drop-circle" size={this.props.size} color={this.props.color} className="img-top" />
+        <div className={styles.arrowButton}>
+          <Icon
+            icon="arrow-left-drop-circle-outline"
+            size={this.props.size}
+            color={this.props.color}
+            className={styles.imgBottom}
+          />
+          <Icon
+            icon="arrow-left-drop-circle"
+            size={this.props.size}
+            color={this.props.color}
+            className={styles.imgTop}
+          />
         </div>
       );
     }
     return (
-      <div className="arrowButton">
-        <Icon icon="arrow-right-drop-circle-outline" size={this.props.size} color={this.props.color} className="img-bottom" />
-        <Icon icon="arrow-right-drop-circle" size={this.props.size} color={this.props.color} className="img-top" />
+      <div className={styles.arrowButton}>
+        <Icon
+          icon="arrow-right-drop-circle-outline"
+          size={this.props.size}
+          color={this.props.color}
+          className={styles.imgBottom}
+        />
+        <Icon
+          icon="arrow-right-drop-circle"
+          size={this.props.size}
+          color={this.props.color}
+          className={styles.imgTop}
+        />
       </div>
     );
   }
@@ -29,7 +47,7 @@ class Arrow extends React.PureComponent {
         tabIndex={0}
         onClick={this.props.onClick}
         onKeyPress={this.props.onClick}
-        className="arrowButton"
+        className={styles.arrowButton}
       >
         {this.renderIcon()}
       </div>
