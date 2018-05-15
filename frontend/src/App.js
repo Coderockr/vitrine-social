@@ -9,7 +9,7 @@ import {
   Route,
 } from 'react-router-dom';
 
-import AppContainer from './containers/App';
+import Layout from './containers/Layout';
 
 import './App.css';
 import reducers from './reducers';
@@ -26,7 +26,7 @@ const App = () => (
   <Router>
     <Provider store={store}>
       <div className="App">
-        <Route exact path="/" component={AppContainer} />
+        <Route exact path="/" component={Layout} />
       </div>
     </Provider>
   </Router>
