@@ -9,92 +9,71 @@
     margin: 0;
 
     span {
-      font-family: 'Roboto-Bold';
-      font-size: 45px;
+      font-weight: 500;
+      font-size: 40px;
       color: $teal_400;
+    }
+
+    &.organizationName {
+      text-transform: uppercase;
+      font-weight: 500;
+      font-size: 40px;
+      margin-top: 20px;
+    }
+
+    &.fillLabel {
+      margin: 20px 0;
+    }
+  }
+
+  button {
+    background-color: $pink_400;
+    border-radius: 30px;
+    font-size: 23px;
+    line-height: 36px;
+    font-weight: normal;
+    color: white;
+    text-align: center;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 20px;
+    padding-right: 20px;
+    outline: none;
+    cursor: pointer;
+    margin-top: 40px;
+    margin-bottom: 20px;
+
+    &:hover,
+    &:focus {
+      background-color: $pink_800;
     }
   }
 }
 
-p.organizationName {
-  text-transform: uppercase;
-  font-family: 'Roboto-Bold';
-  font-size: 45px;
-  margin-top: 20px;
-}
-
-p.fillLabel {
-  margin: 20px 0;
-}
-
-.backButton .iconBottom {
-    visibility: visible;
-}
-
-.backButton:hover .iconBottom {
-    visibility: hidden
-}
-
-.backButton .iconTop {
-    display: none;
-    position: absolute;
-    top: 1;
-    left: 1;
-    z-index: 99;
-}
-
-.backButton:hover .iconTop {
-    display: inline;
-}
 
 .backButton {
   background-color: $grey_100;
-  border: 2px solid $grey_100;
   border-radius: 30px;
   outline: none;
   padding: 0 10px;
+
+  &:hover {
+    background-color: $grey_150;
+  }
 }
 
-.backButton:hover {
-  background-color: $white;
-  border: 2px solid $grey_100;
- }
-
-.button {
-  background-color: $pink_400;
-  border: 2px solid $pink_400;
-  border-radius: 30px;
-  font-size: 23px;
-  font-weight: normal;
-  color: $white;
-  text-align: center;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  padding-left: 30px;
-  padding-right: 30px;
-  outline: none;
-  cursor: pointer;
-  margin: 20px 0;
-}
-
- .button:hover {
-  background-color: $white;
-  border-color: $pink_400;
-  color: $pink_400;
- }
-
- @media (max-width: 587px) {
+@media (max-width: 587px) {
   .contactWrapper p {
     font-size: 20px;
+
+    &.organizationName {
+      font-size: 35px;
+    }
 
     span {
       font-size: 30px;
       display: block;
       clear: both;
     }
-  }
-  
-  p.organizationName {
-    font-size: 35px;
   }
 }

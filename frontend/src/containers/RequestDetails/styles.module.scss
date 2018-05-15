@@ -1,8 +1,10 @@
+@import 'src/utils/styles/colors.scss';
+
 .contentWrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  //margin: 20px 5px 0 5px;
+  margin: 20px 5px 0 5px;
 
   .itemDetails {
     display: flex;
@@ -13,7 +15,7 @@
       background-color: transparent;
       font-size: 32px;
       font-weight: lighter;
-      color: #3E4C63;
+      color: $grey_500;
       padding-left: 20px;
       padding-right: 20px;
       padding-top: 10px;
@@ -23,7 +25,7 @@
 
     .updatedAt {
       display: inline-block;
-      background-color: #948CF9;
+      background-color: $purple_400;
       font-size: 12px;
       font-weight: lighter;
       color: white;
@@ -40,14 +42,14 @@
     padding-left: 80px;
 
     .organizationBorder {
-      border-left: 5px solid #FF974B;
+      border-left: 5px solid $ambar_400;
       padding-left: 10px;
 
       .organization {
         background-color: transparent;
         font-size: 26px;
         font-weight: lighter;
-        color: #3E4C63;
+        color: $grey_500;
         padding-top: 15px;
         padding-left: 10px;
         margin: 0;
@@ -76,7 +78,7 @@
 
     .carouselWrapper {
       width: 80%;
-      padding: 20px;
+      padding: 20px 0;
 
       img {
         width: 100%;
@@ -85,11 +87,11 @@
     }
   }
 
-  .button {
-    background-color: #FA578A;
-    border: 2px solid #FA578A;
+  button {
+    background-color: $pink_400;
     border-radius: 30px;
     font-size: 23px;
+    line-height: 36px;
     font-weight: normal;
     color: white;
     text-align: center;
@@ -102,10 +104,9 @@
     margin-top: 40px;
     margin-bottom: 20px;
 
-    &:hover {
-      background-color: white;
-      border-color: #FA578A;
-      color: #FA578A;
+    &:hover,
+    &:focus {
+      background-color: $pink_800;
     }
   }
 }
@@ -138,7 +139,7 @@
   .organizationBox {
     padding-left: 20px !important;
     width: 100%;
-    
+
     .description {
       padding-right: 40px !important;
     }

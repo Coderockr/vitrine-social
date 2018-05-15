@@ -105,7 +105,6 @@ class RequestDetails extends React.Component {
           <Arrow size={32} color="#948CF9" onClick={() => this.carousel.next()} />
         </div>
         <button
-          className={styles.button}
           onClick={() => this.showContactForm()}
         >
           QUERO AJUDAR!
