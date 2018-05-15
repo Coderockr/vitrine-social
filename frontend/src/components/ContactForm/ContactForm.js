@@ -47,8 +47,7 @@ class ContactForm extends React.Component {
       <Row>
         <Col span={24}>
           <button className={styles.backButton} onClick={this.props.onClick}>
-            <Icon icon="reply" size={40} color="#DBDBDB" className={styles.iconTop} />
-            <Icon icon="reply" size={40} color="#FFFFFF" className={styles.iconBottom} />
+            <Icon icon="reply" size={40} color="#FFFFFF" />
           </button>
         </Col>
         <Col span={20} offset={2}>
@@ -99,11 +98,7 @@ class ContactForm extends React.Component {
                 <TextArea rows={5} placeholder="Mensagem" />
               </FormItem>
               <FormItem>
-                <button
-                  type="primary"
-                  htmlType="submit"
-                  className={styles.button}
-                >
+                <button htmlType="submit">
                   ENVIAR
                 </button>
               </FormItem>
