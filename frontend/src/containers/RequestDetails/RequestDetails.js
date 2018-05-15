@@ -65,7 +65,7 @@ class RequestDetails extends React.Component {
   renderContent() {
     if (this.state.contactFormVisible) {
       return (
-        <ContactForm 
+        <ContactForm
           visible={this.state.contactFormVisible}
           onClick={() => this.setState({ contactFormVisible: false })}
         />
