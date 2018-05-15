@@ -77,7 +77,7 @@ class RequestDetails extends React.Component {
         <div className={styles.itemDetails}>
           <ItemIndicator className={styles.itemIndicator} request={request} size="lg" />
           <div>
-            <h1 className={styles.title}>{request.item}</h1>
+            <h1>{request.item}</h1>
             <p className={styles.updatedAt}>
               Atualizado em {
                 moment(request.data).format('DD / MMMM / YYYY').replace(/(\/)/g, 'de')

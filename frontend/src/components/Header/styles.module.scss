@@ -1,0 +1,14 @@
+@import 'src/utils/styles/colors.scss';
+
+.appHeader {
+  background-color: $purple_400;
+  height: 85px;
+
+  .logo {
+    width: 120px;
+    height: 31px;
+    background: rgba(255,255,255,.2);
+    margin: 26px 24px 16px 0;
+    float: left;
+  }
+}
