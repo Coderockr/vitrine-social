@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col } from 'antd';
 import moment from 'moment';
 import RequestCard from '../../components/RequestCard';
-import './style.css';
+import styles from './styles.module.scss';
 
 const request = {
   organization: {
@@ -16,28 +16,58 @@ const request = {
 };
 
 const Requests = () => (
-  <div className="requests">
+  <div className={styles.requests} >
     <Row>
       <Col span={20} offset={2}>
-        <h2 className="containerTitle">
+        <h2 className={styles.containerTitle}>
           <span>SOLICITAÇÕES RECENTES</span>
         </h2>
       </Col>
     </Row>
     <Row>
-      <Col lg={{ span: 14, offset: 5 }} md={{ span: 20, offset: 2 }} sm={{ span: 20, offset: 2 }} xs={{ span: 22, offset: 1 }} className="row">
+      <Col
+        lg={{ span: 14, offset: 5 }}
+        md={{ span: 20, offset: 2 }}
+        sm={{ span: 20, offset: 2 }}
+        xs={{ span: 22, offset: 1 }}
+        className={styles.row}
+      >
         <RequestCard request={request} />
       </Col>
-      <Col lg={{ span: 14, offset: 5 }} md={{ span: 20, offset: 2 }} sm={{ span: 20, offset: 2 }} xs={{ span: 22, offset: 1 }} className="row">
+      <Col
+        lg={{ span: 14, offset: 5 }}
+        md={{ span: 20, offset: 2 }}
+        sm={{ span: 20, offset: 2 }}
+        xs={{ span: 22, offset: 1 }}
+        className={styles.row}
+      >
         <RequestCard request={request} />
       </Col>
-      <Col lg={{ span: 14, offset: 5 }} md={{ span: 20, offset: 2 }} sm={{ span: 20, offset: 2 }} xs={{ span: 22, offset: 1 }} className="row">
+      <Col
+        lg={{ span: 14, offset: 5 }}
+        md={{ span: 20, offset: 2 }}
+        sm={{ span: 20, offset: 2 }}
+        xs={{ span: 22, offset: 1 }}
+        className={styles.row}
+      >
         <RequestCard request={request} />
       </Col>
-      <Col lg={{ span: 14, offset: 5 }} md={{ span: 20, offset: 2 }} sm={{ span: 20, offset: 2 }} xs={{ span: 22, offset: 1 }} className="row">
+      <Col
+        lg={{ span: 14, offset: 5 }}
+        md={{ span: 20, offset: 2 }}
+        sm={{ span: 20, offset: 2 }}
+        xs={{ span: 22, offset: 1 }}
+        className={styles.row}
+      >
         <RequestCard request={request} />
       </Col>
-      <Col lg={{ span: 14, offset: 5 }} md={{ span: 20, offset: 2 }} sm={{ span: 20, offset: 2 }} xs={{ span: 22, offset: 1 }} className="row">
+      <Col
+        lg={{ span: 14, offset: 5 }}
+        md={{ span: 20, offset: 2 }}
+        sm={{ span: 20, offset: 2 }}
+        xs={{ span: 22, offset: 1 }}
+        className={styles.row}
+      >
         <RequestCard request={request} />
       </Col>
     </Row>

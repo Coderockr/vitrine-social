@@ -1,14 +1,14 @@
 import React from 'react';
 import { Row, Col, Layout, Menu } from 'antd';
-import './style.css';
+import styles from './styles.module.scss';
 
 const Header = () => (
-  <Layout.Header className="appHeader">
+  <Layout.Header className={styles.appHeader}>
     <Row>
       <Col span={12} offset={6}>
-        <div className="logo" />
+        <div className={styles.logo} />
         <Menu
-          className="appHeader"
+          className={styles.appHeader}
           mode="horizontal"
           defaultSelectedKeys={['1']}
           theme="dark"

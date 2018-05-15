@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { Modal, Carousel } from 'antd';
-import './style.css';
+import styles from './styles.module.scss';
 import ItemIndicator from '../../components/ItemIndicator';
 import Arrow from '../../components/Arrow';
 
@@ -60,31 +60,31 @@ class RequestDetails extends React.Component {
         visible={this.state.visible}
         footer={null}
         width={800}
-        className="modal"
+        className={styles.modal}
         destroyOnClose
         onCancel={() => this.setState({ visible: false })}
       >
-        <div className="contentWrapper">
-          <div className="itemDetails">
-            <ItemIndicator className="itemIndicator" request={request} size="lg" />
+        <div className={styles.contentWrapper}>
+          <div className={styles.itemDetails}>
+            <ItemIndicator request={request} size="lg" className={styles.itemIndicator} />
             <div>
-              <h1 className="title">{request.item}</h1>
-              <p className="updatedAt">
+              <h1>{request.item}</h1>
+              <p className={styles.updatedAt}>
                 Atualizado em {
                   moment(request.data).format('DD / MMMM / YYYY').replace(/(\/)/g, 'de')
                 }
               </p>
             </div>
           </div>
-          <div className="organizationBox">
-            <div className="organizationBorder">
-              <p className="organization">{request.organization.name}</p>
-              <p className="description">{request.description}</p>
+          <div className={styles.organizationBox}>
+            <div className={styles.organizationBorder}>
+              <p className={styles.organization}>{request.organization.name}</p>
+              <p className={styles.description}>{request.description}</p>
             </div>
           </div>
-          <div className="arrowWrapper">
+          <div className={styles.arrowWrapper}>
             <Arrow size={32} color="#948CF9" onClick={() => this.carousel.prev()} left />
-            <div className="carouselWrapper">
+            <div className={styles.carouselWrapper}>
               <Carousel
                 ref={(ref) => { this.carousel = ref; }}
                 infinite={false}
@@ -95,7 +95,7 @@ class RequestDetails extends React.Component {
             </div>
             <Arrow size={32} color="#948CF9" onClick={() => this.carousel.next()} />
           </div>
-          <button className="button">QUERO AJUDAR!</button>
+          <button className={styles.button}>QUERO AJUDAR!</button>
         </div>
       </Modal>
     );

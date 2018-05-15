@@ -1,0 +1,28 @@
+.arrowButton {
+  outline: none;
+  align-self: center;
+  position: relative;
+  display: inline-block;
+
+  .imgBottom {
+    visibility: visible;
+  }
+
+  .imgTop {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+  }
+
+  &:hover {
+    .imgBottom {
+      visibility: hidden;
+    }
+
+    .imgTop {
+      display: inline;
+    }
+  }
+}

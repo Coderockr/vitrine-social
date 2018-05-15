@@ -10,34 +10,20 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-.containerTitle {
-  position: relative;
-  letter-spacing: 0.1rem;
-  font-family: 'Roboto', sans-serif;
-  font-size: 22px;
-  font-weight: 500;
-  text-align: center;
-  text-transform: uppercase;
-  color: #3e4c63;
+.ant-layout-header {
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
-.containerTitle span {
-  position: relative;
-  z-index: 2;
-  padding: 0 1rem;
-  background: #f8f8f8;
-}
-.containerTitle:after {
-  content: ' ';
-  position: absolute;
-  z-index: 1;
-  top: 50%;
-  left: 0;
-  display: block;
-  margin-top: -1px;
-  width: 100%;
-  height: 2px;
 
-  background: #3e4c63;
+.ant-menu {
+  display: flex;
+  align-items: center;
+  border-bottom: none;
+}
+
+.ant-menu.ant-menu-dark .ant-menu-item-selected,
+.ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+  background: transparent
 }
 
 .ant-pagination-item {
@@ -77,4 +63,16 @@ body {
   color: #948CF9;
   border: 1px solid #948CF9;
   background-color: #FFFFFF;
+}
+
+.ant-carousel .slick-slide {
+  text-align: center;
+  height: 100%;
+  line-height: 100%;
+}
+
+@media (max-width: 696px) {
+  .ant-modal-content {
+    border-radius: 0;
+  }
 }
