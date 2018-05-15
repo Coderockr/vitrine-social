@@ -27,6 +27,39 @@ p.fillLabel {
   margin: 20px 0;
 }
 
+.backButton .iconBottom {
+    visibility: visible;
+}
+
+.backButton:hover .iconBottom {
+    visibility: hidden
+}
+
+.backButton .iconTop {
+    display: none;
+    position: absolute;
+    top: 1;
+    left: 1;
+    z-index: 99;
+}
+
+.backButton:hover .iconTop {
+    display: inline;
+}
+
+.backButton {
+  background-color: $grey_100;
+  border: 2px solid $grey_100;
+  border-radius: 30px;
+  outline: none;
+  padding: 0 10px;
+}
+
+.backButton:hover {
+  background-color: $white;
+  border: 2px solid $grey_100;
+ }
+
 .button {
   background-color: $pink_400;
   border: 2px solid $pink_400;

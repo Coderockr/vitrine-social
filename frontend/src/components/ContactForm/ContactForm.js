@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input } from 'antd';
+import Icon from '../../components/Icons';
 import styles from './styles.module.scss';
 
 const FormItem = Form.Item;
@@ -44,6 +45,12 @@ class ContactForm extends React.Component {
 
     return (
       <Row>
+        <Col span={24}>
+          <button className={styles.backButton} onClick={this.props.onClick}>
+            <Icon icon="reply" size={40} color="#DBDBDB" className={styles.iconTop} />
+            <Icon icon="reply" size={40} color="#FFFFFF" className={styles.iconBottom} />
+          </button>
+        </Col>
         <Col span={20} offset={2}>
           <div className={styles.contactWrapper}>
             <p>Entre em contato com</p>

@@ -65,7 +65,10 @@ class RequestDetails extends React.Component {
   renderContent() {
     if (this.state.contactFormVisible) {
       return (
-        <ContactForm visible={this.state.contactFormVisible} />
+        <ContactForm 
+          visible={this.state.contactFormVisible}
+          onClick={() => this.setState({ contactFormVisible: false })}
+        />
       );
     }
 
@@ -120,6 +123,7 @@ class RequestDetails extends React.Component {
         className={styles.modal}
         destroyOnClose
         onCancel={() => this.setState({ visible: false })}
+        closable={!this.state.contactFormVisible}
       >
         {this.renderContent()}
       </Modal>
