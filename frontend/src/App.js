@@ -8,11 +8,9 @@ import {
   BrowserRouter as Router,
   Route,
 } from 'react-router-dom';
-
 import AppContainer from './containers/App';
-
-import './App.css';
 import reducers from './reducers';
+import './utils/styles/global.module.scss';
 
 updateLocale('pt-br', ptBr);
 
