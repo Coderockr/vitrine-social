@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  //margin: 20px 5px 0 5px;
 
   .itemDetails {
     display: flex;
@@ -119,7 +120,6 @@
 }
 
 @media (max-width: 696px) {
-
   .itemDetails {
     display: inline !important;
     margin: 0 !important;
@@ -133,12 +133,12 @@
   .itemIndicator {
     display: flex;
     justify-content: center;
-    width: 100%;
   }
 
   .organizationBox {
     padding-left: 20px !important;
-
+    width: 100%;
+    
     .description {
       padding-right: 40px !important;
     }

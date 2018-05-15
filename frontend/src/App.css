@@ -10,6 +10,12 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+.ant-carousel .slick-slide {
+  text-align: center;
+  height: 100%;
+  line-height: 100%;
+}
+
 .ant-layout-header {
   padding-top: 0px;
   padding-bottom: 0px;
@@ -65,10 +71,62 @@ body {
   background-color: #FFFFFF;
 }
 
-.ant-carousel .slick-slide {
-  text-align: center;
-  height: 100%;
-  line-height: 100%;
+.ant-modal {
+  top: 20px;
+}
+
+.ant-modal-close-x:before {
+  font-size: 32px;
+}
+
+.ant-modal-close {
+  color: #FA578A;
+}
+
+.ant-input {
+  color: #433F79;
+  border-color: #948CF9;
+  border-width: 2px;
+  border-radius: 20px;
+  font-size: 16px;
+}
+
+.ant-input:focus,
+.ant-input:hover {
+  box-shadow: none;
+  border-color: #948CF9;
+}
+
+.ant-input::placeholder {
+  color: #948CF9;
+}
+
+.has-error .ant-input,
+.has-error .ant-input:focus {
+  box-shadow: none;
+  border-color: #D0021B;
+}
+
+.has-error .ant-input::placeholder {
+  color: #D0021B;
+}
+
+.has-error .ant-form-explain {
+  color: #D0021B;
+  text-align: end;
+  padding-right: 15px;
+}
+
+@media (max-width: 800px) {
+  .ant-modal {
+    top: 0;
+  }
+  
+  .ant-carousel .slick-slide {
+    text-align: center;
+    height: 100%;
+    line-height: 100%;
+  }
 }
 
 @media (max-width: 696px) {
