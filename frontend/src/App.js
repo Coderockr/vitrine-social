@@ -8,7 +8,7 @@ import {
   BrowserRouter as Router,
   Route,
 } from 'react-router-dom';
-import AppContainer from './containers/App';
+import Layout from './containers/Layout';
 import reducers from './reducers';
 import './utils/styles/global.module.scss';
 
@@ -24,7 +24,7 @@ const App = () => (
   <Router>
     <Provider store={store}>
       <div className="App">
-        <Route exact path="/" component={AppContainer} />
+        <Route exact path="/" component={Layout} />
       </div>
     </Provider>
   </Router>

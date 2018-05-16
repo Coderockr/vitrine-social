@@ -1,15 +1,11 @@
 import React from 'react';
 import Categories from '../../components/Categories';
-import Header from '../../components/Header';
 import Pagination from '../../components/Pagination';
-import Search from '../../components/Search';
 import Requests from '../../components/Requests';
 import RequestDetails from '../RequestDetails';
 
-const App = () => (
+const Home = () => (
   <div>
-    <Header />
-    <Search />
     <Categories />
     <Requests />
     <Pagination />
@@ -17,4 +13,4 @@ const App = () => (
   </div>
 );
 
-export default App;
+export default Home;

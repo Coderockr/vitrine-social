@@ -26,3 +26,14 @@
     }
   }
 }
+
+.arrowButtonOver {
+  position: relative;
+  margin: -30px;
+  z-index: 99;
+
+  .imgOver {
+    background-color: white;
+    border-radius: 50%;
+  }
+}
