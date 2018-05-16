@@ -9,9 +9,7 @@
   body {
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
     background: #f8f8f8;
-    font-family: 'Roboto', sans-serif;
   }
 
   input[type="button" i], input[type="submit" i], input[type="reset" i], input[type="file" i]::-webkit-file-upload-button, button,
@@ -44,10 +42,10 @@
   .ant-pagination-item {
     border: 2px solid #948CF9;
     background-color: #FFFFFF;
-  }
 
-  .ant-pagination-item a {
-    color: #948CF9;
+    a {
+      color: #948CF9;
+    }
   }
 
   .ant-pagination-item:hover,
@@ -65,19 +63,32 @@
 
   .ant-pagination-next:hover a,
   .ant-pagination-prev:hover a {
-    background-color: #948CF9;
-    border: 1px solid #948CF9;
-    color: #FFFFFF;
+    background-color: #948CF9 !important;
+    border: 2px solid #948CF9 !important;
+    color: #FFFFFF !important;
   }
 
+
+
+  .ant-pagination-prev .ant-pagination-item-link,
+  .ant-pagination-next .ant-pagination-item-link,
+  .ant-pagination-prev:focus .ant-pagination-item-link,
+  .ant-pagination-next:focus .ant-pagination-item-link,
+  .ant-pagination-prev:hover .ant-pagination-item-link,
+  .ant-pagination-next:hover .ant-pagination-item-link
   .ant-pagination-next a,
   .ant-pagination-prev a,
   .ant-pagination-next:focus a,
   .ant-pagination-prev:focus a,
   .ant-pagination-disabled:hover a {
     color: #948CF9;
-    border: 1px solid #948CF9;
+    border: 2px solid #948CF9;
     background-color: #FFFFFF;
+  }
+
+  .ant-pagination-prev .ant-pagination-item-link:after,
+  .ant-pagination-next .ant-pagination-item-link:after {
+    height: 28px;
   }
 
   .ant-modal {
@@ -132,7 +143,7 @@
     .ant-modal {
       top: 0;
     }
-    
+
     .ant-carousel .slick-slide {
       text-align: center;
       height: 100%;
