@@ -91,10 +91,6 @@
     height: 28px;
   }
 
-  .ant-modal {
-    top: 20px;
-  }
-
   .ant-modal-close-x:before {
     font-size: 32px;
   }
@@ -136,6 +132,12 @@
 
     .ant-input::placeholder {
       color: #D0021B;
+    }
+  }
+
+  @media (max-height: 900px) {
+    .ant-modal {
+      top: 20px;
     }
   }
 

@@ -8,51 +8,39 @@ class Arrow extends React.PureComponent {
     if (this.props.left) {
       return (
         <div
-          className={this.props.over ?
-            cx(styles.arrowButton, styles.arrowButtonOver) :
-            styles.arrowButton}
+          className={cx(styles.arrowButton, { [styles.arrowButtonOver]: this.props.over })}
         >
           <Icon
             icon="arrow-left-drop-circle-outline"
             size={this.props.size}
             color={this.props.color}
-            className={this.props.over ?
-              cx(styles.imgBottom, styles.imgOver) :
-              styles.imgBottom}
+            className={cx(styles.imgBottom, { [styles.imgOver]: this.props.over })}
           />
           <Icon
             icon="arrow-left-drop-circle"
             size={this.props.size}
             color={this.props.color}
-            className={this.props.over ?
-              cx(styles.imgTop, styles.imgOver) :
-              styles.imgTop}
+            className={cx(styles.imgTop, { [styles.imgOver]: this.props.over })}
           />
         </div>
       );
     }
     return (
       <div
-        className={this.props.over ?
-          cx(styles.arrowButton, styles.arrowButtonOver) :
-          styles.arrowButton}
+        className={cx(styles.arrowButton, { [styles.arrowButtonOver]: this.props.over })}
       >
         <Icon
           icon="arrow-right-drop-circle-outline"
           size={this.props.size}
           color={this.props.color}
-          className={this.props.over ?
-            cx(styles.imgBottom, styles.imgOver) :
-            styles.imgBottom}
+          className={cx(styles.imgBottom, { [styles.imgOver]: this.props.over })}
         />
         <Icon
           icon="arrow-right-drop-circle"
           size={this.props.size}
           color={this.props.color}
-          className={this.props.over ?
-            cx(styles.imgTop, styles.imgOver) :
-            styles.imgTop}
-        />
+          className={cx(styles.imgTop, { [styles.imgOver]: this.props.over })}
+      />
       </div>
     );
   }
