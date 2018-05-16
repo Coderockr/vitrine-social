@@ -1,11 +1,10 @@
 import React from 'react';
 import cx from 'classnames';
-import { Layout, Row, Col, Carousel } from 'antd';
+import { Row, Col, Carousel } from 'antd';
 import Pagination from '../../components/Pagination';
+import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
 import styles from './styles.module.scss';
-
-const { Content } = Layout;
 
 const organization = {
   name: 'Lar Abdon Batista',
@@ -27,8 +26,26 @@ const carouselSettings = {
   slidesToShow: 1,
 };
 
+const mediaQuery = window.matchMedia('(min-width: 700px)');
+
 class OrganizationProfile extends React.Component {
-  state = {
+  constructor(props) {
+    super(props);
+    this.state = {
+      arrowSize: mediaQuery.matches ? 60 : 32,
+    };
+
+    mediaQuery.addListener(this.widthChange.bind(this));
+  }
+
+  componentWillUnmount() {
+    mediaQuery.removeListener(this.widthChange);
+  }
+
+  widthChange() {
+    this.setState({
+      arrowSize: mediaQuery.matches ? 60 : 32,
+    });
   }
 
   renderImages(images) {
@@ -39,9 +56,12 @@ class OrganizationProfile extends React.Component {
 
   render() {
     return (
-      <Content>
+      <div>
         <Row>
-          <Col span={16} offset={4}>
+          <Col
+            xl={{ span: 20, offset: 2 }}
+            xs={{ span: 22, offset: 1 }}
+          >
             <div className={styles.profileWrapper}>
               <h2 className={styles.containerTitle}>
                 <span>PERFIL DA ORGANIZAÇÃO</span>
@@ -54,7 +74,10 @@ class OrganizationProfile extends React.Component {
               <h1 className={styles.organizationName}>
                 <span>{organization.name}</span>
               </h1>
-              <Col span={18} offset={3}>
+              <Col
+                sm={{ span: 18, offset: 3 }}
+                xs={{ span: 24, offset: 0 }}
+              >
                 <div className={cx(styles.border, styles.aboutBorder)}>
                   <h1>Sobre</h1>
                   <p>{organization.about}</p>
@@ -72,7 +95,7 @@ class OrganizationProfile extends React.Component {
                 </div>
                 <div className={styles.arrowWrapper}>
                   <Arrow
-                    size={60}
+                    size={this.state.arrowSize}
                     color="#31E0D5"
                     onClick={() => this.carousel.prev()}
                     left
@@ -88,7 +111,7 @@ class OrganizationProfile extends React.Component {
                     </Carousel>
                   </div>
                   <Arrow
-                    size={60}
+                    size={this.state.arrowSize}
                     color="#31E0D5"
                     onClick={() => this.carousel.next()}
                     over
@@ -97,9 +120,10 @@ class OrganizationProfile extends React.Component {
               </Col>
             </div>
           </Col>
+          <Requests />
         </Row>
         <Pagination />
-      </Content>
+      </div>
     );
   }
 }
