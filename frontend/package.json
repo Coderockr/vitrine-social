@@ -4,49 +4,116 @@
   "private": true,
   "dependencies": {
     "antd": "^3.4.5",
+    "autoprefixer": "7.1.2",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-jest": "20.0.3",
+    "babel-loader": "7.1.1",
+    "babel-preset-react-app": "^3.0.2",
+    "babel-runtime": "6.23.0",
+    "case-sensitive-paths-webpack-plugin": "2.1.1",
+    "chalk": "1.1.3",
     "classnames": "^2.2.5",
+    "css-loader": "^0.28.11",
+    "dotenv": "4.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-react-app": "^2.0.0",
+    "eslint-loader": "1.9.0",
+    "eslint-plugin-flowtype": "2.35.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
+    "extract-text-webpack-plugin": "3.0.0",
+    "file-loader": "0.11.2",
     "font-awesome": "^4.7.0",
+    "fs-extra": "3.0.1",
+    "html-webpack-plugin": "2.29.0",
+    "jest": "20.0.4",
     "moment": "^2.18.1",
+    "object-assign": "4.1.1",
+    "postcss-flexbugs-fixes": "3.2.0",
+    "postcss-loader": "2.0.6",
+    "promise": "8.0.1",
     "react": "^15.6.1",
+    "react-dev-utils": "^3.1.0",
     "react-dom": "^15.6.1",
+    "react-error-overlay": "^1.0.10",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "style-loader": "^0.21.0",
+    "sw-precache-webpack-plugin": "0.11.4",
+    "url-loader": "0.5.9",
+    "webpack": "3.5.1",
+    "webpack-dev-server": "2.7.1",
+    "webpack-manifest-plugin": "1.2.1",
+    "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.3.15",
     "@storybook/addon-links": "^3.3.15",
     "@storybook/addons": "^3.3.15",
     "@storybook/react": "^3.3.15",
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.1",
     "babel-plugin-import": "^1.7.0",
     "csjs": "^1.1.0",
-    "css-loader": "^0.28.11",
-    "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.7.0",
     "less": "^3.0.2",
     "less-loader": "^4.1.0",
     "less-vars-to-js": "^1.2.1",
     "node-sass": "^4.9.0",
-    "react-scripts": "1.0.11",
     "reicons": "^0.4.7",
-    "sass-loader": "^7.0.1",
-    "style-loader": "^0.21.0"
+    "sass-loader": "^7.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "node scripts/start.js",
+    "build": "node scripts/build.js",
     "lint": "eslint ./",
     "reicons": "node scripts/icons",
     "prebuild": "yarn reicons",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
+    "test": "node scripts/test.js --env=jsdom",
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ],
+    "setupFiles": [
+      "<rootDir>/config/polyfills.js"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/__tests__/**/*.js?(x)",
+      "<rootDir>/src/**/?(*.)(spec|test).js?(x)"
+    ],
+    "testEnvironment": "node",
+    "testURL": "http://localhost",
+    "transform": {
+      "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest",
+      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+      "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
+    ],
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web"
+    },
+    "moduleFileExtensions": [
+      "web.js",
+      "js",
+      "json",
+      "web.jsx",
+      "jsx",
+      "node"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "react-app"
   }
 }
