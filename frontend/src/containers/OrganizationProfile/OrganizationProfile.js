@@ -33,6 +33,7 @@ class OrganizationProfile extends React.Component {
     super(props);
     this.state = {
       arrowSize: mediaQuery.matches ? 60 : 32,
+      isOrganization: true,
     };
 
     mediaQuery.addListener(this.widthChange.bind(this));
@@ -66,6 +67,11 @@ class OrganizationProfile extends React.Component {
               <h2 className={styles.containerTitle}>
                 <span>PERFIL DA ORGANIZAÇÃO</span>
               </h2>
+              <div className={styles.buttonWrapper} hidden={!this.state.isOrganization}>
+                <button className={styles.button}>
+                  EDITAR
+                </button>
+              </div>
               <img
                 src="assets/images/leitura-infantil 3.jpg"
                 alt="Leitura Infantil 6"
@@ -120,8 +126,8 @@ class OrganizationProfile extends React.Component {
               </Col>
             </div>
           </Col>
-          <Requests />
         </Row>
+        <Requests isOrganization={this.state.isOrganization} />
         <Pagination />
       </div>
     );
