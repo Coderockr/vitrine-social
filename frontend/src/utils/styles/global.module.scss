@@ -68,8 +68,6 @@
     color: #FFFFFF !important;
   }
 
-
-
   .ant-pagination-prev .ant-pagination-item-link,
   .ant-pagination-next .ant-pagination-item-link,
   .ant-pagination-prev:focus .ant-pagination-item-link,
@@ -175,6 +173,30 @@
       &:last-child {
         border-radius: 0 20px 20px 0;
       }
+    }
+  }
+
+  .ant-avatar {
+    border: 4px solid #FF974B;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    
+    * {
+      line-height: 150px;
+    }
+
+    img {
+      object-fit: cover;
+    }
+  }
+
+  .ant-avatar-lg {
+    width: 230px;
+    height: 230px;
+    
+    * {
+      line-height: 230px;
     }
   }
 

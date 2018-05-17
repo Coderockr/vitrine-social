@@ -7,7 +7,7 @@ import styles from './styles.module.scss';
 class RequestCard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {  };
+    this.state = {};
   }
 
   render() {
