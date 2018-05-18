@@ -29,9 +29,8 @@ func UpdatePasswordHandler(repo organizationRepository) func(w http.ResponseWrit
 
 		userID := GetUserID(r)
 		organization, err := repo.Get(userID)
-		user := organization.User
 
-		err = security.CompareHashAndPassword(user.Password, handlerForm["currentPassword"])
+		err = security.CompareHashAndPassword(organization.Password, handlerForm["currentPassword"])
 		if err != nil {
 			HandleHTTPError(w, http.StatusUnauthorized, errors.New("Senha inválida"))
 			return
