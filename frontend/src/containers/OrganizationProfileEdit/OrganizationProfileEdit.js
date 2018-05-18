@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Modal, Avatar, Form, Input } from 'antd';
 import cx from 'classnames';
+import UploadImages from '../../components/UploadImages';
 import styles from './styles.module.scss';
 
 const FormItem = Form.Item;
@@ -22,8 +23,8 @@ class OrganizationProfileEdit extends React.Component {
     const formItemLayout = {
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 14, offset: 5 },
-        lg: { span: 16, offset: 4 },
+        sm: { span: 20, offset: 2 },
+        md: { span: 16, offset: 4 },
       },
     };
 
@@ -96,6 +97,16 @@ class OrganizationProfileEdit extends React.Component {
                 {...formItemLayout}
               >
                 <TextArea rows={5} placeholder="Sobre a Organização" />
+              </FormItem>
+              <FormItem>
+                <Col
+                  md={{ span: 18, offset: 3 }}
+                  sm={{ span: 22, offset: 1 }}
+                  xs={{ span: 24, offset: 0 }}
+                >
+                  <h2 className={styles.galleryHeader}>Galeria de Imagens</h2>
+                  <UploadImages />
+                </Col>
               </FormItem>
               <FormItem>
                 <div className={styles.buttonWrapper}>

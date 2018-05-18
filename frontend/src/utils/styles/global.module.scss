@@ -199,6 +199,29 @@
       line-height: 230px;
     }
   }
+  
+  .ant-upload-list-picture-card .ant-upload-list-item {
+    border: 2px solid #948CF9;
+    padding: 0;
+  }
+
+  .ant-upload-list-picture-card .ant-upload-list-item-uploading.ant-upload-list-item {
+    padding: 8px;
+  }
+
+  .ant-upload.ant-upload-select-picture-card {
+    border: 2px dashed #948CF9;
+
+    &:hover {
+      border-color: #7169DE;
+    }
+  }
+
+  .ant-upload-list-picture-card .ant-upload-list-item-thumbnail, .ant-upload-list-picture-card .ant-upload-list-item-thumbnail img {
+    object-fit: cover;
+    width: 100px;
+    height: 100px;
+  }
 
   @media (max-height: 900px) {
     .ant-modal {

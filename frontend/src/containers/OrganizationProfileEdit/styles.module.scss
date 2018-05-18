@@ -12,6 +12,10 @@
   margin-bottom: 40px;
 }
 
+.galleryHeader {
+  margin-left: 15px;
+}
+
 .buttonWrapper {
   display: flex;
   justify-content: center;
@@ -46,5 +50,23 @@
     &:focus {
       background-color: $grey_150;
     }
+  }
+}
+
+@media (max-width: 768px) {
+  .galleryHeader {
+    margin-left: 40px;
+  }
+}
+
+@media (max-width: 540px) {
+  .galleryHeader {
+    margin-left: 15px;
+  }
+}
+
+@media (max-width: 470px) {
+  .galleryHeader {
+    margin-left: 55px;
   }
 }
