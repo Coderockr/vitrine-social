@@ -105,11 +105,70 @@ class OrganizationProfileEdit extends React.Component {
               <FormItem
                 {...formItemLayout}
               >
-                {getFieldDecorator('address', {
-                  rules: [{ required: true, message: 'Preencha o endereço' }],
+                {getFieldDecorator('zipCode', {
+                  rules: [{ required: true, message: 'Preencha o CEP' }],
                 })(
-                  <Input size="large" placeholder="Endereço" />,
+                  <Input size="large" placeholder="CEP" />,
                 )}
+              </FormItem>
+              <FormItem
+                {...formItemLayout}
+              >
+                {getFieldDecorator('street', {
+                  rules: [{ required: true, message: 'Preencha a Rua' }],
+                })(
+                  <Input size="large" placeholder="Rua" />,
+                )}
+              </FormItem>
+              <FormItem
+                {...formItemLayout}
+              >
+                <Col span={9}>
+                  <FormItem>
+                    {getFieldDecorator('number', {
+                      rules: [{ required: true, message: 'Preencha o número' }],
+                    })(
+                      <Input size="large" placeholder="Número" />,
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={1}>
+                  <span style={{ display: 'inline-block', width: '100%', textAlign: 'center' }} />
+                </Col>
+                <Col span={14}>
+                  <FormItem>
+                    {getFieldDecorator('complement', {
+                      rules: [{ required: true, message: 'Preencha o complemento' }],
+                    })(
+                      <Input size="large" placeholder="Complemento" />,
+                    )}
+                  </FormItem>
+                </Col>
+              </FormItem>
+              <FormItem
+                {...formItemLayout}
+              >
+                <Col span={9}>
+                  <FormItem>
+                    {getFieldDecorator('state', {
+                      rules: [{ required: true, message: 'Preencha o Estado' }],
+                    })(
+                      <Input size="large" placeholder="Estado" />,
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={1}>
+                  <span style={{ display: 'inline-block', width: '100%', textAlign: 'center' }} />
+                </Col>
+                <Col span={14}>
+                  <FormItem>
+                    {getFieldDecorator('city', {
+                      rules: [{ required: true, message: 'Preencha a Cidade' }],
+                    })(
+                      <Input size="large" placeholder="Cidade" />,
+                    )}
+                  </FormItem>
+                </Col>
               </FormItem>
               <FormItem
                 {...formItemLayout}
