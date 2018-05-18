@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/Coderockr/vitrine-social/server/security"
 )
 
 type (
@@ -25,14 +27,20 @@ func UpdatePasswordHandler(repo organizationRepository) func(w http.ResponseWrit
 			return
 		}
 
-		id := GetUserID(r)
-		organization, err := repo.Get(id)
+		userID := GetUserID(r)
+		organization, err := repo.Get(userID)
+		user := organization.User
 
-		//currentPassword := handlerForm["currentPassword"]
+		err = security.CompareHashAndPassword(user.Password, handlerForm["currentPassword"])
+		if err != nil {
+			HandleHTTPError(w, http.StatusUnauthorized, errors.New("Senha inválida"))
+			return
+		}
+
 		newPassword := strings.TrimSpace(handlerForm["newPassword"])
 
 		repo.ResetPasswordTo(organization, newPassword)
 
-		HandleHTTPSuccess(w, nil)
+		HandleHTTPSuccess(w, "Senha atualizada com sucesso")
 	}
 }
