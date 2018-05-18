@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Modal, Avatar, Form, Input } from 'antd';
+import { Row, Col, Modal, Avatar, Form, Input, Upload } from 'antd';
 import cx from 'classnames';
 import UploadImages from '../../components/UploadImages';
 import styles from './styles.module.scss';
@@ -42,11 +42,29 @@ class OrganizationProfileEdit extends React.Component {
         <Row>
           <Col span={20} offset={2}>
             <h1 className={styles.title}>Editar Perfil da Organização</h1>
-            <div className={styles.avatarWrapper}>
-              <Avatar
-                icon="user"
-                style={{ fontSize: 140, backgroundColor: '#FF974B' }}
-              />
+            <div className={styles.uploadWrapper}>
+              <Upload
+                name="avatar"
+                listType="picture"
+                showUploadList={false}
+                action="//jsonplaceholder.typicode.com/posts/"
+                onChange={this.handleChange}
+              >
+                <div className={styles.avatarWrapper}>
+                  <Avatar
+                    icon="user"
+                    style={{
+                      fontSize: 140,
+                      color: '#FFFFFF',
+                      backgroundColor: '#FFE7D5',
+                      textShadow: '4px 1px 3px #FF974A',
+                    }}
+                  />
+                  <div className={styles.avatarEdit}>
+                    <p>Editar</p>
+                  </div>
+                </div>
+              </Upload>
             </div>
             <Form onSubmit={this.handleSubmit}>
               <FormItem
