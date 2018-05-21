@@ -1,13 +1,90 @@
 import React from 'react';
-import { Row, Col, Modal, Avatar, Form, Input, Upload } from 'antd';
+import { Row, Col, Modal, Avatar, Form, Input, Upload, Select } from 'antd';
 import cx from 'classnames';
 import UploadImages from '../../components/UploadImages';
+import { maskPhone, maskCep } from '../../utils/mask';
 import styles from './styles.module.scss';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
+const { Option } = Select;
 
 class OrganizationProfileEdit extends React.Component {
+  state = {
+    validatingZipCode: '',
+    states: [{ id: -1, sigla: 'Indisponíveis' }],
+    cities: [{ id: -1, nome: 'Indisponíveis' }],
+  }
+
+  componentDidMount() {
+    this.getStates();
+  }
+
+  getCities(stateId) {
+    this.props.form.setFieldsValue({
+      city: '',
+    });
+    if (stateId) {
+      fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${stateId}/municipios`)
+        .then(response => response.json())
+        .then((data) => {
+          this.setState({ cities: data.sort(this.citySort) });
+        });
+    }
+  }
+
+  getStates() {
+    fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({ states: data.sort(this.stateSort) });
+      });
+  }
+
+  stateSort(a, b) {
+    if (a.sigla < b.sigla) {
+      return -1;
+    }
+    if (a.sigla > b.sigla) {
+      return 1;
+    }
+    return 0;
+  }
+
+  citySort(a, b) {
+    if (a.nome < b.nome) {
+      return -1;
+    }
+    if (a.nome > b.nome) {
+      return 1;
+    }
+    return 0;
+  }
+
+  searchZipCode() {
+    this.setState({ validatingZipCode: 'validating' });
+    fetch(`https://viacep.com.br/ws/${this.zipCodeInput.props.value}/json/ `)
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({
+          validatingZipCode: 'success',
+        });
+        const stateId = this.state.states.filter(state => state.sigla === data.uf)[0].id;
+        this.getCities(stateId);
+        this.props.form.setFieldsValue({
+          street: data.logradouro,
+          neighborhood: data.bairro,
+          state: stateId,
+          city: data.localidade,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          validatingZipCode: 'error',
+        });
+      });
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -16,6 +93,22 @@ class OrganizationProfileEdit extends React.Component {
       }
       return null;
     });
+  }
+
+  renderStates() {
+    return (
+      this.state.states.map(state => (
+        <Option key={state.id} value={state.id}>{state.sigla}</Option>
+      ))
+    );
+  }
+
+  renderCities() {
+    return (
+      this.state.cities.map(city => (
+        <Option key={city.id} value={city.id}>{city.nome}</Option>
+      ))
+    );
   }
 
   render() {
@@ -93,6 +186,7 @@ class OrganizationProfileEdit extends React.Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('phone', {
+                  getValueFromEvent: e => maskPhone(e.target.value),
                   rules: [{
                     required: true, message: 'Preencha o telefone',
                   }, {
@@ -104,26 +198,40 @@ class OrganizationProfileEdit extends React.Component {
               </FormItem>
               <FormItem
                 {...formItemLayout}
+                validateStatus={this.state.validatingZipCode}
               >
                 {getFieldDecorator('zipCode', {
-                  rules: [{ required: true, message: 'Preencha o CEP' }],
+                  getValueFromEvent: e => maskCep(e.target.value),
+                  rules: [{
+                    required: true, message: 'Preencha o CEP',
+                  }, {
+                      pattern: /^[0-9]{5}-[0-9]{3}/, message: 'CEP Inválido',
+                  }],
                 })(
-                  <Input size="large" placeholder="CEP" />,
+                  <Input
+                    ref={(ref) => { this.zipCodeInput = ref; }}
+                    size="large"
+                    placeholder="CEP"
+                    onBlur={() => this.searchZipCode()}
+                  />,
                 )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
               >
-                {getFieldDecorator('street', {
-                  rules: [{ required: true, message: 'Preencha a Rua' }],
-                })(
-                  <Input size="large" placeholder="Rua" />,
-                )}
-              </FormItem>
-              <FormItem
-                {...formItemLayout}
-              >
-                <Col span={9}>
+                <Col span={17}>
+                  <FormItem>
+                    {getFieldDecorator('street', {
+                      rules: [{ required: true, message: 'Preencha a Rua' }],
+                    })(
+                      <Input size="large" placeholder="Rua" />,
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={1}>
+                  <span style={{ display: 'inline-block', width: '100%', textAlign: 'center' }} />
+                </Col>
+                <Col span={6}>
                   <FormItem>
                     {getFieldDecorator('number', {
                       rules: [{ required: true, message: 'Preencha o número' }],
@@ -132,15 +240,28 @@ class OrganizationProfileEdit extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={1}>
-                  <span style={{ display: 'inline-block', width: '100%', textAlign: 'center' }} />
-                </Col>
-                <Col span={14}>
+              </FormItem>
+              <FormItem
+                {...formItemLayout}
+              >
+                <Col span={9}>
                   <FormItem>
                     {getFieldDecorator('complement', {
                       rules: [{ required: true, message: 'Preencha o complemento' }],
                     })(
                       <Input size="large" placeholder="Complemento" />,
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={1}>
+                  <span style={{ display: 'inline-block', width: '100%', textAlign: 'center' }} />
+                </Col>
+                <Col span={14}>
+                  <FormItem>
+                    {getFieldDecorator('neighborhood', {
+                      rules: [{ required: true, message: 'Preencha o bairro' }],
+                    })(
+                      <Input size="large" placeholder="Bairro" />,
                     )}
                   </FormItem>
                 </Col>
@@ -153,7 +274,13 @@ class OrganizationProfileEdit extends React.Component {
                     {getFieldDecorator('state', {
                       rules: [{ required: true, message: 'Preencha o Estado' }],
                     })(
-                      <Input size="large" placeholder="Estado" />,
+                      <Select
+                        placeholder="Estado"
+                        size="large"
+                        onChange={value => this.getCities(value)}
+                      >
+                        {this.renderStates()}
+                      </Select>,
                     )}
                   </FormItem>
                 </Col>
@@ -165,7 +292,9 @@ class OrganizationProfileEdit extends React.Component {
                     {getFieldDecorator('city', {
                       rules: [{ required: true, message: 'Preencha a Cidade' }],
                     })(
-                      <Input size="large" placeholder="Cidade" />,
+                      <Select placeholder="Cidade" size="large" showSearch optionFilterProp="children">
+                        {this.renderCities()}
+                      </Select>,
                     )}
                   </FormItem>
                 </Col>
@@ -187,7 +316,7 @@ class OrganizationProfileEdit extends React.Component {
               </FormItem>
               <FormItem>
                 <div className={styles.buttonWrapper}>
-                  <button className={cx(styles.button, styles.saveButton)} htmlType="submit">
+                  <button className={cx(styles.button, styles.saveButton)}>
                     SALVAR
                   </button>
                   <button

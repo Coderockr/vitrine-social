@@ -97,12 +97,15 @@
     color: #FA578A;
   }
 
-  .ant-input {
+  .ant-input,
+  .ant-select-selection,
+  .ant-select-open .ant-select-selection {
     color: #433F79;
     border-color: #948CF9;
     border-width: 2px;
     border-radius: 20px;
     font-size: 16px;
+    box-shadow: none;
 
     &:focus,
     &:hover {
@@ -110,7 +113,9 @@
       border-color: #948CF9;
     }
 
-    &::placeholder {
+    &::placeholder,
+    .ant-select-selection__placeholder,
+    .ant-select-arrow {
       color: #948CF9;
     }
   }
