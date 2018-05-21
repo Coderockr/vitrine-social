@@ -1,7 +1,6 @@
-@import 'src/utils/styles/colors.scss';
+require('../../utils/styles/colors.js');
 
 .appHeader {
-  background-color: $purple_400;
   height: 85px;
 
   .logo {

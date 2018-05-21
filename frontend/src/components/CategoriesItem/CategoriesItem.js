@@ -2,6 +2,7 @@ import React from 'react';
 import cx from 'classnames';
 import styles from './styles.module.scss';
 import Icon from '../Icons';
+import { ambar_400, white } from '../../utils/styles/colors.js';
 
 const CategoriesItem = ({ image, title, active }) => (
   <div className={cx(styles.categoriesItem, { [styles.active]: active })}>
@@ -9,7 +10,7 @@ const CategoriesItem = ({ image, title, active }) => (
       <Icon
         icon={image}
         size={70}
-        color={active ? '#FFFFFF' : '#FF974B'}
+        color={active ? white : ambar_400}
       />
     </div>
     <div className={styles.categoriesCard}>

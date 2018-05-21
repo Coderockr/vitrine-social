@@ -2,6 +2,7 @@
 
 const autoprefixer = require('autoprefixer');
 const path = require('path');
+const fs = require('fs');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -10,8 +11,23 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const lessToJs = require('less-vars-to-js');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
+const colors = require('../src/utils/styles/colors.js');
+
+const lessVars = {};
+let i;
+for (i = 0; i < Object.keys(colors).length; i++) {
+  const colorKeys = Object.keys(colors);
+  const colorValues = Object.values(colors);
+
+  lessVars[`@${colorKeys[i]}`] = colorValues[i];
+}
+
+const lessTheme = lessToJs(fs.readFileSync(path.join(__dirname, '../src/utils/styles/antTheme.less'), 'utf8'));
+
+const themeVars = Object.assign(lessVars, lessTheme);
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -90,7 +106,7 @@ module.exports = {
     // for React Native Web.
     extensions: ['.web.js', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
-      
+
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
@@ -121,7 +137,7 @@ module.exports = {
             options: {
               formatter: eslintFormatter,
               eslintPath: require.resolve('eslint'),
-              
+
             },
             loader: require.resolve('eslint-loader'),
           },
@@ -149,7 +165,9 @@ module.exports = {
             include: paths.appSrc,
             loader: require.resolve('babel-loader'),
             options: {
-              
+              plugins: [
+                ['import', { libraryName: 'antd', libraryDirectory: 'es', style: true }],
+              ],
               compact: true,
             },
           },
@@ -207,6 +225,41 @@ module.exports = {
             ),
             // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
           },
+          {
+            test: /\.scss$/,
+            use: ExtractTextPlugin.extract({
+              fallback: 'style-loader',
+              use: [
+                {
+                  loader: 'css-loader',
+                  options: {
+                    modules: true,
+                    sourceMap: true,
+                    importLoaders: 2,
+                    localIdentName: '[name]__[local]___[hash:base64:5]',
+                  },
+                },
+                'sass-loader',
+                'js-to-sass-var-loader',
+              ],
+            }),
+          },
+          {
+            test: /\.less$/,
+            use: ExtractTextPlugin.extract({
+              fallback: 'style-loader',
+              use: [
+                { loader: 'css-loader' },
+                {
+                  loader: 'less-loader',
+                  options: {
+                    modifyVars: themeVars,
+                    javascriptEnabled: true,
+                  },
+                },
+              ],
+            }),
+          },
           // "file" loader makes sure assets end up in the `build` folder.
           // When you `import` an asset, you get its filename.
           // This loader don't uses a "test" so it will catch all modules
@@ -217,7 +270,7 @@ module.exports = {
             // it's runtime that would otherwise processed through "file" loader.
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
-            exclude: [/\.js$/, /\.html$/, /\.json$/],
+            exclude: [/\.js$/, /\.html$/, /\.json$/, /\.scss$/],
             options: {
               name: 'static/media/[name].[hash:8].[ext]',
             },
