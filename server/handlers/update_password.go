@@ -10,14 +10,15 @@ import (
 )
 
 type (
-	organizationRepository interface {
+	// OrganizationRepository represet operations for organization repository.
+	OrganizationRepository interface {
 		Get(id int64) (*model.Organization, error)
 		ResetPasswordTo(o *model.Organization, password string) error
 	}
 )
 
 // UpdatePasswordHandler update user password
-func UpdatePasswordHandler(repo organizationRepository) func(w http.ResponseWriter, r *http.Request) {
+func UpdatePasswordHandler(repo OrganizationRepository) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var handlerForm map[string]string
 
@@ -40,6 +41,6 @@ func UpdatePasswordHandler(repo organizationRepository) func(w http.ResponseWrit
 
 		repo.ResetPasswordTo(organization, newPassword)
 
-		HandleHTTPSuccess(w, "Senha atualizada com sucesso")
+		HandleHTTPSuccess(w, nil)
 	}
 }

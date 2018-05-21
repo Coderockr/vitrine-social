@@ -8,27 +8,80 @@ import (
 	"testing"
 
 	"github.com/Coderockr/vitrine-social/server/handlers"
+	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/Coderockr/vitrine-social/server/security"
 	"github.com/gorilla/context"
 	"github.com/stretchr/testify/require"
 )
 
+type (
+	organizationRepositoryMock struct {
+		GetFN             func(id int64) (*model.Organization, error)
+		ResetPasswordToFN func(o *model.Organization, password string) error
+	}
+)
+
 func TestUpdatePasswordHandler(t *testing.T) {
+	type params struct {
+		userID     int64
+		repository handlers.OrganizationRepository
+	}
+
 	tests := map[string]struct {
 		body     string
-		userID   int64
 		status   int
 		response string
+		params   params
 	}{
 		"should fail because invalid password": {
-			body:     ``,
-			status:   http.StatusBadRequest,
-			response: "Senha inválida",
+			body:     `{ "currentPassword": "test1", "newPassword": "newtest" }`,
+			status:   http.StatusUnauthorized,
+			response: `{ "code": 401, "message":"Senha inválida" }`,
+			params: params{
+				userID: 1,
+				repository: &organizationRepositoryMock{
+					GetFN: func(id int64) (*model.Organization, error) {
+						password, err := security.GenerateHash("test")
+
+						organization := &model.Organization{
+							User: model.User{
+								Email:    "test@coderockr",
+								Password: password,
+								ID:       1,
+							},
+						}
+						return organization, err
+					},
+					ResetPasswordToFN: func(*model.Organization, string) error {
+						return nil
+					},
+				},
+			},
 		},
-		"right values were sent": {
-			body:     `{ "currentPassword": "teste3", "newPassword": "teste3" }`,
-			userID:   1,
+		"should success beacuse the right values were sent": {
+			body:     `{ "currentPassword": "test", "newPassword": "newtest" }`,
 			status:   http.StatusOK,
-			response: "Senha atualizada com sucesso",
+			response: ``,
+			params: params{
+				userID: 1,
+				repository: &organizationRepositoryMock{
+					GetFN: func(id int64) (*model.Organization, error) {
+						password, err := security.GenerateHash("test")
+
+						organization := &model.Organization{
+							User: model.User{
+								Email:    "test@coderockr",
+								Password: password,
+								ID:       1,
+							},
+						}
+						return organization, err
+					},
+					ResetPasswordToFN: func(*model.Organization, string) error {
+						return nil
+					},
+				},
+			},
 		},
 	}
 
@@ -36,9 +89,9 @@ func TestUpdatePasswordHandler(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			r, _ := http.NewRequest("POST", "/v1/update-password", strings.NewReader(v.body))
 			resp := httptest.NewRecorder()
-			context.Set(r, handlers.UserKey, v.userID)
+			context.Set(r, handlers.UserKey, v.params.userID)
 
-			//handlers.UpdatePasswordHandler(v.create)(resp, r)
+			handlers.UpdatePasswordHandler(v.params.repository)(resp, r)
 
 			result := resp.Result()
 			body, _ := ioutil.ReadAll(result.Body)
@@ -49,4 +102,12 @@ func TestUpdatePasswordHandler(t *testing.T) {
 			require.Equal(t, v.status, resp.Code)
 		})
 	}
+}
+
+func (r *organizationRepositoryMock) Get(id int64) (*model.Organization, error) {
+	return r.GetFN(id)
+}
+
+func (r *organizationRepositoryMock) ResetPasswordTo(o *model.Organization, password string) error {
+	return r.ResetPasswordToFN(o, password)
 }
