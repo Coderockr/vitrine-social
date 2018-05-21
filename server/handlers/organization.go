@@ -10,6 +10,15 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type (
+	// OrganizationRepository represet operations for organization repository.
+	OrganizationRepository interface {
+		Get(id int64) (*model.Organization, error)
+		ResetPasswordTo(o *model.Organization, password string) error
+		Update(o model.Organization) (model.Organization, error)
+	}
+)
+
 // GetOrganizationHandler will retrive the data from a organization
 func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
@@ -77,6 +86,66 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 				Status:           string(n.Status),
 			})
 		}
+		HandleHTTPSuccess(w, oJSON)
+	}
+}
+
+// UpdateOrganizationHandler will update the data of an organization
+func UpdateOrganizationHandler(repo OrganizationRepository) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, req *http.Request) {
+		var handlerForm map[string]string
+
+		err := requestToJSONObject(req, &handlerForm)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		vars := mux.Vars(req)
+
+		id, err := strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+			return
+		}
+
+		organization, err := repo.Get(id)
+
+		switch {
+		case err == sql.ErrNoRows:
+			HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Organização com ID: %d", id))
+			return
+		case err != nil:
+			HandleHTTPError(w, http.StatusForbidden, err)
+			return
+		}
+
+		organization.Name = handlerForm["name"]
+		organization.Logo = handlerForm["logo"]
+		organization.Address = handlerForm["address"]
+		organization.Phone = handlerForm["phone"]
+		organization.Resume = handlerForm["resume"]
+		organization.Video = handlerForm["video"]
+		organization.Email = handlerForm["email"]
+		organization.Slug = handlerForm["slug"]
+
+		updateOrganization, err := repo.Update(*organization)
+
+		oJSON := &organizationJSON{
+			baseOrganizationJSON: baseOrganizationJSON{
+				ID:   updateOrganization.ID,
+				Name: updateOrganization.Name,
+				Logo: updateOrganization.Logo,
+				Slug: updateOrganization.Slug,
+			},
+			Address: updateOrganization.Address,
+			Phone:   updateOrganization.Phone,
+			Resume:  updateOrganization.Resume,
+			Video:   updateOrganization.Video,
+			Email:   updateOrganization.Email,
+			Images:  orgImagesToImageJSON(updateOrganization.Images),
+		}
+
 		HandleHTTPSuccess(w, oJSON)
 	}
 }

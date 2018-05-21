@@ -5,16 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/Coderockr/vitrine-social/server/security"
-)
-
-type (
-	// OrganizationRepository represet operations for organization repository.
-	OrganizationRepository interface {
-		Get(id int64) (*model.Organization, error)
-		ResetPasswordTo(o *model.Organization, password string) error
-	}
 )
 
 // UpdatePasswordHandler update user password
