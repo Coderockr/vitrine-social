@@ -3,7 +3,44 @@
 .requests {
   margin: 30px 0;
 
-  .row {
+  .requestWrapper {
     padding: 0 30px 30px;
+  }
+
+  .actionWrapper {
+    padding: 0 0 32px 50px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .button {
+    margin-right: 50px;
+    outline: none;
+    cursor: pointer;
+    background-color: $purple_400;
+    font-size: 14px;
+    color: $white;
+    padding: 5px 20px;
+    border: none;
+    border-radius: 20px;
+
+    &:hover {
+      background-color: $purple_500;
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .requests {
+    .actionWrapper {
+      flex-direction: column-reverse;
+      padding: 0;
+      margin-bottom: 20px;
+      align-items: center;
+
+      .button {
+        margin: 0 0 30px 0;
+      }
+    }
   }
 }

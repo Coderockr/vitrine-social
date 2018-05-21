@@ -1,9 +1,10 @@
 import React from 'react';
 import cx from 'classnames';
-import { Row, Col, Carousel } from 'antd';
+import { Row, Col, Carousel, Avatar } from 'antd';
 import Pagination from '../../components/Pagination';
 import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
+import OrganizationProfileEdit from '../OrganizationProfileEdit';
 import styles from './styles.module.scss';
 
 const organization = {
@@ -33,6 +34,8 @@ class OrganizationProfile extends React.Component {
     super(props);
     this.state = {
       arrowSize: mediaQuery.matches ? 60 : 32,
+      isOrganization: true,
+      editProfileVisible: false,
     };
 
     mediaQuery.addListener(this.widthChange.bind(this));
@@ -66,10 +69,18 @@ class OrganizationProfile extends React.Component {
               <h2 className={styles.containerTitle}>
                 <span>PERFIL DA ORGANIZAÇÃO</span>
               </h2>
-              <img
+              <div className={styles.buttonWrapper} hidden={!this.state.isOrganization}>
+                <button
+                  className={styles.button}
+                  onClick={() => this.setState({ editProfileVisible: true })}
+                >
+                  EDITAR
+                </button>
+              </div>
+              <Avatar
                 src="assets/images/leitura-infantil 3.jpg"
-                alt="Leitura Infantil 6"
-                className={styles.profileImage}
+                size={'large'}
+                style={{ marginTop: 20 }}
               />
               <h1 className={styles.organizationName}>
                 <span>{organization.name}</span>
@@ -120,9 +131,13 @@ class OrganizationProfile extends React.Component {
               </Col>
             </div>
           </Col>
-          <Requests />
         </Row>
+        <Requests isOrganization={this.state.isOrganization} />
         <Pagination />
+        <OrganizationProfileEdit
+          visible={this.state.editProfileVisible}
+          onCancel={() => this.setState({ editProfileVisible: false })}
+        />
       </div>
     );
   }

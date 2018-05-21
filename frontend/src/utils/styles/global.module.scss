@@ -68,8 +68,6 @@
     color: #FFFFFF !important;
   }
 
-
-
   .ant-pagination-prev .ant-pagination-item-link,
   .ant-pagination-next .ant-pagination-item-link,
   .ant-pagination-prev:focus .ant-pagination-item-link,
@@ -99,12 +97,15 @@
     color: #FA578A;
   }
 
-  .ant-input {
+  .ant-input,
+  .ant-select-selection,
+  .ant-select-open .ant-select-selection {
     color: #433F79;
     border-color: #948CF9;
     border-width: 2px;
     border-radius: 20px;
     font-size: 16px;
+    box-shadow: none;
 
     &:focus,
     &:hover {
@@ -112,7 +113,9 @@
       border-color: #948CF9;
     }
 
-    &::placeholder {
+    &::placeholder,
+    .ant-select-selection__placeholder,
+    .ant-select-arrow {
       color: #948CF9;
     }
   }
@@ -133,6 +136,96 @@
     .ant-input::placeholder {
       color: #D0021B;
     }
+  }
+
+  .ant-radio-group {
+    span {
+      font-weight: 500;
+    }
+
+    .ant-radio-button-wrapper {
+      color: #FF974B;
+      border: 2px solid #FF974B;
+      background: white;
+
+      &::before {
+        background-color: #FF974B;
+      }
+
+      &:first-child {
+        border-radius: 20px 0 0 20px;
+      }
+
+      &:last-child {
+        border-radius: 0 20px 20px 0;
+      }
+    }
+
+    .ant-radio-button-wrapper-checked {
+      color: white;
+      border: 2px solid #FF974B;
+      background: #FF974B;
+      box-shadow: none;
+
+      &::before {
+        background-color: #FF974B !important;
+      }
+
+      &:first-child {
+        border-radius: 20px 0 0 20px;
+      }
+
+      &:last-child {
+        border-radius: 0 20px 20px 0;
+      }
+    }
+  }
+
+  .ant-avatar {
+    border: 4px solid #FF974B;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    
+    * {
+      line-height: 150px;
+    }
+
+    img {
+      object-fit: cover;
+    }
+  }
+
+  .ant-avatar-lg {
+    width: 230px;
+    height: 230px;
+    
+    * {
+      line-height: 230px;
+    }
+  }
+  
+  .ant-upload-list-picture-card .ant-upload-list-item {
+    border: 2px solid #948CF9;
+    padding: 0;
+  }
+
+  .ant-upload-list-picture-card .ant-upload-list-item-uploading.ant-upload-list-item {
+    padding: 8px;
+  }
+
+  .ant-upload.ant-upload-select-picture-card {
+    border: 2px dashed #948CF9;
+
+    &:hover {
+      border-color: #7169DE;
+    }
+  }
+
+  .ant-upload-list-picture-card .ant-upload-list-item-thumbnail, .ant-upload-list-picture-card .ant-upload-list-item-thumbnail img {
+    object-fit: cover;
+    width: 100px;
+    height: 100px;
   }
 
   @media (max-height: 900px) {

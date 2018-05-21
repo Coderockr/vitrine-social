@@ -1,0 +1,29 @@
+@import 'src/utils/styles/colors.scss';
+@import 'src/utils/styles/common.scss';
+
+.uploadWrapper {
+  margin-top: 20px;
+  margin-left: 15px;
+}
+
+.modalImage {
+  margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+  .uploadWrapper {
+    margin-left: 40px;
+  }
+}
+
+@media (max-width: 540px) {
+  .uploadWrapper {
+    margin-left: 15px;
+  }
+}
+
+@media (max-width: 470px) {
+  .uploadWrapper {
+    margin-left: 40px;
+  }
+}
