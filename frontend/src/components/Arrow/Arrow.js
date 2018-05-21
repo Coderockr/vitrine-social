@@ -40,7 +40,7 @@ class Arrow extends React.PureComponent {
           size={this.props.size}
           color={this.props.color}
           className={cx(styles.imgTop, { [styles.imgOver]: this.props.over })}
-      />
+        />
       </div>
     );
   }

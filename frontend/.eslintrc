@@ -21,6 +21,7 @@
     "import/no-extraneous-dependencies": 0,
     "import/extensions": 0,
     "react/no-danger": 0,
-    "react/jsx-curly-brace-presence": 0
+    "react/jsx-curly-brace-presence": 0,
+    "camelcase": 0
   }
 }
