@@ -1,3 +1,4 @@
+require('./colors.js');
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
 @import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 
@@ -9,7 +10,6 @@
   body {
     margin: 0;
     padding: 0;
-    background: #f8f8f8;
   }
 
   input[type="button" i], input[type="submit" i], input[type="reset" i], input[type="file" i]::-webkit-file-upload-button, button,
@@ -40,32 +40,32 @@
   }
 
   .ant-pagination-item {
-    border: 2px solid #948CF9;
-    background-color: #FFFFFF;
+    border: 2px solid $purple_400;
+    background-color: $white;
 
     a {
-      color: #948CF9;
+      color: $purple_400;
     }
   }
 
   .ant-pagination-item:hover,
   .ant-pagination-item-active,
   .ant-pagination-item-active:focus {
-    background-color: #948CF9;
-    border: 2px solid #948CF9;
+    background-color: $purple_400;
+    border: 2px solid $purple_400;
   }
 
   .ant-pagination-item-active a,
   .ant-pagination-item:hover a,
   .ant-pagination-item-active:focus a {
-    color: #FFFFFF;
+    color: $white;
   }
 
   .ant-pagination-next:hover a,
   .ant-pagination-prev:hover a {
-    background-color: #948CF9 !important;
-    border: 2px solid #948CF9 !important;
-    color: #FFFFFF !important;
+    background-color: $purple_400 !important;
+    border: 2px solid $purple_400 !important;
+    color: $white !important;
   }
 
   .ant-pagination-prev .ant-pagination-item-link,
@@ -79,9 +79,9 @@
   .ant-pagination-next:focus a,
   .ant-pagination-prev:focus a,
   .ant-pagination-disabled:hover a {
-    color: #948CF9;
-    border: 2px solid #948CF9;
-    background-color: #FFFFFF;
+    color: $purple_400;
+    border: 2px solid $purple_400;
+    background-color: $white;
   }
 
   .ant-pagination-prev .ant-pagination-item-link:after,
@@ -94,18 +94,18 @@
   }
 
   .ant-modal-close {
-    color: #FA578A;
+    color: $pink_400;
   }
 
   .ant-form-item-label label {
-    color: #948CF9;
+    color: $purple_400;
     font-size: 16px;
   }
 
   .ant-input-number,
   .ant-input-number-input {
-    color: #433F79;
-    border: 2px solid #948CF9;
+    color: $blue_900;
+    border: 2px solid $purple_400;
     border-radius: 20px;
     font-size: 16px;
     box-shadow: none;
@@ -113,7 +113,7 @@
     &:focus,
     &:hover {
       box-shadow: none;
-      border-color: #948CF9;
+      border-color: $purple_400;
     }
   }
 
@@ -134,15 +134,15 @@
   .ant-select-disabled .ant-select-selection {
     &:hover,
     &:focus {
-      border-color: #948CF9;
+      border-color: $purple_400;
     }
   }
 
   .ant-input,
   .ant-select-selection,
   .ant-select-open .ant-select-selection {
-    color: #433F79;
-    border-color: #948CF9;
+    color: $blue_900;
+    border-color: $purple_400;
     border-width: 2px;
     border-radius: 20px;
     font-size: 16px;
@@ -152,19 +152,19 @@
     &:hover,
     &:disabled {
       box-shadow: none;
-      border-color: #948CF9;
+      border-color: $purple_400;
     }
 
     &::placeholder,
     .ant-select-selection__placeholder,
     .ant-select-arrow {
-      color: #948CF9;
+      color: $purple_400;
     }
   }
 
   .has-error {
     .ant-form-explain {
-      color: #D0021B;
+      color: $red_400;
       text-align: end;
       padding-right: 15px;
     }
@@ -172,11 +172,11 @@
     .ant-input,
     .ant-input:focus {
       box-shadow: none;
-      border-color: #D0021B;
+      border-color: $red_400;
     }
 
     .ant-input::placeholder {
-      color: #D0021B;
+      color: $red_400;
     }
   }
 
@@ -186,12 +186,12 @@
     }
 
     .ant-radio-button-wrapper {
-      color: #FF974B;
-      border: 2px solid #FF974B;
+      color: $ambar_400;
+      border: 2px solid $ambar_400;
       background: white;
 
       &::before {
-        background-color: #FF974B;
+        background-color: $ambar_400;
       }
 
       &:first-child {
@@ -205,12 +205,12 @@
 
     .ant-radio-button-wrapper-checked {
       color: white;
-      border: 2px solid #FF974B;
-      background: #FF974B;
+      border: 2px solid $ambar_400;
+      background: $ambar_400;
       box-shadow: none;
 
       &::before {
-        background-color: #FF974B !important;
+        background-color: $ambar_400 !important;
       }
 
       &:first-child {
@@ -225,27 +225,27 @@
 
   .ant-radio-group.purpleRadio {
     .ant-radio-button-wrapper {
-      color: #948CF9;
-      border: 2px solid #948CF9;
+      color: $purple_400;
+      border: 2px solid $purple_400;
 
       &::before {
-        background-color: #948CF9;
+        background-color: $purple_400;
       }
     }
 
     .ant-radio-button-wrapper-checked {
       color: white;
-      border: 2px solid #948CF9;
-      background: #948CF9;
+      border: 2px solid $purple_400;
+      background: $purple_400;
 
       &::before {
-        background-color: #948CF9 !important;
+        background-color: $purple_400 !important;
       }
     }
   }
 
   .ant-avatar {
-    border: 4px solid #FF974B;
+    border: 4px solid $ambar_400;
     border-radius: 50%;
     width: 150px;
     height: 150px;
@@ -269,7 +269,7 @@
   }
   
   .ant-upload-list-picture-card .ant-upload-list-item {
-    border: 2px solid #948CF9;
+    border: 2px solid $purple_400;
     padding: 0;
   }
 
@@ -278,10 +278,10 @@
   }
 
   .ant-upload.ant-upload-select-picture-card {
-    border: 2px dashed #948CF9;
+    border: 2px dashed $purple_400;
 
     &:hover {
-      border-color: #7169DE;
+      border-color: $purple_500;
     }
   }
 

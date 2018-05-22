@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Row, Col, Form, Input } from 'antd';
 import Icon from '../../components/Icons';
 import styles from './styles.module.scss';
+import colors from '../../utils/styles/colors';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -47,7 +48,7 @@ class ContactForm extends React.Component {
       <Row>
         <Col span={24}>
           <button className={styles.backButton} onClick={this.props.onClick}>
-            <Icon icon="reply" size={40} color="#FFFFFF" />
+            <Icon icon="reply" size={40} color={colors.white} />
           </button>
         </Col>
         <Col span={20} offset={2}>

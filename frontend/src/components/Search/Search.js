@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col } from 'antd';
 import Icon from '../Icons';
+import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
 
 const mediaQuery = window.matchMedia('(min-width: 720px)');
@@ -37,7 +38,7 @@ class Search extends React.Component {
           <div className={styles.wrapper}>
             <input type="text" placeholder={this.state.placeholder} />
             <button>
-              <Icon icon="lupa" size={32} color="#444F60" />
+              <Icon icon="lupa" size={32} color={colors.grey_400} />
             </button>
           </div>
         </Col>
