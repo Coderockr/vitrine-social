@@ -73,7 +73,11 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {})
 
-	v1.HandleFunc("/organization/{id:[0-9]+}", handlers.GetOrganizationHandler(oR.Get))
+	v1.HandleFunc("/organization/{id:[0-9]+}", handlers.GetOrganizationHandler(oR.Get)).Methods("GET")
+
+	v1.Path("/organization/{id:[0-9]+}").Handler(authMiddleware.With(
+		negroni.WrapFunc(handlers.UpdateOrganizationHandler(oR)),
+	)).Methods("PUT")
 
 	v1.HandleFunc("/need/{id}", handlers.GetNeedHandler(nR, oR)).Methods("GET")
 

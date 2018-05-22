@@ -155,7 +155,7 @@ Realizar busca das necessidades
     + id (number) - Id da ONG
 
 + Response 200 (application/json)
-    + Attributes (DetailedOrganization)
+    + Attributes (CompleteOrganization)
 
 + Response 404 (application/json)
     + Attributes (Error)
@@ -213,14 +213,14 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Upload [/v1/organization/{id}/upload]
+## Upload de Imagem [/v1/organization/{id}/upload]
 
-### Fazer upload [POST]
+### Fazer upload de imagem [POST]
 
 + Parameters
     + id (number) - Id da ONG
 
-+ Request Upload de um arquivo
++ Request Upload de uma imagem
 
     + Headers
 
@@ -430,12 +430,14 @@ Realizar busca das necessidades
 + address (string) - Endereço da ONG
 + phone (string) - Telefone
 + resume (string) - Descrição detalhada da ONG
-+ images (array[Image]) - Imagens relacionadas
 + video (string) - Link de um video no Youtube sobre a ONG
-+ needs (array[Need]) - Lista de necessidades
 + email (string) - E-mail da ONG (também usado para login)
 
-## Organization (DetailedOrganization)
+## CompleteOrganization (DetailedOrganization)
++ images (array[Image]) - Imagens relacionadas
++ needs (array[Need]) - Lista de necessidades
+
+## Organization (CompleteOrganization)
 + password (string) - Senha
 
 ## Login (object)

@@ -10,15 +10,15 @@ import (
 )
 
 type (
-	// OrganizationRepository represet operations for organization repository.
-	OrganizationRepository interface {
+	// UpdatePasswordOrganizationRepository represet operations for organization repository.
+	UpdatePasswordOrganizationRepository interface {
 		Get(id int64) (*model.Organization, error)
 		ResetPasswordTo(o *model.Organization, password string) error
 	}
 )
 
 // UpdatePasswordHandler update user password
-func UpdatePasswordHandler(repo OrganizationRepository) func(w http.ResponseWriter, r *http.Request) {
+func UpdatePasswordHandler(repo UpdatePasswordOrganizationRepository) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var handlerForm map[string]string
 

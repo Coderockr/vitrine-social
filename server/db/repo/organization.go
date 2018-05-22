@@ -90,6 +90,36 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 	return o, nil
 }
 
+// Update - Receive an Organization and update it in the database, returning the updated Organization or error if failed
+func (r *OrganizationRepository) Update(o model.Organization) (model.Organization, error) {
+	_, err := r.db.Exec(
+		`UPDATE organizations SET
+			name = $1,
+			logo = $2,
+			address = $3,
+			phone = $4,
+			resume = $5,
+			video = $6,
+			email = $7
+		WHERE id = $8
+		`,
+		o.Name,
+		o.Logo,
+		o.Address,
+		o.Phone,
+		o.Resume,
+		o.Video,
+		o.Email,
+		o.ID,
+	)
+
+	if err != nil {
+		return o, err
+	}
+
+	return o, nil
+}
+
 // GetByEmail returns a organization by its email
 func (r *OrganizationRepository) GetByEmail(email string) (*model.Organization, error) {
 	o := model.Organization{}
