@@ -1,6 +1,7 @@
 .storybook
+story.js
 node_modules
 src/components/Icons/map.json
 src/registerServiceWorker.js
-scripts/icons.js
-story.js
+scripts/
+config/

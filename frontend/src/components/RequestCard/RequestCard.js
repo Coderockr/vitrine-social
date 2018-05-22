@@ -28,7 +28,12 @@ class RequestCard extends React.Component {
               </p>
             </div>
             <div className={styles.interestedContent}>
-              <button className={styles.button}>
+              <button
+                className={styles.button}
+                onClick={this.props.isOrganization ?
+                  () => this.props.onEdit(this.props.request) :
+                  () => this.props.onClick(this.props.request)}
+              >
                 {this.props.isOrganization ? 'EDITAR' : 'MAIS DETALHES'}
               </button>
             </div>
