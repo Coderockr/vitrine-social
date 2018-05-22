@@ -63,7 +63,7 @@ class RequestDetailsEdit extends React.Component {
               hideRequiredMark
             >
               <FormItem
-                className={this.props.request ? null : styles.statusFormItem}
+                className={!this.props.request && styles.statusFormItem}
                 {...formItemLayout}
               >
                 <div className={styles.statusWrapper}>
