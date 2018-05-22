@@ -14,7 +14,6 @@ type (
 	// OrganizationRepository represet operations for organization repository.
 	OrganizationRepository interface {
 		Get(id int64) (*model.Organization, error)
-		ResetPasswordTo(o *model.Organization, password string) error
 		Update(o model.Organization) (model.Organization, error)
 	}
 )
@@ -102,7 +101,6 @@ func UpdateOrganizationHandler(repo OrganizationRepository) func(http.ResponseWr
 		}
 
 		vars := mux.Vars(req)
-
 		id, err := strconv.ParseInt(vars["id"], 10, 64)
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
@@ -129,24 +127,13 @@ func UpdateOrganizationHandler(repo OrganizationRepository) func(http.ResponseWr
 		organization.Email = handlerForm["email"]
 		organization.Slug = handlerForm["slug"]
 
-		updateOrganization, err := repo.Update(*organization)
-
-		oJSON := &organizationJSON{
-			baseOrganizationJSON: baseOrganizationJSON{
-				ID:   updateOrganization.ID,
-				Name: updateOrganization.Name,
-				Logo: updateOrganization.Logo,
-				Slug: updateOrganization.Slug,
-			},
-			Address: updateOrganization.Address,
-			Phone:   updateOrganization.Phone,
-			Resume:  updateOrganization.Resume,
-			Video:   updateOrganization.Video,
-			Email:   updateOrganization.Email,
-			Images:  orgImagesToImageJSON(updateOrganization.Images),
+		_, err = repo.Update(*organization)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar dados da Organização: %s", err))
+			return
 		}
 
-		HandleHTTPSuccess(w, oJSON)
+		HandleHTTPSuccessNoContent(w)
 	}
 }
 

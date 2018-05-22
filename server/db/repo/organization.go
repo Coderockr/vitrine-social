@@ -92,7 +92,7 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 
 // Update - Receive an Organization and update it in the database, returning the updated Organization or error if failed
 func (r *OrganizationRepository) Update(o model.Organization) (model.Organization, error) {
-	row := r.db.QueryRow(
+	_, err := r.db.Exec(
 		`UPDATE organizations SET
 			name = $1,
 			logo = $2,
@@ -102,7 +102,7 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 			video = $6,
 			email = $7,
 			slug = $8
-			WHERE id = $9
+		WHERE id = $9
 		`,
 		o.Name,
 		o.Logo,
@@ -114,8 +114,6 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 		o.Slug,
 		o.ID,
 	)
-
-	err := row.Scan(&o.ID)
 
 	if err != nil {
 		return o, err

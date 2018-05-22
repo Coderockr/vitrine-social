@@ -24,7 +24,7 @@ type (
 func TestUpdatePasswordHandler(t *testing.T) {
 	type params struct {
 		userID     int64
-		repository handlers.OrganizationRepository
+		repository handlers.UpdatePasswordOrganizationRepository
 	}
 
 	tests := map[string]struct {
