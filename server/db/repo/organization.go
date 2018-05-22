@@ -100,9 +100,8 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 			phone = $4,
 			resume = $5,
 			video = $6,
-			email = $7,
-			slug = $8
-		WHERE id = $9
+			email = $7
+		WHERE id = $8
 		`,
 		o.Name,
 		o.Logo,
@@ -111,7 +110,6 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 		o.Resume,
 		o.Video,
 		o.Email,
-		o.Slug,
 		o.ID,
 	)
 

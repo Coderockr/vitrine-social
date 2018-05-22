@@ -9,6 +9,7 @@ import (
 
 	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
 )
@@ -22,6 +23,7 @@ type (
 
 func TestUpdateOrganizationHandler(t *testing.T) {
 	type params struct {
+		userID         int64
 		organizationID string
 		repository     handlers.OrganizationRepository
 	}
@@ -32,11 +34,28 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 		response string
 		params   params
 	}{
+		"should fail beacuse trying to update another organization": {
+			body:     ``,
+			status:   http.StatusBadRequest,
+			response: ``,
+			params: params{
+				userID:         2,
+				organizationID: "1",
+				repository: &organizationRepositoryMock{
+					GetFN: func(id int64) (*model.Organization, error) {
+						organization := model.Organization{}
+						return &organization, nil
+					},
+					UpdateFN: func(o model.Organization) (model.Organization, error) {
+						return o, nil
+					},
+				},
+			},
+		},
 		"should success beacuse the right values were sent": {
 			body: `{
 				"name": "Novo Nome",
 				"logo": "Novo Logo",
-				"slug": "Nova slug",
 				"address": "Novo Endereço",
 				"phone": "123123",
 				"resume": "Nova Descrição detalhada da ONG",
@@ -46,6 +65,7 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 			status:   http.StatusNoContent,
 			response: ``,
 			params: params{
+				userID:         1,
 				organizationID: "1",
 				repository: &organizationRepositoryMock{
 					GetFN: func(id int64) (*model.Organization, error) {
@@ -57,7 +77,6 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 							},
 							Name:    "",
 							Logo:    "",
-							Slug:    "",
 							Address: "",
 							Phone:   "",
 							Resume:  "",
@@ -77,6 +96,7 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			r, _ := http.NewRequest("PUT", "/v1/organization/"+v.params.organizationID, strings.NewReader(v.body))
 			r = mux.SetURLVars(r, map[string]string{"id": v.params.organizationID})
+			context.Set(r, handlers.UserKey, v.params.userID)
 
 			resp := httptest.NewRecorder()
 

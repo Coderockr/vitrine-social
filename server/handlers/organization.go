@@ -107,6 +107,12 @@ func UpdateOrganizationHandler(repo OrganizationRepository) func(w http.Response
 			return
 		}
 
+		userID := GetUserID(req)
+		if id == 0 || id != userID {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("você não possui permissão para atualizar essa orginização %d", id))
+			return
+		}
+
 		organization, err := repo.Get(id)
 
 		switch {
@@ -125,7 +131,6 @@ func UpdateOrganizationHandler(repo OrganizationRepository) func(w http.Response
 		organization.Resume = handlerForm["resume"]
 		organization.Video = handlerForm["video"]
 		organization.Email = handlerForm["email"]
-		organization.Slug = handlerForm["slug"]
 
 		_, err = repo.Update(*organization)
 		if err != nil {

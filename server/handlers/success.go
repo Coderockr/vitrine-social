@@ -19,6 +19,5 @@ func HandleHTTPSuccess(w http.ResponseWriter, data interface{}) {
 
 // HandleHTTPSuccessNoContent formats and return with no content
 func HandleHTTPSuccessNoContent(w http.ResponseWriter) {
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNoContent)
 }
