@@ -90,7 +90,7 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 }
 
 // UpdateOrganizationHandler will update the data of an organization
-func UpdateOrganizationHandler(repo OrganizationRepository) func(http.ResponseWriter, *http.Request) {
+func UpdateOrganizationHandler(repo OrganizationRepository) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		var handlerForm map[string]string
 

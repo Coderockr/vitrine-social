@@ -15,7 +15,7 @@ import (
 )
 
 type (
-	organizationRepositoryMock struct {
+	UpdatePasswordOrganizationRepositoryMock struct {
 		GetFN             func(id int64) (*model.Organization, error)
 		ResetPasswordToFN func(o *model.Organization, password string) error
 	}
@@ -39,7 +39,7 @@ func TestUpdatePasswordHandler(t *testing.T) {
 			response: `{ "code": 401, "message":"Senha inválida" }`,
 			params: params{
 				userID: 1,
-				repository: &organizationRepositoryMock{
+				repository: &UpdatePasswordOrganizationRepositoryMock{
 					GetFN: func(id int64) (*model.Organization, error) {
 						password, err := security.GenerateHash("test")
 
@@ -64,7 +64,7 @@ func TestUpdatePasswordHandler(t *testing.T) {
 			response: ``,
 			params: params{
 				userID: 1,
-				repository: &organizationRepositoryMock{
+				repository: &UpdatePasswordOrganizationRepositoryMock{
 					GetFN: func(id int64) (*model.Organization, error) {
 						password, err := security.GenerateHash("test")
 
@@ -104,10 +104,10 @@ func TestUpdatePasswordHandler(t *testing.T) {
 	}
 }
 
-func (r *organizationRepositoryMock) Get(id int64) (*model.Organization, error) {
+func (r *UpdatePasswordOrganizationRepositoryMock) Get(id int64) (*model.Organization, error) {
 	return r.GetFN(id)
 }
 
-func (r *organizationRepositoryMock) ResetPasswordTo(o *model.Organization, password string) error {
+func (r *UpdatePasswordOrganizationRepositoryMock) ResetPasswordTo(o *model.Organization, password string) error {
 	return r.ResetPasswordToFN(o, password)
 }
