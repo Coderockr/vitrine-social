@@ -2,11 +2,12 @@ import React from 'react';
 import cx from 'classnames';
 import { Row, Col, Carousel, Avatar } from 'antd';
 import Pagination from '../../components/Pagination';
+import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
 import OrganizationProfileEdit from '../OrganizationProfileEdit';
 import RequestDetailsEdit from '../RequestDetailsEdit';
-import RequestDetails from '../RequestDetails';
+import RequestDetails from '../../components/RequestDetails';
 import styles from './styles.module.scss';
 
 const organization = {
@@ -63,7 +64,7 @@ class OrganizationProfile extends React.Component {
 
   render() {
     return (
-      <div>
+      <Layout>
         <Row>
           <Col
             xl={{ span: 20, offset: 2 }}
@@ -156,7 +157,7 @@ class OrganizationProfile extends React.Component {
           request={this.state.request}
           onCancel={() => this.setState({ editRequestVisible: false })}
         />
-      </div>
+      </Layout>
     );
   }
 }
