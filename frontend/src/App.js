@@ -8,8 +8,11 @@ import {
   BrowserRouter as Router,
   Route,
 } from 'react-router-dom';
-import Layout from './containers/Layout';
 import reducers from './reducers';
+
+import Home from './containers/Home';
+import OrganizationProfile from './containers/OrganizationProfile';
+
 import './utils/styles/global.module.scss';
 
 updateLocale('pt-br', ptBr);
@@ -24,7 +27,8 @@ const App = () => (
   <Router>
     <Provider store={store}>
       <div className="App">
-        <Route exact path="/" component={Layout} />
+        <Route exact path="/" component={Home} />
+        <Route exact path="/organization" component={OrganizationProfile} />
       </div>
     </Provider>
   </Router>

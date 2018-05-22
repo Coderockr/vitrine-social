@@ -1,35 +1,45 @@
 import React from 'react';
 import moment from 'moment';
 import { Row, Col } from 'antd';
+import RequestDetails from '../RequestDetails';
 import ItemIndicator from '../ItemIndicator';
 import styles from './styles.module.scss';
 
 class RequestCard extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
+  state = {
+    visible: false,
   }
 
   render() {
+    const { request, isOrganization } = this.props;
+
     return (
       <Row>
         <Col>
+          {this.state.visible &&
+            <RequestDetails visible />
+          }
           <div className={styles.requestCard}>
-            <ItemIndicator request={this.props.request} />
+            <ItemIndicator request={request} />
             <div className={styles.organizationContent}>
-              <h2>{this.props.request.item}</h2>
-              <a href={this.props.request.organization.link} target="_blank">
-                {this.props.request.organization.name}
+              <h2>{request.item}</h2>
+              <a href={request.organization.link} target="_blank">
+                {request.organization.name}
               </a>
               <p>
                 Atualizado em: {
-                  moment(this.props.request.date).format('DD / MMMM / YYYY').replace(/(\/)/g, 'de')
+                  moment(request.data).format('DD / MMMM / YYYY').replace(/(\/)/g, 'de')
                 }
               </p>
             </div>
             <div className={styles.interestedContent}>
-              <button className={styles.button}>
-                {this.props.isOrganization ? 'EDITAR' : 'MAIS DETALHES'}
+              <button
+                className={styles.button}
+                onClick={() => this.setState({
+                  visible: true,
+                })}
+              >
+                {isOrganization ? 'EDITAR' : 'MAIS DETALHES'}
               </button>
             </div>
           </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import cx from 'classnames';
 import { Row, Col, Carousel, Avatar } from 'antd';
 import Pagination from '../../components/Pagination';
+import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
 import OrganizationProfileEdit from '../OrganizationProfileEdit';
@@ -59,7 +60,7 @@ class OrganizationProfile extends React.Component {
 
   render() {
     return (
-      <div>
+      <Layout>
         <Row>
           <Col
             xl={{ span: 20, offset: 2 }}
@@ -138,7 +139,7 @@ class OrganizationProfile extends React.Component {
           visible={this.state.editProfileVisible}
           onCancel={() => this.setState({ editProfileVisible: false })}
         />
-      </div>
+      </Layout>
     );
   }
 }
