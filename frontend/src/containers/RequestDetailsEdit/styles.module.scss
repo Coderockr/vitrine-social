@@ -6,6 +6,16 @@
   text-align: center;
 }
 
+.statusWrapper {
+  display: flex;
+}
+
+.statusLabel {
+  font-size: 16px;
+  color: $purple_400;
+  margin-right: 10px;
+}
+
 .galleryHeader {
   margin-top: 20px;
   margin-left: 15px;

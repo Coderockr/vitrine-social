@@ -120,10 +120,22 @@
   .ant-input-number-input {
     border: none;
     background-color: transparent;
+
+    &:disabled {
+      border: none;
+      background-color: transparent;
+    }
   }
 
   .ant-input-number-handler-wrap {
     background-color: transparent;
+  }
+
+  .ant-select-disabled .ant-select-selection {
+    &:hover,
+    &:focus {
+      border-color: #948CF9;
+    }
   }
 
   .ant-input,
@@ -137,7 +149,8 @@
     box-shadow: none;
 
     &:focus,
-    &:hover {
+    &:hover,
+    &:disabled {
       box-shadow: none;
       border-color: #948CF9;
     }
@@ -206,6 +219,27 @@
 
       &:last-child {
         border-radius: 0 20px 20px 0;
+      }
+    }
+  }
+
+  .ant-radio-group.purpleRadio {
+    .ant-radio-button-wrapper {
+      color: #948CF9;
+      border: 2px solid #948CF9;
+
+      &::before {
+        background-color: #948CF9;
+      }
+    }
+
+    .ant-radio-button-wrapper-checked {
+      color: white;
+      border: 2px solid #948CF9;
+      background: #948CF9;
+
+      &::before {
+        background-color: #948CF9 !important;
       }
     }
   }

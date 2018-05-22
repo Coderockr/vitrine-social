@@ -6,6 +6,7 @@ import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
 import OrganizationProfileEdit from '../OrganizationProfileEdit';
 import RequestDetailsEdit from '../RequestDetailsEdit';
+import RequestDetails from '../RequestDetails';
 import styles from './styles.module.scss';
 
 const organization = {
@@ -38,6 +39,7 @@ class OrganizationProfile extends React.Component {
       isOrganization: true,
       editProfileVisible: false,
       editRequestVisible: false,
+      requestDetailsVisible: false,
     };
 
     mediaQuery.addListener(this.widthChange.bind(this));
@@ -136,15 +138,22 @@ class OrganizationProfile extends React.Component {
         </Row>
         <Requests
           isOrganization={this.state.isOrganization}
-          onClick={() => this.setState({ editRequestVisible: true })}
+          onEdit={request => this.setState({ editRequestVisible: true, request })}
+          onClick={request => this.setState({ requestDetailsVisible: true, request })}
         />
         <Pagination />
         <OrganizationProfileEdit
           visible={this.state.editProfileVisible}
           onCancel={() => this.setState({ editProfileVisible: false })}
         />
+        <RequestDetails
+          visible={this.state.requestDetailsVisible}
+          request={this.state.request}
+          onCancel={() => this.setState({ requestDetailsVisible: false })}
+        />
         <RequestDetailsEdit
           visible={this.state.editRequestVisible}
+          request={this.state.request}
           onCancel={() => this.setState({ editRequestVisible: false })}
         />
       </div>

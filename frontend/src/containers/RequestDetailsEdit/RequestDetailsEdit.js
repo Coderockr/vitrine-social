@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Modal, Form, Input, InputNumber, Select } from 'antd';
+import { Row, Col, Modal, Form, Input, InputNumber, Select, Radio } from 'antd';
 import cx from 'classnames';
 import UploadImages from '../../components/UploadImages';
 import styles from './styles.module.scss';
@@ -7,6 +7,8 @@ import styles from './styles.module.scss';
 const FormItem = Form.Item;
 const { TextArea } = Input;
 const { Option } = Select;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 class RequestDetailsEdit extends React.Component {
   state = {
@@ -40,7 +42,6 @@ class RequestDetailsEdit extends React.Component {
         md: { span: 16, offset: 4 },
       },
     };
-
     return (
       <Modal
         visible={this.props.visible}
@@ -54,7 +55,9 @@ class RequestDetailsEdit extends React.Component {
       >
         <Row>
           <Col span={20} offset={2}>
-            <h1 className={styles.title}>Nova Solicitação</h1>
+            <h1 className={styles.title}>
+              {this.props.request ? 'Editar Solicitação' : 'Nova Solicitação'}
+            </h1>
             <Form
               onSubmit={this.handleSubmit}
               hideRequiredMark
@@ -62,10 +65,21 @@ class RequestDetailsEdit extends React.Component {
               <FormItem
                 {...formItemLayout}
               >
+                <div className={styles.statusWrapper}>
+                  <p className={styles.statusLabel}>Status:</p>
+                  <RadioGroup defaultValue="Ativa" className="purpleRadio">
+                    <RadioButton className={styles.radioButton} value="Ativa">ATIVA</RadioButton>
+                    <RadioButton value="Inativa">INATIVA</RadioButton>
+                  </RadioGroup>
+                </div>
+              </FormItem>
+              <FormItem
+                {...formItemLayout}
+              >
                 {getFieldDecorator('title', {
                   rules: [{ required: true, message: 'Preencha o título da solicitação' }],
                 })(
-                  <Input size="large" placeholder="Título" />,
+                  <Input size="large" placeholder="Título" disabled={this.props.request} />,
                 )}
               </FormItem>
               <FormItem
@@ -77,7 +91,7 @@ class RequestDetailsEdit extends React.Component {
                   <Select
                     placeholder="Categoria"
                     size="large"
-                    onChange={value => this.getCities(value)}
+                    disabled={this.props.request}
                   />,
                 )}
               </FormItem>
@@ -94,7 +108,7 @@ class RequestDetailsEdit extends React.Component {
                     {getFieldDecorator('requestedQty', {
                       rules: [{ required: true, message: 'Preencha o complemento' }],
                     })(
-                      <InputNumber size="large" min={1} />,
+                      <InputNumber size="large" min={1} disabled={this.props.request} />,
                     )}
                   </FormItem>
                 </Col>
@@ -118,7 +132,7 @@ class RequestDetailsEdit extends React.Component {
                     {getFieldDecorator('type', {
                       rules: [{ required: true, message: 'Escolha um tipo' }],
                     })(
-                      <Select size="large">
+                      <Select size="large" disabled={this.props.request}>
                         {this.renderType()}
                       </Select>,
                     )}
