@@ -46,7 +46,6 @@ const imagesArray = [
 
 class RequestDetails extends React.Component {
   state = {
-    visible: this.props.visible,
     contactFormVisible: false,
   }
 
@@ -116,12 +115,12 @@ class RequestDetails extends React.Component {
   render() {
     return (
       <Modal
-        visible={this.state.visible}
+        visible={this.props.visible}
         footer={null}
         width={800}
         className={styles.modal}
         destroyOnClose
-        onCancel={() => this.setState({ visible: false })}
+        onCancel={this.props.onCancel}
         closable={!this.state.contactFormVisible}
       >
         {this.renderContent()}

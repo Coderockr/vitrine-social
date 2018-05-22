@@ -35,9 +35,9 @@ class RequestCard extends React.Component {
             <div className={styles.interestedContent}>
               <button
                 className={styles.button}
-                onClick={() => this.setState({
-                  visible: true,
-                })}
+                onClick={isOrganization ?
+                  () => this.props.onEdit(request) :
+                  () => this.props.onClick(request)}
               >
                 {isOrganization ? 'EDITAR' : 'MAIS DETALHES'}
               </button>

@@ -65,7 +65,12 @@ class Requests extends React.Component {
     return (
       requests.map(request => (
         <div className={styles.requestWrapper}>
-          <RequestCard request={request} isOrganization={this.props.isOrganization} />
+          <RequestCard
+            request={request}
+            isOrganization={this.props.isOrganization}
+            onEdit={this.props.onEdit}
+            onClick={this.props.onClick}
+          />
         </div>
       ))
     );
@@ -94,7 +99,12 @@ class Requests extends React.Component {
                 <RadioButton value="Ativas">ATIVAS</RadioButton>
                 <RadioButton value="Inativas">INATIVAS</RadioButton>
               </RadioGroup>
-              <button className={styles.button}>NOVA SOLICITAÇÃO</button>
+              <button
+                className={styles.button}
+                onClick={() => this.props.onEdit()}
+              >
+                NOVA SOLICITAÇÃO
+              </button>
             </div>
             {this.renderRequests(allRequests)}
           </Col>
