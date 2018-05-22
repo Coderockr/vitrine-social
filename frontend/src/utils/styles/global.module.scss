@@ -97,6 +97,35 @@
     color: #FA578A;
   }
 
+  .ant-form-item-label label {
+    color: #948CF9;
+    font-size: 16px;
+  }
+
+  .ant-input-number,
+  .ant-input-number-input {
+    color: #433F79;
+    border: 2px solid #948CF9;
+    border-radius: 20px;
+    font-size: 16px;
+    box-shadow: none;
+
+    &:focus,
+    &:hover {
+      box-shadow: none;
+      border-color: #948CF9;
+    }
+  }
+
+  .ant-input-number-input {
+    border: none;
+    background-color: transparent;
+  }
+
+  .ant-input-number-handler-wrap {
+    background-color: transparent;
+  }
+
   .ant-input,
   .ant-select-selection,
   .ant-select-open .ant-select-selection {

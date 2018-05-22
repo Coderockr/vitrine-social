@@ -94,7 +94,12 @@ class Requests extends React.Component {
                 <RadioButton value="Ativas">ATIVAS</RadioButton>
                 <RadioButton value="Inativas">INATIVAS</RadioButton>
               </RadioGroup>
-              <button className={styles.button}>NOVA SOLICITAÇÃO</button>
+              <button
+                className={styles.button}
+                onClick={this.props.onClick}
+              >
+                NOVA SOLICITAÇÃO
+              </button>
             </div>
             {this.renderRequests(allRequests)}
           </Col>

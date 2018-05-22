@@ -5,6 +5,7 @@ import Pagination from '../../components/Pagination';
 import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
 import OrganizationProfileEdit from '../OrganizationProfileEdit';
+import RequestDetailsEdit from '../RequestDetailsEdit';
 import styles from './styles.module.scss';
 
 const organization = {
@@ -36,6 +37,7 @@ class OrganizationProfile extends React.Component {
       arrowSize: mediaQuery.matches ? 60 : 32,
       isOrganization: true,
       editProfileVisible: false,
+      editRequestVisible: false,
     };
 
     mediaQuery.addListener(this.widthChange.bind(this));
@@ -132,11 +134,18 @@ class OrganizationProfile extends React.Component {
             </div>
           </Col>
         </Row>
-        <Requests isOrganization={this.state.isOrganization} />
+        <Requests
+          isOrganization={this.state.isOrganization}
+          onClick={() => this.setState({ editRequestVisible: true })}
+        />
         <Pagination />
         <OrganizationProfileEdit
           visible={this.state.editProfileVisible}
           onCancel={() => this.setState({ editProfileVisible: false })}
+        />
+        <RequestDetailsEdit
+          visible={this.state.editRequestVisible}
+          onCancel={() => this.setState({ editRequestVisible: false })}
         />
       </div>
     );
