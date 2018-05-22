@@ -62,17 +62,19 @@ class RequestDetailsEdit extends React.Component {
               onSubmit={this.handleSubmit}
               hideRequiredMark
             >
-              <FormItem
-                {...formItemLayout}
-              >
-                <div className={styles.statusWrapper}>
-                  <p className={styles.statusLabel}>Status:</p>
-                  <RadioGroup defaultValue="Ativa" className="purpleRadio">
-                    <RadioButton className={styles.radioButton} value="Ativa">ATIVA</RadioButton>
-                    <RadioButton value="Inativa">INATIVA</RadioButton>
-                  </RadioGroup>
-                </div>
-              </FormItem>
+              {this.props.request ?
+                <FormItem
+                  {...formItemLayout}
+                >
+                  <div className={styles.statusWrapper}>
+                    <p className={styles.statusLabel}>Status:</p>
+                    <RadioGroup defaultValue="Ativa" className="purpleRadio">
+                      <RadioButton className={styles.radioButton} value="Ativa">ATIVA</RadioButton>
+                      <RadioButton value="Inativa">INATIVA</RadioButton>
+                    </RadioGroup>
+                  </div>
+                </FormItem>
+              : null }
               <FormItem
                 {...formItemLayout}
               >
