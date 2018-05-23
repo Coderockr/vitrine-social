@@ -11,6 +11,7 @@ import {
 import reducers from './reducers';
 
 import Home from './containers/Home';
+import Login from './containers/Login';
 import OrganizationProfile from './containers/OrganizationProfile';
 
 import './utils/styles/global.module.scss';
@@ -29,6 +30,7 @@ const App = () => (
       <div className="App">
         <Route exact path="/" component={Home} />
         <Route exact path="/organization" component={OrganizationProfile} />
+        <Route exact path="/login" component={Login} />
       </div>
     </Provider>
   </Router>

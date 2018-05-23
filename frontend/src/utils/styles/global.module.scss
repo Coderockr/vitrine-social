@@ -138,7 +138,12 @@ require('./colors.js');
     }
   }
 
+  .ant-input-affix-wrapper .ant-input-prefix {
+    color: $purple_400;
+  }
+
   .ant-input,
+  .ant-input-affix-wrapper,
   .ant-select-selection,
   .ant-select-open .ant-select-selection {
     color: $blue_900;
@@ -153,6 +158,10 @@ require('./colors.js');
     &:disabled {
       box-shadow: none;
       border-color: $purple_400;
+
+      .ant-input:not(.ant-input-disabled) {
+        border-color: $purple_400;
+      }
     }
 
     &::placeholder,
@@ -175,7 +184,8 @@ require('./colors.js');
       border-color: $red_400;
     }
 
-    .ant-input::placeholder {
+    .ant-input::placeholder,
+    .ant-input-prefix {
       color: $red_400;
     }
   }

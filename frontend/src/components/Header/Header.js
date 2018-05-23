@@ -29,6 +29,9 @@ const Header = () => (
           <Menu.Item key="5">
             <Link to="/organization">Organization Profile</Link>
           </Menu.Item>
+          <Menu.Item key="6">
+            <Link to="/login">Login</Link>
+          </Menu.Item>
         </Menu>
       </Col>
     </Row>
