@@ -1,5 +1,3 @@
-@import './colors.scss';
-
 .containerTitle {
   position: relative;
   letter-spacing: 0.1rem;
@@ -8,7 +6,7 @@
   font-weight: 500;
   text-align: center;
   text-transform: uppercase;
-  color: $grey_500;
+  color: #3E4C63;
   margin-bottom: 45px;
 
   &:after {
@@ -21,14 +19,14 @@
     margin-top: -1px;
     width: 100%;
     height: 2px;
-    background: $grey_500;
+    background: #3E4C63;
   }
 
   span {
     position: relative;
     z-index: 2;
     padding: 0 1rem;
-    background: $grey_090;
+    background: #F0F2F5;
   }
 }
 

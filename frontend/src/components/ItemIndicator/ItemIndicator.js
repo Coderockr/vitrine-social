@@ -2,6 +2,7 @@ import React from 'react';
 import cx from 'classnames';
 import Icon from '../Icons';
 import ProgressCircle from '../ProgressCircle';
+import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
 
 const ItemIndicator = ({ request, size, className }) => (
@@ -16,7 +17,7 @@ const ItemIndicator = ({ request, size, className }) => (
       <Icon
         icon={request.category}
         size={size === 'lg' ? 85 : 60}
-        color="#FF974B"
+        color={colors.ambar_400}
       />
       <div className={cx(styles.progressCircleContainer, styles[size])}>
         <ProgressCircle progress={60} size={size} />

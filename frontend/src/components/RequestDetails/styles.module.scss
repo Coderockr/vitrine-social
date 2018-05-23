@@ -1,4 +1,4 @@
-@import 'src/utils/styles/colors.scss';
+require('../../utils/styles/colors.js');
 @import 'src/utils/styles/common.scss';
 
 .contentWrapper {
@@ -60,7 +60,7 @@
         background-color: transparent;
         font-size: 20px;
         font-weight: lighter;
-        color: #69778D;
+        color: $blue_900;
         text-align: left;
         padding-top: 15px;
         padding-left: 10px;

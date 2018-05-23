@@ -5,10 +5,10 @@ module.exports = {
   black,
   white,
 
-  grey_090: '#f0f2f5',
+  grey_090: '#F0F2F5',
   grey_000: '#EBEBEB',
   grey_100: '#DBDBDB',
-  grey_150: '#c5c7c9',
+  grey_150: '#C5C7C9',
   grey_350: '#707F97',
   grey_400: '#444F60',
   grey_500: '#3E4C63',
@@ -17,7 +17,9 @@ module.exports = {
   textLight: white,
 
   purple_400: '#948CF9',
+  purple_500: '#7169DE',
 
+  ambar_200: '#FFE7D5',
   ambar_400: '#FF974B',
 
   pink_200: '#FBBED1',
