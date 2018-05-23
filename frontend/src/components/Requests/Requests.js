@@ -68,8 +68,6 @@ class Requests extends React.Component {
           <RequestCard
             request={request}
             isOrganization={this.props.isOrganization}
-            onEdit={this.props.onEdit}
-            onClick={this.props.onClick}
           />
         </div>
       ))
