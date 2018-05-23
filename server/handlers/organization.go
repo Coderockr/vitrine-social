@@ -15,6 +15,7 @@ type (
 	OrganizationRepository interface {
 		Get(id int64) (*model.Organization, error)
 		Update(o model.Organization) (model.Organization, error)
+		DeleteImage(imageID int64, organizationID int64) error
 	}
 )
 
@@ -135,6 +136,42 @@ func UpdateOrganizationHandler(repo OrganizationRepository) func(w http.Response
 		_, err = repo.Update(*organization)
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar dados da Organização: %s", err))
+			return
+		}
+
+		HandleHTTPSuccessNoContent(w)
+	}
+}
+
+// DeleteOrganizationImageHandler will delete the image
+func DeleteOrganizationImageHandler(repo OrganizationRepository) func(w http.ResponseWriter, req *http.Request) {
+	return func(w http.ResponseWriter, req *http.Request) {
+		vars := mux.Vars(req)
+		organizationID, err := strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+			return
+		}
+
+		imageID, err := strconv.ParseInt(vars["image_id"], 10, 64)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["image_id"]))
+			return
+		}
+
+		userID := GetUserID(req)
+		if organizationID == 0 || organizationID != userID {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("você não possui permissão para remover a Imagem %d", imageID))
+			return
+		}
+
+		err = repo.DeleteImage(imageID, organizationID)
+		switch {
+		case err == sql.ErrNoRows:
+			HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Imagem com ID: %d", imageID))
+			return
+		case err != nil:
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao deletar Imagem: %s", err))
 			return
 		}
 

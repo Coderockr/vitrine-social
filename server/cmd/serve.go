@@ -79,6 +79,10 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		negroni.WrapFunc(handlers.UpdateOrganizationHandler(oR)),
 	)).Methods("PUT")
 
+	v1.Path("/organization/{id:[0-9]+}/image/{image_id:[0-9]+}").Handler(authMiddleware.With(
+		negroni.WrapFunc(handlers.DeleteOrganizationImageHandler(oR)),
+	)).Methods("DELETE")
+
 	v1.HandleFunc("/need/{id}", handlers.GetNeedHandler(nR, oR)).Methods("GET")
 
 	v1.Path("/need").Handler(authMiddleware.With(
