@@ -23,3 +23,5 @@ server-cmd
 
 #Mac OS Thumb
 .DS_Store
+
+server/config/.env

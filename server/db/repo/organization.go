@@ -120,6 +120,12 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 	return o, nil
 }
 
+// DeleteImage - Receive an id and remove the image
+func (r *OrganizationRepository) DeleteImage(imageID int64, organizationID int64) error {
+	_, err := r.db.Exec(`DELETE FROM organizations_images WHERE id = $1 AND organization_id = $2`, imageID, organizationID)
+	return err
+}
+
 // GetByEmail returns a organization by its email
 func (r *OrganizationRepository) GetByEmail(email string) (*model.Organization, error) {
 	o := model.Organization{}
