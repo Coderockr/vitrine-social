@@ -1,7 +1,16 @@
 import React from 'react';
-import { Row, Col, Modal, Form, Input, InputNumber, Select, Radio } from 'antd';
+import {
+  Row,
+  Col,
+  Modal,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  Radio,
+} from 'antd';
 import cx from 'classnames';
-import UploadImages from '../../components/UploadImages';
+import UploadImages from '../UploadImages';
 import styles from './styles.module.scss';
 
 const FormItem = Form.Item;
@@ -12,7 +21,12 @@ const RadioGroup = Radio.Group;
 
 class RequestDetailsEdit extends React.Component {
   state = {
-    types: ['Unidade', 'Kg', 'Pessoa', 'Litro'],
+    types: [
+      'Unidade',
+      'Kg',
+      'Pessoa',
+      'Litro',
+    ],
   }
 
   handleSubmit = (e) => {
@@ -35,6 +49,8 @@ class RequestDetailsEdit extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
+    const { request } = this.props;
+
     const formItemLayout = {
       wrapperCol: {
         xs: { span: 24 },
@@ -42,6 +58,7 @@ class RequestDetailsEdit extends React.Component {
         md: { span: 16, offset: 4 },
       },
     };
+
     return (
       <Modal
         visible={this.props.visible}
@@ -56,14 +73,14 @@ class RequestDetailsEdit extends React.Component {
         <Row>
           <Col span={20} offset={2}>
             <h1 className={styles.title}>
-              {this.props.request ? 'Editar Solicitação' : 'Nova Solicitação'}
+              {request ? 'Editar Solicitação' : 'Nova Solicitação'}
             </h1>
             <Form
               onSubmit={this.handleSubmit}
               hideRequiredMark
             >
               <FormItem
-                className={!this.props.request && styles.statusFormItem}
+                className={!request && styles.statusFormItem}
                 {...formItemLayout}
               >
                 <div className={styles.statusWrapper}>
@@ -80,7 +97,7 @@ class RequestDetailsEdit extends React.Component {
                 {getFieldDecorator('title', {
                   rules: [{ required: true, message: 'Preencha o título da solicitação' }],
                 })(
-                  <Input size="large" placeholder="Título" disabled={this.props.request} />,
+                  <Input size="large" placeholder="Título" disabled={request} />,
                 )}
               </FormItem>
               <FormItem
@@ -92,7 +109,7 @@ class RequestDetailsEdit extends React.Component {
                   <Select
                     placeholder="Categoria"
                     size="large"
-                    disabled={this.props.request}
+                    disabled={request}
                   />,
                 )}
               </FormItem>
@@ -109,7 +126,7 @@ class RequestDetailsEdit extends React.Component {
                     {getFieldDecorator('requestedQty', {
                       rules: [{ required: true, message: 'Preencha o complemento' }],
                     })(
-                      <InputNumber size="large" min={1} disabled={this.props.request} />,
+                      <InputNumber size="large" min={1} disabled={request} />,
                     )}
                   </FormItem>
                 </Col>
@@ -121,7 +138,11 @@ class RequestDetailsEdit extends React.Component {
                     {getFieldDecorator('receivedQty', {
                       rules: [{ required: true, message: 'Preencha o bairro' }],
                     })(
-                      <InputNumber size="large" min={1} max={this.props.form.getFieldValue('requestedQty')} />,
+                      <InputNumber
+                        size="large"
+                        min={1}
+                        max={this.props.form.getFieldValue('requestedQty')}
+                      />,
                     )}
                   </FormItem>
                 </Col>
@@ -133,7 +154,7 @@ class RequestDetailsEdit extends React.Component {
                     {getFieldDecorator('type', {
                       rules: [{ required: true, message: 'Escolha um tipo' }],
                     })(
-                      <Select size="large" disabled={this.props.request}>
+                      <Select size="large" disabled={request}>
                         {this.renderType()}
                       </Select>,
                     )}

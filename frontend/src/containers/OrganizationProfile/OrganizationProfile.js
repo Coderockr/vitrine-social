@@ -6,7 +6,7 @@ import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
 import OrganizationProfileEdit from '../OrganizationProfileEdit';
-import RequestDetailsEdit from '../RequestDetailsEdit';
+import RequestDetailsEdit from '../../components/RequestDetailsEdit';
 import RequestDetails from '../../components/RequestDetails';
 import styles from './styles.module.scss';
 
