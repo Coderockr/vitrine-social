@@ -7,6 +7,8 @@ import Arrow from '../../components/Arrow';
 import ContactForm from '../../components/ContactForm';
 import colors from '../../utils/styles/colors';
 
+const mediaQuery = window.matchMedia('(min-width: 700px)');
+
 const request = {
   organization: {
     name: 'Lar Abdon batista',
@@ -37,17 +39,19 @@ const carouselSettings = {
 };
 
 const imagesArray = [
-  { title: 'Leitura Infantil', image: <img src="assets/images/leitura-infantil.jpg" alt="Leitura Infantil" /> },
-  { title: 'Leitura Infantil 2', image: <img src="assets/images/leitura-infantil 2.jpg" alt="Leitura Infantil 2" /> },
-  { title: 'Leitura Infantil 3', image: <img src="assets/images/leitura-infantil 3.jpg" alt="Leitura Infantil 3" /> },
-  { title: 'Leitura Infantil 4', image: <img src="assets/images/leitura-infantil.jpg" alt="Leitura Infantil 4" /> },
-  { title: 'Leitura Infantil 5', image: <img src="assets/images/leitura-infantil 2.jpg" alt="Leitura Infantil 5" /> },
-  { title: 'Leitura Infantil 6', image: <img src="assets/images/leitura-infantil 3.jpg" alt="Leitura Infantil 6" /> },
+  { title: 'Leitura Infantil', src: 'assets/images/leitura-infantil.jpg' },
+  { title: 'Leitura Infantil 2', src: 'assets/images/leitura-infantil 2.jpg' },
+  { title: 'Leitura Infantil 3', src: 'assets/images/leitura-infantil 3.jpg' },
+  { title: 'Leitura Infantil 4', src: 'assets/images/leitura-infantil.jpg' },
+  { title: 'Leitura Infantil 5', src: 'assets/images/leitura-infantil 2.jpg' },
+  { title: 'Leitura Infantil 6', src: 'assets/images/leitura-infantil 3.jpg' },
 ];
 
 class RequestDetails extends React.Component {
   state = {
     contactFormVisible: false,
+    previewVisible: false,
+    previewImage: '',
   }
 
   showContactForm() {
@@ -56,13 +60,36 @@ class RequestDetails extends React.Component {
     });
   }
 
+  cancelPreview = () => this.setState({ previewVisible: false })
+
+  showPreview = (imgSource) => {
+    this.setState({
+      previewImage: imgSource,
+      previewVisible: mediaQuery.matches,
+    });
+  }
+
   renderImages(images) {
     return (
-      images.map(imageObj => imageObj.image)
+      images.map(imageObj => (
+        <a
+          onClick={() => this.showPreview(imageObj.src)}
+          onKeyPress={() => this.showPreview(imageObj.src)}
+          role="link"
+          tabIndex={0}
+        >
+          <img
+            src={imageObj.src}
+            alt="Leitura Infantil"
+          />
+        </a>
+      ))
     );
   }
 
   renderContent() {
+    const { previewVisible, previewImage } = this.state;
+
     if (this.state.contactFormVisible) {
       return (
         <ContactForm
@@ -109,6 +136,13 @@ class RequestDetails extends React.Component {
         >
           QUERO AJUDAR!
         </button>
+        <Modal
+          visible={previewVisible}
+          footer={null}
+          onCancel={this.cancelPreview}
+        >
+          <img className={styles.modalImage} alt="example" style={{ width: '100%' }} src={previewImage} />
+        </Modal>
       </div>
     );
   }

@@ -109,6 +109,10 @@ require('../../utils/styles/colors.js');
   }
 }
 
+.modalImage {
+  margin-top: 30px;
+}
+
 @media (max-width: 696px) {
   .itemDetails {
     display: inline !important;
