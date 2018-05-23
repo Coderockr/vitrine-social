@@ -21,17 +21,18 @@ class Login extends React.Component {
     const { getFieldDecorator } = this.props.form;
 
     return (
-      <Layout>
+      <Layout className={styles.layout}>
         <Header />
-        <Content>
-          <Row type="flex" className={styles.row} style={{ height: '100vh' }}>
+        <Content className={styles.content}>
+          <Row className={styles.row}>
             <Col
-              lg={{ span: 8, offset: 8 }}
-              md={{ span: 10, offset: 7 }}
+              xxl={{ span: 6, offset: 9 }}
+              lg={{ span: 8, offset: 9 }}
+              md={{ span: 10, offset: 6 }}
               sm={{ span: 12, offset: 6 }}
               xs={{ span: 20, offset: 2 }}
             >
-              <h1 className={styles.title}>Login da Organização</h1>
+              <h1>Login da Organização</h1>
               <Form onSubmit={this.handleSubmit}>
                 <FormItem>
                   {getFieldDecorator('userName', {
@@ -46,13 +47,18 @@ class Login extends React.Component {
                   })(
                     <Input prefix={<Icon type="lock" />} type="password" placeholder="Senha" size="large" />,
                   )}
+                  <a
+                    className={styles.forgotPassword}
+                    href=""
+                  >
+                    Esqueci a senha
+                  </a>
                 </FormItem>
                 <FormItem>
                   <div className={styles.buttonWrapper}>
                     <button type="primary" htmlType="submit" className={styles.button}>
                       LOG IN
                     </button>
-                    <a className="login-form-forgot" href="">Esqueci a senha</a>
                   </div>
                 </FormItem>
               </Form>
