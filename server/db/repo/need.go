@@ -100,3 +100,33 @@ func (r *NeedRepository) Create(n model.Need) (model.Need, error) {
 
 	return n, nil
 }
+
+// Update - Receive a Need and update it in the database, returning the updated Need or error if failed
+func (r *NeedRepository) Update(n model.Need) (model.Need, error) {
+	_, err := r.db.Exec(
+		`UPDATE needs SET
+			category_id = $1,
+			title = $2,
+			description = $3,
+			required_qtd = $4,
+			reached_qtd = $5,
+			due_date = $6,
+			unity = $7
+		WHERE id = $8
+		`,
+		n.CategoryID,
+		n.Title,
+		n.Description,
+		n.RequiredQuantity,
+		n.ReachedQuantity,
+		n.DueDate,
+		n.Unity,
+		n.ID,
+	)
+
+	if err != nil {
+		return n, err
+	}
+
+	return n, nil
+}
