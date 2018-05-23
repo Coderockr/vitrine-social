@@ -1,4 +1,4 @@
-@import 'src/utils/styles/colors.scss';
+require('../../utils/styles/colors.js');
 
 .search {
   background-color: $cian_400;

@@ -3,6 +3,7 @@ import { Row, Col, Modal, Avatar, Form, Input, Upload, Select } from 'antd';
 import cx from 'classnames';
 import UploadImages from '../../components/UploadImages';
 import { maskPhone, maskCep } from '../../utils/mask';
+import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
 
 const FormItem = Form.Item;
@@ -148,8 +149,8 @@ class OrganizationProfileEdit extends React.Component {
                     icon="user"
                     style={{
                       fontSize: 140,
-                      color: '#FFFFFF',
-                      backgroundColor: '#FFE7D5',
+                      color: colors.white,
+                      backgroundColor: colors.ambar_200,
                       textShadow: '4px 1px 3px #FF974A',
                     }}
                   />

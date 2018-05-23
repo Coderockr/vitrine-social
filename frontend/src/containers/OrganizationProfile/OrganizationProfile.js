@@ -8,6 +8,7 @@ import Arrow from '../../components/Arrow';
 import OrganizationProfileEdit from '../OrganizationProfileEdit';
 import RequestDetailsEdit from '../../components/RequestDetailsEdit';
 import RequestDetails from '../../components/RequestDetails';
+import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
 
 const organization = {
@@ -112,7 +113,7 @@ class OrganizationProfile extends React.Component {
                 <div className={styles.arrowWrapper}>
                   <Arrow
                     size={this.state.arrowSize}
-                    color="#31E0D5"
+                    color={colors.teal_400}
                     onClick={() => this.carousel.prev()}
                     left
                     over
@@ -128,7 +129,7 @@ class OrganizationProfile extends React.Component {
                   </div>
                   <Arrow
                     size={this.state.arrowSize}
-                    color="#31E0D5"
+                    color={colors.teal_400}
                     onClick={() => this.carousel.next()}
                     over
                   />

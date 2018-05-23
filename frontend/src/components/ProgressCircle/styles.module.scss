@@ -1,4 +1,4 @@
-@import 'src/utils/styles/colors.scss';
+require('../../utils/styles/colors.js');
 
 .progress_circle {
   position: relative;

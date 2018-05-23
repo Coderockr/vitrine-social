@@ -5,6 +5,7 @@ import styles from './styles.module.scss';
 import ItemIndicator from '../../components/ItemIndicator';
 import Arrow from '../../components/Arrow';
 import ContactForm from '../../components/ContactForm';
+import colors from '../../utils/styles/colors';
 
 const request = {
   organization: {
@@ -91,7 +92,7 @@ class RequestDetails extends React.Component {
           </div>
         </div>
         <div className={styles.arrowWrapper}>
-          <Arrow size={32} color="#948CF9" onClick={() => this.carousel.prev()} left />
+          <Arrow size={32} color={colors.purple_400} onClick={() => this.carousel.prev()} left />
           <div className={styles.carouselWrapper}>
             <Carousel
               ref={(ref) => { this.carousel = ref; }}
@@ -101,7 +102,7 @@ class RequestDetails extends React.Component {
               {this.renderImages(imagesArray)}
             </Carousel>
           </div>
-          <Arrow size={32} color="#948CF9" onClick={() => this.carousel.next()} />
+          <Arrow size={32} color={colors.purple_400} onClick={() => this.carousel.next()} />
         </div>
         <button
           onClick={() => this.showContactForm()}
