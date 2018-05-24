@@ -19,7 +19,7 @@ const { Option } = Select;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-class RequestDetailsEdit extends React.Component {
+class RequestForm extends React.Component {
   state = {
     types: [
       'Unidade',
@@ -192,6 +192,6 @@ class RequestDetailsEdit extends React.Component {
   }
 }
 
-const WrappedEditRequestDetailsForm = Form.create()(RequestDetailsEdit);
+const WrappedRequestForm = Form.create()(RequestForm);
 
-export default WrappedEditRequestDetailsForm;
+export default WrappedRequestForm;

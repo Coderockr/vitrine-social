@@ -5,7 +5,7 @@ import Pagination from '../../components/Pagination';
 import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
-import OrganizationProfileEdit from '../../components/OrganizationProfileEdit';
+import OrganizationProfileForm from '../../components/OrganizationProfileForm';
 import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
 
@@ -79,7 +79,7 @@ class OrganizationProfile extends React.Component {
                   >
                     EDITAR
                   </button>
-                  <OrganizationProfileEdit
+                  <OrganizationProfileForm
                     visible={this.state.editProfileVisible}
                     onCancel={() => this.setState({ editProfileVisible: false })}
                   />

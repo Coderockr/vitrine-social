@@ -19,7 +19,7 @@ const FormItem = Form.Item;
 const { TextArea } = Input;
 const { Option } = Select;
 
-class OrganizationProfileEdit extends React.Component {
+class OrganizationProfileForm extends React.Component {
   state = {
     validatingZipCode: '',
     states: [{ id: -1, sigla: 'Indisponíveis' }],
@@ -123,6 +123,7 @@ class OrganizationProfileEdit extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
+
     const formItemLayout = {
       wrapperCol: {
         xs: { span: 24 },
@@ -345,6 +346,6 @@ class OrganizationProfileEdit extends React.Component {
   }
 }
 
-const WrappedEditProfileForm = Form.create()(OrganizationProfileEdit);
+const WrappedOrganizationProfileForm = Form.create()(OrganizationProfileForm);
 
-export default WrappedEditProfileForm;
+export default WrappedOrganizationProfileForm;
