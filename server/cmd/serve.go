@@ -85,7 +85,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	)).Methods("DELETE")
 
 	v1.Path("/organization/{id:[0-9]+}/subscribe").HandlerFunc(
-		handlers.CreateSubscriptionHandler(sR, oR),
+		handlers.CreateSubscriptionHandler(sR),
 	).Methods("POST")
 
 	v1.HandleFunc("/need/{id}", handlers.GetNeedHandler(nR, oR)).Methods("GET")
