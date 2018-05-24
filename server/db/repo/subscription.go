@@ -76,5 +76,18 @@ func validate(r *SubscriptionRepository, s model.Subscription) (model.Subscripti
 		return s, err
 	}
 
+	var found int64
+	err = r.db.QueryRow(`
+		SELECT COUNT(1) as found 
+		FROM subscriptions 
+		WHERE organization_id = $1 AND email LIKE $2`,
+		s.OrganizationID,
+		s.Email,
+	).Scan(&found)
+
+	if found > 0 {
+		return s, fmt.Errorf("Este email já está inscrito para a Organização %d", s.OrganizationID)
+	}
+
 	return s, nil
 }
