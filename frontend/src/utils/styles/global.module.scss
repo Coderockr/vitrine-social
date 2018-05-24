@@ -28,12 +28,54 @@ require('./colors.js');
     padding-bottom: 0px;
   }
 
-  .ant-menu {
+  .menuModal {
+    div.ant-modal-content {
+      background: transparent !important;
+    }
+
+    .ant-menu-item {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      &:active {
+        background-color: transparent;
+      }
+
+      a {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 500;
+        border-bottom: 3px solid $pink_400;
+        &:hover {
+          color: $pink_400;
+        }
+      }
+    }
+
+    .ant-menu-item-selected {
+      a {
+        color: $pink_400;
+      }
+    }
+}
+
+  .ant-menu-dark.ant-menu-horizontal {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     border-bottom: none;
   }
 
+  .ant-menu-vertical .ant-menu-item:after, 
+  .ant-menu-vertical-left .ant-menu-item:after, 
+  .ant-menu-vertical-right .ant-menu-item:after, 
+  .ant-menu-inline .ant-menu-item:after,
+  .ant-menu-inline, .ant-menu-vertical, 
+  .ant-menu-vertical-left {
+    border-right: none;
+  }
+
+  .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected,
   .ant-menu.ant-menu-dark .ant-menu-item-selected,
   .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
     background: transparent

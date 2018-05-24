@@ -22,7 +22,7 @@ class Login extends React.Component {
 
     return (
       <Layout className={styles.layout}>
-        <Header />
+        <Header className={styles.header} />
         <Content className={styles.content}>
           <Row className={styles.row}>
             <Col
