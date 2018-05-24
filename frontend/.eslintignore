@@ -5,3 +5,4 @@ src/components/Icons/map.json
 src/registerServiceWorker.js
 scripts/
 config/
+build/

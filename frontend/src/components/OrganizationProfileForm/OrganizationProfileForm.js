@@ -1,7 +1,16 @@
 import React from 'react';
-import { Row, Col, Modal, Avatar, Form, Input, Upload, Select } from 'antd';
+import {
+  Row,
+  Col,
+  Modal,
+  Avatar,
+  Form,
+  Input,
+  Upload,
+  Select,
+} from 'antd';
 import cx from 'classnames';
-import UploadImages from '../../components/UploadImages';
+import UploadImages from '../UploadImages';
 import { maskPhone, maskCep } from '../../utils/mask';
 import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
@@ -10,7 +19,7 @@ const FormItem = Form.Item;
 const { TextArea } = Input;
 const { Option } = Select;
 
-class OrganizationProfileEdit extends React.Component {
+class OrganizationProfileForm extends React.Component {
   state = {
     validatingZipCode: '',
     states: [{ id: -1, sigla: 'Indisponíveis' }],
@@ -114,6 +123,7 @@ class OrganizationProfileEdit extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
+
     const formItemLayout = {
       wrapperCol: {
         xs: { span: 24 },
@@ -336,6 +346,6 @@ class OrganizationProfileEdit extends React.Component {
   }
 }
 
-const WrappedEditProfileForm = Form.create()(OrganizationProfileEdit);
+const WrappedOrganizationProfileForm = Form.create()(OrganizationProfileForm);
 
-export default WrappedEditProfileForm;
+export default WrappedOrganizationProfileForm;

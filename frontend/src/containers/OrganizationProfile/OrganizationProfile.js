@@ -5,9 +5,7 @@ import Pagination from '../../components/Pagination';
 import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
-import OrganizationProfileEdit from '../OrganizationProfileEdit';
-import RequestDetailsEdit from '../../components/RequestDetailsEdit';
-import RequestDetails from '../../components/RequestDetails';
+import OrganizationProfileForm from '../../components/OrganizationProfileForm';
 import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
 
@@ -40,8 +38,6 @@ class OrganizationProfile extends React.Component {
       arrowSize: mediaQuery.matches ? 60 : 32,
       isOrganization: true,
       editProfileVisible: false,
-      editRequestVisible: false,
-      requestDetailsVisible: false,
     };
 
     mediaQuery.addListener(this.widthChange.bind(this));
@@ -75,14 +71,20 @@ class OrganizationProfile extends React.Component {
               <h2 className={styles.containerTitle}>
                 <span>PERFIL DA ORGANIZAÇÃO</span>
               </h2>
-              <div className={styles.buttonWrapper} hidden={!this.state.isOrganization}>
-                <button
-                  className={styles.button}
-                  onClick={() => this.setState({ editProfileVisible: true })}
-                >
-                  EDITAR
-                </button>
-              </div>
+              {this.state.isOrganization &&
+                <div className={styles.buttonWrapper}>
+                  <button
+                    className={styles.button}
+                    onClick={() => this.setState({ editProfileVisible: true })}
+                  >
+                    EDITAR
+                  </button>
+                  <OrganizationProfileForm
+                    visible={this.state.editProfileVisible}
+                    onCancel={() => this.setState({ editProfileVisible: false })}
+                  />
+                </div>
+              }
               <Avatar
                 src="assets/images/leitura-infantil 3.jpg"
                 size={'large'}
@@ -138,26 +140,8 @@ class OrganizationProfile extends React.Component {
             </div>
           </Col>
         </Row>
-        <Requests
-          isOrganization={this.state.isOrganization}
-          onEdit={request => this.setState({ editRequestVisible: true, request })}
-          onClick={request => this.setState({ requestDetailsVisible: true, request })}
-        />
+        <Requests isOrganization={this.state.isOrganization} />
         <Pagination />
-        <OrganizationProfileEdit
-          visible={this.state.editProfileVisible}
-          onCancel={() => this.setState({ editProfileVisible: false })}
-        />
-        <RequestDetails
-          visible={this.state.requestDetailsVisible}
-          request={this.state.request}
-          onCancel={() => this.setState({ requestDetailsVisible: false })}
-        />
-        <RequestDetailsEdit
-          visible={this.state.editRequestVisible}
-          request={this.state.request}
-          onCancel={() => this.setState({ editRequestVisible: false })}
-        />
       </Layout>
     );
   }
