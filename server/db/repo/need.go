@@ -50,29 +50,9 @@ func getNeedImages(db *sqlx.DB, n *model.Need) ([]model.NeedImage, error) {
 
 // Create creates a new need based on the struct
 func (r *NeedRepository) Create(n model.Need) (model.Need, error) {
-	n.Title = strings.TrimSpace(n.Title)
-	if len(n.Title) == 0 {
-		return n, errors.New("Deve ser informado um título para a Necessidade")
-	}
+	n, err := validate(r, n)
 
-	n.Description = strings.TrimSpace(n.Description)
-	if len(n.Description) == 0 {
-		return n, errors.New("Deve ser informada uma descrição para a Necessidade")
-	}
-
-	_, err := r.catRepo.Get(n.CategoryID)
-	switch {
-	case err == sql.ErrNoRows:
-		return n, fmt.Errorf("Não foi encontrada categoria com ID: %d", n.CategoryID)
-	case err != nil:
-		return n, err
-	}
-
-	_, err = getBaseOrganization(r.db, n.OrganizationID)
-	switch {
-	case err == sql.ErrNoRows:
-		return n, fmt.Errorf("Não foi encontrada Organização com ID: %d", n.OrganizationID)
-	case err != nil:
+	if err != nil {
 		return n, err
 	}
 
@@ -103,7 +83,13 @@ func (r *NeedRepository) Create(n model.Need) (model.Need, error) {
 
 // Update - Receive a Need and update it in the database, returning the updated Need or error if failed
 func (r *NeedRepository) Update(n model.Need) (model.Need, error) {
-	_, err := r.db.Exec(
+	n, err := validate(r, n)
+
+	if err != nil {
+		return n, err
+	}
+
+	_, err = r.db.Exec(
 		`UPDATE needs SET
 			category_id = $1,
 			title = $2,
@@ -125,6 +111,36 @@ func (r *NeedRepository) Update(n model.Need) (model.Need, error) {
 	)
 
 	if err != nil {
+		return n, err
+	}
+
+	return n, nil
+}
+
+func validate(r *NeedRepository, n model.Need) (model.Need, error) {
+	n.Title = strings.TrimSpace(n.Title)
+	if len(n.Title) == 0 {
+		return n, errors.New("Deve ser informado um título para a Necessidade")
+	}
+
+	n.Description = strings.TrimSpace(n.Description)
+	if len(n.Description) == 0 {
+		return n, errors.New("Deve ser informada uma descrição para a Necessidade")
+	}
+
+	_, err := r.catRepo.Get(n.CategoryID)
+	switch {
+	case err == sql.ErrNoRows:
+		return n, fmt.Errorf("Não foi encontrada categoria com ID: %d", n.CategoryID)
+	case err != nil:
+		return n, err
+	}
+
+	_, err = getBaseOrganization(r.db, n.OrganizationID)
+	switch {
+	case err == sql.ErrNoRows:
+		return n, fmt.Errorf("Não foi encontrada Organização com ID: %d", n.OrganizationID)
+	case err != nil:
 		return n, err
 	}
 
