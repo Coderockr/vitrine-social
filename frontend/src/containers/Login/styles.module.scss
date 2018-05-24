@@ -5,6 +5,10 @@ require('../../utils/styles/colors.js');
   width: 100%;
   height: 100%;
 
+  .header {
+    z-index: 2;
+  }
+
   .content {
     position: absolute;
     display: table;

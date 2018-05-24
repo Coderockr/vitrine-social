@@ -61,17 +61,18 @@ class Header extends React.Component {
         mode={collapsed ? 'inline' : 'horizontal'}
         defaultSelectedKeys={['1']}
         theme={collapsed ? 'light' : 'dark'}
+        selectedKeys={[window.location.pathname]}
       >
-        <Menu.Item key="1">
-          <Link to="/hello">Sobre o Projeto</Link>
+        <Menu.Item key="/">
+          <Link to="/">Sobre o Projeto</Link>
         </Menu.Item>
-        <Menu.Item key="2">
-          <Link to="/hello">Quero Participar</Link>
+        <Menu.Item key="/organization">
+          <Link to="/organization">Quero Participar</Link>
         </Menu.Item>
-        <Menu.Item key="3">
-          <Link to="/hello">Contato</Link>
+        <Menu.Item key="/contact">
+          <Link to="/contact">Contato</Link>
         </Menu.Item>
-        <Menu.Item key="4">
+        <Menu.Item key="/login">
           <Link to="/login">Login</Link>
         </Menu.Item>
       </Menu>
@@ -81,7 +82,7 @@ class Header extends React.Component {
   render() {
     return (
       <Layout.Header
-        className={styles.appHeader}
+        className={cx(styles.appHeader, this.props.className)}
       >
         <Row>
           <Col
@@ -98,8 +99,8 @@ class Header extends React.Component {
           visible={this.state.visible}
           footer={null}
           onCancel={() => this.hideMenu()}
-          bodyStyle={{ height: '100vh' }}
-          className={cx(styles.modal, styles.menuModals)}
+          bodyStyle={{ height: '100vh', backgroundColor: 'rgba(255,255,255,.8)' }}
+          className={cx(styles.modal, 'menuModal')}
         >
           {this.renderMenu(true)}
         </Modal>
