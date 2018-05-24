@@ -1,7 +1,16 @@
 import React from 'react';
-import { Row, Col, Modal, Avatar, Form, Input, Upload, Select } from 'antd';
+import {
+  Row,
+  Col,
+  Modal,
+  Avatar,
+  Form,
+  Input,
+  Upload,
+  Select,
+} from 'antd';
 import cx from 'classnames';
-import UploadImages from '../../components/UploadImages';
+import UploadImages from '../UploadImages';
 import { maskPhone, maskCep } from '../../utils/mask';
 import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
