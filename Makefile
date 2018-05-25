@@ -23,9 +23,21 @@ migrations: ## run pending migrations
 	go get github.com/rubenv/sql-migrate/...
 	sql-migrate up -config=devops/dbconfig.yml -env=production
 
+migrations-on-docker: ## run migrations inside docker
+	docker-compose up -d
+	docker-compose exec golang sql-migrate up -config=devops/dbconfig.yml -env=docker
+
 serve: ## start server
 	docker-compose up -d
 	cd server && go run main.go serve
+
+install-on-docker: ## install dependences from docker
+	docker-compose up -d
+	docker-compose exec golang make install
+
+serve-on-docker: ## start the server inside docker
+	docker-compose up -d
+	docker-compose exec golang sh -c "cd server && go run main.go serve"
 
 serve-watch: ## start server with hot reload
 	docker-compose up -d
@@ -47,7 +59,6 @@ docs-open:
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help: ## show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-
 
 tests: ## run go tests
 	cd server && go test -v -race ./...

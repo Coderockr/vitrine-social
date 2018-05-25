@@ -2,8 +2,6 @@ version: "3"
 services:
   postgres:
     image: postgres:9-alpine
-    container_name: postgres
-    network_mode: "bridge"
     volumes:
       - ./:/vitrine
       - ./.data/postgres:/var/lib/postgresql/data
@@ -11,3 +9,18 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_DB=vitrine
+  golang:
+    image: golang:1.10.2
+    volumes:
+      - ./:/go/src/Coderockr/vitrine-social
+      - ${GOPATH:-.go}:/go
+    ports:
+      - "8000:8000"
+    environment:
+      API_PORT: 8000
+      DATABASE_HOST: postgres
+      VITRINESOCIAL_ENV: ${VITRINESOCIAL_ENV:-dev}
+    command: sh -c "while true; do echo 'beep'; sleep 5; done"
+    working_dir: /go/src/Coderockr/vitrine-social
+    links:
+      - postgres
