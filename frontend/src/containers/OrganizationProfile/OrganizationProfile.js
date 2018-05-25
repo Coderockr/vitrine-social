@@ -7,6 +7,7 @@ import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
 import OrganizationProfileForm from '../../components/OrganizationProfileForm';
 import colors from '../../utils/styles/colors';
+import api from '../../utils/api';
 import styles from './styles.module.scss';
 
 const organization = {
@@ -43,6 +44,10 @@ class OrganizationProfile extends React.Component {
     mediaQuery.addListener(this.widthChange.bind(this));
   }
 
+  componentWillMount() {
+    this.fetchData();
+  }
+
   componentWillUnmount() {
     mediaQuery.removeListener(this.widthChange);
   }
@@ -51,6 +56,17 @@ class OrganizationProfile extends React.Component {
     this.setState({
       arrowSize: mediaQuery.matches ? 60 : 32,
     });
+  }
+
+  fetchData() {
+    api.get('organization/1').then(
+      (response) => {
+        console.log(response);
+      },
+      (error) => {
+        console.log(error);
+      },
+    );
   }
 
   renderImages(images) {
