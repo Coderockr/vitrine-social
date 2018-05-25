@@ -5,7 +5,6 @@ const api = axios.create({
   timeout: 5000,
   headers: {
     'Content-type': 'application/x-www-form-urlencoded',
-    'Access-Control-Allow-Origin': '*',
   },
 });
 

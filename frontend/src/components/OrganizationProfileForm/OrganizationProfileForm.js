@@ -11,7 +11,9 @@ import {
 } from 'antd';
 import cx from 'classnames';
 import UploadImages from '../UploadImages';
+import ResponseFeedback from '../ResponseFeedback';
 import { maskPhone, maskCep } from '../../utils/mask';
+import api from '../../utils/api';
 import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
 
@@ -22,12 +24,17 @@ const { Option } = Select;
 class OrganizationProfileForm extends React.Component {
   state = {
     validatingZipCode: '',
+    responseFeedback: 'error',
     states: [{ id: -1, sigla: 'Indisponíveis' }],
     cities: [{ id: -1, nome: 'Indisponíveis' }],
   }
 
   componentDidMount() {
     this.getStates();
+  }
+
+  getStateId(initials) {
+    return this.state.states.filter(state => state.sigla === initials)[0].id;
   }
 
   getCities(stateId) {
@@ -39,6 +46,11 @@ class OrganizationProfileForm extends React.Component {
         .then(response => response.json())
         .then((data) => {
           this.setState({ cities: data.sort(this.citySort) });
+          if (this.props.organization) {
+            this.props.form.setFieldsValue({
+              city: 'Porto Alegre',
+            });
+          }
         });
     }
   }
@@ -47,7 +59,15 @@ class OrganizationProfileForm extends React.Component {
     fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
       .then(response => response.json())
       .then((data) => {
-        this.setState({ states: data.sort(this.stateSort) });
+        const states = data.sort(this.stateSort);
+        this.setState({ states });
+        if (this.props.organization) {
+          const stateId = this.getStateId('RS');
+          this.getCities(stateId);
+          this.props.form.setFieldsValue({
+            state: stateId,
+          });
+        }
       });
   }
 
@@ -79,7 +99,7 @@ class OrganizationProfileForm extends React.Component {
         this.setState({
           validatingZipCode: 'success',
         });
-        const stateId = this.state.states.filter(state => state.sigla === data.uf)[0].id;
+        const stateId = this.getStateId('RS');
         this.getCities(stateId);
         this.props.form.setFieldsValue({
           street: data.logradouro,
@@ -99,9 +119,8 @@ class OrganizationProfileForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        return values;
+        api.put(values);
       }
-      return null;
     });
   }
 
@@ -132,6 +151,8 @@ class OrganizationProfileForm extends React.Component {
       },
     };
 
+    const { organization } = this.props;
+
     return (
       <Modal
         visible={this.props.visible}
@@ -142,8 +163,9 @@ class OrganizationProfileForm extends React.Component {
         onCancel={this.props.onCancel}
         closable={false}
         maskClosable={false}
+        wrapClassName={this.state.responseFeedback && styles.modalFixed}
       >
-        <Row>
+        <Row className={this.state.responseFeedback && styles.blurRow}>
           <Col span={20} offset={2}>
             <h1 className={styles.title}>Editar Perfil da Organização</h1>
             <div className={styles.uploadWrapper}>
@@ -163,6 +185,7 @@ class OrganizationProfileForm extends React.Component {
                       backgroundColor: colors.ambar_200,
                       textShadow: '4px 1px 3px #FF974A',
                     }}
+                    src={organization.logo}
                   />
                   <div className={styles.avatarEdit}>
                     <p>Editar</p>
@@ -171,31 +194,27 @@ class OrganizationProfileForm extends React.Component {
               </Upload>
             </div>
             <Form onSubmit={this.handleSubmit}>
-              <FormItem
-                {...formItemLayout}
-              >
+              <FormItem {...formItemLayout}>
                 {getFieldDecorator('name', {
                   rules: [{ required: true, message: 'Preencha o nome da organização' }],
+                  initialValue: organization.name,
                 })(
                   <Input size="large" placeholder="Nome da Organização" />,
                 )}
               </FormItem>
-              <FormItem
-                {...formItemLayout}
-              >
+              <FormItem {...formItemLayout}>
                 {getFieldDecorator('email', {
                   rules: [{
                     type: 'email', message: 'E-mail inválido',
                   }, {
                     required: true, message: 'Preencha o e-mail',
                   }],
+                  initialValue: organization.email,
                 })(
                   <Input size="large" placeholder="E-mail" />,
                 )}
               </FormItem>
-              <FormItem
-                {...formItemLayout}
-              >
+              <FormItem {...formItemLayout}>
                 {getFieldDecorator('phone', {
                   getValueFromEvent: e => maskPhone(e.target.value),
                   rules: [{
@@ -203,6 +222,7 @@ class OrganizationProfileForm extends React.Component {
                   }, {
                     pattern: /^1\d\d(\d\d)?$|^0800 ?\d{3} ?\d{4}$|^(\(0?([1-9a-zA-Z][0-9a-zA-Z])?[1-9]\d\) ?|0?([1-9a-zA-Z][0-9a-zA-Z])?[1-9]\d[ .-]?)?(9|9[ .-])?[2-9]\d{3}[ .-]?\d{4}$/gm, message: 'Telefone Inválido',
                   }],
+                  initialValue: maskPhone(organization.phone),
                 })(
                   <Input size="large" placeholder="Telefone" />,
                 )}
@@ -218,6 +238,7 @@ class OrganizationProfileForm extends React.Component {
                   }, {
                       pattern: /^[0-9]{5}-[0-9]{3}/, message: 'CEP Inválido',
                   }],
+                  initialValue: maskCep('89201602'),
                 })(
                   <Input
                     ref={(ref) => { this.zipCodeInput = ref; }}
@@ -227,13 +248,12 @@ class OrganizationProfileForm extends React.Component {
                   />,
                 )}
               </FormItem>
-              <FormItem
-                {...formItemLayout}
-              >
+              <FormItem {...formItemLayout}>
                 <Col span={17}>
                   <FormItem>
                     {getFieldDecorator('street', {
                       rules: [{ required: true, message: 'Preencha a Rua' }],
+                      initialValue: organization.address,
                     })(
                       <Input size="large" placeholder="Rua" />,
                     )}
@@ -246,19 +266,19 @@ class OrganizationProfileForm extends React.Component {
                   <FormItem>
                     {getFieldDecorator('number', {
                       rules: [{ required: true, message: 'Preencha o número' }],
+                      initialValue: '2119',
                     })(
                       <Input size="large" placeholder="Número" />,
                     )}
                   </FormItem>
                 </Col>
               </FormItem>
-              <FormItem
-                {...formItemLayout}
-              >
+              <FormItem {...formItemLayout}>
                 <Col span={9}>
                   <FormItem>
                     {getFieldDecorator('complement', {
                       rules: [{ required: true, message: 'Preencha o complemento' }],
+                      initialValue: 'casa 10',
                     })(
                       <Input size="large" placeholder="Complemento" />,
                     )}
@@ -271,19 +291,19 @@ class OrganizationProfileForm extends React.Component {
                   <FormItem>
                     {getFieldDecorator('neighborhood', {
                       rules: [{ required: true, message: 'Preencha o bairro' }],
+                      initialValue: 'Gloria',
                     })(
                       <Input size="large" placeholder="Bairro" />,
                     )}
                   </FormItem>
                 </Col>
               </FormItem>
-              <FormItem
-                {...formItemLayout}
-              >
+              <FormItem {...formItemLayout}>
                 <Col span={9}>
                   <FormItem>
                     {getFieldDecorator('state', {
                       rules: [{ required: true, message: 'Preencha o Estado' }],
+                      initialValue: this.state.states.length > 1 ? this.getStateId('RS') : null,
                     })(
                       <Select
                         placeholder="Estado"
@@ -302,6 +322,7 @@ class OrganizationProfileForm extends React.Component {
                   <FormItem>
                     {getFieldDecorator('city', {
                       rules: [{ required: true, message: 'Preencha a Cidade' }],
+                      initialValue: 'Porto Alegre',
                     })(
                       <Select placeholder="Cidade" size="large" showSearch optionFilterProp="children">
                         {this.renderCities()}
@@ -310,10 +331,10 @@ class OrganizationProfileForm extends React.Component {
                   </FormItem>
                 </Col>
               </FormItem>
-              <FormItem
-                {...formItemLayout}
-              >
-                <TextArea rows={5} placeholder="Sobre a Organização" />
+              <FormItem {...formItemLayout}>
+                {getFieldDecorator('about', { initialValue: organization.resume })(
+                  <TextArea rows={5} placeholder="Sobre a Organização" />,
+                )}
               </FormItem>
               <FormItem>
                 <Col
@@ -322,7 +343,7 @@ class OrganizationProfileForm extends React.Component {
                   xs={{ span: 24, offset: 0 }}
                 >
                   <h2 className={styles.galleryHeader}>Galeria de Imagens</h2>
-                  <UploadImages />
+                  <UploadImages images={organization.images} />
                 </Col>
               </FormItem>
               <FormItem>
@@ -341,6 +362,7 @@ class OrganizationProfileForm extends React.Component {
             </Form>
           </Col>
         </Row>
+        <ResponseFeedback visible={this.state.responseFeedback} />
       </Modal>
     );
   }

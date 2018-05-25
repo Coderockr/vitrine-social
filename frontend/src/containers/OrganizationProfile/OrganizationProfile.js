@@ -6,25 +6,10 @@ import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
 import OrganizationProfileForm from '../../components/OrganizationProfileForm';
+import { maskPhone } from '../../utils/mask';
 import colors from '../../utils/styles/colors';
 import api from '../../utils/api';
 import styles from './styles.module.scss';
-
-const organization = {
-  name: 'Lar Abdon Batista',
-  about: 'O Lar Abdon Batista foi criado em 1911, pelo então Prefeito Abdon Batista. Inicialmente foi chamado de Sociedade de Caridade e Asylo de Órfãos e Desvalidos e funcionava no prédio que hoje abriga a Secretaria Municipal de Assistência Social, na rua Procópio Gomes, no bairro Bucarein.',
-  link: 'http://coderockr.com/',
-  phoneNumber: '(47) 3227-6359',
-  address: 'Rua Presidente Affonso Penna, 680 - Bucarein, Joinville - SC',
-  images: [
-    { title: 'Leitura Infantil', image: <img src="assets/images/leitura-infantil.jpg" alt="Leitura Infantil" /> },
-    { title: 'Leitura Infantil 2', image: <img src="assets/images/leitura-infantil 2.jpg" alt="Leitura Infantil 2" /> },
-    { title: 'Leitura Infantil 3', image: <img src="assets/images/leitura-infantil 3.jpg" alt="Leitura Infantil 3" /> },
-    { title: 'Leitura Infantil 4', image: <img src="assets/images/leitura-infantil.jpg" alt="Leitura Infantil 4" /> },
-    { title: 'Leitura Infantil 5', image: <img src="assets/images/leitura-infantil 2.jpg" alt="Leitura Infantil 5" /> },
-    { title: 'Leitura Infantil 6', image: <img src="assets/images/leitura-infantil 3.jpg" alt="Leitura Infantil 6" /> },
-  ],
-};
 
 const carouselSettings = {
   slidesToShow: 1,
@@ -61,21 +46,23 @@ class OrganizationProfile extends React.Component {
   fetchData() {
     api.get('organization/1').then(
       (response) => {
-        console.log(response);
-      },
-      (error) => {
-        console.log(error);
+        this.setState({ organization: response.data });
       },
     );
   }
 
   renderImages(images) {
     return (
-      images.map(imageObj => imageObj.image)
+      images.map(image => <img key={image.id} src={image.url} alt={image.name} />)
     );
   }
 
   render() {
+    const { organization } = this.state;
+    if (!organization) {
+      return null;
+    }
+
     return (
       <Layout>
         <Row>
@@ -98,11 +85,12 @@ class OrganizationProfile extends React.Component {
                   <OrganizationProfileForm
                     visible={this.state.editProfileVisible}
                     onCancel={() => this.setState({ editProfileVisible: false })}
+                    organization={organization}
                   />
                 </div>
               }
               <Avatar
-                src="assets/images/leitura-infantil 3.jpg"
+                src={organization.logo}
                 size={'large'}
                 style={{ marginTop: 20 }}
               />
@@ -115,11 +103,11 @@ class OrganizationProfile extends React.Component {
               >
                 <div className={cx(styles.border, styles.aboutBorder)}>
                   <h1>Sobre</h1>
-                  <p>{organization.about}</p>
+                  <p>{organization.resume}</p>
                 </div>
                 <div className={cx(styles.border, styles.phoneBorder)}>
                   <h1>Telefone</h1>
-                  <a>{organization.phoneNumber}</a>
+                  <a>{maskPhone(organization.phone)}</a>
                 </div>
                 <div className={cx(styles.border, styles.addressBorder)}>
                   <h1>Endereço</h1>
