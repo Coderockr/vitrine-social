@@ -48,3 +48,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/golang/sync"
+
+[[constraint]]
+  name = "github.com/graphql-go/graphql"
+  version = "0.7.5"

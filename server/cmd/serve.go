@@ -21,6 +21,7 @@ import (
 
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/repo"
+	"github.com/Coderockr/vitrine-social/server/graphql"
 	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/middlewares"
 	"github.com/gorilla/context"
@@ -49,17 +50,18 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	oR := repo.NewOrganizationRepository(conn)
 	nR := repo.NewNeedRepository(conn)
+	cR := repo.NewCategoryRepository(conn)
+	tm := &handlers.JWTManager{OP: getJWTOptions()}
 
 	needResponseRepo := repo.NewNeedResponseRepository(conn)
 
 	mux := mux.NewRouter()
 
 	v1 := mux.PathPrefix("/v1").Subrouter()
-	options := getJWTOptions()
 
 	AuthHandler := handlers.AuthHandler{
 		UserGetter:   oR,
-		TokenManager: &handlers.JWTManager{OP: options},
+		TokenManager: tm,
 	}
 
 	authMiddleware := negroni.New()
@@ -91,6 +93,13 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo)).
 		Methods("POST")
+
+	mux.Handle("/graphql", graphql.NewHandler(
+		nR,
+		oR,
+		cR,
+		tm,
+	))
 
 	n := negroni.Classic()
 	n.Use(negroni.HandlerFunc(middlewares.Cors))
