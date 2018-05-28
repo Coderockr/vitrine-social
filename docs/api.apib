@@ -304,7 +304,7 @@ Realizar busca das necessidades
             Accept: application/json
             Content-Type: application/json
             Authorization: JWT
-    + Attributes (NeedPayload)
+    + Attributes (CreateNeedPayload)
 
 
 + Response 201 (application/json)
@@ -392,13 +392,15 @@ Realizar busca das necessidades
 
 ## NeedPayload (object)
 + category (number) - ID da Categoria da necessidade
-+ organization (number) - ID da ONG
 + title (string) - Resumo da necessidade
 + description (string) - Descrição detalhada da necessidade
 + requiredQuantity (number) - Quantidade necessária
 + reachedQuantity (number) - Quantidade alcançada
 + dueDate: `2017-08-17` (string) - Data final da necessidade
 + unity: kg (string) - Unidade da necessidade
+
+## CreateNeedPayload (NeedPayload)
++ organization (number) - ID da ONG
 
 ## BaseNeed (object)
 + id (number) - Código da necessidade
