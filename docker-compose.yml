@@ -1,4 +1,8 @@
 version: "3"
+
+volumes:
+  gopath:
+
 services:
   postgres:
     image: postgres:9-alpine
@@ -12,8 +16,8 @@ services:
   golang:
     image: golang:1.10.2
     volumes:
-      - ./:/go/src/Coderockr/vitrine-social
-      - ${GOPATH:-.go}:/go
+      - ./:/go/src/github.com/Coderockr/vitrine-social
+      - ${GOPATH:-gopath}:/go
     ports:
       - "8000:8000"
     environment:
@@ -21,6 +25,6 @@ services:
       DATABASE_HOST: postgres
       VITRINESOCIAL_ENV: ${VITRINESOCIAL_ENV:-dev}
     command: sh -c "while true; do echo 'beep'; sleep 5; done"
-    working_dir: /go/src/Coderockr/vitrine-social
+    working_dir: /go/src/github.com/Coderockr/vitrine-social
     links:
       - postgres
