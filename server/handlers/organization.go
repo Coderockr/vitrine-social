@@ -48,12 +48,20 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 				Logo: o.Logo,
 				Slug: o.Slug,
 			},
-			Address: o.Address,
-			Phone:   o.Phone,
-			Resume:  o.Resume,
-			Video:   o.Video,
-			Email:   o.Email,
-			Images:  orgImagesToImageJSON(o.Images),
+			addressJSON: addressJSON{
+				Street:     o.Street,
+				Number:     o.Number,
+				Complement: o.Complement,
+				Suburb:     o.Suburb,
+				City:       o.City,
+				State:      o.State,
+				Zipcode:    o.Zipcode,
+			},
+			Phone:  o.Phone,
+			Resume: o.Resume,
+			Video:  o.Video,
+			Email:  o.Email,
+			Images: orgImagesToImageJSON(o.Images),
 		}
 
 		oJSON.Needs = make([]needJSON, 0, len(o.Needs))
@@ -93,9 +101,9 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 // UpdateOrganizationHandler will update the data of an organization
 func UpdateOrganizationHandler(repo OrganizationRepository) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
-		var handlerForm map[string]string
+		var organization model.Organization
 
-		err := requestToJSONObject(req, &handlerForm)
+		err := requestToJSONObject(req, &organization)
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, err)
 			return
@@ -114,8 +122,7 @@ func UpdateOrganizationHandler(repo OrganizationRepository) func(w http.Response
 			return
 		}
 
-		organization, err := repo.Get(id)
-
+		_, err = repo.Get(id)
 		switch {
 		case err == sql.ErrNoRows:
 			HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Organização com ID: %d", id))
@@ -125,15 +132,9 @@ func UpdateOrganizationHandler(repo OrganizationRepository) func(w http.Response
 			return
 		}
 
-		organization.Name = handlerForm["name"]
-		organization.Logo = handlerForm["logo"]
-		organization.Address = handlerForm["address"]
-		organization.Phone = handlerForm["phone"]
-		organization.Resume = handlerForm["resume"]
-		organization.Video = handlerForm["video"]
-		organization.Email = handlerForm["email"]
+		organization.ID = id
 
-		_, err = repo.Update(*organization)
+		_, err = repo.Update(organization)
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar dados da Organização: %s", err))
 			return

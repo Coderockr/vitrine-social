@@ -48,3 +48,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/golang/sync"
+
+[[constraint]]
+  name = "github.com/gobuffalo/pop"
+  version = "4.5.9"

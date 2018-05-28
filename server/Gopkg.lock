@@ -58,6 +58,18 @@
   version = "v1.28.2"
 
 [[projects]]
+  name = "github.com/gobuffalo/pop"
+  packages = ["nulls"]
+  revision = "9985012f32f5e36b1a10e9191ee460daac4a9bc7"
+  version = "v4.5.9"
+
+[[projects]]
+  name = "github.com/gobuffalo/uuid"
+  packages = ["."]
+  revision = "3a9fb6c5c481d4886f1e9323c61ad743fb955860"
+  version = "v2.0.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
@@ -228,6 +240,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0dddb5515247efeed7849b7455edbc9f59288c35d4967ea606dd2a74de6981d2"
+  inputs-digest = "a7e71e428aedba08ca0ad26fa73eaf355c6eb0f66c5ff026934c7c8c1c61c0a7"
   solver-name = "gps-cdcl"
   solver-version = 1
