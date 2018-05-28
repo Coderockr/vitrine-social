@@ -93,6 +93,16 @@ type Category struct {
 	Icon string `valid:"required" db:"icon"`
 }
 
+// Subscription relacionada a uma organização
+type Subscription struct {
+	ID             int64      `valid:"required" db:"id"`
+	OrganizationID int64      `valid:"required" db:"organization_id"`
+	Name           string     `valid:"required" db:"name"`
+	Email          string     `valid:"required" db:"email"`
+	Phone          string     `valid:"required" db:"phone"`
+	Date           *time.Time `db:"date"`
+}
+
 func (s *needStatus) Scan(src interface{}) error {
 	var str string
 
