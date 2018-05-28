@@ -381,6 +381,18 @@ Realizar busca das necessidades
 + Response 404 (application/json)
     + Attributes (Error)
 
+# Group Category
+
+## Categorias [/v1/categories]
+
+### Get All [GET]
+
++ Response 200 (application/json)
+    + Attributes (array[AllCategories])
+
++ Response 404 (application/json)
+    + Attributes (Error)
+
 # Data Structures
 
 ## Created (object)
@@ -458,3 +470,6 @@ Realizar busca das necessidades
 ## UploadFile (object)
 + name: `File.png` (string) - Nome do arquivo
 + content: `file content` (string) - Conteúdo do arquivo formatado como Base64
+
+## AllCategories (Category)
++ needs_count (number) - Número de necessidades ativas da categoria
