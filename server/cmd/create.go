@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/handlers"
@@ -39,11 +40,16 @@ var (
 	email   string
 	name    string
 	logo    string
-	address string
 	phone   string
 	resume  string
 	video   string
 	slug    string
+	street  string
+	number  string
+	suburb  string
+	city    string
+	state   string
+	zipcode string
 )
 
 func init() {
@@ -52,18 +58,28 @@ func init() {
 	createCmd.Flags().StringVarP(&email, "email", "e", "", "organization's e-mail")
 	createCmd.Flags().StringVarP(&name, "name", "n", "", "organization's name")
 	createCmd.Flags().StringVarP(&logo, "logo", "l", "", "organization's logo")
-	createCmd.Flags().StringVarP(&address, "address", "a", "", "organization's address")
 	createCmd.Flags().StringVarP(&phone, "phone", "p", "", "organization's phone")
 	createCmd.Flags().StringVarP(&slug, "slug", "s", "", "organization's slug")
 	createCmd.Flags().StringVarP(&resume, "resume", "r", "", "organization's resume")
 	createCmd.Flags().StringVarP(&video, "video", "v", "", "organization's video")
+	createCmd.Flags().StringVarP(&street, "street", "", "", "organization's street")
+	createCmd.Flags().StringVarP(&number, "number", "", "", "organization's number")
+	createCmd.Flags().StringVarP(&suburb, "suburb", "", "", "organization's suburb")
+	createCmd.Flags().StringVarP(&city, "city", "", "", "organization's city")
+	createCmd.Flags().StringVarP(&state, "state", "", "", "organization's state")
+	createCmd.Flags().StringVarP(&zipcode, "zipcode", "", "", "organization's zipcode")
 
 	createCmd.MarkFlagRequired("email")
 	createCmd.MarkFlagRequired("name")
 	createCmd.MarkFlagRequired("logo")
-	createCmd.MarkFlagRequired("address")
 	createCmd.MarkFlagRequired("phone")
 	createCmd.MarkFlagRequired("slug")
+	createCmd.MarkFlagRequired("street")
+	createCmd.MarkFlagRequired("number")
+	createCmd.MarkFlagRequired("suburb")
+	createCmd.MarkFlagRequired("city")
+	createCmd.MarkFlagRequired("state")
+	createCmd.MarkFlagRequired("zipcode")
 }
 
 func createCmdFunc(cmd *cobra.Command, args []string) {
@@ -74,18 +90,31 @@ func createCmdFunc(cmd *cobra.Command, args []string) {
 
 	oR := repo.NewOrganizationRepository(conn)
 
+	addressNumber, err := strconv.ParseInt(number, 10, 64)
+	if err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
+
 	o, err := oR.Create(model.Organization{
 		User: model.User{
 			Email:    email,
 			Password: "",
 		},
-		Name:    name,
-		Logo:    logo,
-		Address: address,
-		Phone:   phone,
-		Slug:    slug,
-		Resume:  resume,
-		Video:   video,
+		Name:   name,
+		Logo:   logo,
+		Phone:  phone,
+		Slug:   slug,
+		Resume: resume,
+		Video:  video,
+		Address: model.Address{
+			Street:  street,
+			Number:  addressNumber,
+			Suburb:  suburb,
+			City:    city,
+			State:   state,
+			Zipcode: zipcode,
+		},
 	})
 
 	if err != nil {

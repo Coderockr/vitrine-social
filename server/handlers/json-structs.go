@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
+
+	"github.com/gobuffalo/pop/nulls"
 )
 
 type jsonTime struct {
@@ -28,13 +30,13 @@ type baseOrganizationJSON struct {
 
 type organizationJSON struct {
 	baseOrganizationJSON
-	Address string      `json:"address"`
-	Phone   string      `json:"phone"`
-	Resume  string      `json:"resume"`
-	Video   string      `json:"video"`
-	Email   string      `json:"email"`
-	Needs   []needJSON  `json:"needs"`
-	Images  []imageJSON `json:"images"`
+	Phone  string `json:"phone"`
+	Resume string `json:"resume"`
+	Video  string `json:"video"`
+	Email  string `json:"email"`
+	addressJSON
+	Needs  []needJSON  `json:"needs"`
+	Images []imageJSON `json:"images"`
 }
 
 type categoryJSON struct {
@@ -61,6 +63,16 @@ type needJSON struct {
 	Unity            string               `json:"unity"`
 	DueDate          *jsonTime            `json:"dueDate"`
 	Status           string               `json:"status"`
+}
+
+type addressJSON struct {
+	Street     string       `json:"street"`
+	Number     int64        `json:"number"`
+	Complement nulls.String `json:"complement"`
+	Suburb     string       `json:"suburb"`
+	City       string       `json:"city"`
+	State      string       `json:"state"`
+	Zipcode    string       `json:"zipcode"`
 }
 
 func requestToJSONObject(req *http.Request, jsonDoc interface{}) error {
