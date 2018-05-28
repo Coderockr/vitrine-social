@@ -38,10 +38,14 @@ type organizationJSON struct {
 }
 
 type categoryJSON struct {
-	ID         int64  `json:"id"`
-	Name       string `json:"name"`
-	Icon       string `json:"icon"`
-	NeedsCount int64  `json:"needs_count"`
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
+	Icon string `json:"icon"`
+}
+
+type categoryWithCountJSON struct {
+	categoryJSON
+	NeedsCount int64 `json:"needs_count"`
 }
 
 type imageJSON struct {

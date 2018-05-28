@@ -28,7 +28,7 @@ migrations-on-docker: ## run migrations inside docker
 	docker-compose exec golang sql-migrate up -config=devops/dbconfig.yml -env=docker
 
 serve: ## start server
-	docker-compose up -d
+	docker-compose up -d postgres
 	cd server && go run main.go serve
 
 install-on-docker: ## install dependences from docker

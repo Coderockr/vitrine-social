@@ -23,13 +23,15 @@ func GetAllCategoriesHandler(cR CategoryRepository, nR NeedRepository) func(http
 			return
 		}
 
-		cJSON := make([]categoryJSON, 0, len(categories))
+		cJSON := make([]categoryWithCountJSON, 0, len(categories))
 
 		for _, c := range categories {
-			cJSON = append(cJSON, categoryJSON{
-				ID:         c.ID,
-				Name:       c.Name,
-				Icon:       c.Icon,
+			cJSON = append(cJSON, categoryWithCountJSON{
+				categoryJSON: categoryJSON{
+					ID:   c.ID,
+					Name: c.Name,
+					Icon: c.Icon,
+				},
 				NeedsCount: c.NeedsCount,
 			})
 		}
