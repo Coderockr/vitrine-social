@@ -77,13 +77,6 @@ type imageJSON struct {
 	URL  string `json:"url"`
 }
 
-type baseOrganizationJSON struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-	Logo string `json:"logo"`
-	Slug string `json:"slug"`
-}
-
 type jsonTime struct {
 	time.Time
 }

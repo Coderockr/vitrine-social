@@ -14,7 +14,7 @@ func newOrganizationQuery(get getOrgFn) *graphql.Field {
 		Args: graphql.FieldConfigArgument{
 			"id": intArgument,
 		},
-		Type: organizarionType,
+		Type: organizationType,
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 			id, _ := p.Args["id"].(int)
 			if n, ok := p.Source.(needJSON); ok {
@@ -29,14 +29,7 @@ func newOrganizationQuery(get getOrgFn) *graphql.Field {
 				return nil, err
 			}
 
-			oJSON := &baseOrganizationJSON{
-				ID:   o.ID,
-				Name: o.Name,
-				Logo: o.Logo,
-				Slug: o.Slug,
-			}
-
-			return oJSON, err
+			return orgToJSON(o), err
 		},
 	}
 }

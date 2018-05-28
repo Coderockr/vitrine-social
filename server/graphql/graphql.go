@@ -24,6 +24,7 @@ type (
 
 	tokenManager interface {
 		CreateToken(model.User) (string, error)
+		ValidateToken(token string) (int64, error)
 	}
 )
 
@@ -40,6 +41,7 @@ func NewHandler(nR needRepo, oR orgRepo, cR catRepo, tm tokenManager) http.Handl
 			"need":         newNeedQuery(nR.Get, oR.Get),
 			"organization": oQuery,
 			"category":     cQuery,
+			"viewer":       newViewerQuery(tm.ValidateToken, oR.Get),
 		},
 	}
 
