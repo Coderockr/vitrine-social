@@ -91,9 +91,10 @@ type NeedResponse struct {
 
 // Category de uma necessidade
 type Category struct {
-	ID   int64  `valid:"required" db:"id"`
-	Name string `valid:"required" db:"name"`
-	Icon string `valid:"required" db:"icon"`
+	ID         int64  `valid:"required" db:"id"`
+	Name       string `valid:"required" db:"name"`
+	Icon       string `valid:"required" db:"icon"`
+	NeedsCount int64  `db:"count_need"`
 }
 
 // Address de uma organização

@@ -36,3 +36,21 @@ func (r *CategoryRepository) Get(id int64) (model.Category, error) {
 	categoryCache.Store(id, c)
 	return c, nil
 }
+
+// GetAll return all categories
+func (r *CategoryRepository) GetAll() ([]model.Category, error) {
+	c := []model.Category{}
+	err := r.db.Select(&c, `
+		SELECT categories.*, COUNT(needs.id) as count_need
+		FROM categories
+		LEFT JOIN needs ON needs.category_id = categories.id
+			AND needs.status = 'ACTIVE'
+		GROUP BY categories.id
+		ORDER BY name ASC
+	`)
+	if err != nil {
+		return []model.Category{}, err
+	}
+
+	return c, nil
+}

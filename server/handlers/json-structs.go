@@ -45,6 +45,11 @@ type categoryJSON struct {
 	Icon string `json:"icon"`
 }
 
+type categoryWithCountJSON struct {
+	categoryJSON
+	NeedsCount int64 `json:"needs_count"`
+}
+
 type imageJSON struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
