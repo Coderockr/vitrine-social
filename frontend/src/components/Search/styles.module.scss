@@ -1,0 +1,43 @@
+require('../../utils/styles/colors.js');
+
+.search {
+  background-color: $cian_400;
+
+  .wrapper {
+    display: flex;
+    padding: 0;
+    border: 2px solid $cian_500;
+    border-radius: 50px;
+    background-color: $white;
+    margin: 30px auto;
+  }
+
+  input {
+    display:block;
+    float:left;
+    outline: none;
+    border-radius: 50px;
+    border: none;
+    height: 50px;
+    width:100%;
+    color: $grey_400;
+    font-size: 18px;
+    background: transparent;
+    padding: 0;
+    padding-left: 30px;
+  }
+
+  &::placeholder {
+    color: $grey_350;
+    font-weight: 300;
+  }
+
+  button {
+    outline: none;
+    position: relative;
+    float: right;
+    padding: 0 20px;
+    background-color: transparent;
+    border: none;
+  }
+}

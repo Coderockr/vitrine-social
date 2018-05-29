@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: http://api.vitrine.dev:8001/v1
+HOST: http://api.vitrine.dev:8001
 
 # Vitrine Social
 
@@ -7,11 +7,11 @@ Vitrine Social.
 
 # Group API
 
-## Sobre [/]
+## Sobre [/v1/]
 
 Aqui podemos descrever detalhes que são comuns a todos os serviços como formatos, headers, tipos de erros, etc
 
-## Retornos [/returns]
+## Retornos [/v1/returns]
 
 ### Tipos de retorno esperado
 
@@ -55,7 +55,6 @@ As requisições que finalizaram com sucesso devem ter as informações abaixo n
 
 ```
 
-
 O status code deve ser 200 ou 201
 
 ### Headers padrão
@@ -68,7 +67,7 @@ O status code deve ser 200 ou 201
 
 # Group Autenticação
 
-## Login [/auth/login]
+## Login [/v1/auth/login]
 
 ### Realizar login [POST]
 
@@ -86,10 +85,10 @@ O status code deve ser 200 ou 201
         + organization (BaseOrganization)
         + token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ (string)
 
-+ Response 404 (application/json)
++ Response 401 (application/json)
     + Attributes (Error)
 
-## Logout [/auth/logout]
+## Logout [/v1/auth/logout]
 
 ### Realizar logout [POST]
 
@@ -103,11 +102,30 @@ O status code deve ser 200 ou 201
 
 + Response 204
 
+## Atualizar Senha [/v1/auth/update-password]
+
+### Atualizar Senha [POST]
+
++ Request Atualizar Senha
+
+    + Headers
+
+            Accept: application/json
+            Content-Type: application/json
+            Authorization: JWT
+
+    + Attributes (PasswordUpdate)
+
++ Response 200
+
++ Response 400 (application/json)
+    + Attributes (Error)
+
 # Group Search
 
 Realizar busca das necessidades
 
-## Search [/search?text={text}&category={categories}&org={org}&page={page}]
+## Search [/v1/search?text={text}&category={categories}&org={org}&page={page}]
 
 ### Fazer busca [GET]
 
@@ -129,7 +147,7 @@ Realizar busca das necessidades
 
 # Group Organization
 
-## Organização [/organization/{id}]
+## Organização [/v1/organization/{id}]
 
 ### Perfil da ONG [GET]
 
@@ -137,7 +155,7 @@ Realizar busca das necessidades
     + id (number) - Id da ONG
 
 + Response 200 (application/json)
-    + Attributes (DetailedOrganization)
+    + Attributes (CompleteOrganization)
 
 + Response 404 (application/json)
     + Attributes (Error)
@@ -163,7 +181,7 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Subscribe [/organization/{id}/subscribe]
+## Subscribe [/v1/organization/{id}/subscribe]
 
 ### Receber notificações [POST]
 
@@ -181,7 +199,7 @@ Realizar busca das necessidades
 + Response 404 (application/json)
     + Attributes (Error)
 
-## Unsubscribe [/organization/{id}/unsubscribe/{email}]
+## Unsubscribe [/v1/organization/{id}/unsubscribe/{email}]
 
 ### Parar de receber notificações [GET]
 
@@ -195,14 +213,14 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Upload [/organization/{id}/upload]
+## Upload de Imagem [/v1/organization/{id}/upload]
 
-### Fazer upload [POST]
+### Fazer upload de imagem [POST]
 
 + Parameters
     + id (number) - Id da ONG
 
-+ Request Upload de um arquivo
++ Request Upload de uma imagem
 
     + Headers
 
@@ -218,7 +236,7 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Remover imagem [/organization/{id}/image/{image_id}]
+## Remover imagem [/v1/organization/{id}/image/{image_id}]
 
 ### Remover imagem [DELETE]
 
@@ -242,7 +260,7 @@ Realizar busca das necessidades
 
 # Group Need
 
-## Necessidade [/need/{id}]
+## Necessidade [/v1/need/{id}]
 
 ### Dados da necessidade [GET]
 
@@ -275,7 +293,7 @@ Realizar busca das necessidades
 + Response 400 (application/json)
     + Attributes (Error)
 
-## Criar [/need]
+## Criar [/v1/need]
 
 ### Criar Need [POST]
 
@@ -286,7 +304,7 @@ Realizar busca das necessidades
             Accept: application/json
             Content-Type: application/json
             Authorization: JWT
-    + Attributes (NeedPayload)
+    + Attributes (CreateNeedPayload)
 
 
 + Response 201 (application/json)
@@ -296,7 +314,7 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Upload [/need/{id}/upload]
+## Upload [/v1/need/{id}/upload]
 
 ### Fazer upload [POST]
 
@@ -318,7 +336,7 @@ Realizar busca das necessidades
 + Response 400 (application/json)
     + Attributes (Error)
 
-## Remover imagem [/need/{id}/image/{image_id}]
+## Remover imagem [/v1/need/{id}/image/{image_id}]
 
 ### Remover imagem [DELETE]
 
@@ -341,7 +359,7 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Response [/need/{id}/response]
+## Response [/v1/need/{id}/response]
 
 ### Responder a uma necessidade [POST]
 
@@ -356,7 +374,21 @@ Realizar busca das necessidades
         + address (string) - Endereço
         + message (string) - Mensagem enviada para a ONG
 
-+ Response 204 (application/json)
++ Response 200 (application/json)
+    + Attributes
+        + id (number) - Id da Resposta
+    
++ Response 404 (application/json)
+    + Attributes (Error)
+
+# Group Category
+
+## Categorias [/v1/categories]
+
+### Get All [GET]
+
++ Response 200 (application/json)
+    + Attributes (array[AllCategories])
 
 + Response 404 (application/json)
     + Attributes (Error)
@@ -371,8 +403,7 @@ Realizar busca das necessidades
 + message (string) - Mensagem do status
 
 ## NeedPayload (object)
-+ category (CategoryPayload) - ID da Categoria da necessidade
-+ organization (OrganizationPayload) - ID da ONG
++ category (number) - ID da Categoria da necessidade
 + title (string) - Resumo da necessidade
 + description (string) - Descrição detalhada da necessidade
 + requiredQuantity (number) - Quantidade necessária
@@ -380,11 +411,8 @@ Realizar busca das necessidades
 + dueDate: `2017-08-17` (string) - Data final da necessidade
 + unity: kg (string) - Unidade da necessidade
 
-## CategoryPayload (object)
-+ id (number) - Código da categoria
-
-## OrganizationPayload (object)
-+ id (number) - Código da organização
+## CreateNeedPayload (NeedPayload)
++ organization (number) - ID da ONG
 
 ## BaseNeed (object)
 + id (number) - Código da necessidade
@@ -413,20 +441,32 @@ Realizar busca das necessidades
 + slug (string) - Hash da ONG
 
 ## DetailedOrganization (BaseOrganization)
-+ address (string) - Endereço da ONG
 + phone (string) - Telefone
 + resume (string) - Descrição detalhada da ONG
-+ images (array[Image]) - Imagens relacionadas
 + video (string) - Link de um video no Youtube sobre a ONG
-+ needs (array[Need]) - Lista de necessidades
 + email (string) - E-mail da ONG (também usado para login)
++ street (string) - Rua da localização da ONG
++ number (number) - Número da localização da ONG
++ complement (string) - Complemento da localização da ONG
++ suburb (string) - Bairro de localização da ONG
++ city (string) - Cidade de localização da ONG
++ state (string) - Estado de localização da ONG
++ zipcode (string) - CEP de localização da ONG
 
-## Organization (DetailedOrganization)
+## CompleteOrganization (DetailedOrganization)
++ images (array[Image]) - Imagens relacionadas
++ needs (array[Need]) - Lista de necessidades
+
+## Organization (CompleteOrganization)
 + password (string) - Senha
 
 ## Login (object)
 + username: admin@vitrine.org.br (string) - Username do usuário
 + password: 123 (string) - Senha
+
+## PasswordUpdate (object)
++ currentPassword: 123 (string) - Senha Atual
++ newPassword: 1234 (string) - Nova Senha
 
 ## Image (object)
 + id (number) - Código da imagem
@@ -436,3 +476,6 @@ Realizar busca das necessidades
 ## UploadFile (object)
 + name: `File.png` (string) - Nome do arquivo
 + content: `file content` (string) - Conteúdo do arquivo formatado como Base64
+
+## AllCategories (Category)
++ needs_count (number) - Número de necessidades ativas da categoria

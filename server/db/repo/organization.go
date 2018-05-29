@@ -3,30 +3,36 @@ package repo
 import (
 	"fmt"
 
+	"github.com/Coderockr/vitrine-social/server/security"
+
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/jmoiron/sqlx"
 )
 
 // OrganizationRepository is a implementation for Postgres
 type OrganizationRepository struct {
-	db       *sqlx.DB
-	catRepo  *CategoryRepository
-	needRepo *NeedRepository
+	db      *sqlx.DB
+	catRepo *CategoryRepository
 }
 
 // NewOrganizationRepository creates a new repository
 func NewOrganizationRepository(db *sqlx.DB) *OrganizationRepository {
 	return &OrganizationRepository{
-		db:       db,
-		catRepo:  NewCategoryRepository(db),
-		needRepo: NewNeedRepository(db),
+		db:      db,
+		catRepo: NewCategoryRepository(db),
 	}
+}
+
+// getBaseOrganization returns only the data about a organization, not its relations
+func getBaseOrganization(db *sqlx.DB, id int64) (*model.Organization, error) {
+	o := &model.Organization{}
+	err := db.Get(o, "SELECT * FROM organizations WHERE id = $1", id)
+	return o, err
 }
 
 // Get one Organization from database
 func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
-	o := &model.Organization{}
-	err := r.db.Get(o, "SELECT * FROM organizations WHERE id = $1", id)
+	o, err := getBaseOrganization(r.db, id)
 	if err != nil {
 		return nil, err
 	}
@@ -48,11 +54,127 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 			return nil, err
 		}
 
-		o.Needs[i].Images, err = r.needRepo.getNeedImages(&o.Needs[i])
+		o.Needs[i].Images, err = getNeedImages(r.db, &o.Needs[i])
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	return o, nil
+}
+
+// Create receives a Organization and creates it in the database, returning the updated Organization or error if failed
+func (r *OrganizationRepository) Create(o model.Organization) (model.Organization, error) {
+	row := r.db.QueryRow(
+		`INSERT INTO organizations (
+			name, logo, phone, resume, video, email, slug, password, 
+			street, number, complement, suburb, city, state, zipcode
+		) VALUES (
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
+		)
+		RETURNING id
+		`,
+		o.Name,
+		o.Logo,
+		o.Phone,
+		o.Resume,
+		o.Video,
+		o.Email,
+		o.Slug,
+		o.Password,
+		o.Street,
+		o.Number,
+		o.Complement,
+		o.Suburb,
+		o.City,
+		o.State,
+		o.Zipcode,
+	)
+
+	err := row.Scan(&o.ID)
+
+	if err != nil {
+		return o, err
+	}
+
+	return o, nil
+}
+
+// Update - Receive an Organization and update it in the database, returning the updated Organization or error if failed
+func (r *OrganizationRepository) Update(o model.Organization) (model.Organization, error) {
+	_, err := r.db.Exec(
+		`UPDATE organizations SET
+			name = $1,
+			logo = $2,
+			phone = $3,
+			resume = $4,
+			video = $5,
+			email = $6,
+			street = $7,
+			number = $8,
+			complement = $9,
+			suburb = $10,
+			city = $11,
+			state = $12,
+			zipcode = $13
+		WHERE id = $14
+		`,
+		o.Name,
+		o.Logo,
+		o.Phone,
+		o.Resume,
+		o.Video,
+		o.Email,
+		o.Street,
+		o.Number,
+		o.Complement,
+		o.Suburb,
+		o.City,
+		o.State,
+		o.Zipcode,
+		o.ID,
+	)
+
+	if err != nil {
+		return o, err
+	}
+
+	return o, nil
+}
+
+// DeleteImage - Receive an id and remove the image
+func (r *OrganizationRepository) DeleteImage(imageID int64, organizationID int64) error {
+	_, err := r.db.Exec(`DELETE FROM organizations_images WHERE id = $1 AND organization_id = $2`, imageID, organizationID)
+	return err
+}
+
+// GetByEmail returns a organization by its email
+func (r *OrganizationRepository) GetByEmail(email string) (*model.Organization, error) {
+	o := model.Organization{}
+	err := r.db.Get(&o, `SELECT * FROM organizations WHERE email = $1`, email)
+	return &o, err
+}
+
+// GetUserByEmail returns a organization user by its email
+func (r *OrganizationRepository) GetUserByEmail(email string) (model.User, error) {
+	o, err := r.GetByEmail(email)
+	if err != nil {
+		return model.User{}, err
+	}
+	return o.User, nil
+}
+
+// ResetPasswordTo resets the organization password to the value informed
+func (r *OrganizationRepository) ResetPasswordTo(o *model.Organization, password string) error {
+	hash, err := security.GenerateHash(password)
+	if err != nil {
+		return err
+	}
+
+	_, err = r.db.Exec(`UPDATE organizations SET password = $1 WHERE id = $2`, hash, o.ID)
+	if err != nil {
+		return err
+	}
+	o.Password = hash
+	return nil
 }

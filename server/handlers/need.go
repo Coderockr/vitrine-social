@@ -2,140 +2,144 @@ package handlers
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
-	"github.com/Coderockr/vitrine-social/server/db/repo"
-	"github.com/Coderockr/vitrine-social/server/index"
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/gorilla/mux"
 )
 
-// NeedHandler handles requests about Needs
-type NeedHandler struct {
-	repo         *repo.NeedRepository
-	oRepo        *repo.OrganizationRepository
-	indexService index.Service
+type (
+	// NeedRepository represet operations for need repository.
+	NeedRepository interface {
+		Get(id int64) (*model.Need, error)
+		Update(model.Need) (model.Need, error)
+	}
+
+	needOrganizationRepository interface {
+		Get(id int64) (*model.Organization, error)
+	}
+)
+
+// GetNeedHandler retorna uma necessidade pelo ID
+func GetNeedHandler(repo NeedRepository, oRepo needOrganizationRepository) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		id, err := strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+			return
+		}
+
+		n, err := repo.Get(id)
+		switch {
+		case err == sql.ErrNoRows:
+			HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Necessidade com ID: %d", id))
+			return
+		case err != nil:
+			HandleHTTPError(w, http.StatusForbidden, err)
+			return
+		}
+
+		o, err := oRepo.Get(n.OrganizationID)
+		if err != nil {
+			HandleHTTPError(w, http.StatusForbidden, err)
+			return
+		}
+
+		var dueDate *jsonTime
+		if n.DueDate != nil {
+			dueDate = &jsonTime{*n.DueDate}
+		}
+		nJSON := needJSON{
+			ID:               n.ID,
+			Title:            n.Title,
+			Description:      n.Description,
+			RequiredQuantity: n.RequiredQuantity,
+			ReachedQuantity:  n.ReachedQuantity,
+			Unity:            n.Unity,
+			DueDate:          dueDate,
+			Category: categoryJSON{
+				ID:   n.Category.ID,
+				Name: n.Category.Name,
+				Icon: n.Category.Icon,
+			},
+			Organization: baseOrganizationJSON{
+				ID:   o.ID,
+				Name: o.Name,
+				Logo: o.Logo,
+				Slug: o.Slug,
+			},
+			Images: needImagesToImageJSON(n.Images),
+			Status: string(n.Status),
+		}
+
+		HandleHTTPSuccess(w, nJSON)
+	}
 }
 
-// NewNeedHandler creates a new NeedHandler
-func NewNeedHandler(repo *repo.NeedRepository, oRepo *repo.OrganizationRepository, indexService index.Service) NeedHandler {
-	return NeedHandler{
-		repo:         repo,
-		oRepo:        oRepo,
-		indexService: indexService,
-	}
-}
+// UpdateNeedHandler get the need, update and save on database
+func UpdateNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var bodyVars struct {
+			Category         int64
+			Title            string
+			Description      string
+			RequiredQuantity int
+			ReachedQuantity  int
+			DueDate          *jsonTime
+			Unity            string
+		}
+		err := requestToJSONObject(r, &bodyVars)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
+			return
+		}
 
-// NeedGet retorna uma necessidade pelo ID
-func (h NeedHandler) NeedGet(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, err := strconv.ParseInt(vars["id"], 10, 64)
-	if err != nil {
-		HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
-		return
-	}
+		vars := mux.Vars(r)
+		id, err := strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+			return
+		}
 
-	n, err := h.repo.Get(id)
-	switch {
-	case err == sql.ErrNoRows:
-		HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Necessidade com ID: %d", id))
-		return
-	case err != nil:
-		HandleHTTPError(w, http.StatusForbidden, err)
-		return
-	}
+		need, err := repo.Get(id)
+		switch {
+		case err == sql.ErrNoRows:
+			HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Necessidade com ID: %d", id))
+			return
+		case err != nil:
+			HandleHTTPError(w, http.StatusForbidden, err)
+			return
+		}
 
-	o, err := h.oRepo.Get(n.OrganizationID)
-	if err != nil {
-		HandleHTTPError(w, http.StatusForbidden, err)
-		return
-	}
+		userID := GetUserID(r)
+		if need.OrganizationID != userID {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("você não possui permissão para atualizar essa necessidade %d", need.OrganizationID))
+			return
+		}
 
-	var dueDate *jsonTime
-	if n.DueDate != nil {
-		dueDate = &jsonTime{*n.DueDate}
-	}
-	nJSON := needJSON{
-		ID:               n.ID,
-		Title:            n.Title,
-		Description:      n.Description,
-		RequiredQuantity: n.RequiredQuantity,
-		ReachedQuantity:  n.ReachedQuantity,
-		Unity:            n.Unity,
-		DueDate:          dueDate,
-		Category: categoryJSON{
-			ID:   n.Category.ID,
-			Name: n.Category.Name,
-			Icon: n.Category.Icon,
-		},
-		Organization: baseOrganizationJSON{
-			ID:   o.ID,
-			Name: o.Name,
-			Logo: o.Logo,
-			Slug: o.Slug,
-		},
-		Images: needImagesToImageJSON(n.Images),
-		Status: n.Status,
-	}
+		var dueDate *time.Time
+		if bodyVars.DueDate != nil {
+			dueDate = &bodyVars.DueDate.Time
+		}
 
-	HandleHTTPSuccess(w, nJSON)
-}
+		need.CategoryID = bodyVars.Category
+		need.Title = bodyVars.Title
+		need.Description = bodyVars.Description
+		need.RequiredQuantity = bodyVars.RequiredQuantity
+		need.ReachedQuantity = bodyVars.ReachedQuantity
+		need.DueDate = dueDate
+		need.Unity = bodyVars.Unity
 
-// NeedPost adiciona uma need
-func (h NeedHandler) NeedPost(w http.ResponseWriter, r *http.Request) {
-	var nj needJSON
-	err := json.NewDecoder(r.Body).Decode(&nj)
-	if err != nil {
-		HandleHTTPError(w, http.StatusBadRequest, err)
-		return
-	}
-	o, err := h.oRepo.Get(nj.Organization.ID)
-	if err != nil {
-		HandleHTTPError(w, http.StatusInternalServerError, err)
-		return
-	}
-	//@todo validate data
-	n := &model.Need{
-		Title:            nj.Title,
-		Description:      nj.Description,
-		RequiredQuantity: nj.RequiredQuantity,
-		ReachedQuantity:  nj.ReachedQuantity,
-		Unity:            nj.Unity,
-		DueDate:          &nj.DueDate.Time,
-		CategoryID:       nj.Category.ID,
-		OrganizationID:   nj.Organization.ID,
-	}
+		_, err = repo.Update(*need)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar dados da necessidade: %s", err))
+			return
+		}
 
-	id, err := h.repo.Insert(n)
-	if err != nil {
-		HandleHTTPError(w, http.StatusInternalServerError, err)
-		return
+		HandleHTTPSuccessNoContent(w)
 	}
-	key := strconv.FormatInt(id, 10)
-	toIndex := model.NeedToIndex{
-		Key:   key,
-		ID:    id,
-		Title: n.Title,
-		// CategoryName:       n.Category.Name,
-		OrganizationName:   o.Name,
-		OrganizationResume: o.Resume,
-		OrganizationSlug:   o.Slug,
-	}
-	d := index.Data{
-		Key:  key,
-		ID:   id,
-		Data: toIndex,
-	}
-	err = h.indexService.Index(key, d)
-	if err != nil {
-		HandleHTTPError(w, http.StatusInternalServerError, err)
-		return
-	}
-	type data struct {
-		ID int64 `json:"id"`
-	}
-	HandleHTTPSuccess(w, data{ID: id}, http.StatusCreated)
 }

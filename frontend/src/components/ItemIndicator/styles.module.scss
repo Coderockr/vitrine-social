@@ -1,0 +1,94 @@
+require('../../utils/styles/colors.js');
+
+.requestCircle {
+  .requestIcon {
+    align-items: center;
+    border-radius: 50%;
+    border: 2px solid $ambar_400;
+    display: flex;
+    height: 90px;
+    margin: 10px;
+    justify-content: center;
+    width: 90px;
+  }
+
+  &.lg {
+    .requestIcon.lg {
+      height: 125px;
+      width: 125px;
+    }
+  }
+
+  .progressCircleContainer {
+    position: absolute;
+    background-color: $white;
+    border: 2px solid $pink_400;
+    border-radius: 50%;
+    margin-left: 35px;
+    margin-top: 30px;
+    width: 28px;
+    height: 28px;
+
+    &.lg {
+      margin-left: 45px;
+      margin-top: 45px;
+      width: 40px;
+      height: 40px;
+    }
+
+    &:hover .lasteQtd {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  .lasteQtd {
+    background-color: $pink_200;
+    font-weight: 300;
+    border-radius: 4px;
+    color: $pink_800;
+    position: absolute;
+    margin-left: 40px;
+    margin-top: -25px;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.6s;
+
+    &.lg {
+      margin-left: 52px;
+      margin-top: -30px;
+    }
+
+    p {
+      margin: 5px 10px;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    &:before {
+      content: '';
+      background-color: transparent;
+      border-right: 15px solid $pink_200;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      position: absolute;
+      margin-left: -12px;
+      margin-top: 5px;
+      height: 0;
+      width: 0;
+    }
+  }
+}
+
+@media (max-width: 720px) {
+  .progressCircleContainer {
+    bottom: initial;
+    left: initial;
+    margin-left: 35px;
+    margin-top: 30px;
+
+    .lasteQtd.lg:before {
+      margin-left: -50px;
+    }
+  }
+}

@@ -1,8 +1,11 @@
 package handlers
 
 import (
-	"fmt"
+	"encoding/json"
+	"net/http"
 	"time"
+
+	"github.com/gobuffalo/pop/nulls"
 )
 
 type jsonTime struct {
@@ -10,16 +13,12 @@ type jsonTime struct {
 }
 
 func (t jsonTime) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("\"%s\"", t.Format("2006-01-02"))), nil
+	return []byte(t.Time.Format("\"2006-01-02\"")), nil
 }
 
-func (t jsonTime) UnmarshalJSON(b []byte) error {
-	t1, err := time.Parse("2006-01-02", string(b[1:][:len(b)-2]))
-	if err != nil {
-		return err
-	}
-	t.Time = t1
-	return nil
+func (t *jsonTime) UnmarshalJSON(b []byte) (err error) {
+	t.Time, err = time.Parse("\"2006-01-02\"", string(b))
+	return
 }
 
 type baseOrganizationJSON struct {
@@ -31,19 +30,24 @@ type baseOrganizationJSON struct {
 
 type organizationJSON struct {
 	baseOrganizationJSON
-	Address string      `json:"address"`
-	Phone   string      `json:"phone"`
-	Resume  string      `json:"resume"`
-	Video   string      `json:"video"`
-	Email   string      `json:"email"`
-	Needs   []needJSON  `json:"needs"`
-	Images  []imageJSON `json:"images"`
+	Phone  string `json:"phone"`
+	Resume string `json:"resume"`
+	Video  string `json:"video"`
+	Email  string `json:"email"`
+	addressJSON
+	Needs  []needJSON  `json:"needs"`
+	Images []imageJSON `json:"images"`
 }
 
 type categoryJSON struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
 	Icon string `json:"icon"`
+}
+
+type categoryWithCountJSON struct {
+	categoryJSON
+	NeedsCount int64 `json:"needs_count"`
 }
 
 type imageJSON struct {
@@ -64,4 +68,21 @@ type needJSON struct {
 	Unity            string               `json:"unity"`
 	DueDate          *jsonTime            `json:"dueDate"`
 	Status           string               `json:"status"`
+}
+
+type addressJSON struct {
+	Street     string       `json:"street"`
+	Number     int64        `json:"number"`
+	Complement nulls.String `json:"complement"`
+	Suburb     string       `json:"suburb"`
+	City       string       `json:"city"`
+	State      string       `json:"state"`
+	Zipcode    string       `json:"zipcode"`
+}
+
+func requestToJSONObject(req *http.Request, jsonDoc interface{}) error {
+	defer req.Body.Close()
+
+	decoder := json.NewDecoder(req.Body)
+	return decoder.Decode(jsonDoc)
 }

@@ -1,0 +1,101 @@
+require('../../utils/styles/colors.js');
+@import 'src/utils/styles/common.scss';
+
+.title {
+  margin: 30px 0 50px 0;
+  text-align: center;
+}
+
+.uploadWrapper {
+  cursor: pointer;
+  text-align: center;
+  margin-bottom: 40px;
+
+  .avatarWrapper {
+    position: relative;
+  }
+
+  .avatarEdit {
+    display: none;
+  }
+
+  &:hover {
+    .avatarEdit {
+      display: block;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba($color:$grey_100, $alpha: 0.4);
+      border-radius: 50%;
+
+      p {
+        color: $grey_400;
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        font-weight: 500;
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+.galleryHeader {
+  margin-left: 15px;
+}
+
+.buttonWrapper {
+  display: flex;
+  justify-content: center;
+
+  .button {
+    border-radius: 30px;
+    font-size: 23px;
+    line-height: 36px;
+    font-weight: normal;
+    color: $white;
+    text-align: center;
+    padding: 12px 20px;
+    outline: none;
+    cursor: pointer;
+    margin: 40px 10px 10px 0;
+    margin-bottom: 20px;
+  }
+
+  .saveButton {
+    background-color: $pink_400;
+    
+    &:hover,
+    &:focus {
+      background-color: $pink_800;
+    }
+  }
+
+  .cancelButton {
+    background-color: $grey_100;
+
+    &:hover,
+    &:focus {
+      background-color: $grey_150;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .galleryHeader {
+    margin-left: 40px;
+  }
+}
+
+@media (max-width: 540px) {
+  .galleryHeader {
+    margin-left: 15px;
+  }
+}
+
+@media (max-width: 470px) {
+  .galleryHeader {
+    margin-left: 55px;
+  }
+}

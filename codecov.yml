@@ -1,0 +1,19 @@
+coverage:
+ precision: 2
+ round: down
+ range: "70...100"
+ status:
+  patch:
+    default:
+      enabled: false
+      target: 0%
+      only_pulls: true
+
+status:
+ project: yes
+ patch: yes
+ changes: no
+
+comment:
+ behavior: new
+ require_changes: no

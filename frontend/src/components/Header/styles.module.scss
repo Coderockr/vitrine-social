@@ -1,0 +1,36 @@
+require('../../utils/styles/colors.js');
+@import 'src/utils/styles/common.scss';
+
+.appHeader {
+  height: 85px;
+
+  .logo {
+    width: 120px;
+    height: 31px;
+    background: rgba(255,255,255,.2);
+    margin: 26px 24px 16px 0;
+    float: left;
+  }
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.2);
+  border-radius: 5px;
+  height: 60px;
+  width: 60px;
+  float: right;
+  margin: 12px 0px;
+  outline: none;
+
+  &:hover {
+    background: rgba(255,255,255,.3);
+  }
+}
+
+.menuModal {
+  margin-top: 20px;
+  background-color: transparent;
+}

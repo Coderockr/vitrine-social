@@ -19,3 +19,8 @@ func HandleHTTPSuccess(w http.ResponseWriter, data interface{}, status ...int) {
 	}
 	w.WriteHeader(status[0])
 }
+
+// HandleHTTPSuccessNoContent formats and return with no content
+func HandleHTTPSuccessNoContent(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNoContent)
+}

@@ -27,7 +27,7 @@
 
 [[constraint]]
   name = "github.com/gorilla/mux"
-  version = "1.4.0"
+  version = "1.6.2"
 
 [[constraint]]
   name = "github.com/gorilla/sessions"
@@ -48,3 +48,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/golang/sync"
+
+[[constraint]]
+  name = "github.com/gobuffalo/pop"
+  version = "4.5.9"

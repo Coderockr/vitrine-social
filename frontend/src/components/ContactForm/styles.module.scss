@@ -1,0 +1,76 @@
+require('../../utils/styles/colors.js');
+
+.contactWrapper {
+  text-align: center;
+  margin: 20px 5px 0 5px;
+
+  p {
+    font-size: 28px;
+    margin: 0;
+
+    span {
+      font-weight: 500;
+      font-size: 40px;
+      color: $teal_400;
+    }
+
+    &.organizationName {
+      text-transform: uppercase;
+      font-weight: 500;
+      font-size: 40px;
+      margin-top: 20px;
+    }
+
+    &.fillLabel {
+      margin: 20px 0;
+    }
+  }
+
+  button {
+    background-color: $pink_400;
+    border-radius: 30px;
+    font-size: 23px;
+    line-height: 36px;
+    font-weight: normal;
+    color: white;
+    text-align: center;
+    padding: 12px 20px;
+    outline: none;
+    cursor: pointer;
+    margin-top: 40px;
+    margin-bottom: 20px;
+
+    &:hover,
+    &:focus {
+      background-color: $pink_800;
+    }
+  }
+}
+
+
+.backButton {
+  background-color: $grey_100;
+  border-radius: 30px;
+  outline: none;
+  padding: 0 10px;
+
+  &:hover {
+    background-color: $grey_150;
+  }
+}
+
+@media (max-width: 587px) {
+  .contactWrapper p {
+    font-size: 20px;
+
+    &.organizationName {
+      font-size: 35px;
+    }
+
+    span {
+      font-size: 30px;
+      display: block;
+      clear: both;
+    }
+  }
+}

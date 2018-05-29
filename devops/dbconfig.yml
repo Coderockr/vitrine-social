@@ -3,3 +3,9 @@ production:
     datasource: postgres://postgres@127.0.0.1:5432/vitrine?sslmode=disable
     dir: devops/migrations
     table: migrations
+
+docker:
+    dialect: postgres
+    datasource: postgres://postgres@postgres:5432/vitrine?sslmode=disable
+    dir: devops/migrations
+    table: migrations

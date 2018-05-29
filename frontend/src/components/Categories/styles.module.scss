@@ -1,0 +1,32 @@
+require('../../utils/styles/colors.js');
+@import 'src/utils/styles/common.scss';
+
+.categories {
+  margin-top: 50px;
+
+  .categoriesWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+.categoryWrapper {
+  margin: 10px 30px;
+}
+
+@media (max-width: 812px) {
+  .categoryWrapper {
+    margin: 10px 20px;
+  }
+}
+
+@media (max-width: 747px) {
+  .categories {
+    background-color: $grey_090;
+
+    .categoryWrapper {
+      margin: 10px 7px;
+    }
+  }
+}

@@ -1,0 +1,76 @@
+require('../../utils/styles/colors.js');
+
+.requestCard {
+  display: flex;
+  background: $white;
+  border: 2px solid $grey_000;
+  border-radius: 6px;
+  align-items: center;
+  overflow: hidden;
+
+  .organizationContent {
+    flex: 1;
+    padding: 10px;
+    width: calc(100% - 317px);
+
+    h2 {
+      color: $textDark;
+      font-size: 20px;
+      font-weight: normal;
+      margin: 0;
+    }
+
+    a {
+      color: $textDark;
+      font-size: 18px;
+      font-weight: normal;
+      text-decoration: underline;
+    }
+
+    p {
+      color: $textDark;
+      font-size: 14px;
+      font-weight: normal;
+      margin: 10px 0 0 0;
+    }
+  }
+
+  .interestedContent {
+    border-left: 2px solid $grey_000;
+    padding: 10px 20px;;
+
+    .button {
+      outline: none;
+      cursor: pointer;
+      background-color: $teal_400;
+      font-size: 16px;
+      color: $white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+
+      &:hover {
+        background-color: $teal_500;
+      }
+    }
+  }
+}
+
+@media (max-width: 720px) {
+  .requestCard {
+    flex-direction: column;
+    padding-top: 5px;
+
+    .organizationContent {
+      align-items: center;
+      text-align: center;
+      padding: 0 10px;
+      width: calc(100% - 30px);
+    }
+
+    .interestedContent{
+      border: none !important;
+      margin: 10px;
+    }
+  }
+}

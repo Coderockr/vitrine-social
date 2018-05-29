@@ -1,0 +1,426 @@
+require('../../utils/styles/colors.js');
+
+.progress_circle {
+  position: relative;
+  display: inline-block;
+  margin: 2px;
+  width: 20px;
+  height: 20px;
+
+  &:after {
+    content: '';
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+
+  &.lg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.progress_circle.progress_0:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(90deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_1:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(93.6deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_2:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(97.2deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_3:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(100.8deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_4:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(104.4deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_5:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(108deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_6:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(111.6deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_7:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(115.2deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_8:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(118.8deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_9:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(122.4deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_10:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(126deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_11:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(129.6deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_12:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(133.2deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_13:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(136.8deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_14:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(140.4deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_15:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(129.6deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_16:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(133.2deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_17:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(136.8deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_18:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(140.4deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_19:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(144deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_20:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(151.2deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_21:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(158.6deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_22:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(161.2deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_23:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(165.6deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_24:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(169.2deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_25:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(180deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_26:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(183.6deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_27:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(187.2deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_28:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(190.8deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_29:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(194.4deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_30:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(198deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_31:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(201.6deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_32:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(205.2deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_33:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(208.8deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_34:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(212.4deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_35:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(216deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_40:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(234deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_36:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(219.6deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_37:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(223.2deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_38:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(226.8deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_39:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(230.4deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_41:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(237.6deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_42:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(241.2deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_43:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(244.8deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_44:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(248.4deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_45:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(252deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_46:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(255.6deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_47:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(259.2deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_48:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(262.8deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_49:after {
+  background-image: linear-gradient(90deg, $white 50%, transparent 50%, transparent), linear-gradient(266.4deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_50:after {
+  background-image: linear-gradient(-90deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_51:after {
+  background-image: linear-gradient(-86.4deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_52:after {
+  background-image: linear-gradient(-82.6deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_53:after {
+  background-image: linear-gradient(-79.2deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_54:after {
+  background-image: linear-gradient(-75.6deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_55:after {
+  background-image: linear-gradient(-72deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_56:after {
+  background-image: linear-gradient(-68.4deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_57:after {
+  background-image: linear-gradient(-64.8deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_58:after {
+  background-image: linear-gradient(-61.2deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_59:after {
+  background-image: linear-gradient(-57.6deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_60:after {
+  background-image: linear-gradient(-54deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_61:after {
+  background-image: linear-gradient(-50.4deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_62:after {
+  background-image: linear-gradient(-46.8deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_63:after {
+  background-image: linear-gradient(-43.2deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_64:after {
+  background-image: linear-gradient(-39.6deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_65:after {
+  background-image: linear-gradient(-36deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_66:after {
+  background-image: linear-gradient(-32.4deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_67:after {
+  background-image: linear-gradient(-28.8deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_68:after {
+  background-image: linear-gradient(-25.2deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_69:after {
+  background-image: linear-gradient(-21.6deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_70:after {
+  background-image: linear-gradient(-18deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_71:after {
+  background-image: linear-gradient(-14.4deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_72:after {
+  background-image: linear-gradient(-10.8deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_73:after {
+  background-image: linear-gradient(-7.2deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_74:after {
+  background-image: linear-gradient(-3.6deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_75:after {
+  background-image: linear-gradient(0deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_76:after {
+  background-image: linear-gradient(3.6deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_77:after {
+  background-image: linear-gradient(7.2deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_78:after {
+  background-image: linear-gradient(10.8deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_79:after {
+  background-image: linear-gradient(14.4deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_80:after {
+  background-image: linear-gradient(18deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_81:after {
+  background-image: linear-gradient(21.6deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_82:after {
+  background-image: linear-gradient(25.2deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_83:after {
+  background-image: linear-gradient(28.8deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_84:after {
+  background-image: linear-gradient(32.4deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_85:after {
+  background-image: linear-gradient(36deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_86:after {
+  background-image: linear-gradient(39.2deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_87:after {
+  background-image: linear-gradient(43.2deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_88:after {
+  background-image: linear-gradient(46.8deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_89:after {
+  background-image: linear-gradient(50.4deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_90:after {
+  background-image: linear-gradient(54deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_91:after {
+  background-image: linear-gradient(57.6deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_92:after {
+  background-image: linear-gradient(61.2deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_93:after {
+  background-image: linear-gradient(64.8deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_94:after {
+  background-image: linear-gradient(68.4deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_95:after {
+  background-image: linear-gradient(72deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_96:after {
+  background-image: linear-gradient(75.6deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_97:after {
+  background-image: linear-gradient(79.2deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_98:after {
+  background-image: linear-gradient(82.8deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_99:after {
+  background-image: linear-gradient(86.4deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}
+
+.progress_circle.progress_100:after {
+  background-image: linear-gradient(90deg, $pink_400 50%, transparent 50%, transparent), linear-gradient(270deg, $pink_400 50%, $white 50%, $white);
+}

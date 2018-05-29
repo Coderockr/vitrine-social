@@ -1,0 +1,40 @@
+.containerTitle {
+  position: relative;
+  letter-spacing: 0.1rem;
+  font-family: 'Roboto', sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  text-align: center;
+  text-transform: uppercase;
+  color: #3E4C63;
+  margin-bottom: 45px;
+
+  &:after {
+    content: ' ';
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 0;
+    display: block;
+    margin-top: -1px;
+    width: 100%;
+    height: 2px;
+    background: #3E4C63;
+  }
+
+  span {
+    position: relative;
+    z-index: 2;
+    padding: 0 1rem;
+    background: #F0F2F5;
+  }
+}
+
+@media (max-width: 800px) {
+  .modal {
+    position: relative;
+    top: 0;
+    margin: 0;
+    padding: 0;
+  }
+}

@@ -1,0 +1,369 @@
+require('./colors.js');
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+
+:global {
+  * {
+    font-family: 'Roboto', sans-serif;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  input[type="button" i], input[type="submit" i], input[type="reset" i], input[type="file" i]::-webkit-file-upload-button, button,
+  input[type="button" i]:active, input[type="submit" i]:active, input[type="reset" i]:active, input[type="file" i]:active::-webkit-file-upload-button, button:active {
+    border: none;
+  }
+
+  .ant-carousel .slick-slide {
+    text-align: center;
+    height: 100%;
+    line-height: 100%;
+  }
+
+  .ant-layout-header {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+
+  .menuModal {
+    div.ant-modal-content {
+      background: transparent !important;
+    }
+
+    .ant-menu-item {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      &:active {
+        background-color: transparent;
+      }
+
+      a {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 500;
+        border-bottom: 3px solid $pink_400;
+        &:hover {
+          color: $pink_400;
+        }
+      }
+    }
+
+    .ant-menu-item-selected {
+      a {
+        color: $pink_400;
+      }
+    }
+}
+
+  .ant-menu-dark.ant-menu-horizontal {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border-bottom: none;
+  }
+
+  .ant-menu-vertical .ant-menu-item:after, 
+  .ant-menu-vertical-left .ant-menu-item:after, 
+  .ant-menu-vertical-right .ant-menu-item:after, 
+  .ant-menu-inline .ant-menu-item:after,
+  .ant-menu-inline, .ant-menu-vertical, 
+  .ant-menu-vertical-left {
+    border-right: none;
+  }
+
+  .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected,
+  .ant-menu.ant-menu-dark .ant-menu-item-selected,
+  .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+    background: transparent
+  }
+
+  .ant-pagination-item {
+    border: 2px solid $purple_400;
+    background-color: $white;
+
+    a {
+      color: $purple_400;
+    }
+  }
+
+  .ant-pagination-item:hover,
+  .ant-pagination-item-active,
+  .ant-pagination-item-active:focus {
+    background-color: $purple_400;
+    border: 2px solid $purple_400;
+  }
+
+  .ant-pagination-item-active a,
+  .ant-pagination-item:hover a,
+  .ant-pagination-item-active:focus a {
+    color: $white;
+  }
+
+  .ant-pagination-next:hover a,
+  .ant-pagination-prev:hover a {
+    background-color: $purple_400 !important;
+    border: 2px solid $purple_400 !important;
+    color: $white !important;
+  }
+
+  .ant-pagination-prev .ant-pagination-item-link,
+  .ant-pagination-next .ant-pagination-item-link,
+  .ant-pagination-prev:focus .ant-pagination-item-link,
+  .ant-pagination-next:focus .ant-pagination-item-link,
+  .ant-pagination-prev:hover .ant-pagination-item-link,
+  .ant-pagination-next:hover .ant-pagination-item-link
+  .ant-pagination-next a,
+  .ant-pagination-prev a,
+  .ant-pagination-next:focus a,
+  .ant-pagination-prev:focus a,
+  .ant-pagination-disabled:hover a {
+    color: $purple_400;
+    border: 2px solid $purple_400;
+    background-color: $white;
+  }
+
+  .ant-pagination-prev .ant-pagination-item-link:after,
+  .ant-pagination-next .ant-pagination-item-link:after {
+    height: 28px;
+  }
+
+  .ant-modal-close-x:before {
+    font-size: 32px;
+  }
+
+  .ant-modal-close {
+    color: $pink_400;
+  }
+
+  .ant-form-item-label label {
+    color: $purple_400;
+    font-size: 16px;
+  }
+
+  .ant-input-number,
+  .ant-input-number-input {
+    color: $blue_900;
+    border: 2px solid $purple_400;
+    border-radius: 20px;
+    font-size: 16px;
+    box-shadow: none;
+
+    &:focus,
+    &:hover {
+      box-shadow: none;
+      border-color: $purple_400;
+    }
+  }
+
+  .ant-input-number-input {
+    border: none;
+    background-color: transparent;
+
+    &:disabled {
+      border: none;
+      background-color: transparent;
+    }
+  }
+
+  .ant-input-number-handler-wrap {
+    background-color: transparent;
+  }
+
+  .ant-select-disabled .ant-select-selection {
+    &:hover,
+    &:focus {
+      border-color: $purple_400;
+    }
+  }
+
+  .ant-input-affix-wrapper .ant-input-prefix {
+    color: $purple_400;
+  }
+
+  .ant-input,
+  .ant-input-affix-wrapper,
+  .ant-select-selection,
+  .ant-select-open .ant-select-selection {
+    color: $blue_900;
+    border-color: $purple_400;
+    border-width: 2px;
+    border-radius: 20px;
+    font-size: 16px;
+    box-shadow: none;
+
+    &:focus,
+    &:hover,
+    &:disabled {
+      box-shadow: none;
+      border-color: $purple_400;
+
+      .ant-input:not(.ant-input-disabled) {
+        border-color: $purple_400;
+      }
+    }
+
+    &::placeholder,
+    .ant-select-selection__placeholder,
+    .ant-select-arrow {
+      color: $purple_400;
+    }
+  }
+
+  .has-error {
+    .ant-form-explain {
+      color: $red_400;
+      text-align: end;
+      padding-right: 15px;
+    }
+
+    .ant-input,
+    .ant-input:focus {
+      box-shadow: none;
+      border-color: $red_400;
+    }
+
+    .ant-input::placeholder,
+    .ant-input-prefix {
+      color: $red_400;
+    }
+  }
+
+  .ant-radio-group {
+    span {
+      font-weight: 500;
+    }
+
+    .ant-radio-button-wrapper {
+      color: $ambar_400;
+      border: 2px solid $ambar_400;
+      background: white;
+
+      &::before {
+        background-color: $ambar_400;
+      }
+
+      &:first-child {
+        border-radius: 20px 0 0 20px;
+      }
+
+      &:last-child {
+        border-radius: 0 20px 20px 0;
+      }
+    }
+
+    .ant-radio-button-wrapper-checked {
+      color: white;
+      border: 2px solid $ambar_400;
+      background: $ambar_400;
+      box-shadow: none;
+
+      &::before {
+        background-color: $ambar_400 !important;
+      }
+
+      &:first-child {
+        border-radius: 20px 0 0 20px;
+      }
+
+      &:last-child {
+        border-radius: 0 20px 20px 0;
+      }
+    }
+  }
+
+  .ant-radio-group.purpleRadio {
+    .ant-radio-button-wrapper {
+      color: $purple_400;
+      border: 2px solid $purple_400;
+
+      &::before {
+        background-color: $purple_400;
+      }
+    }
+
+    .ant-radio-button-wrapper-checked {
+      color: white;
+      border: 2px solid $purple_400;
+      background: $purple_400;
+
+      &::before {
+        background-color: $purple_400 !important;
+      }
+    }
+  }
+
+  .ant-avatar {
+    border: 4px solid $ambar_400;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    
+    * {
+      line-height: 150px;
+    }
+
+    img {
+      object-fit: cover;
+    }
+  }
+
+  .ant-avatar-lg {
+    width: 230px;
+    height: 230px;
+    
+    * {
+      line-height: 230px;
+    }
+  }
+  
+  .ant-upload-list-picture-card .ant-upload-list-item {
+    border: 2px solid $purple_400;
+    padding: 0;
+  }
+
+  .ant-upload-list-picture-card .ant-upload-list-item-uploading.ant-upload-list-item {
+    padding: 8px;
+  }
+
+  .ant-upload.ant-upload-select-picture-card {
+    border: 2px dashed $purple_400;
+
+    &:hover {
+      border-color: $purple_500;
+    }
+  }
+
+  .ant-upload-list-picture-card .ant-upload-list-item-thumbnail, .ant-upload-list-picture-card .ant-upload-list-item-thumbnail img {
+    object-fit: cover;
+    width: 100px;
+    height: 100px;
+  }
+
+  @media (max-height: 900px) {
+    .ant-modal {
+      top: 20px;
+    }
+  }
+
+  @media (max-width: 800px) {
+    .ant-modal {
+      top: 0;
+    }
+
+    .ant-carousel .slick-slide {
+      text-align: center;
+      height: 100%;
+      line-height: 100%;
+    }
+  }
+
+  @media (max-width: 696px) {
+    .ant-modal-content {
+      border-radius: 0;
+    }
+  }
+}
