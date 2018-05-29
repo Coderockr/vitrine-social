@@ -16,7 +16,7 @@ type needResponseRepository interface {
 }
 
 // NeedResponse responde uma necessidade pelo ID
-func NeedResponse(needRepo needRepository, needResponseRepo needResponseRepository) func(w http.ResponseWriter, r *http.Request) {
+func NeedResponse(needRepo NeedRepository, needResponseRepo needResponseRepository) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		urlVars := mux.Vars(r)
 		id, err := strconv.ParseInt(urlVars["id"], 10, 64)

@@ -66,19 +66,29 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 // Create receives a Organization and creates it in the database, returning the updated Organization or error if failed
 func (r *OrganizationRepository) Create(o model.Organization) (model.Organization, error) {
 	row := r.db.QueryRow(
-		`INSERT INTO organizations (name, logo, address, phone, resume, video, email, slug, password)
-			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
-			RETURNING id
+		`INSERT INTO organizations (
+			name, logo, phone, resume, video, email, slug, password, 
+			street, number, complement, suburb, city, state, zipcode
+		) VALUES (
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
+		)
+		RETURNING id
 		`,
 		o.Name,
 		o.Logo,
-		o.Address,
 		o.Phone,
 		o.Resume,
 		o.Video,
 		o.Email,
 		o.Slug,
 		o.Password,
+		o.Street,
+		o.Number,
+		o.Complement,
+		o.Suburb,
+		o.City,
+		o.State,
+		o.Zipcode,
 	)
 
 	err := row.Scan(&o.ID)
@@ -96,20 +106,32 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 		`UPDATE organizations SET
 			name = $1,
 			logo = $2,
-			address = $3,
-			phone = $4,
-			resume = $5,
-			video = $6,
-			email = $7
-		WHERE id = $8
+			phone = $3,
+			resume = $4,
+			video = $5,
+			email = $6,
+			street = $7,
+			number = $8,
+			complement = $9,
+			suburb = $10,
+			city = $11,
+			state = $12,
+			zipcode = $13
+		WHERE id = $14
 		`,
 		o.Name,
 		o.Logo,
-		o.Address,
 		o.Phone,
 		o.Resume,
 		o.Video,
 		o.Email,
+		o.Street,
+		o.Number,
+		o.Complement,
+		o.Suburb,
+		o.City,
+		o.State,
+		o.Zipcode,
 		o.ID,
 	)
 

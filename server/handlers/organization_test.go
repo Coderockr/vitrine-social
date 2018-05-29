@@ -7,6 +7,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gobuffalo/pop/nulls"
+
 	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/gorilla/context"
@@ -57,11 +59,16 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 			body: `{
 				"name": "Novo Nome",
 				"logo": "Novo Logo",
-				"address": "Novo Endereço",
 				"phone": "123123",
 				"resume": "Nova Descrição detalhada da ONG",
 				"video": "Novo Link do video",
-				"email": "teste@coderockr.com.br"
+				"email": "teste@coderockr.com.br",
+				"street": "Rua teste",
+				"number": 123,
+				"suburb": "Centro",
+				"city": "Joinville",
+				"state": "SC",
+				"zipcode": "09530-210"
 			}`,
 			status:   http.StatusNoContent,
 			response: ``,
@@ -76,12 +83,20 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 								Password: "",
 								ID:       1,
 							},
-							Name:    "",
-							Logo:    "",
-							Address: "",
-							Phone:   "",
-							Resume:  "",
-							Video:   "",
+							Name:   "",
+							Logo:   "",
+							Phone:  "",
+							Resume: "",
+							Video:  "",
+							Address: model.Address{
+								Street:     "",
+								Number:     0,
+								Complement: nulls.String{},
+								Suburb:     "",
+								City:       "",
+								State:      "",
+								Zipcode:    "",
+							},
 						}
 						return &organization, nil
 					},
@@ -165,10 +180,10 @@ func TestDeleteOrganizationImageHandler(t *testing.T) {
 							},
 							Name:    "",
 							Logo:    "",
-							Address: "",
 							Phone:   "",
 							Resume:  "",
 							Video:   "",
+							Address: model.Address{},
 						}
 						return &organization, nil
 					},

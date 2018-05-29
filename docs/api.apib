@@ -304,7 +304,7 @@ Realizar busca das necessidades
             Accept: application/json
             Content-Type: application/json
             Authorization: JWT
-    + Attributes (NeedPayload)
+    + Attributes (CreateNeedPayload)
 
 
 + Response 201 (application/json)
@@ -381,6 +381,18 @@ Realizar busca das necessidades
 + Response 404 (application/json)
     + Attributes (Error)
 
+# Group Category
+
+## Categorias [/v1/categories]
+
+### Get All [GET]
+
++ Response 200 (application/json)
+    + Attributes (array[AllCategories])
+
++ Response 404 (application/json)
+    + Attributes (Error)
+
 # Data Structures
 
 ## Created (object)
@@ -392,13 +404,15 @@ Realizar busca das necessidades
 
 ## NeedPayload (object)
 + category (number) - ID da Categoria da necessidade
-+ organization (number) - ID da ONG
 + title (string) - Resumo da necessidade
 + description (string) - Descrição detalhada da necessidade
 + requiredQuantity (number) - Quantidade necessária
 + reachedQuantity (number) - Quantidade alcançada
 + dueDate: `2017-08-17` (string) - Data final da necessidade
 + unity: kg (string) - Unidade da necessidade
+
+## CreateNeedPayload (NeedPayload)
++ organization (number) - ID da ONG
 
 ## BaseNeed (object)
 + id (number) - Código da necessidade
@@ -427,11 +441,17 @@ Realizar busca das necessidades
 + slug (string) - Hash da ONG
 
 ## DetailedOrganization (BaseOrganization)
-+ address (string) - Endereço da ONG
 + phone (string) - Telefone
 + resume (string) - Descrição detalhada da ONG
 + video (string) - Link de um video no Youtube sobre a ONG
 + email (string) - E-mail da ONG (também usado para login)
++ street (string) - Rua da localização da ONG
++ number (number) - Número da localização da ONG
++ complement (string) - Complemento da localização da ONG
++ suburb (string) - Bairro de localização da ONG
++ city (string) - Cidade de localização da ONG
++ state (string) - Estado de localização da ONG
++ zipcode (string) - CEP de localização da ONG
 
 ## CompleteOrganization (DetailedOrganization)
 + images (array[Image]) - Imagens relacionadas
@@ -456,3 +476,6 @@ Realizar busca das necessidades
 ## UploadFile (object)
 + name: `File.png` (string) - Nome do arquivo
 + content: `file content` (string) - Conteúdo do arquivo formatado como Base64
+
+## AllCategories (Category)
++ needs_count (number) - Número de necessidades ativas da categoria

@@ -5,6 +5,8 @@ import (
 	"errors"
 	"strings"
 	"time"
+
+	"github.com/gobuffalo/pop/nulls"
 )
 
 // User you know it
@@ -24,15 +26,16 @@ type image struct {
 //Organization dados dos usuários que podem logar no sistema
 type Organization struct {
 	User
-	Name    string `valid:"required" db:"name"`
-	Logo    string `valid:"url,optional" db:"logo"`
-	Address string `valid:"required" db:"address"`
-	Phone   string `valid:"required" db:"phone"`
-	Resume  string `db:"resume"`
-	Video   string `valid:"required" db:"video"`
-	Slug    string `valid:"required" db:"slug"`
-	Needs   []Need
-	Images  []OrganizationImage
+	Name   string `valid:"required" db:"name"`
+	Logo   string `valid:"url,optional" db:"logo"`
+	Phone  string `valid:"required" db:"phone"`
+	Resume string `db:"resume"`
+	Video  string `valid:"required" db:"video"`
+	Slug   string `valid:"required" db:"slug"`
+	Address
+	Needs     []Need
+	Images    []OrganizationImage
+	CreatedAt *time.Time `db:"created_at"`
 }
 
 // OrganizationImage de uma organização
@@ -88,9 +91,21 @@ type NeedResponse struct {
 
 // Category de uma necessidade
 type Category struct {
-	ID   int64  `valid:"required" db:"id"`
-	Name string `valid:"required" db:"name"`
-	Icon string `valid:"required" db:"icon"`
+	ID         int64  `valid:"required" db:"id"`
+	Name       string `valid:"required" db:"name"`
+	Icon       string `valid:"required" db:"icon"`
+	NeedsCount int64  `db:"count_need"`
+}
+
+// Address de uma organização
+type Address struct {
+	Street     string       `valid:"required" db:"street"`
+	Number     int64        `valid:"required" db:"number"`
+	Complement nulls.String `db:"complement"`
+	Suburb     string       `valid:"required" db:"suburb"`
+	City       string       `valid:"required" db:"city"`
+	State      string       `valid:"required" db:"state"`
+	Zipcode    string       `valid:"required" db:"zipcode"`
 }
 
 func (s *needStatus) Scan(src interface{}) error {

@@ -87,6 +87,10 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	v1.HandleFunc("/need/{id}", handlers.GetNeedHandler(nR, oR)).Methods("GET")
 
+	v1.Path("/need/{id:[0-9]+}").Handler(authMiddleware.With(
+		negroni.WrapFunc(handlers.UpdateNeedHandler(nR)),
+	)).Methods("PUT")
+
 	v1.Path("/need").Handler(authMiddleware.With(
 		negroni.WrapFunc(handlers.CreateNeedHandler(nR.Create)),
 	)).Methods("POST")
@@ -100,6 +104,9 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		cR,
 		tm,
 	))
+
+	// Category Routes
+	v1.HandleFunc("/categories", handlers.GetAllCategoriesHandler(cR, nR)).Methods("GET")
 
 	n := negroni.Classic()
 	n.Use(negroni.HandlerFunc(middlewares.Cors))
