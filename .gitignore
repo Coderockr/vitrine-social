@@ -19,6 +19,7 @@ vendor.orig
 coverage.txt
 server-cmd
 .data/
+docs/node_modules
 .vscode/
 
 #Mac OS Thumb

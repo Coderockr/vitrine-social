@@ -19,7 +19,7 @@ new-migration: ## create a new migration, use make new-migration m=message to se
 	sql-migrate new -config=./devops/dbconfig.yml -env=production "$(m)"
 
 migrations: ## run pending migrations
-	docker-compose up -d
+	docker-compose up -d postgres
 	go get github.com/rubenv/sql-migrate/...
 	sql-migrate up -config=devops/dbconfig.yml -env=production
 
@@ -28,7 +28,7 @@ migrations-on-docker: ## run migrations inside docker
 	docker-compose exec golang sql-migrate up -config=devops/dbconfig.yml -env=docker
 
 serve: ## start server
-	docker-compose up -d
+	docker-compose up -d postgres
 	cd server && go run main.go serve
 
 install-on-docker: ## install dependences from docker

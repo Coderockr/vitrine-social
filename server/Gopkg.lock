@@ -8,6 +8,22 @@
   version = "v0.12.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/Coderockr/vitrine-social"
+  packages = [
+    "server/cmd",
+    "server/db",
+    "server/db/inmemory",
+    "server/db/repo",
+    "server/handlers",
+    "server/middlewares",
+    "server/model",
+    "server/security",
+    "server/storage"
+  ]
+  revision = "aa646a58eadb30bca65d57e54704bf782b8bf98e"
+
+[[projects]]
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -240,6 +256,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a7e71e428aedba08ca0ad26fa73eaf355c6eb0f66c5ff026934c7c8c1c61c0a7"
+  inputs-digest = "564ffcc2dbb9fecb8033de3fb47f88e6eca1674ba3eb1409fd5be1de57711d37"
   solver-name = "gps-cdcl"
   solver-version = 1
