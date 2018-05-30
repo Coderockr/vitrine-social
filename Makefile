@@ -10,6 +10,7 @@ export commit ?= HEAD
 .PHONY: build
 
 install: ## install project dependences
+	cp ./server/config/dev.env.dist ./server/config/dev.env
 	go get github.com/rubenv/sql-migrate/...
 	go get -u github.com/golang/dep/cmd/dep
 	go get -u github.com/haya14busa/goverage
