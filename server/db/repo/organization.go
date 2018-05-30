@@ -67,8 +67,8 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 func (r *OrganizationRepository) Create(o model.Organization) (model.Organization, error) {
 	row := r.db.QueryRow(
 		`INSERT INTO organizations (
-			name, logo, phone, resume, video, email, slug, password, 
-			street, number, complement, suburb, city, state, zipcode
+			name, logo, phone, about, video, email, slug, password, 
+			street, number, complement, neighborhood, city, state, zipcode
 		) VALUES (
 			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
 		)
@@ -77,7 +77,7 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 		o.Name,
 		o.Logo,
 		o.Phone,
-		o.Resume,
+		o.About,
 		o.Video,
 		o.Email,
 		o.Slug,
@@ -85,7 +85,7 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 		o.Street,
 		o.Number,
 		o.Complement,
-		o.Suburb,
+		o.Neighborhood,
 		o.City,
 		o.State,
 		o.Zipcode,
@@ -107,13 +107,13 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 			name = $1,
 			logo = $2,
 			phone = $3,
-			resume = $4,
+			about = $4,
 			video = $5,
 			email = $6,
 			street = $7,
 			number = $8,
 			complement = $9,
-			suburb = $10,
+			neighborhood = $10,
 			city = $11,
 			state = $12,
 			zipcode = $13
@@ -122,13 +122,13 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 		o.Name,
 		o.Logo,
 		o.Phone,
-		o.Resume,
+		o.About,
 		o.Video,
 		o.Email,
 		o.Street,
 		o.Number,
 		o.Complement,
-		o.Suburb,
+		o.Neighborhood,
 		o.City,
 		o.State,
 		o.Zipcode,
