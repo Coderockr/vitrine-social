@@ -19,7 +19,7 @@ new-migration: ## create a new migration, use make new-migration m=message to se
 	sql-migrate new -config=./devops/dbconfig.yml -env=production "$(m)"
 
 migrations: ## run pending migrations
-	docker-compose up -d
+	docker-compose up -d postgres
 	go get github.com/rubenv/sql-migrate/...
 	sql-migrate up -config=devops/dbconfig.yml -env=production
 

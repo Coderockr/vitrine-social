@@ -2,6 +2,7 @@ package graphql
 
 import (
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/gobuffalo/pop/nulls"
 	"github.com/graphql-go/graphql"
 )
 
@@ -49,41 +50,80 @@ var userType = graphql.NewObject(graphql.ObjectConfig{
 var organizationType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Organization",
 	Fields: graphql.Fields{
-		"id":      nonNullIntField,
-		"name":    nonNullStringField,
-		"logo":    nonNullStringField,
-		"slug":    nonNullStringField,
-		"address": nonNullStringField,
-		"phone":   nonNullStringField,
-		"resume":  nonNullStringField,
-		"video":   nonNullStringField,
-		"email":   nonNullStringField,
+		"id":     nonNullIntField,
+		"name":   nonNullStringField,
+		"logo":   nonNullStringField,
+		"slug":   nonNullStringField,
+		"phone":  nonNullStringField,
+		"resume": nonNullStringField,
+		"video":  nonNullStringField,
+		"email":  nonNullStringField,
+		"address": &graphql.Field{
+			Type: addressType,
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				if o, ok := p.Source.(organizationJSON); ok {
+					return o.Address, nil
+				}
+				return nil, nil
+			},
+		},
 	},
 })
 
+var addressType = graphql.NewObject(graphql.ObjectConfig{
+	Name: "Address",
+	Fields: graphql.Fields{
+		"street":     stringField,
+		"number":     stringField,
+		"complement": stringField,
+		"suburb":     stringField,
+		"city":       stringField,
+		"state":      stringField,
+		"zipcode":    stringField,
+	},
+})
+
+type addressJSON struct {
+	Street     string       `json:"street"`
+	Number     int64        `json:"number"`
+	Complement nulls.String `json:"complement"`
+	Suburb     string       `json:"suburb"`
+	City       string       `json:"city"`
+	State      string       `json:"state"`
+	Zipcode    string       `json:"zipcode"`
+}
+
 type organizationJSON struct {
-	ID      int64  `json:"id"`
-	Name    string `json:"name"`
-	Logo    string `json:"logo"`
-	Slug    string `json:"slug"`
-	Address string `json:"address"`
-	Phone   string `json:"phone"`
-	Video   string `json:"video"`
-	Resume  string `json:"resume"`
-	Email   string `json:"email"`
+	ID      int64       `json:"id"`
+	Name    string      `json:"name"`
+	Logo    string      `json:"logo"`
+	Slug    string      `json:"slug"`
+	Phone   string      `json:"phone"`
+	Video   string      `json:"video"`
+	Resume  string      `json:"resume"`
+	Email   string      `json:"email"`
+	Address addressJSON `json:"address"`
 }
 
 func orgToJSON(o *model.Organization) *organizationJSON {
 	return &organizationJSON{
-		ID:      o.ID,
-		Name:    o.Name,
-		Logo:    o.Logo,
-		Slug:    o.Slug,
-		Address: o.Address,
-		Phone:   o.Phone,
-		Video:   o.Video,
-		Resume:  o.Resume,
-		Email:   o.Email,
+		ID:     o.ID,
+		Name:   o.Name,
+		Logo:   o.Logo,
+		Slug:   o.Slug,
+		Phone:  o.Phone,
+		Video:  o.Video,
+		Resume: o.Resume,
+		Email:  o.Email,
+		Address: addressJSON{
+			Street:     o.Address.Street,
+			Number:     o.Address.Number,
+			Complement: o.Address.Complement,
+			Suburb:     o.Address.Suburb,
+			City:       o.Address.City,
+			State:      o.Address.State,
+			Zipcode:    o.Address.Zipcode,
+		},
 	}
 }
 

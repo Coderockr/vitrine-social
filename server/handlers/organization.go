@@ -31,6 +31,7 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 		}
 
 		o, err := getOrg(id)
+		panic(err)
 
 		switch {
 		case err == sql.ErrNoRows:
