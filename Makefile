@@ -13,7 +13,7 @@ install: ## install project dependences
 	go get github.com/rubenv/sql-migrate/...
 	go get -u github.com/golang/dep/cmd/dep
 	go get -u github.com/haya14busa/goverage
-	cd server; dep ensure
+	cd server; dep ensure -v
 
 new-migration: ## create a new migration, use make new-migration m=message to set the message
 	sql-migrate new -config=./devops/dbconfig.yml -env=production "$(m)"
