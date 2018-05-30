@@ -26,12 +26,12 @@ type image struct {
 //Organization dados dos usuários que podem logar no sistema
 type Organization struct {
 	User
-	Name   string `valid:"required" db:"name"`
-	Logo   string `valid:"url,optional" db:"logo"`
-	Phone  string `valid:"required" db:"phone"`
-	Resume string `db:"resume"`
-	Video  string `valid:"required" db:"video"`
-	Slug   string `valid:"required" db:"slug"`
+	Name  string `valid:"required" db:"name"`
+	Logo  string `valid:"url,optional" db:"logo"`
+	Phone string `valid:"required" db:"phone"`
+	About string `db:"about"`
+	Video string `valid:"required" db:"video"`
+	Slug  string `valid:"required" db:"slug"`
 	Address
 	Needs     []Need
 	Images    []OrganizationImage
@@ -99,13 +99,13 @@ type Category struct {
 
 // Address de uma organização
 type Address struct {
-	Street     string       `valid:"required" db:"street"`
-	Number     int64        `valid:"required" db:"number"`
-	Complement nulls.String `db:"complement"`
-	Suburb     string       `valid:"required" db:"suburb"`
-	City       string       `valid:"required" db:"city"`
-	State      string       `valid:"required" db:"state"`
-	Zipcode    string       `valid:"required" db:"zipcode"`
+	Street       string       `valid:"required" db:"street"`
+	Number       int64        `valid:"required" db:"number"`
+	Complement   nulls.String `db:"complement"`
+	Neighborhood string       `valid:"required" db:"neighborhood"`
+	City         string       `valid:"required" db:"city"`
+	State        string       `valid:"required" db:"state"`
+	Zipcode      string       `valid:"required" db:"zipcode"`
 }
 
 func (s *needStatus) Scan(src interface{}) error {
