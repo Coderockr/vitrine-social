@@ -117,6 +117,26 @@ func (r *NeedRepository) Update(n model.Need) (model.Need, error) {
 	return n, nil
 }
 
+// Search many Need from database
+func (r *NeedRepository) Search(text string, categoriesID []int, organizationsID int64, page int64) ([]model.Need, error) {
+	needs := []model.Need{}
+	err := r.db.Select(&needs,
+		`SELECT * FROM needs
+		WHERE (LOWER(title) LIKE $1 OR LOWER(description) LIKE $1)
+			AND organization_id = $2
+			LIMIT 10 OFFSET $3`,
+		"%"+text+"%",
+		organizationsID,
+		(page-1)*10,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return needs, nil
+}
+
 func validate(r *NeedRepository, n model.Need) (model.Need, error) {
 	n.Title = strings.TrimSpace(n.Title)
 	if len(n.Title) == 0 {

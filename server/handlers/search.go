@@ -1,78 +1,79 @@
 package handlers
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
+	"strconv"
 
-	"github.com/Coderockr/vitrine-social/server/db/repo"
-	"github.com/Coderockr/vitrine-social/server/index"
 	"github.com/Coderockr/vitrine-social/server/model"
 )
 
-// SearchHandler handles requests about organizations
-type SearchHandler struct {
-	indexService index.Service
-	needRepo     *repo.NeedRepository
-}
-
-//NewSearchHandler search handler
-func NewSearchHandler(indexService index.Service, needRepo *repo.NeedRepository) *SearchHandler {
-	return &SearchHandler{
-		indexService: indexService,
-		needRepo:     needRepo,
+type (
+	// SearchNeedRepository represet operations for need repository.
+	SearchNeedRepository interface {
+		Search(text string, categoriesID []int, organizationsID int64, page int64) ([]model.Need, error)
 	}
-}
+)
 
-//Get handler
-func (sR *SearchHandler) Get(w http.ResponseWriter, req *http.Request) {
-	keys, ok := req.URL.Query()["query"]
+// SearchHandler search needs for the term
+func SearchHandler(nR SearchNeedRepository) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		queryValues := r.URL.Query()
 
-	if !ok || len(keys) < 1 {
-		err := errors.New("Invalid parameters")
-		HandleHTTPError(w, http.StatusBadRequest, err)
-		return
-	}
-	query := keys[0]
-	docs, err := sR.indexService.Search(query)
-	if err != nil {
-		HandleHTTPError(w, http.StatusBadRequest, err)
-	}
-	var needs []*needJSON
-	for _, j := range docs.Hits {
-		p, err := sR.needRepo.Get(j.ID)
+		if len(queryValues) < 1 {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Parametros inválidos"))
+			return
+		}
+
+		orgID, err := strconv.ParseInt(queryValues.Get("org"), 10, 64)
 		if err != nil {
-			continue
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", queryValues.Get("org")))
 		}
 
-		if p != nil {
-			needs = append(needs, needToJSON(p))
+		page, err := strconv.ParseInt(queryValues.Get("page"), 10, 64)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", queryValues.Get("page")))
 		}
-	}
 
-	HandleHTTPSuccess(w, needs)
-}
+		needs, err := nR.Search(queryValues.Get("text"), []int{2, 3, 5, 7, 11, 13}, orgID, page)
 
-func needToJSON(n *model.Need) *needJSON {
-	nJSON := &needJSON{
-		ID:               n.ID,
-		Title:            n.Title,
-		Description:      n.Description,
-		RequiredQuantity: n.RequiredQuantity,
-		ReachedQuantity:  n.ReachedQuantity,
-		Unity:            n.Unity,
-		Category: categoryJSON{
-			ID:   n.Category.ID,
-			Name: n.Category.Name,
-			Icon: n.Category.Icon,
-		},
-		// Organization: baseOrganizationJSON{
-		// 	ID:   o.ID,
-		// 	Name: o.Name,
-		// 	Logo: o.Logo,
-		// 	Slug: o.Slug,
-		// },
-		Images: needImagesToImageJSON(n.Images),
-		Status: n.Status,
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		nJSON := make([]needJSON, 0, len(needs))
+
+		var dueDate *jsonTime
+		for _, n := range needs {
+			if n.DueDate != nil {
+				dueDate = &jsonTime{*n.DueDate}
+			}
+
+			nJSON = append(nJSON, needJSON{
+				ID:               n.ID,
+				Title:            n.Title,
+				Description:      n.Description,
+				RequiredQuantity: n.RequiredQuantity,
+				ReachedQuantity:  n.ReachedQuantity,
+				Unity:            n.Unity,
+				DueDate:          dueDate,
+				Category: categoryJSON{
+					ID:   n.Category.ID,
+					Name: n.Category.Name,
+					Icon: n.Category.Icon,
+				},
+				Organization: baseOrganizationJSON{
+					ID:   n.Organization.ID,
+					Name: n.Organization.Name,
+					Logo: n.Organization.Logo,
+					Slug: n.Organization.Slug,
+				},
+				Images: needImagesToImageJSON(n.Images),
+				Status: string(n.Status),
+			})
+		}
+
+		HandleHTTPSuccess(w, nJSON)
 	}
-	return nJSON
 }

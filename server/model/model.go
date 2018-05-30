@@ -68,6 +68,7 @@ type Need struct {
 	CategoryID       int64      `valid:"required" db:"category_id"`
 	OrganizationID   int64      `valid:"required" db:"organization_id"`
 	Category         Category
+	Organization     Organization
 	Images           []NeedImage
 }
 

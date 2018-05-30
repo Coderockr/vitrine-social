@@ -72,7 +72,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		negroni.WrapFunc(handlers.UpdatePasswordHandler(oR)),
 	)).Methods("POST")
 
-	v1.HandleFunc("/search", func(w http.ResponseWriter, req *http.Request) {})
+	v1.HandleFunc("/search", handlers.SearchHandler(nR)).Methods("GET")
 
 	v1.HandleFunc("/organization/{id:[0-9]+}", handlers.GetOrganizationHandler(oR.Get)).Methods("GET")
 
