@@ -18,12 +18,7 @@ func newViewerQuery(validate validateToken, get getOrgFn) *graphql.Field {
 				return nil, err
 			}
 
-			o, err := get(id)
-			if err != nil {
-				return nil, err
-			}
-
-			return orgToJSON(o), nil
+			return get(id)
 		},
 	}
 }

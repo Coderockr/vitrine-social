@@ -92,7 +92,7 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 				Category:         catMap[n.CategoryID],
 				Organization:     oJSON.baseOrganizationJSON,
 				Images:           needImagesToImageJSON(n.Images),
-				Status:           string(n.Status),
+				Status:           string(*n.Status),
 			})
 		}
 		HandleHTTPSuccess(w, oJSON)

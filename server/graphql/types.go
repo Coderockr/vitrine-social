@@ -2,7 +2,6 @@ package graphql
 
 import (
 	"github.com/Coderockr/vitrine-social/server/model"
-	"github.com/gobuffalo/pop/nulls"
 	"github.com/graphql-go/graphql"
 )
 
@@ -50,18 +49,34 @@ var userType = graphql.NewObject(graphql.ObjectConfig{
 var organizationType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Organization",
 	Fields: graphql.Fields{
-		"id":     nonNullIntField,
-		"name":   nonNullStringField,
-		"logo":   nonNullStringField,
-		"slug":   nonNullStringField,
-		"phone":  nonNullStringField,
-		"resume": nonNullStringField,
-		"video":  nonNullStringField,
-		"email":  nonNullStringField,
-		"address": &graphql.Field{
-			Type: addressType,
+		"id": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.Int),
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				if o, ok := p.Source.(organizationJSON); ok {
+				if o, ok := p.Source.(*model.Organization); ok && o != nil {
+					return o.ID, nil
+				}
+				return nil, nil
+			},
+		},
+		"name":  nonNullStringField,
+		"logo":  nonNullStringField,
+		"slug":  nonNullStringField,
+		"phone": nonNullStringField,
+		"about": nonNullStringField,
+		"video": nonNullStringField,
+		"email": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.String),
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				if o, ok := p.Source.(*model.Organization); ok && o != nil {
+					return o.Email, nil
+				}
+				return nil, nil
+			},
+		},
+		"address": &graphql.Field{
+			Type: graphql.NewNonNull(addressType),
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				if o, ok := p.Source.(*model.Organization); ok && o != nil {
 					return o.Address, nil
 				}
 				return nil, nil
@@ -83,61 +98,21 @@ var addressType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-type addressJSON struct {
-	Street     string       `json:"street"`
-	Number     int64        `json:"number"`
-	Complement nulls.String `json:"complement"`
-	Suburb     string       `json:"suburb"`
-	City       string       `json:"city"`
-	State      string       `json:"state"`
-	Zipcode    string       `json:"zipcode"`
-}
-
-type organizationJSON struct {
-	ID      int64       `json:"id"`
-	Name    string      `json:"name"`
-	Logo    string      `json:"logo"`
-	Slug    string      `json:"slug"`
-	Phone   string      `json:"phone"`
-	Video   string      `json:"video"`
-	Resume  string      `json:"resume"`
-	Email   string      `json:"email"`
-	Address addressJSON `json:"address"`
-}
-
-func orgToJSON(o *model.Organization) *organizationJSON {
-	return &organizationJSON{
-		ID:     o.ID,
-		Name:   o.Name,
-		Logo:   o.Logo,
-		Slug:   o.Slug,
-		Phone:  o.Phone,
-		Video:  o.Video,
-		Resume: o.Resume,
-		Email:  o.Email,
-		Address: addressJSON{
-			Street:     o.Address.Street,
-			Number:     o.Address.Number,
-			Complement: o.Address.Complement,
-			Suburb:     o.Address.Suburb,
-			City:       o.Address.City,
-			State:      o.Address.State,
-			Zipcode:    o.Address.Zipcode,
-		},
-	}
-}
-
 var needStatusEnum = graphql.NewEnum(graphql.EnumConfig{
 	Name:        "NeedStatus",
 	Description: "Status of a Need",
 	Values: graphql.EnumValueConfigMap{
 		"ACTIVE": &graphql.EnumValueConfig{
-			Value:       "ACTIVE",
+			Value:       model.NeedStatusActive,
 			Description: "A active Need",
 		},
 		"INACTIVE": &graphql.EnumValueConfig{
-			Value:       "INACTIVE",
+			Value:       model.NeedStatusInactive,
 			Description: "A inactive Need",
+		},
+		"EMPTY": &graphql.EnumValueConfig{
+			Value:       model.NeedStatusEmpty,
+			Description: "An invalid status",
 		},
 	},
 })
@@ -151,6 +126,7 @@ var needType = graphql.NewObject(graphql.ObjectConfig{
 		"requiredQuantity": intField,
 		"reachedQuantity":  intField,
 		"unity":            stringField,
+
 		"status": &graphql.Field{
 			Type: needStatusEnum,
 		},

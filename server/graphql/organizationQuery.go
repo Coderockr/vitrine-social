@@ -17,19 +17,14 @@ func newOrganizationQuery(get getOrgFn) *graphql.Field {
 		Type: organizationType,
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 			id, _ := p.Args["id"].(int)
-			if n, ok := p.Source.(needJSON); ok {
+			if n, ok := p.Source.(*model.Need); ok {
 				id = int(n.OrganizationID)
 			}
 			if l, ok := p.Source.(loginJSON); ok {
 				id = int(l.OrganizationID)
 			}
 
-			o, err := get(int64(id))
-			if err != nil {
-				return nil, err
-			}
-
-			return orgToJSON(o), err
+			return get(int64(id))
 		},
 	}
 }
