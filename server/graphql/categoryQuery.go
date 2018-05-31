@@ -6,24 +6,32 @@ import (
 )
 
 type (
-	getCatFn func(int64) (model.Category, error)
+	getCatFn func(int64) (*model.Category, error)
 )
 
 func newCategoryQuery(get getCatFn) *graphql.Field {
+	f := newCategoryField(func(p graphql.ResolveParams) (*model.Category, error) {
+		if id, ok := p.Args["id"].(int); ok {
+			return get(int64(id))
+		}
+		return nil, nil
+	})
+
+	f.Name = "CategoryQuery"
+	f.Description = "Retrieves a Category by its ID"
+	f.Args = graphql.FieldConfigArgument{
+		"id": nonNullIntArgument,
+	}
+	return f
+}
+
+type getCatByResolveParams func(graphql.ResolveParams) (*model.Category, error)
+
+func newCategoryField(get getCatByResolveParams) *graphql.Field {
 	return &graphql.Field{
-		Name:        "CategoryQuery",
-		Description: "Retrieves a Category by its ID",
-		Args: graphql.FieldConfigArgument{
-			"id": intArgument,
-		},
 		Type: categoryType,
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-			id, _ := p.Args["id"].(int)
-			if n, ok := p.Source.(*model.Need); ok {
-				id = int(n.CategoryID)
-			}
-
-			return get(int64(id))
+			return get(p)
 		},
 	}
 }

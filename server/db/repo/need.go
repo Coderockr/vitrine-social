@@ -33,7 +33,8 @@ func (r *NeedRepository) Get(id int64) (*model.Need, error) {
 		return nil, err
 	}
 
-	n.Category, err = r.catRepo.Get(n.CategoryID)
+	c, _ := r.catRepo.Get(n.CategoryID)
+	n.Category = *c
 	return n, nil
 }
 
@@ -56,7 +57,7 @@ func (r *NeedRepository) Create(n model.Need) (model.Need, error) {
 		return n, err
 	}
 
-	n.Status = &model.NeedStatusActive
+	n.Status = model.NeedStatusActive
 
 	err = r.db.QueryRow(
 		`INSERT INTO needs (category_id, organization_id, title, description, required_qtd, reached_qtd, due_date, status, unity)

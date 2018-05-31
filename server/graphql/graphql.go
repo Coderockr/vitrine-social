@@ -1,6 +1,7 @@
 package graphql
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -19,7 +20,7 @@ type (
 	}
 
 	catRepo interface {
-		Get(int64) (model.Category, error)
+		Get(int64) (*model.Category, error)
 	}
 
 	tokenManager interface {
@@ -31,16 +32,13 @@ type (
 // NewHandler returns a handler for the GraphQL implementation of the API
 func NewHandler(nR needRepo, oR orgRepo, cR catRepo, tm tokenManager) http.Handler {
 
-	oQuery := newOrganizationQuery(oR.Get)
-	cQuery := newCategoryQuery(cR.Get)
-
 	rootQuery := graphql.ObjectConfig{
 		Name: "RootQuery",
 		Fields: graphql.Fields{
 			"search":       newSearchQuery(),
 			"need":         newNeedQuery(nR.Get, oR.Get),
-			"organization": oQuery,
-			"category":     cQuery,
+			"organization": newOrganizationQuery(oR.Get),
+			"category":     newCategoryQuery(cR.Get),
 			"viewer":       newViewerQuery(tm.ValidateToken, oR.Get),
 		},
 	}
@@ -48,14 +46,9 @@ func NewHandler(nR needRepo, oR orgRepo, cR catRepo, tm tokenManager) http.Handl
 	rootMutation := graphql.ObjectConfig{
 		Name: "RootMutation",
 		Fields: graphql.Fields{
-			"login": newLoginMutation(oR.GetUserByEmail, tm.CreateToken),
+			"login": newLoginMutation(oR.GetUserByEmail, tm.CreateToken, oR.Get),
 		},
 	}
-
-	needType.AddFieldConfig("organization", oQuery)
-	needType.AddFieldConfig("category", cQuery)
-
-	loginType.AddFieldConfig("organization", oQuery)
 
 	schema, err := graphql.NewSchema(graphql.SchemaConfig{
 		Query:    graphql.NewObject(rootQuery),
@@ -63,7 +56,7 @@ func NewHandler(nR needRepo, oR orgRepo, cR catRepo, tm tokenManager) http.Handl
 	})
 
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	return handler.New(&handler.Config{
