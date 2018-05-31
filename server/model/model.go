@@ -3,7 +3,6 @@ package model
 import (
 	"database/sql/driver"
 	"errors"
-	"log"
 	"strings"
 	"time"
 
@@ -58,16 +57,16 @@ var (
 
 // Need uma necessidade da organização
 type Need struct {
-	ID               int64       `valid:"required" db:"id" json:"id"`
-	Title            string      `valid:"required" db:"title" json:"title"`
-	Description      string      `valid:"required" db:"description" json:"description"`
-	RequiredQuantity int         `db:"required_qtd" json:"requiredQuantity"`
-	ReachedQuantity  int         `db:"reached_qtd" json:"reachedQuantity"`
-	Unity            string      `valid:"required" db:"unity" json:"unity"`
-	DueDate          *time.Time  `db:"due_date" json:"dueDate"`
-	Status           *needStatus `valid:"required" db:"status" json:"status"`
-	CategoryID       int64       `valid:"required" db:"category_id" json:"categoryId"`
-	OrganizationID   int64       `valid:"required" db:"organization_id" json:"organizationId"`
+	ID               int64      `valid:"required" db:"id" json:"id"`
+	Title            string     `valid:"required" db:"title" json:"title"`
+	Description      string     `valid:"required" db:"description" json:"description"`
+	RequiredQuantity int        `db:"required_qtd" json:"requiredQuantity"`
+	ReachedQuantity  int        `db:"reached_qtd" json:"reachedQuantity"`
+	Unity            string     `valid:"required" db:"unity" json:"unity"`
+	DueDate          *time.Time `db:"due_date" json:"dueDate"`
+	Status           needStatus `valid:"required" db:"status" json:"status"`
+	CategoryID       int64      `valid:"required" db:"category_id" json:"categoryId"`
+	OrganizationID   int64      `valid:"required" db:"organization_id" json:"organizationId"`
 	Category         Category
 	Images           []NeedImage `json:"images"`
 }
@@ -121,18 +120,14 @@ func (s *needStatus) Scan(src interface{}) error {
 		return errors.New("Incompatible type for needStatus")
 	}
 
-	//	panic(fmt.Errorf("'%s' | '%v'", str, strings.ToUpper(strings.TrimSpace(str)) == string(NeedStatusActive)))
-
 	switch strings.ToUpper(strings.TrimSpace(str)) {
 	case string(NeedStatusActive):
-		//panic("got here?")
-		s = &NeedStatusActive
+		*s = NeedStatusActive
 	case string(NeedStatusInactive):
-		s = &NeedStatusInactive
+		*s = NeedStatusInactive
 	default:
-		s = &NeedStatusEmpty
+		*s = NeedStatusEmpty
 	}
-	log.Printf("'%s' '%v' '%s'", str, *s, strings.ToUpper(strings.TrimSpace(str)))
 	return nil
 }
 
