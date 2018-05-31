@@ -120,13 +120,13 @@ func (s *needStatus) Scan(src interface{}) error {
 		return errors.New("Incompatible type for needStatus")
 	}
 
-	switch strings.ToUpper(str) {
+	switch strings.ToUpper(strings.TrimSpace(str)) {
 	case string(NeedStatusActive):
-		s = &NeedStatusActive
+		*s = NeedStatusActive
 	case string(NeedStatusInactive):
-		s = &NeedStatusInactive
+		*s = NeedStatusInactive
 	default:
-		s = &NeedStatusEmpty
+		*s = NeedStatusEmpty
 	}
 
 	return nil
