@@ -377,7 +377,7 @@ Realizar busca das necessidades
 + Response 200 (application/json)
     + Attributes
         + id (number) - Id da Resposta
-    
+
 + Response 404 (application/json)
     + Attributes (Error)
 
@@ -442,16 +442,10 @@ Realizar busca das necessidades
 
 ## DetailedOrganization (BaseOrganization)
 + phone (string) - Telefone
-+ resume (string) - Descrição detalhada da ONG
++ about (string) - Descrição detalhada da ONG
 + video (string) - Link de um video no Youtube sobre a ONG
 + email (string) - E-mail da ONG (também usado para login)
-+ street (string) - Rua da localização da ONG
-+ number (number) - Número da localização da ONG
-+ complement (string) - Complemento da localização da ONG
-+ suburb (string) - Bairro de localização da ONG
-+ city (string) - Cidade de localização da ONG
-+ state (string) - Estado de localização da ONG
-+ zipcode (string) - CEP de localização da ONG
++ address (Address) - Endereço da organização
 
 ## CompleteOrganization (DetailedOrganization)
 + images (array[Image]) - Imagens relacionadas
@@ -479,3 +473,12 @@ Realizar busca das necessidades
 
 ## AllCategories (Category)
 + needs_count (number) - Número de necessidades ativas da categoria
+
+## Address (object)
++ street (string) - Rua da localização da ONG
++ number (number) - Número da localização da ONG
++ complement (string) - Complemento da localização da ONG
++ neighborhood (string) - Bairro de localização da ONG
++ city (string) - Cidade de localização da ONG
++ state (string) - Estado de localização da ONG
++ zipcode (string) - CEP de localização da ONG
