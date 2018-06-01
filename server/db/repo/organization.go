@@ -26,7 +26,7 @@ func NewOrganizationRepository(db *sqlx.DB) *OrganizationRepository {
 // getBaseOrganization returns only the data about a organization, not its relations
 func getBaseOrganization(db *sqlx.DB, id int64) (*model.Organization, error) {
 	o := &model.Organization{}
-	err := db.Get(o, "SELECT "+allFields()+" FROM organizations WHERE id = $1", id)
+	err := db.Get(o, "SELECT "+allFields+" FROM organizations WHERE id = $1", id)
 	return o, err
 }
 
@@ -151,7 +151,7 @@ func (r *OrganizationRepository) DeleteImage(imageID int64, organizationID int64
 // GetByEmail returns a organization by its email
 func (r *OrganizationRepository) GetByEmail(email string) (*model.Organization, error) {
 	o := model.Organization{}
-	err := r.db.Get(&o, `SELECT `+allFields()+` FROM organizations WHERE email = $1`, email)
+	err := r.db.Get(&o, `SELECT `+allFields+` FROM organizations WHERE email = $1`, email)
 	return &o, err
 }
 
@@ -179,11 +179,9 @@ func (r *OrganizationRepository) ResetPasswordTo(o *model.Organization, password
 	return nil
 }
 
-func allFields() string {
-	return `
-		id, name, logo, phone, about, video, email, password, slug,
-		street as "address.street", number as "address.number",
-		complement as "address.complement", neighborhood as "address.neighborhood",
-		city as "address.city", state as "address.state", zipcode as "address.zipcode"
-	`
-}
+const allFields string = `
+	id, name, logo, phone, about, video, email, password, slug,
+	street as "address.street", number as "address.number",
+	complement as "address.complement", neighborhood as "address.neighborhood",
+	city as "address.city", state as "address.state", zipcode as "address.zipcode"
+`
