@@ -26,7 +26,7 @@ func NewOrganizationRepository(db *sqlx.DB) *OrganizationRepository {
 // getBaseOrganization returns only the data about a organization, not its relations
 func getBaseOrganization(db *sqlx.DB, id int64) (*model.Organization, error) {
 	o := &model.Organization{}
-	err := db.Get(o, "SELECT * FROM organizations WHERE id = $1", id)
+	err := db.Get(o, "SELECT "+allFields()+" FROM organizations WHERE id = $1", id)
 	return o, err
 }
 
@@ -67,7 +67,7 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 func (r *OrganizationRepository) Create(o model.Organization) (model.Organization, error) {
 	row := r.db.QueryRow(
 		`INSERT INTO organizations (
-			name, logo, phone, about, video, email, slug, password, 
+			name, logo, phone, about, video, email, slug, password,
 			street, number, complement, neighborhood, city, state, zipcode
 		) VALUES (
 			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
@@ -82,13 +82,13 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 		o.Email,
 		o.Slug,
 		o.Password,
-		o.Street,
-		o.Number,
-		o.Complement,
-		o.Neighborhood,
-		o.City,
-		o.State,
-		o.Zipcode,
+		o.Address.Street,
+		o.Address.Number,
+		o.Address.Complement,
+		o.Address.Neighborhood,
+		o.Address.City,
+		o.Address.State,
+		o.Address.Zipcode,
 	)
 
 	err := row.Scan(&o.ID)
@@ -125,13 +125,13 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 		o.About,
 		o.Video,
 		o.Email,
-		o.Street,
-		o.Number,
-		o.Complement,
-		o.Neighborhood,
-		o.City,
-		o.State,
-		o.Zipcode,
+		o.Address.Street,
+		o.Address.Number,
+		o.Address.Complement,
+		o.Address.Neighborhood,
+		o.Address.City,
+		o.Address.State,
+		o.Address.Zipcode,
 		o.ID,
 	)
 
@@ -151,7 +151,7 @@ func (r *OrganizationRepository) DeleteImage(imageID int64, organizationID int64
 // GetByEmail returns a organization by its email
 func (r *OrganizationRepository) GetByEmail(email string) (*model.Organization, error) {
 	o := model.Organization{}
-	err := r.db.Get(&o, `SELECT * FROM organizations WHERE email = $1`, email)
+	err := r.db.Get(&o, `SELECT `+allFields()+` FROM organizations WHERE email = $1`, email)
 	return &o, err
 }
 
@@ -177,4 +177,13 @@ func (r *OrganizationRepository) ResetPasswordTo(o *model.Organization, password
 	}
 	o.Password = hash
 	return nil
+}
+
+func allFields() string {
+	return `
+		id, name, logo, phone, about, video, email, password, slug,
+		street as "address.street", number as "address.number",
+		complement as "address.complement", neighborhood as "address.neighborhood",
+		city as "address.city", state as "address.state", zipcode as "address.zipcode"
+	`
 }
