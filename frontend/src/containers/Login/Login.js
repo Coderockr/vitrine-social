@@ -1,7 +1,9 @@
 import React from 'react';
 import { Layout, Row, Col, Form, Icon, Input } from 'antd';
-import styles from './styles.module.scss';
 import Header from '../../components/Header';
+import BottomNotification from '../../components/BottomNotification';
+import api from '../../utils/api';
+import styles from './styles.module.scss';
 
 const FormItem = Form.Item;
 const { Content } = Layout;
@@ -11,10 +13,25 @@ class Login extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        return values;
+        this.loginUser(values);
       }
       return err;
     });
+  }
+
+  loginUser(params) {
+    api.post('auth/login', params).then(
+      (response) => {
+        if (response.data) {
+          return response;
+        }
+        return null;
+      }, (error) => {
+        if (error.code === 401) {
+          BottomNotification('Usuário e/ou senha incorretos.');
+        }
+      },
+    );
   }
 
   render() {
@@ -27,15 +44,15 @@ class Login extends React.Component {
           <Row className={styles.row}>
             <Col
               xxl={{ span: 6, offset: 9 }}
-              lg={{ span: 8, offset: 9 }}
-              md={{ span: 10, offset: 6 }}
+              lg={{ span: 8, offset: 8 }}
+              md={{ span: 10, offset: 7 }}
               sm={{ span: 12, offset: 6 }}
               xs={{ span: 20, offset: 2 }}
             >
               <h1>Login da Organização</h1>
               <Form onSubmit={this.handleSubmit}>
                 <FormItem>
-                  {getFieldDecorator('userName', {
+                  {getFieldDecorator('username', {
                     rules: [{ required: true, message: 'Informe seu usuário!' }],
                   })(
                     <Input prefix={<Icon type="user" />} placeholder="Usuário" size="large" />,
@@ -47,6 +64,8 @@ class Login extends React.Component {
                   })(
                     <Input prefix={<Icon type="lock" />} type="password" placeholder="Senha" size="large" />,
                   )}
+                </FormItem>
+                <FormItem>
                   <a
                     className={styles.forgotPassword}
                     href=""

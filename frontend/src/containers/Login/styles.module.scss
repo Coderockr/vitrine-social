@@ -31,9 +31,6 @@ require('../../utils/styles/colors.js');
 }
 
 .forgotPassword {
-  display: block;
-  margin-top: 15px;
-
   &:hover,
   &:focus {
     cursor: pointer;
