@@ -1,0 +1,12 @@
+require('../../utils/styles/colors.js');
+
+.notification {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  background-color: $pink_400;
+  border-radius: 0;
+  margin: 0;
+}

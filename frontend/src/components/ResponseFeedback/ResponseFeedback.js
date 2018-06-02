@@ -36,12 +36,19 @@ class ResponseFeedback extends React.Component {
   }
 
   renderContent() {
-    return this.renderError();
+    if (this.props.type === 'error') {
+      return this.renderError();
+    } if (this.props.type === 'success') {
+      return this.renderSuccess();
+    } if (this.props.type === 'loading') {
+      return this.renderLoading();
+    }
+    return null;
   }
 
   render() {
     return (
-      <div className={styles.wrapper}>
+      <div className={styles.wrapper} hidden={!this.props.type}>
         <Row type="flex" align="bottom" justify="center" className={styles.row}>
           <Col>
             {this.renderContent()}
