@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
-
-	"github.com/gobuffalo/pop/nulls"
 )
 
 type jsonTime struct {
@@ -71,13 +69,13 @@ type needJSON struct {
 }
 
 type addressJSON struct {
-	Street       string       `json:"street"`
-	Number       int64        `json:"number"`
-	Complement   nulls.String `json:"complement"`
-	Neighborhood string       `json:"neighborhood"`
-	City         string       `json:"city"`
-	State        string       `json:"state"`
-	Zipcode      string       `json:"zipcode"`
+	Street       string  `json:"street"`
+	Number       int64   `json:"number"`
+	Complement   *string `json:"complement"`
+	Neighborhood string  `json:"neighborhood"`
+	City         string  `json:"city"`
+	State        string  `json:"state"`
+	Zipcode      string  `json:"zipcode"`
 }
 
 func requestToJSONObject(req *http.Request, jsonDoc interface{}) error {

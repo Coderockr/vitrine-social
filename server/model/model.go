@@ -5,8 +5,6 @@ import (
 	"errors"
 	"strings"
 	"time"
-
-	"github.com/gobuffalo/pop/nulls"
 )
 
 // User you know it
@@ -99,13 +97,13 @@ type Category struct {
 
 // Address de uma organização
 type Address struct {
-	Street       string       `valid:"required" db:"street" json:"street"`
-	Number       int64        `valid:"required" db:"number" json:"number"`
-	Complement   nulls.String `db:"complement" json:"complement"`
-	Neighborhood string       `valid:"required" db:"neighborhood" json:"neighbordhood"`
-	City         string       `valid:"required" db:"city" json:"city"`
-	State        string       `valid:"required" db:"state" json:"state"`
-	Zipcode      string       `valid:"required" db:"zipcode" json:"zipcode"`
+	Street       string  `valid:"required" db:"street" json:"street"`
+	Number       int64   `valid:"required" db:"number" json:"number"`
+	Complement   *string `db:"complement" json:"complement"`
+	Neighborhood string  `valid:"required" db:"neighborhood" json:"neighbordhood"`
+	City         string  `valid:"required" db:"city" json:"city"`
+	State        string  `valid:"required" db:"state" json:"state"`
+	Zipcode      string  `valid:"required" db:"zipcode" json:"zipcode"`
 }
 
 func (s *needStatus) Scan(src interface{}) error {
