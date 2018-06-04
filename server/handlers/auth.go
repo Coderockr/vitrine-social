@@ -18,9 +18,9 @@ const (
 )
 
 type (
-	// UserGetter represent the operations for retrieve some application user.
-	UserGetter interface {
-		GetUserByEmail(email string) (model.User, error)
+	// OrganizationGetter represent the operations for retrieve some organization.
+	OrganizationGetter interface {
+		GetByEmail(email string) (*model.Organization, error)
 	}
 
 	// TokenManager represet operations for application tokens.
@@ -31,8 +31,13 @@ type (
 
 	// AuthHandler represent all the handler endpoints and middlewares.
 	AuthHandler struct {
-		UserGetter   UserGetter
-		TokenManager TokenManager
+		OrganizationGetter OrganizationGetter
+		TokenManager       TokenManager
+	}
+
+	loginJSON struct {
+		Organization baseOrganizationJSON `json:"organization"`
+		Token        string               `json:"token"`
 	}
 )
 
@@ -49,7 +54,8 @@ func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 	email := authForm["email"]
 	pass := authForm["password"]
 
-	user, err := a.UserGetter.GetUserByEmail(email)
+	organization, err := a.OrganizationGetter.GetByEmail(email)
+	user := organization.User
 	if err != nil {
 		log.Printf("[INFO][Auth Handler] %s", err.Error())
 		HandleHTTPError(w, http.StatusUnauthorized, errors.New("Email não encontrado"))
@@ -67,7 +73,17 @@ func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	HandleHTTPSuccess(w, map[string]string{"token": token})
+	json := loginJSON{
+		Token: token,
+		Organization: baseOrganizationJSON{
+			ID:   organization.ID,
+			Name: organization.Name,
+			Logo: organization.Logo,
+			Slug: organization.Slug,
+		},
+	}
+
+	HandleHTTPSuccess(w, json)
 }
 
 // GetUserID retorna o id do usuário logado.
