@@ -30,13 +30,13 @@ type baseOrganizationJSON struct {
 
 type organizationJSON struct {
 	baseOrganizationJSON
-	Phone string `json:"phone"`
-	About string `json:"about"`
-	Video string `json:"video"`
-	Email string `json:"email"`
-	addressJSON
-	Needs  []needJSON  `json:"needs"`
-	Images []imageJSON `json:"images"`
+	Phone   string      `json:"phone"`
+	About   string      `json:"about"`
+	Video   string      `json:"video"`
+	Email   string      `json:"email"`
+	Address addressJSON `json:"address"`
+	Needs   []needJSON  `json:"needs"`
+	Images  []imageJSON `json:"images"`
 }
 
 type categoryJSON struct {

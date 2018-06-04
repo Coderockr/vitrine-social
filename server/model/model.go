@@ -26,13 +26,13 @@ type image struct {
 //Organization dados dos usuários que podem logar no sistema
 type Organization struct {
 	User
-	Name  string `valid:"required" db:"name" json:"name"`
-	Logo  string `valid:"url,optional" db:"logo" json:"logo"`
-	Phone string `valid:"required" db:"phone" json:"phone"`
-	About string `db:"about" json:"about"`
-	Video string `valid:"required" db:"video" json:"video"`
-	Slug  string `valid:"required" db:"slug" json:"slug"`
-	Address
+	Name      string              `valid:"required" db:"name" json:"name"`
+	Logo      string              `valid:"url,optional" db:"logo" json:"logo"`
+	Phone     string              `valid:"required" db:"phone" json:"phone"`
+	About     string              `db:"about" json:"about"`
+	Video     string              `valid:"required" db:"video" json:"video"`
+	Slug      string              `valid:"required" db:"slug" json:"slug"`
+	Address   Address             `json:"address"`
 	Needs     []Need              `json:"needs"`
 	Images    []OrganizationImage `json:"images"`
 	CreatedAt *time.Time          `db:"created_at" json:"created_at"`
