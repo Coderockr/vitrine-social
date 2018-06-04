@@ -143,7 +143,7 @@ Realizar busca das necessidades
             Content-Type: application/json
 
 + Response 200 (application/json)
-    + Attributes (array[BaseNeed])
+    + Attributes (array[SearchNeed])
 
 # Group Organization
 
@@ -413,6 +413,21 @@ Realizar busca das necessidades
 
 ## CreateNeedPayload (NeedPayload)
 + organization (number) - ID da ONG
+
+## SearchOrganization (object)
++ id (number) - Código da organização
++ name (string) - Nome da organização
+
+## SearchNeed (object)
++ id (number) - Código da necessidade
++ title (string) - Resumo da necessidade
++ description (string) - Descrição detalhada da necessidade
++ requiredQuantity (number) - Quantidade necessária
++ reachedQuantity (number) - Quantidade alcançada
++ unity: kg (string) - Unidade da necessidade
++ dueDate: `2017-08-17` (string) - Data final da necessidade
++ category (Category) - Categoria da necessidade
++ organization (SearchOrganization) - Organização da necessidade
 
 ## BaseNeed (object)
 + id (number) - Código da necessidade

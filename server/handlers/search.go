@@ -12,7 +12,7 @@ import (
 type (
 	// SearchNeedRepository represet operations for need repository.
 	SearchNeedRepository interface {
-		Search(text string, categoriesID []int, organizationsID int64, page int64) ([]repo.SearchResult, error)
+		Search(text string, categoriesID []int, organizationsID int64, page int64) ([]repo.DBSearch, error)
 	}
 )
 
@@ -52,6 +52,35 @@ func SearchHandler(sR SearchNeedRepository) func(w http.ResponseWriter, r *http.
 			return
 		}
 
-		HandleHTTPSuccess(w, needs)
+		HandleHTTPSuccess(w, convertDBToNeed(needs))
 	}
+}
+
+func convertDBToNeed(dbSearch []repo.DBSearch) []searchResultJSON {
+	var need []searchResultJSON
+	need = make([]searchResultJSON, len(dbSearch))
+	for i, s := range dbSearch {
+		need[i] = searchResultJSON{
+			ID:               s.ID,
+			Title:            s.Title,
+			Description:      s.Description,
+			RequiredQuantity: s.RequiredQuantity,
+			ReachedQuantity:  s.ReachedQuantity,
+			Unity:            s.Unity,
+			DueDate:          s.DueDate,
+			Category: categoryJSON{
+				ID:   s.CategoryID,
+				Name: s.CategoryName,
+				Icon: s.CategoryIcon,
+			},
+			Organization: baseOrganizationJSON{
+				ID:   s.OrganizationID,
+				Name: s.OrganizationName,
+				Logo: s.OrganizationLogo,
+				Slug: s.OrganizationSlug,
+			},
+		}
+	}
+
+	return need
 }

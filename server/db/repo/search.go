@@ -2,7 +2,6 @@ package repo
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/jmoiron/sqlx"
@@ -20,34 +19,19 @@ func NewSearchRepository(db *sqlx.DB) *SearchRepository {
 	}
 }
 
-type dbSearch struct {
+// DBSearch estrutura de busca de necessidade
+type DBSearch struct {
 	model.Need
 	OrganizationName string `db:"organization_name"`
+	OrganizationLogo string `db:"organization_logo"`
+	OrganizationSlug string `db:"organization_slug"`
 	CategoryID       int64  `db:"category_id"`
 	CategoryName     string `db:"category_name"`
 	CategoryIcon     string `db:"category_icon"`
 }
 
-type searchOrganization struct {
-	ID   int64
-	Name string
-}
-
-// SearchResult formato do resultado da busca
-type SearchResult struct {
-	ID               int64
-	Title            string
-	Description      string
-	RequiredQuantity int
-	ReachedQuantity  int
-	Unity            string
-	DueDate          *time.Time
-	Category         model.Category
-	Organization     searchOrganization
-}
-
 // Search needs by text, category or organization
-func (r *SearchRepository) Search(text string, categoriesID []int, organizationsID int64, page int64) ([]SearchResult, error) {
+func (r *SearchRepository) Search(text string, categoriesID []int, organizationsID int64, page int64) ([]DBSearch, error) {
 	var filter string
 	var numParams int
 
@@ -73,7 +57,8 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 	}
 
 	sql := fmt.Sprintf(`
-		SELECT n.*, o.name as organization_name, c.name as category_name, c.icon as category_icon
+		SELECT n.*, o.name as organization_name, o.logo as organization_logo, o.slug as organization_slug,
+					 c.name as category_name, c.icon as category_icon
 		FROM needs n
 			INNER JOIN organizations o on (o.id = n.organization_id)
 			INNER JOIN categories c on (c.id = n.category_id)
@@ -82,35 +67,8 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 		LIMIT 10 OFFSET $2
 	`, filter)
 
-	dbNeeds := []dbSearch{}
+	dbNeeds := []DBSearch{}
 	err := r.db.Select(&dbNeeds, sql, args...)
 
-	return convertDBToNeed(dbNeeds), err
-}
-
-func convertDBToNeed(dbSearch []dbSearch) []SearchResult {
-	var need []SearchResult
-	need = make([]SearchResult, len(dbSearch))
-	for i, s := range dbSearch {
-		need[i] = SearchResult{
-			ID:               s.ID,
-			Title:            s.Title,
-			Description:      s.Description,
-			RequiredQuantity: s.RequiredQuantity,
-			ReachedQuantity:  s.ReachedQuantity,
-			Unity:            s.Unity,
-			DueDate:          s.DueDate,
-			Category: model.Category{
-				ID:   s.CategoryID,
-				Name: s.CategoryName,
-				Icon: s.CategoryIcon,
-			},
-			Organization: searchOrganization{
-				ID:   s.OrganizationID,
-				Name: s.OrganizationName,
-			},
-		}
-	}
-
-	return need
+	return dbNeeds, err
 }
