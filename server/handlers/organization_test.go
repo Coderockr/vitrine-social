@@ -8,8 +8,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gobuffalo/pop/nulls"
-
 	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/gorilla/context"
@@ -96,7 +94,7 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 							Address: model.Address{
 								Street:       "",
 								Number:       "",
-								Complement:   nulls.String{},
+								Complement:   nil,
 								Neighborhood: "",
 								City:         "",
 								State:        "",
