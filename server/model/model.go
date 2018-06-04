@@ -72,17 +72,6 @@ type Need struct {
 	Images           []NeedImage
 }
 
-//NeedToIndex to be indexed and used in searches
-type NeedToIndex struct {
-	Key                string
-	ID                 int64
-	Title              string
-	CategoryName       string
-	OrganizationName   string
-	OrganizationResume string
-	OrganizationSlug   string
-}
-
 // NeedImage de uma necessidade
 type NeedImage struct {
 	image

@@ -13,11 +13,12 @@ func HandleHTTPSuccess(w http.ResponseWriter, data interface{}, status ...int) {
 		HandleHTTPError(w, http.StatusInternalServerError, err)
 		return
 	}
+
 	if len(status) == 0 {
-		status[0] = http.StatusOK
-		return
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.WriteHeader(status[0])
 	}
-	w.WriteHeader(status[0])
 }
 
 // HandleHTTPSuccessNoContent formats and return with no content

@@ -50,6 +50,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	oR := repo.NewOrganizationRepository(conn)
 	nR := repo.NewNeedRepository(conn)
 	cR := repo.NewCategoryRepository(conn)
+	sR := repo.NewSearchRepository(conn)
 
 	needResponseRepo := repo.NewNeedResponseRepository(conn)
 
@@ -72,7 +73,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		negroni.WrapFunc(handlers.UpdatePasswordHandler(oR)),
 	)).Methods("POST")
 
-	v1.HandleFunc("/search", handlers.SearchHandler(nR)).Methods("GET")
+	v1.HandleFunc("/search", handlers.SearchHandler(sR)).Methods("GET")
 
 	v1.HandleFunc("/organization/{id:[0-9]+}", handlers.GetOrganizationHandler(oR.Get)).Methods("GET")
 

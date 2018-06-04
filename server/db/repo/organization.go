@@ -23,6 +23,13 @@ func NewOrganizationRepository(db *sqlx.DB) *OrganizationRepository {
 	}
 }
 
+const allFields string = `
+	id, name, logo, phone, about, video, email, password, slug,
+	street as "address.street", number as "address.number",
+	complement as "address.complement", neighborhood as "address.neighborhood",
+	city as "address.city", state as "address.state", zipcode as "address.zipcode"
+`
+
 // getBaseOrganization returns only the data about a organization, not its relations
 func getBaseOrganization(db *sqlx.DB, id int64) (*model.Organization, error) {
 	o := &model.Organization{}
@@ -178,10 +185,3 @@ func (r *OrganizationRepository) ResetPasswordTo(o *model.Organization, password
 	o.Password = hash
 	return nil
 }
-
-const allFields string = `
-	id, name, logo, phone, about, video, email, password, slug,
-	street as "address.street", number as "address.number",
-	complement as "address.complement", neighborhood as "address.neighborhood",
-	city as "address.city", state as "address.state", zipcode as "address.zipcode"
-`
