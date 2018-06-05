@@ -27,6 +27,10 @@ var nonNullIntArgument = &graphql.ArgumentConfig{
 	Type: graphql.NewNonNull(graphql.Int),
 }
 
+var nonNullStringInput = &graphql.InputObjectFieldConfig{
+	Type: graphql.NewNonNull(graphql.String),
+}
+
 var nonNullStringArgument = &graphql.ArgumentConfig{
 	Type: graphql.NewNonNull(graphql.String),
 }

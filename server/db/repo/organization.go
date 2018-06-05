@@ -1,6 +1,10 @@
 package repo
 
 import (
+	"errors"
+	"log"
+	"strings"
+
 	"github.com/Coderockr/vitrine-social/server/security"
 
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -172,6 +176,19 @@ func (r *OrganizationRepository) ResetPasswordTo(o *model.Organization, password
 	}
 	o.Password = hash
 	return nil
+}
+
+func (r *OrganizationRepository) ChangePassword(o model.Organization, currentPassword, newPassword string) (model.Organization, error) {
+	err := security.CompareHashAndPassword(o.Password, currentPassword)
+	log.Printf("'%s' '%s'", o.Password, currentPassword)
+	if err != nil {
+		return o, errors.New("Senha inválida")
+	}
+
+	newPassword = strings.TrimSpace(newPassword)
+
+	r.ResetPasswordTo(&o, newPassword)
+	return o, nil
 }
 
 const allFields string = `

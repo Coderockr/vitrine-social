@@ -17,6 +17,7 @@ type (
 	orgRepo interface {
 		Get(int64) (*model.Organization, error)
 		GetUserByEmail(string) (model.User, error)
+		ChangePassword(o model.Organization, cPassword, nPassword string) (model.Organization, error)
 	}
 
 	catRepo interface {
@@ -30,6 +31,19 @@ type (
 		ValidateToken(token string) (int64, error)
 	}
 )
+
+func getInArguments(args map[string]interface{}, names ...string) interface{} {
+	if len(names) == 0 {
+		panic("getInArguments needs at last one name")
+	}
+
+	v := args[names[0]]
+	if len(names) == 1 {
+		return v
+	}
+
+	return getInArguments(v.(map[string]interface{}), names[1:]...)
+}
 
 // NewHandler returns a handler for the GraphQL implementation of the API
 func NewHandler(nR needRepo, oR orgRepo, cR catRepo, tm tokenManager) http.Handler {
@@ -50,6 +64,13 @@ func NewHandler(nR needRepo, oR orgRepo, cR catRepo, tm tokenManager) http.Handl
 		Name: "RootMutation",
 		Fields: graphql.Fields{
 			"login": newLoginMutation(oR.GetUserByEmail, tm.CreateToken, oR.Get),
+			"viewer": newViewerMutation(
+				tm.ValidateToken,
+				oR.Get,
+				graphql.Fields{
+					"updatePassword": newUpdatePasswordMutation(oR.ChangePassword),
+				},
+			),
 		},
 	}
 
