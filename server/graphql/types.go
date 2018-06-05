@@ -31,6 +31,10 @@ var nonNullStringInput = &graphql.InputObjectFieldConfig{
 	Type: graphql.NewNonNull(graphql.String),
 }
 
+var stringInput = &graphql.InputObjectFieldConfig{
+	Type: graphql.String,
+}
+
 var nonNullStringArgument = &graphql.ArgumentConfig{
 	Type: graphql.NewNonNull(graphql.String),
 }

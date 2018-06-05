@@ -16,6 +16,7 @@ type (
 
 	orgRepo interface {
 		Get(int64) (*model.Organization, error)
+		Update(model.Organization) (model.Organization, error)
 		GetUserByEmail(string) (model.User, error)
 		ChangePassword(o model.Organization, cPassword, nPassword string) (model.Organization, error)
 	}
@@ -60,7 +61,8 @@ func NewHandler(
 				tm.ValidateToken,
 				oR.Get,
 				graphql.Fields{
-					"updatePassword": newUpdatePasswordMutation(oR.ChangePassword),
+					"updatePassword":     newUpdatePasswordMutation(oR.ChangePassword),
+					"organizationUpdate": newOrganizationUpdateMutation(oR.Update),
 				},
 			),
 		},

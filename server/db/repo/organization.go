@@ -73,6 +73,11 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 
 // Create receives a Organization and creates it in the database, returning the updated Organization or error if failed
 func (r *OrganizationRepository) Create(o model.Organization) (model.Organization, error) {
+	o, err := validateOrg(o)
+	if err != nil {
+		return o, err
+	}
+
 	row := r.db.QueryRow(
 		`INSERT INTO organizations (
 			name, phone, about, video, email, slug, password,
@@ -98,8 +103,7 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 		o.Address.Zipcode,
 	)
 
-	err := row.Scan(&o.ID)
-
+	err = row.Scan(&o.ID)
 	if err != nil {
 		return o, err
 	}
@@ -107,9 +111,79 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 	return o, nil
 }
 
+func validateOrg(o model.Organization) (model.Organization, error) {
+
+	o.Name = strings.TrimSpace(o.Name)
+	o.Logo = strings.TrimSpace(o.Logo)
+	o.Phone = strings.TrimSpace(o.Phone)
+	o.About = strings.TrimSpace(o.About)
+	o.Video = strings.TrimSpace(o.Video)
+	o.Email = strings.TrimSpace(o.Email)
+	o.Address.Street = strings.TrimSpace(o.Address.Street)
+	o.Address.Number = strings.TrimSpace(o.Address.Number)
+	o.Address.Neighborhood = strings.TrimSpace(o.Address.Neighborhood)
+	o.Address.City = strings.TrimSpace(o.Address.City)
+	o.Address.State = strings.TrimSpace(o.Address.State)
+	o.Address.Zipcode = strings.TrimSpace(o.Address.Zipcode)
+	if o.Address.Complement != nil {
+		*o.Address.Complement = strings.TrimSpace(*o.Address.Complement)
+	}
+
+	if len(o.Name) == 0 {
+		return o, errors.New("organization name should not be empty")
+	}
+
+	if len(o.Logo) == 0 {
+		return o, errors.New("organization logo should not be empty")
+	}
+
+	if len(o.Phone) == 0 {
+		return o, errors.New("organization phone should not be empty")
+	}
+
+	if len(o.About) == 0 {
+		return o, errors.New("organization about should not be empty")
+	}
+
+	if len(o.Email) == 0 {
+		return o, errors.New("organization email should not be empty")
+	}
+
+	if len(o.Address.Street) == 0 {
+		return o, errors.New("organization address street should not be empty")
+	}
+
+	if len(o.Address.Number) == 0 {
+		return o, errors.New("organization address number should not be empty")
+	}
+
+	if len(o.Address.Neighborhood) == 0 {
+		return o, errors.New("organization address neighborhood should not be empty")
+	}
+
+	if len(o.Address.City) == 0 {
+		return o, errors.New("organization address city should not be empty")
+	}
+
+	if len(o.Address.State) == 0 {
+		return o, errors.New("organization address state should not be empty")
+	}
+
+	if len(o.Address.Zipcode) == 0 {
+		return o, errors.New("organization address zipcode should not be empty")
+	}
+
+	return o, nil
+}
+
 // Update - Receive an Organization and update it in the database, returning the updated Organization or error if failed
 func (r *OrganizationRepository) Update(o model.Organization) (model.Organization, error) {
-	_, err := r.db.Exec(
+	o, err := validateOrg(o)
+	if err != nil {
+		return o, err
+	}
+
+	_, err = r.db.Exec(
 		`UPDATE organizations SET
 			name = $1,
 			phone = $2,
