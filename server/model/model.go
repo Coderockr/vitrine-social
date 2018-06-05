@@ -100,7 +100,7 @@ type Category struct {
 // Address de uma organização
 type Address struct {
 	Street       string       `valid:"required" db:"street"`
-	Number       int64        `valid:"required" db:"number"`
+	Number       string       `valid:"required" db:"number"`
 	Complement   nulls.String `db:"complement"`
 	Neighborhood string       `valid:"required" db:"neighborhood"`
 	City         string       `valid:"required" db:"city"`

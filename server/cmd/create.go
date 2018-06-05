@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/handlers"
@@ -90,12 +89,6 @@ func createCmdFunc(cmd *cobra.Command, args []string) {
 
 	oR := repo.NewOrganizationRepository(conn)
 
-	addressNumber, err := strconv.ParseInt(number, 10, 64)
-	if err != nil {
-		log.Fatal(err)
-		os.Exit(1)
-	}
-
 	o, err := oR.Create(model.Organization{
 		User: model.User{
 			Email:    email,
@@ -109,7 +102,7 @@ func createCmdFunc(cmd *cobra.Command, args []string) {
 		Video: video,
 		Address: model.Address{
 			Street:       street,
-			Number:       addressNumber,
+			Number:       number,
 			Neighborhood: neighborhood,
 			City:         city,
 			State:        state,
