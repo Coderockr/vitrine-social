@@ -49,6 +49,3 @@
   name = "github.com/graphql-go/graphql"
   version = "0.7.5"
 
-[[constraint]]
-  name = "github.com/gobuffalo/pop"
-  version = "4.5.9"
