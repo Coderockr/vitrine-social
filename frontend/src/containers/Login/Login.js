@@ -3,6 +3,7 @@ import { Layout, Row, Col, Form, Icon, Input } from 'antd';
 import Header from '../../components/Header';
 import BottomNotification from '../../components/BottomNotification';
 import api from '../../utils/api';
+import { authorizeUser } from '../../utils/auth';
 import styles from './styles.module.scss';
 
 const FormItem = Form.Item;
@@ -23,12 +24,16 @@ class Login extends React.Component {
     api.post('auth/login', params).then(
       (response) => {
         if (response.data) {
-          return response;
+          authorizeUser(response.data);
         }
         return null;
       }, (error) => {
-        if (error.code === 401) {
+        if (!error.response) {
+          BottomNotification('Problema de conexão com a API.');
+        } else if (error.response.status === 401) {
           BottomNotification('Usuário e/ou senha incorretos.');
+        } else if (error.response.data.message) {
+          BottomNotification(error.response.data.message);
         }
       },
     );
@@ -52,7 +57,7 @@ class Login extends React.Component {
               <h1>Login da Organização</h1>
               <Form onSubmit={this.handleSubmit}>
                 <FormItem>
-                  {getFieldDecorator('username', {
+                  {getFieldDecorator('email', {
                     rules: [{ required: true, message: 'Informe seu usuário!' }],
                   })(
                     <Input prefix={<Icon type="user" />} placeholder="Usuário" size="large" />,
