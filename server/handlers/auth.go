@@ -55,12 +55,14 @@ func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 	pass := authForm["password"]
 
 	organization, err := a.OrganizationGetter.GetByEmail(email)
-	user := organization.User
 	if err != nil {
 		log.Printf("[INFO][Auth Handler] %s", err.Error())
 		HandleHTTPError(w, http.StatusUnauthorized, errors.New("Email não encontrado"))
 		return
 	}
+
+	user := organization.User
+
 	err = security.CompareHashAndPassword(user.Password, pass)
 	if err != nil {
 		HandleHTTPError(w, http.StatusUnauthorized, errors.New("Senha inválida"))
