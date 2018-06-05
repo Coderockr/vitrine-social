@@ -59,8 +59,8 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	options := getJWTOptions()
 
 	AuthHandler := handlers.AuthHandler{
-		UserGetter:   oR,
-		TokenManager: &handlers.JWTManager{OP: options},
+		OrganizationGetter: oR,
+		TokenManager:       &handlers.JWTManager{OP: options},
 	}
 
 	authMiddleware := negroni.New()
