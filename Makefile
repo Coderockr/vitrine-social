@@ -14,7 +14,7 @@ install: ## install project dependences
 	go get github.com/rubenv/sql-migrate/...
 	go get -u github.com/golang/dep/cmd/dep
 	go get -u github.com/haya14busa/goverage
-	cd server; dep ensure
+	cd server; dep ensure -v
 
 new-migration: ## create a new migration, use make new-migration m=message to set the message
 	sql-migrate new -config=./devops/dbconfig.yml -env=production "$(m)"
@@ -41,7 +41,7 @@ serve-on-docker: ## start the server inside docker
 	docker-compose exec golang sh -c "cd server && go run main.go serve"
 
 serve-watch: ## start server with hot reload
-	docker-compose up -d
+	docker-compose up -d postgres
 	go get -u github.com/codegangsta/gin
 	cd server; API_PORT=8001 gin --port 8000 --appPort 8001 --bin server-cmd run serve
 

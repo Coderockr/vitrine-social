@@ -23,11 +23,21 @@ type (
 
 func TestAuthHandler_Login(t *testing.T) {
 	password, err := bcrypt.GenerateFromPassword([]byte("this is my password"), bcrypt.DefaultCost)
-	userStorage := &inmemory.UserRepository{
-		Storage: map[string]model.User{
-			"jhon_doe": {Email: "jhon_doe@gmail.com", ID: 1554, Password: string(password)},
+	organizationStorage := &inmemory.OrganizationRepository{
+		Storage: map[string]model.Organization{
+			"jhon_doe": {
+				User: model.User{
+					Email:    "jhon_doe@gmail.com",
+					ID:       1554,
+					Password: string(password),
+				},
+				Name: "Jhon Doe",
+				Logo: "Logo",
+				Slug: "jhon_doe",
+			},
 		},
 	}
+
 	require.NoError(t, err)
 	type fields struct {
 		tokenManager TokenManager
@@ -76,15 +86,25 @@ func TestAuthHandler_Login(t *testing.T) {
 			args{
 				req: httptest.NewRequest("POST", "http://vitrine/login",
 					bytes.NewReader([]byte(`{"email": "jhon_doe@gmail.com", "password": "this is my password"}`))),
-				resp: `{"token": "this-is-my-token"}`,
+				resp: `
+					{
+						"organization": {
+							"id": 1554,
+							"name": "Jhon Doe",
+							"logo": "Logo",
+							"slug": "jhon_doe"
+						},
+						"token": "this-is-my-token"
+					}`,
 			},
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			a := &AuthHandler{
-				UserGetter:   userStorage,
-				TokenManager: tt.fields.tokenManager,
+				OrganizationGetter: organizationStorage,
+				TokenManager:       tt.fields.tokenManager,
 			}
 			w := httptest.NewRecorder()
 			a.Login(w, tt.args.req)
