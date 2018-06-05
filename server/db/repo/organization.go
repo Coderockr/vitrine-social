@@ -206,6 +206,8 @@ func (r *OrganizationRepository) CreateImage(i model.OrganizationImage) (model.O
 
 	return i, nil
 }
+
+// ChangePassword will update a organization password given its old password
 func (r *OrganizationRepository) ChangePassword(o model.Organization, currentPassword, newPassword string) (model.Organization, error) {
 	err := security.CompareHashAndPassword(o.Password, currentPassword)
 	if err != nil {

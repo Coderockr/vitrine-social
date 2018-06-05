@@ -38,12 +38,12 @@ func UpdatePasswordHandler(repo UpdatePasswordOrganizationRepository) func(w htt
 		var ok bool
 
 		if cPassword, ok = handlerForm["currentPassword"]; !ok {
-			HandleHTTPError(w, http.StatusBadRequest, errors.New("Você deve informar senha atual !"))
+			HandleHTTPError(w, http.StatusBadRequest, errors.New("você deve informar senha atual"))
 			return
 		}
 
 		if nPassword, ok = handlerForm["newPassword"]; !ok {
-			HandleHTTPError(w, http.StatusBadRequest, errors.New("Você deve informar a nova senha !"))
+			HandleHTTPError(w, http.StatusBadRequest, errors.New("você deve informar a nova senha"))
 			return
 		}
 
