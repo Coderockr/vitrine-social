@@ -6,6 +6,7 @@ module.exports = {
   white,
 
   green_300: '#73BC46',
+  green_500: '#639444',
 
   grey_090: '#F0F2F5',
   grey_000: '#EBEBEB',
@@ -37,4 +38,5 @@ module.exports = {
   teal_500: '#20B8AF',
 
   red_400: '#D0021B',
+  red_800: '#A51A2B',
 };

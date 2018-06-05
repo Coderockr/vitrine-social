@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Icon } from 'antd';
+import cx from 'classnames';
 import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
 
@@ -12,7 +13,13 @@ class ResponseFeedback extends React.Component {
       <div className={styles.contentWrapper}>
         <Icon type="check-circle-o" style={{ fontSize: 150, color: colors.green_300 }} />
         <p className={styles.title}>Sucesso!</p>
-        <p className={styles.message}>Mensagem de Sucesso</p>
+        <p className={styles.message}>{this.props.message}</p>
+        <button
+          className={cx(styles.button, styles.successButton)}
+          onClick={this.props.onClick}
+        >
+          FECHAR
+        </button>
       </div>
     );
   }
@@ -22,7 +29,13 @@ class ResponseFeedback extends React.Component {
       <div className={styles.contentWrapper}>
         <Icon type="close-circle-o" style={{ fontSize: 150, color: colors.red_400 }} />
         <p className={styles.title}>Erro!</p>
-        <p className={styles.message}>Mensagem de Erro</p>
+        <p className={styles.message}>{this.props.message}</p>
+        <button
+          className={cx(styles.button, styles.errorButton)}
+          onClick={this.props.onClick}
+        >
+          VOLTAR
+        </button>
       </div>
     );
   }
