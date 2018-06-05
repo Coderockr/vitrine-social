@@ -14,6 +14,7 @@ import UploadImages from '../UploadImages';
 import ResponseFeedback from '../ResponseFeedback';
 import { maskPhone, maskCep } from '../../utils/mask';
 import api from '../../utils/api';
+import { getUser } from '../../utils/auth';
 import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
 
@@ -24,7 +25,8 @@ const { Option } = Select;
 class OrganizationProfileForm extends React.Component {
   state = {
     validatingZipCode: '',
-    responseFeedback: 'error',
+    responseFeedback: '',
+    responseFeedbackMessage: '',
     states: [{ id: -1, sigla: 'Indisponíveis' }],
     cities: [{ id: -1, nome: 'Indisponíveis' }],
   }
@@ -37,7 +39,11 @@ class OrganizationProfileForm extends React.Component {
     return this.state.states.filter(state => state.sigla === initials)[0].id;
   }
 
-  getCities(stateId) {
+  getStateName(stateId) {
+    return this.state.states.filter(state => state.id === stateId)[0].sigla;
+  }
+
+  getCities(stateId, selectedCity) {
     this.props.form.setFieldsValue({
       city: '',
     });
@@ -46,9 +52,9 @@ class OrganizationProfileForm extends React.Component {
         .then(response => response.json())
         .then((data) => {
           this.setState({ cities: data.sort(this.citySort) });
-          if (this.props.organization) {
+          if (selectedCity) {
             this.props.form.setFieldsValue({
-              city: 'Porto Alegre',
+              city: selectedCity,
             });
           }
         });
@@ -61,9 +67,10 @@ class OrganizationProfileForm extends React.Component {
       .then((data) => {
         const states = data.sort(this.stateSort);
         this.setState({ states });
-        if (this.props.organization) {
-          const stateId = this.getStateId('RS');
-          this.getCities(stateId);
+        const { organization } = this.props;
+        if (organization) {
+          const stateId = this.getStateId(organization.address.state);
+          this.getCities(stateId, organization.address.city);
           this.props.form.setFieldsValue({
             state: stateId,
           });
@@ -99,13 +106,12 @@ class OrganizationProfileForm extends React.Component {
         this.setState({
           validatingZipCode: 'success',
         });
-        const stateId = this.getStateId('RS');
-        this.getCities(stateId);
+        const stateId = this.getStateId(data.uf);
+        this.getCities(stateId, data.localidade);
         this.props.form.setFieldsValue({
           street: data.logradouro,
           neighborhood: data.bairro,
           state: stateId,
-          city: data.localidade,
         });
       })
       .catch(() => {
@@ -115,11 +121,52 @@ class OrganizationProfileForm extends React.Component {
       });
   }
 
+  closeModal() {
+    this.props.onCancel();
+    setTimeout(() => {
+      this.props.form.resetFields();
+      this.setState({
+        responseFeedback: '',
+        responseFeedbackMessage: '',
+      });
+    }, 100);
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        api.put(values);
+        const address = {
+          zipcode: values.zipcode,
+          street: values.street,
+          number: values.number,
+          complement: values.complement,
+          neighborhood: values.neighborhood,
+          state: this.getStateName(values.state),
+          city: values.city,
+        };
+        const params = {
+          name: values.name,
+          email: values.email,
+          phone: values.phone,
+          address,
+          about: values.about,
+        };
+        api.put(`organization/${getUser().id}`, params).then(
+          () => {
+            this.setState({
+              responseFeedback: 'success',
+              responseFeedbackMessage: 'Dados da organização salvos!',
+            });
+            this.props.onSave();
+          },
+          () => {
+            this.setState({
+              responseFeedback: 'error',
+              responseFeedbackMessage: 'Não foi possível salvar os dados da organização!',
+            });
+          },
+        );
       }
     });
   }
@@ -152,6 +199,7 @@ class OrganizationProfileForm extends React.Component {
     };
 
     const { organization } = this.props;
+    const { address } = organization;
 
     return (
       <Modal
@@ -160,7 +208,6 @@ class OrganizationProfileForm extends React.Component {
         width={800}
         className={styles.modal}
         destroyOnClose
-        onCancel={this.props.onCancel}
         closable={false}
         maskClosable={false}
         wrapClassName={this.state.responseFeedback && styles.modalFixed}
@@ -231,14 +278,14 @@ class OrganizationProfileForm extends React.Component {
                 {...formItemLayout}
                 validateStatus={this.state.validatingZipCode}
               >
-                {getFieldDecorator('zipCode', {
+                {getFieldDecorator('zipcode', {
                   getValueFromEvent: e => maskCep(e.target.value),
                   rules: [{
                     required: true, message: 'Preencha o CEP',
                   }, {
                       pattern: /^[0-9]{5}-[0-9]{3}/, message: 'CEP Inválido',
                   }],
-                  initialValue: maskCep('89201602'),
+                  initialValue: maskCep(address.zipcode),
                 })(
                   <Input
                     ref={(ref) => { this.zipCodeInput = ref; }}
@@ -253,7 +300,7 @@ class OrganizationProfileForm extends React.Component {
                   <FormItem>
                     {getFieldDecorator('street', {
                       rules: [{ required: true, message: 'Preencha a Rua' }],
-                      initialValue: organization.address,
+                      initialValue: address.street,
                     })(
                       <Input size="large" placeholder="Rua" />,
                     )}
@@ -266,7 +313,7 @@ class OrganizationProfileForm extends React.Component {
                   <FormItem>
                     {getFieldDecorator('number', {
                       rules: [{ required: true, message: 'Preencha o número' }],
-                      initialValue: '2119',
+                      initialValue: address.number,
                     })(
                       <Input size="large" placeholder="Número" />,
                     )}
@@ -278,7 +325,7 @@ class OrganizationProfileForm extends React.Component {
                   <FormItem>
                     {getFieldDecorator('complement', {
                       rules: [{ required: true, message: 'Preencha o complemento' }],
-                      initialValue: 'casa 10',
+                      initialValue: address.complement,
                     })(
                       <Input size="large" placeholder="Complemento" />,
                     )}
@@ -291,7 +338,7 @@ class OrganizationProfileForm extends React.Component {
                   <FormItem>
                     {getFieldDecorator('neighborhood', {
                       rules: [{ required: true, message: 'Preencha o bairro' }],
-                      initialValue: 'Gloria',
+                      initialValue: address.neighborhood,
                     })(
                       <Input size="large" placeholder="Bairro" />,
                     )}
@@ -303,7 +350,9 @@ class OrganizationProfileForm extends React.Component {
                   <FormItem>
                     {getFieldDecorator('state', {
                       rules: [{ required: true, message: 'Preencha o Estado' }],
-                      initialValue: this.state.states.length > 1 ? this.getStateId('RS') : null,
+                      initialValue: this.state.states.length > 1 ?
+                        this.getStateId(address.state) :
+                        null,
                     })(
                       <Select
                         placeholder="Estado"
@@ -322,7 +371,7 @@ class OrganizationProfileForm extends React.Component {
                   <FormItem>
                     {getFieldDecorator('city', {
                       rules: [{ required: true, message: 'Preencha a Cidade' }],
-                      initialValue: 'Porto Alegre',
+                      initialValue: address.city,
                     })(
                       <Select placeholder="Cidade" size="large" showSearch optionFilterProp="children">
                         {this.renderCities()}
@@ -332,7 +381,7 @@ class OrganizationProfileForm extends React.Component {
                 </Col>
               </FormItem>
               <FormItem {...formItemLayout}>
-                {getFieldDecorator('about', { initialValue: organization.resume })(
+                {getFieldDecorator('about', { initialValue: organization.about })(
                   <TextArea rows={5} placeholder="Sobre a Organização" />,
                 )}
               </FormItem>
@@ -348,12 +397,15 @@ class OrganizationProfileForm extends React.Component {
               </FormItem>
               <FormItem>
                 <div className={styles.buttonWrapper}>
-                  <button className={cx(styles.button, styles.saveButton)}>
+                  <button
+                    className={cx(styles.button, styles.saveButton)}
+                    disabled={!this.props.saveEnabled}
+                  >
                     SALVAR
                   </button>
                   <button
                     className={cx(styles.button, styles.cancelButton)}
-                    onClick={this.props.onCancel}
+                    onClick={() => this.closeModal()}
                   >
                     CANCELAR
                   </button>
@@ -362,12 +414,33 @@ class OrganizationProfileForm extends React.Component {
             </Form>
           </Col>
         </Row>
-        <ResponseFeedback visible={this.state.responseFeedback} />
+        <ResponseFeedback
+          type={this.state.responseFeedback}
+          message={this.state.responseFeedbackMessage}
+          onClick={this.state.responseFeedback === 'error' ?
+            () => this.setState({ responseFeedback: '', responseFeedbackMessage: '' }) :
+            () => this.closeModal()
+          }
+        />
       </Modal>
     );
   }
 }
 
-const WrappedOrganizationProfileForm = Form.create()(OrganizationProfileForm);
+const WrappedOrganizationProfileForm = Form.create({
+  onValuesChange(props, changedValues, allValues) {
+    const allCurrentValues = { ...props.organization, ...props.organization.address };
+    const { city } = props.organization.address;
+    if (!changedValues.state && changedValues.city !== '' && changedValues.city !== city) {
+      let enable = false;
+      Object.keys(allValues).forEach((key) => {
+        if (key !== 'state' && allCurrentValues[key] !== allValues[key]) {
+          enable = true;
+        }
+      });
+      props.enableSave(enable);
+    }
+  },
+})(OrganizationProfileForm);
 
 export default WrappedOrganizationProfileForm;

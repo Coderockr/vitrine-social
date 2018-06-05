@@ -78,6 +78,11 @@ require('../../utils/styles/colors.js');
     &:focus {
       background-color: $pink_800;
     }
+
+    &:disabled {
+      background-color: $grey_150;
+      cursor: not-allowed;
+    }
   }
 
   .cancelButton {
