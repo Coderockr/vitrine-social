@@ -17,7 +17,7 @@ type User struct {
 }
 
 // Image vinculada a uma necessidade
-type image struct {
+type Image struct {
 	ID   int64  `valid:"required" db:"id"`
 	Name string `db:"name"`
 	URL  string `valid:"required" db:"url"`
@@ -40,7 +40,7 @@ type Organization struct {
 
 // OrganizationImage de uma organização
 type OrganizationImage struct {
-	image
+	Image
 	OrganizationID int64 `valid:"required" db:"organization_id"`
 }
 
@@ -73,7 +73,7 @@ type Need struct {
 
 // NeedImage de uma necessidade
 type NeedImage struct {
-	image
+	Image
 	NeedID int64 `valid:"required" db:"need_id"`
 }
 

@@ -117,6 +117,25 @@ func (r *NeedRepository) Update(n model.Need) (model.Need, error) {
 	return n, nil
 }
 
+// CreateImage creates a new need image based on the struct
+func (r *NeedRepository) CreateImage(i model.NeedImage) (model.NeedImage, error) {
+	err := r.db.QueryRow(
+		`INSERT INTO needs_images (need_id, name, url)
+			VALUES($1, $2, $3)
+			RETURNING id
+		`,
+		i.NeedID,
+		i.Image.Name,
+		i.Image.URL,
+	).Scan(&i.ID)
+
+	if err != nil {
+		return i, err
+	}
+
+	return i, nil
+}
+
 func validate(r *NeedRepository, n model.Need) (model.Need, error) {
 	n.Title = strings.TrimSpace(n.Title)
 	if len(n.Title) == 0 {

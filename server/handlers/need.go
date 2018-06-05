@@ -5,10 +5,15 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
+	"github.com/gobuffalo/uuid"
+
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/Coderockr/vitrine-social/server/storage"
 	"github.com/gorilla/mux"
+	"github.com/graymeta/stow"
 )
 
 type (
@@ -16,6 +21,7 @@ type (
 	NeedRepository interface {
 		Get(id int64) (*model.Need, error)
 		Update(model.Need) (model.Need, error)
+		CreateImage(i model.NeedImage) (model.NeedImage, error)
 	}
 
 	needOrganizationRepository interface {
@@ -137,6 +143,51 @@ func UpdateNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.
 		_, err = repo.Update(*need)
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar dados da necessidade: %s", err))
+			return
+		}
+
+		HandleHTTPSuccessNoContent(w)
+	}
+}
+
+// UploadNeedImagesHandler upload file to storage
+func UploadNeedImagesHandler(repo NeedRepository, location stow.Location) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		id, err := strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+			return
+		}
+
+		contents := "teste"
+		file := strings.NewReader(contents)
+		size := int64(len(contents))
+
+		container, err := storage.Container(location, vars["id"])
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar arquivo: %s", err))
+			return
+		}
+
+		uuid := uuid.Must(uuid.NewV4())
+		item, err := container.Put(uuid.String(), file, size, nil)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar arquivo: %s", err))
+			return
+		}
+
+		image := model.NeedImage{
+			Image: model.Image{
+				Name: "teste",
+				URL:  item.URL().String(),
+			},
+			NeedID: id,
+		}
+
+		image, err = repo.CreateImage(image)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar imagem: %s", err))
 			return
 		}
 
