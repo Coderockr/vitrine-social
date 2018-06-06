@@ -52,9 +52,9 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	nR := repo.NewNeedRepository(conn)
 	cR := repo.NewCategoryRepository(conn)
 
-	storage, err := storage.Dial()
+	storage, err := storage.Connect()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error on connect to storage: %v\n", err)
 	}
 
 	needResponseRepo := repo.NewNeedResponseRepository(conn)

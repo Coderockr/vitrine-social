@@ -8,10 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gobuffalo/uuid"
-
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/Coderockr/vitrine-social/server/storage"
+	"github.com/gobuffalo/uuid"
 	"github.com/gorilla/mux"
 	"github.com/graymeta/stow"
 )
@@ -150,8 +149,8 @@ func UpdateNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.
 	}
 }
 
-// UploadNeedImagesHandler upload file to storage
-func UploadNeedImagesHandler(repo NeedRepository, location stow.Location) func(w http.ResponseWriter, r *http.Request) {
+// UploadNeedImagesHandler upload file to storage and save new image
+func UploadNeedImagesHandler(repo NeedRepository, container stow.Container) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id, err := strconv.ParseInt(vars["id"], 10, 64)
@@ -160,18 +159,18 @@ func UploadNeedImagesHandler(repo NeedRepository, location stow.Location) func(w
 			return
 		}
 
-		contents := "teste"
-		file := strings.NewReader(contents)
-		size := int64(len(contents))
-
-		container, err := storage.Container(location, vars["id"])
+		file, handler, err := r.FormFile("images")
 		if err != nil {
-			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar arquivo: %s", err))
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível ler o arquivo: %s", err))
 			return
 		}
+		defer file.Close()
+
+		fileName := strings.Split(handler.Filename, ".")
 
 		uuid := uuid.Must(uuid.NewV4())
-		item, err := container.Put(uuid.String(), file, size, nil)
+		path := "organization-" + vars["id"] + "/" + uuid.String() + "." + fileName[1]
+		item, err := storage.SaveFile(container, path, file, handler.Size)
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar arquivo: %s", err))
 			return
@@ -179,8 +178,8 @@ func UploadNeedImagesHandler(repo NeedRepository, location stow.Location) func(w
 
 		image := model.NeedImage{
 			Image: model.Image{
-				Name: "teste",
-				URL:  item.URL().String(),
+				Name: fileName[0],
+				URL:  item.ID(),
 			},
 			NeedID: id,
 		}

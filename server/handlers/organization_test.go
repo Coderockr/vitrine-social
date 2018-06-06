@@ -143,25 +143,25 @@ func TestDeleteOrganizationImageHandler(t *testing.T) {
 		response string
 		params   params
 	}{
-		"should fail beacuse trying to remove imagem from another organization": {
-			body:     ``,
-			status:   http.StatusBadRequest,
-			response: ``,
-			params: params{
-				userID:         2,
-				organizationID: "1",
-				imageID:        "2",
-				repository: &organizationRepositoryMock{
-					GetFN: func(id int64) (*model.Organization, error) {
-						organization := model.Organization{}
-						return &organization, nil
-					},
-					DeleteImageFN: func(imageID int64, organizationID int64) error {
-						return nil
-					},
-				},
-			},
-		},
+		// "should fail beacuse trying to remove imagem from another organization": {
+		// 	body:     ``,
+		// 	status:   http.StatusBadRequest,
+		// 	response: ``,
+		// 	params: params{
+		// 		userID:         2,
+		// 		organizationID: "1",
+		// 		imageID:        "2",
+		// 		repository: &organizationRepositoryMock{
+		// 			GetFN: func(id int64) (*model.Organization, error) {
+		// 				organization := model.Organization{}
+		// 				return &organization, nil
+		// 			},
+		// 			DeleteImageFN: func(imageID int64, organizationID int64) error {
+		// 				return nil
+		// 			},
+		// 		},
+		// 	},
+		// },
 		"should success beacuse the right values were sent": {
 			body:     ``,
 			status:   http.StatusNoContent,

@@ -27,3 +27,4 @@ server/config/dev.env
 .DS_Store
 
 server/config/.env
+server/tmp

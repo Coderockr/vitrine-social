@@ -16,8 +16,9 @@ import (
 
 type (
 	needRepositoryMock struct {
-		GetFN    func(id int64) (*model.Need, error)
-		UpdateFN func(o model.Need) (model.Need, error)
+		GetFN         func(id int64) (*model.Need, error)
+		UpdateFN      func(o model.Need) (model.Need, error)
+		CreateImageFN func(i model.NeedImage) (model.NeedImage, error)
 	}
 )
 
@@ -87,6 +88,9 @@ func TestUpdateNeedHandler(t *testing.T) {
 					UpdateFN: func(n model.Need) (model.Need, error) {
 						return n, nil
 					},
+					CreateImageFN: func(i model.NeedImage) (model.NeedImage, error) {
+						return i, nil
+					},
 				},
 			},
 		},
@@ -119,4 +123,8 @@ func (r *needRepositoryMock) Get(id int64) (*model.Need, error) {
 
 func (r *needRepositoryMock) Update(n model.Need) (model.Need, error) {
 	return r.UpdateFN(n)
+}
+
+func (r *needRepositoryMock) CreateImage(i model.NeedImage) (model.NeedImage, error) {
+	return r.CreateImageFN(i)
 }
