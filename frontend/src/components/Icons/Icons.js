@@ -4,7 +4,7 @@ import map from './map.json';
 const defaultProps = {
   size: 25,
   className: false,
-  styles: {},
+  style: {},
 };
 
 const Icon = (props) => {

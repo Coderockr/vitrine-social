@@ -1,6 +1,14 @@
 require('../../utils/styles/colors.js');
 @import 'src/utils/styles/common.scss';
 
+.modalFixed {
+  overflow: hidden;
+}
+
+.blurRow {
+  filter: blur(4px);
+}
+
 .title {
   margin: 30px 0 50px 0;
   text-align: center;
@@ -69,6 +77,11 @@ require('../../utils/styles/colors.js');
     &:hover,
     &:focus {
       background-color: $pink_800;
+    }
+
+    &:disabled {
+      background-color: $grey_150;
+      cursor: not-allowed;
     }
   }
 

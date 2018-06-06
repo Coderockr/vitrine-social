@@ -30,6 +30,20 @@
   }
 }
 
+.button {
+  border-radius: 30px;
+  font-size: 23px;
+  line-height: 36px;
+  font-weight: normal;
+  color: $white;
+  text-align: center;
+  padding: 12px 20px;
+  outline: none;
+  cursor: pointer;
+  margin: 40px 10px 10px 0;
+  margin-bottom: 20px;
+}
+
 @media (max-width: 800px) {
   .modal {
     position: relative;

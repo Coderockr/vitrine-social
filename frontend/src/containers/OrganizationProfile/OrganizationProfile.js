@@ -6,24 +6,12 @@ import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
 import OrganizationProfileForm from '../../components/OrganizationProfileForm';
+import { maskPhone } from '../../utils/mask';
 import colors from '../../utils/styles/colors';
+import api from '../../utils/api';
+import { getUser } from '../../utils/auth';
 import styles from './styles.module.scss';
-
-const organization = {
-  name: 'Lar Abdon Batista',
-  about: 'O Lar Abdon Batista foi criado em 1911, pelo então Prefeito Abdon Batista. Inicialmente foi chamado de Sociedade de Caridade e Asylo de Órfãos e Desvalidos e funcionava no prédio que hoje abriga a Secretaria Municipal de Assistência Social, na rua Procópio Gomes, no bairro Bucarein.',
-  link: 'http://coderockr.com/',
-  phoneNumber: '(47) 3227-6359',
-  address: 'Rua Presidente Affonso Penna, 680 - Bucarein, Joinville - SC',
-  images: [
-    { title: 'Leitura Infantil', image: <img src="assets/images/leitura-infantil.jpg" alt="Leitura Infantil" /> },
-    { title: 'Leitura Infantil 2', image: <img src="assets/images/leitura-infantil 2.jpg" alt="Leitura Infantil 2" /> },
-    { title: 'Leitura Infantil 3', image: <img src="assets/images/leitura-infantil 3.jpg" alt="Leitura Infantil 3" /> },
-    { title: 'Leitura Infantil 4', image: <img src="assets/images/leitura-infantil.jpg" alt="Leitura Infantil 4" /> },
-    { title: 'Leitura Infantil 5', image: <img src="assets/images/leitura-infantil 2.jpg" alt="Leitura Infantil 5" /> },
-    { title: 'Leitura Infantil 6', image: <img src="assets/images/leitura-infantil 3.jpg" alt="Leitura Infantil 6" /> },
-  ],
-};
+import Loading from '../../components/Loading/Loading';
 
 const carouselSettings = {
   slidesToShow: 1,
@@ -36,11 +24,16 @@ class OrganizationProfile extends React.Component {
     super(props);
     this.state = {
       arrowSize: mediaQuery.matches ? 60 : 32,
-      isOrganization: true,
+      isOrganization: false,
       editProfileVisible: false,
+      saveEnabled: false,
     };
 
     mediaQuery.addListener(this.widthChange.bind(this));
+  }
+
+  componentWillMount() {
+    this.beforeFetch();
   }
 
   componentWillUnmount() {
@@ -53,9 +46,106 @@ class OrganizationProfile extends React.Component {
     });
   }
 
+  beforeFetch() {
+    this.setState({ loading: true });
+    setTimeout(() => this.fetchData(), 2000);
+  }
+
+  fetchData() {
+    api.get('organization/1').then(
+      (response) => {
+        this.setState({
+          organization: response.data,
+          isOrganization: getUser().id === response.data.id,
+          loading: false,
+        });
+      },
+    );
+  }
+
   renderImages(images) {
     return (
-      images.map(imageObj => imageObj.image)
+      images.map(image => <img key={image.id} src={image.url} alt={image.name} />)
+    );
+  }
+
+  renderOrganizationInfo() {
+    const { organization } = this.state;
+    const { address } = organization;
+
+    return (
+      <div>
+        {this.state.isOrganization &&
+          <div className={styles.buttonWrapper}>
+            <button
+              className={styles.editButton}
+              onClick={() => this.setState({ editProfileVisible: true })}
+            >
+              EDITAR
+            </button>
+            <OrganizationProfileForm
+              visible={this.state.editProfileVisible}
+              onCancel={() => this.setState({ editProfileVisible: false, saveEnabled: false })}
+              onSave={() => this.fetchData()}
+              saveEnabled={this.state.saveEnabled}
+              enableSave={enable => this.setState({ saveEnabled: enable })}
+              organization={organization}
+            />
+          </div>
+        }
+        <Avatar
+          src={organization.logo}
+          size={'large'}
+          style={{ marginTop: 20 }}
+        />
+        <h1 className={styles.organizationName}>
+          <span>{organization.name}</span>
+        </h1>
+        <Col
+          sm={{ span: 18, offset: 3 }}
+          xs={{ span: 24, offset: 0 }}
+        >
+          <div className={cx(styles.border, styles.aboutBorder)}>
+            <h1>Sobre</h1>
+            <p>{organization.about}</p>
+          </div>
+          <div className={cx(styles.border, styles.phoneBorder)}>
+            <h1>Telefone</h1>
+            <a>{maskPhone(organization.phone)}</a>
+          </div>
+          <div className={cx(styles.border, styles.addressBorder)}>
+            <h1>Endereço</h1>
+            <a>{`${address.street} ${address.number}, ${address.complement}, Bairro ${address.neighborhood}, ${address.city} - ${address.state} `}</a>
+          </div>
+          <div className={cx(styles.border, styles.imagesBorder)}>
+            <h1>Imagens da Organização</h1>
+          </div>
+          <div className={styles.arrowWrapper}>
+            <Arrow
+              size={this.state.arrowSize}
+              color={colors.teal_400}
+              onClick={() => this.carousel.prev()}
+              left
+              over
+            />
+            <div className={styles.carouselWrapper}>
+              <Carousel
+                ref={(ref) => { this.carousel = ref; }}
+                infinite={false}
+                {...carouselSettings}
+              >
+                {this.renderImages(organization.images)}
+              </Carousel>
+            </div>
+            <Arrow
+              size={this.state.arrowSize}
+              color={colors.teal_400}
+              onClick={() => this.carousel.next()}
+              over
+            />
+          </div>
+        </Col>
+      </div>
     );
   }
 
@@ -71,72 +161,7 @@ class OrganizationProfile extends React.Component {
               <h2 className={styles.containerTitle}>
                 <span>PERFIL DA ORGANIZAÇÃO</span>
               </h2>
-              {this.state.isOrganization &&
-                <div className={styles.buttonWrapper}>
-                  <button
-                    className={styles.button}
-                    onClick={() => this.setState({ editProfileVisible: true })}
-                  >
-                    EDITAR
-                  </button>
-                  <OrganizationProfileForm
-                    visible={this.state.editProfileVisible}
-                    onCancel={() => this.setState({ editProfileVisible: false })}
-                  />
-                </div>
-              }
-              <Avatar
-                src="assets/images/leitura-infantil 3.jpg"
-                size={'large'}
-                style={{ marginTop: 20 }}
-              />
-              <h1 className={styles.organizationName}>
-                <span>{organization.name}</span>
-              </h1>
-              <Col
-                sm={{ span: 18, offset: 3 }}
-                xs={{ span: 24, offset: 0 }}
-              >
-                <div className={cx(styles.border, styles.aboutBorder)}>
-                  <h1>Sobre</h1>
-                  <p>{organization.about}</p>
-                </div>
-                <div className={cx(styles.border, styles.phoneBorder)}>
-                  <h1>Telefone</h1>
-                  <a>{organization.phoneNumber}</a>
-                </div>
-                <div className={cx(styles.border, styles.addressBorder)}>
-                  <h1>Endereço</h1>
-                  <a>{organization.address}</a>
-                </div>
-                <div className={cx(styles.border, styles.imagesBorder)}>
-                  <h1>Imagens da Organização</h1>
-                </div>
-                <div className={styles.arrowWrapper}>
-                  <Arrow
-                    size={this.state.arrowSize}
-                    color={colors.teal_400}
-                    onClick={() => this.carousel.prev()}
-                    left
-                    over
-                  />
-                  <div className={styles.carouselWrapper}>
-                    <Carousel
-                      ref={(ref) => { this.carousel = ref; }}
-                      infinite={false}
-                      {...carouselSettings}
-                    >
-                      {this.renderImages(organization.images)}
-                    </Carousel>
-                  </div>
-                  <Arrow
-                    size={this.state.arrowSize}
-                    color={colors.teal_400}
-                    onClick={() => this.carousel.next()}
-                    over
-                  />
-                </div>
-              </Col>
+              {this.state.loading ? <Loading /> : this.renderOrganizationInfo()}
             </div>
           </Col>
         </Row>
