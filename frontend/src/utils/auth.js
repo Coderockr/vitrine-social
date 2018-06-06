@@ -3,8 +3,7 @@ import api, { headers } from './api';
 const storage = window.localStorage;
 
 const authorizeAPI = (token) => {
-  api.defaults.headers.common.Authorization = token;
-  storage.setItem('token', token);
+  api.defaults.headers = { ...headers, Authorization: token };
 };
 
 export const authorizeUser = (response) => {

@@ -5,58 +5,44 @@ import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
 
 class ResponseFeedback extends React.Component {
-  state = {
-  }
-
-  renderSuccess() {
-    return (
-      <div className={styles.contentWrapper}>
-        <Icon type="check-circle-o" style={{ fontSize: 150, color: colors.green_300 }} />
-        <p className={styles.title}>Sucesso!</p>
-        <p className={styles.message}>{this.props.message}</p>
-        <button
-          className={cx(styles.button, styles.successButton)}
-          onClick={this.props.onClick}
-        >
-          FECHAR
-        </button>
-      </div>
-    );
-  }
-
-  renderError() {
-    return (
-      <div className={styles.contentWrapper}>
-        <Icon type="close-circle-o" style={{ fontSize: 150, color: colors.red_400 }} />
-        <p className={styles.title}>Erro!</p>
-        <p className={styles.message}>{this.props.message}</p>
-        <button
-          className={cx(styles.button, styles.errorButton)}
-          onClick={this.props.onClick}
-        >
-          VOLTAR
-        </button>
-      </div>
-    );
-  }
-
-  renderLoading() {
-    return (
-      <div className={styles.contentWrapper}>
-        <Icon type="loading" style={{ fontSize: 110, color: colors.purple_400 }} />
-      </div>
-    );
-  }
-
-  renderContent() {
-    if (this.props.type === 'error') {
-      return this.renderError();
-    } if (this.props.type === 'success') {
-      return this.renderSuccess();
-    } if (this.props.type === 'loading') {
-      return this.renderLoading();
+  renderFeedback() {
+    if (this.props.type === 'loading') {
+      return (
+        <div className={styles.contentWrapper}>
+          <Icon type="loading" style={{ fontSize: 110, color: colors.purple_400 }} />
+        </div>
+      );
     }
-    return null;
+
+    let feedback = {
+      icon: { type: 'close-circle-o', color: colors.red_400 },
+      title: 'Erro!',
+      buttonClassName: styles.errorButton,
+      buttonTitle: 'VOLTAR',
+    };
+
+    if (this.props.type === 'success') {
+      feedback = {
+        icon: { type: 'check-circle-o', color: colors.green_300 },
+        title: 'Sucesso!',
+        buttonClassName: styles.successButton,
+        buttonTitle: 'FECHAR',
+      };
+    }
+
+    return (
+      <div className={styles.contentWrapper}>
+        <Icon type={feedback.icon.type} style={{ fontSize: 150, color: feedback.icon.color }} />
+        <p className={styles.title}>{feedback.title}</p>
+        <p className={styles.message}>{this.props.message}</p>
+        <button
+          className={cx(styles.button, feedback.buttonClassName)}
+          onClick={this.props.onClick}
+        >
+          {feedback.buttonTitle}
+        </button>
+      </div>
+    );
   }
 
   render() {
@@ -64,7 +50,7 @@ class ResponseFeedback extends React.Component {
       <div className={styles.wrapper} hidden={!this.props.type}>
         <Row type="flex" align="bottom" justify="center" className={styles.row}>
           <Col>
-            {this.renderContent()}
+            {this.renderFeedback()}
           </Col>
         </Row>
       </div>

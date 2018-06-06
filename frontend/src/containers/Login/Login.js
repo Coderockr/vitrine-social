@@ -29,12 +29,13 @@ class Login extends React.Component {
         return null;
       }, (error) => {
         if (!error.response) {
-          BottomNotification('Problema de conexão com a API.');
-        } else if (error.response.status === 401) {
-          BottomNotification('Usuário e/ou senha incorretos.');
-        } else if (error.response.data.message) {
-          BottomNotification(error.response.data.message);
+          return BottomNotification('Problema de conexão com a API.');
+        } if (error.response.status === 401) {
+          return BottomNotification('Usuário e/ou senha incorretos.');
+        } if (error.response.data.message) {
+          return BottomNotification(error.response.data.message);
         }
+        return null;
       },
     );
   }
