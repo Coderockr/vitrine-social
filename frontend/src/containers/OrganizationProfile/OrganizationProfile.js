@@ -1,7 +1,6 @@
 import React from 'react';
 import cx from 'classnames';
 import { Row, Col, Carousel, Avatar } from 'antd';
-import Pagination from '../../components/Pagination';
 import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
@@ -51,11 +50,28 @@ class OrganizationProfile extends React.Component {
     setTimeout(() => this.fetchData(), 2000);
   }
 
+  activeStatusFilter(request) {
+    return request.status === 'ACTIVE';
+  }
+
+  inactiveStatusFilter(request) {
+    return request.status === 'INACTIVE';
+  }
+
+  filterRequestsByStatus(requests, active) {
+    if (active) {
+      return requests.filter(this.activeStatusFilter);
+    }
+    return requests.filter(this.inactiveStatusFilter);
+  }
+
   fetchData() {
     api.get('organization/1').then(
       (response) => {
         this.setState({
           organization: response.data,
+          activeRequests: this.filterRequestsByStatus(response.data.needs, true),
+          inactiveRequests: this.filterRequestsByStatus(response.data.needs, false),
           isOrganization: getUser().id === response.data.id,
           loading: false,
         });
@@ -165,8 +181,12 @@ class OrganizationProfile extends React.Component {
             </div>
           </Col>
         </Row>
-        <Requests isOrganization={this.state.isOrganization} />
-        <Pagination />
+        <Requests
+          isOrganization={this.state.isOrganization}
+          loading={this.state.loading}
+          activeRequests={this.state.loading ? null : this.state.activeRequests}
+          inactiveRequests={this.state.loading ? null : this.state.inactiveRequests}
+        />
       </Layout>
     );
   }

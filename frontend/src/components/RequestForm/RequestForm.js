@@ -80,14 +80,14 @@ class RequestForm extends React.Component {
               hideRequiredMark
             >
               <FormItem
-                className={!request && styles.statusFormItem}
+                className={request ? null : styles.statusFormItem}
                 {...formItemLayout}
               >
                 <div className={styles.statusWrapper}>
                   <p className={styles.statusLabel}>Status:</p>
-                  <RadioGroup defaultValue="Ativa" className="purpleRadio">
-                    <RadioButton className={styles.radioButton} value="Ativa">ATIVA</RadioButton>
-                    <RadioButton value="Inativa">INATIVA</RadioButton>
+                  <RadioGroup defaultValue={request ? request.status : 'ACTIVE'} className="purpleRadio">
+                    <RadioButton className={styles.radioButton} value="ACTIVE">ATIVA</RadioButton>
+                    <RadioButton value="INACTIVE">INATIVA</RadioButton>
                   </RadioGroup>
                 </div>
               </FormItem>
@@ -96,8 +96,9 @@ class RequestForm extends React.Component {
               >
                 {getFieldDecorator('title', {
                   rules: [{ required: true, message: 'Preencha o título da solicitação' }],
+                  initialValue: request ? request.title : '',
                 })(
-                  <Input size="large" placeholder="Título" disabled={request} />,
+                  <Input size="large" placeholder="Título" disabled={request !== null} />,
                 )}
               </FormItem>
               <FormItem
@@ -105,18 +106,24 @@ class RequestForm extends React.Component {
               >
                 {getFieldDecorator('category', {
                   rules: [{ required: true, message: 'Escolha uma Categoria' }],
+                  initialValue: request ? request.category.name : '',
                 })(
                   <Select
                     placeholder="Categoria"
                     size="large"
-                    disabled={request}
+                    disabled={request !== null}
                   />,
                 )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
               >
-                <TextArea rows={5} placeholder="Descrição da Solicitação" />
+                {getFieldDecorator('description', {
+                  rules: [{ required: true, message: 'Descreva a solicitação' }],
+                  initialValue: request ? request.description : '',
+                })(
+                  <TextArea rows={5} placeholder="Descrição da Solicitação" />,
+                )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
@@ -124,9 +131,10 @@ class RequestForm extends React.Component {
                 <Col span={6}>
                   <FormItem label="Solicitado">
                     {getFieldDecorator('requestedQty', {
-                      rules: [{ required: true, message: 'Preencha o complemento' }],
+                      rules: [{ required: true, message: 'Preencha a quantidade solicitada' }],
+                      initialValue: request ? request.requiredQuantity : '',
                     })(
-                      <InputNumber size="large" min={1} disabled={request} />,
+                      <InputNumber size="large" min={1} disabled={request !== null} />,
                     )}
                   </FormItem>
                 </Col>
@@ -136,7 +144,8 @@ class RequestForm extends React.Component {
                 >
                   <FormItem label="Recebido">
                     {getFieldDecorator('receivedQty', {
-                      rules: [{ required: true, message: 'Preencha o bairro' }],
+                      rules: [{ required: true, message: 'Preencha a quantidade recebida' }],
+                      initialValue: request ? request.reachedQuantity : '',
                     })(
                       <InputNumber
                         size="large"
@@ -153,8 +162,9 @@ class RequestForm extends React.Component {
                   <FormItem label="Tipo">
                     {getFieldDecorator('type', {
                       rules: [{ required: true, message: 'Escolha um tipo' }],
+                      initialValue: request ? request.unit : '',
                     })(
-                      <Select size="large" disabled={request}>
+                      <Select size="large" disabled={request !== null}>
                         {this.renderType()}
                       </Select>,
                     )}
@@ -168,7 +178,7 @@ class RequestForm extends React.Component {
                   xs={{ span: 24, offset: 0 }}
                 >
                   <h2 className={styles.galleryHeader}>Galeria de Imagens</h2>
-                  <UploadImages />
+                  <UploadImages images={request ? request.images : null} />
                 </Col>
               </FormItem>
               <FormItem>

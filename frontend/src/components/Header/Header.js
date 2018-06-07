@@ -44,7 +44,7 @@ class Header extends React.Component {
 
   renderMenuButton() {
     return (
-      <button className={styles.button} onClick={() => this.showMenu()}>
+      <button className={styles.menuButton} onClick={() => this.showMenu()}>
         <Icon
           icon="menu"
           size={40}

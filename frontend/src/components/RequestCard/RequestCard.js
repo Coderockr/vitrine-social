@@ -18,13 +18,13 @@ class RequestCard extends React.PureComponent {
           <div className={styles.requestCard}>
             <ItemIndicator request={request} />
             <div className={styles.organizationContent}>
-              <h2>{request.item}</h2>
-              <a href={request.organization.link} target="_blank">
+              <h2>{request.title}</h2>
+              <a target="_blank">
                 {request.organization.name}
               </a>
               <p>
                 Atualizado em: {
-                  moment(request.data)
+                  moment(request.updatedAt)
                     .format('DD / MMMM / YYYY')
                     .replace(/(\/)/g, 'de')
                 }
@@ -32,7 +32,7 @@ class RequestCard extends React.PureComponent {
             </div>
             <div className={styles.interestedContent}>
               <button
-                className={styles.button}
+                className={styles.detailsButton}
                 onClick={() => this.props.onClick()}
               >
                 {isOrganization ? 'EDITAR' : 'MAIS DETALHES'}
