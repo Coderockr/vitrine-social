@@ -8,41 +8,76 @@ import {
   InputNumber,
   Select,
   Radio,
+  AutoComplete,
 } from 'antd';
 import cx from 'classnames';
+import api from '../../utils/api';
 import UploadImages from '../UploadImages';
 import styles from './styles.module.scss';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
-const { Option } = Select;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
+const types = [
+  'Itens',
+  'Kg',
+  'Pessoas',
+  'Litros',
+];
+
 class RequestForm extends React.Component {
   state = {
-    types: [
-      'Unidade',
-      'Kg',
-      'Pessoa',
-      'Litro',
-    ],
+    types,
+    categories: [],
+  }
+
+  componentWillMount() {
+    this.fetchCategories();
+  }
+
+  fetchCategories() {
+    api.get('categories').then(
+      (response) => {
+        this.setState({
+          categories: response.data,
+        });
+      },
+    );
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        return values;
+        if (!this.props.request) {
+          const params = { ...values };
+          api.post('need', params).then(
+            () => {
+              this.setState({
+              });
+              this.props.onSave();
+            },
+          );
+        }
       }
       return null;
     });
   }
 
+  renderCategories() {
+    return (
+      this.state.categories.map(category => (
+        <Select.Option key={category.id} value={category.id}>{category.name}</Select.Option>
+      ))
+    );
+  }
+
   renderType() {
     return (
       this.state.types.map(type => (
-        <Option key={type} value={type}>{type}</Option>
+        <AutoComplete.Option key={type} value={type}>{type}</AutoComplete.Option>
       ))
     );
   }
@@ -105,14 +140,16 @@ class RequestForm extends React.Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('category', {
-                  rules: [{ required: true, message: 'Escolha uma Categoria' }],
+                  rules: [{ required: true, message: 'Escolha uma categoria' }],
                   initialValue: request ? request.category.name : '',
                 })(
                   <Select
                     placeholder="Categoria"
                     size="large"
                     disabled={request !== null}
-                  />,
+                  >
+                    {this.renderCategories()}
+                  </Select>,
                 )}
               </FormItem>
               <FormItem
@@ -131,7 +168,7 @@ class RequestForm extends React.Component {
                 <Col span={6}>
                   <FormItem label="Solicitado">
                     {getFieldDecorator('requestedQty', {
-                      rules: [{ required: true, message: 'Preencha a quantidade solicitada' }],
+                      rules: [{ required: true, message: 'Preencha a quantidade' }],
                       initialValue: request ? request.requiredQuantity : '',
                     })(
                       <InputNumber size="large" min={1} disabled={request !== null} />,
@@ -144,12 +181,12 @@ class RequestForm extends React.Component {
                 >
                   <FormItem label="Recebido">
                     {getFieldDecorator('receivedQty', {
-                      rules: [{ required: true, message: 'Preencha a quantidade recebida' }],
+                      rules: [{ required: true, message: 'Preencha a quantidade' }],
                       initialValue: request ? request.reachedQuantity : '',
                     })(
                       <InputNumber
                         size="large"
-                        min={1}
+                        min={0}
                         max={this.props.form.getFieldValue('requestedQty')}
                       />,
                     )}
@@ -164,9 +201,13 @@ class RequestForm extends React.Component {
                       rules: [{ required: true, message: 'Escolha um tipo' }],
                       initialValue: request ? request.unit : '',
                     })(
-                      <Select size="large" disabled={request !== null}>
+                      <AutoComplete
+                        size="large"
+                        filterOption
+                        disabled={request !== null}
+                      >
                         {this.renderType()}
-                      </Select>,
+                      </AutoComplete>,
                     )}
                   </FormItem>
                 </Col>
