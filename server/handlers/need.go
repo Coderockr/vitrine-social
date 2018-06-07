@@ -30,7 +30,6 @@ type (
 
 	needStorageContainer interface {
 		Put(name string, r io.Reader, size int64, metadata map[string]interface{}) (stow.Item, error)
-		RemoveItem(id string) error
 	}
 )
 

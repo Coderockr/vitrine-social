@@ -9,7 +9,7 @@ export commit ?= HEAD
 
 .PHONY: build
 
-setup: ## initial setup project
+setup: ## initial project setup
 	cp ./server/config/dev.env.dist ./server/config/dev.env
 	go get github.com/rubenv/sql-migrate/...
 	make install
