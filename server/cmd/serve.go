@@ -52,9 +52,9 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	nR := repo.NewNeedRepository(conn)
 	cR := repo.NewCategoryRepository(conn)
 
-	storage, err := storage.Connect()
+	storageContainer, err := storage.Connect()
 	if err != nil {
-		log.Fatalf("Error on connect to storage: %v\n", err)
+		panic(err)
 	}
 
 	needResponseRepo := repo.NewNeedResponseRepository(conn)
@@ -105,7 +105,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo)).
 		Methods("POST")
 
-	v1.HandleFunc("/need/{id}/images", handlers.UploadNeedImagesHandler(nR, storage)).Methods("POST")
+	v1.HandleFunc("/need/{id}/images", handlers.UploadNeedImagesHandler(nR, storageContainer)).Methods("POST")
 
 	// Category Routes
 	v1.HandleFunc("/categories", handlers.GetAllCategoriesHandler(cR, nR)).Methods("GET")

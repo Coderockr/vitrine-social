@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"io"
 	"os"
 
 	"github.com/graymeta/stow"
@@ -70,19 +69,4 @@ func Container(location stow.Location, containerName string) (stow.Container, er
 		}
 	}
 	return container, err
-}
-
-// SaveFile save file to storage container
-func SaveFile(container stow.Container, path string, file io.Reader, fileSize int64) (stow.Item, error) {
-	item, err := container.Put(path, file, fileSize, nil)
-	if err != nil {
-		return nil, err
-	}
-	return item, err
-}
-
-// DeleteFile delete a file in storage
-func DeleteFile(container stow.Container, fileID string) error {
-	err := container.RemoveItem(fileID)
-	return err
 }

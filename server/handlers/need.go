@@ -3,13 +3,14 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
-	"github.com/Coderockr/vitrine-social/server/storage"
 	"github.com/gobuffalo/uuid"
 	"github.com/gorilla/mux"
 	"github.com/graymeta/stow"
@@ -25,6 +26,11 @@ type (
 
 	needOrganizationRepository interface {
 		Get(id int64) (*model.Organization, error)
+	}
+
+	needStorageContainer interface {
+		Put(name string, r io.Reader, size int64, metadata map[string]interface{}) (stow.Item, error)
+		RemoveItem(id string) error
 	}
 )
 
@@ -150,7 +156,7 @@ func UpdateNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.
 }
 
 // UploadNeedImagesHandler upload file to storage and save new image
-func UploadNeedImagesHandler(repo NeedRepository, container stow.Container) func(w http.ResponseWriter, r *http.Request) {
+func UploadNeedImagesHandler(repo NeedRepository, container needStorageContainer) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id, err := strconv.ParseInt(vars["id"], 10, 64)
@@ -161,7 +167,7 @@ func UploadNeedImagesHandler(repo NeedRepository, container stow.Container) func
 
 		file, handler, err := r.FormFile("images")
 		if err != nil {
-			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível ler o arquivo: %s", err))
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível ler o arquivo"))
 			return
 		}
 		defer file.Close()
@@ -169,10 +175,11 @@ func UploadNeedImagesHandler(repo NeedRepository, container stow.Container) func
 		fileName := strings.Split(handler.Filename, ".")
 
 		uuid := uuid.Must(uuid.NewV4())
-		path := "organization-" + vars["id"] + "/" + uuid.String() + "." + fileName[1]
-		item, err := storage.SaveFile(container, path, file, handler.Size)
+		path := "need-" + vars["id"] + "/" + uuid.String() + "." + fileName[1]
+		item, err := container.Put(path, file, handler.Size, nil)
 		if err != nil {
-			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar arquivo: %s", err))
+			log.Fatalf("Erro ao salvar arquivo: %v\n", err)
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar arquivo"))
 			return
 		}
 

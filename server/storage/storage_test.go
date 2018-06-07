@@ -20,6 +20,3 @@ func TestConnect(t *testing.T) {
 		t.Errorf("expected %v result %s", nil, err)
 	}
 }
-
-func TestSaveFile(t *testing.T)   {}
-func TestDeleteFile(t *testing.T) {}
