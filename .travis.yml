@@ -3,6 +3,8 @@ go:
  - "1.10.x"
 
 script:
+ - export VITRINESOCIAL_ENV ?= test
+ - mkdir server/tmp # create storage directory
  - make install
  - make coverage
 
