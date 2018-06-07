@@ -1,24 +1,15 @@
 import React from 'react';
 import moment from 'moment';
 import { Modal, Carousel } from 'antd';
+import cx from 'classnames';
 import styles from './styles.module.scss';
 import ItemIndicator from '../../components/ItemIndicator';
 import Arrow from '../../components/Arrow';
 import ContactForm from '../../components/ContactForm';
 import colors from '../../utils/styles/colors';
+import Loading from '../Loading/Loading';
 
 const mediaQuery = window.matchMedia('(min-width: 700px)');
-
-const request = {
-  organization: {
-    name: 'Lar Abdon batista',
-    link: 'http://coderockr.com/',
-  },
-  category: 'voluntarios',
-  data: moment().subtract(2, 'days'),
-  item: '10 voluntários para ler para criancinhas felizes',
-  description: 'v-governmental organizations, nongovernmental organizations, or nongovernment organizations, commonly referred to as NGOs, are nonprofit organizations independent of governments and international',
-};
 
 const carouselSettings = {
   slidesToShow: 3,
@@ -37,15 +28,6 @@ const carouselSettings = {
     },
   ],
 };
-
-const imagesArray = [
-  { title: 'Leitura Infantil', src: 'assets/images/leitura-infantil.jpg' },
-  { title: 'Leitura Infantil 2', src: 'assets/images/leitura-infantil 2.jpg' },
-  { title: 'Leitura Infantil 3', src: 'assets/images/leitura-infantil 3.jpg' },
-  { title: 'Leitura Infantil 4', src: 'assets/images/leitura-infantil.jpg' },
-  { title: 'Leitura Infantil 5', src: 'assets/images/leitura-infantil 2.jpg' },
-  { title: 'Leitura Infantil 6', src: 'assets/images/leitura-infantil 3.jpg' },
-];
 
 class RequestDetails extends React.Component {
   state = {
@@ -73,14 +55,15 @@ class RequestDetails extends React.Component {
     return (
       images.map(imageObj => (
         <a
-          onClick={() => this.showPreview(imageObj.src)}
-          onKeyPress={() => this.showPreview(imageObj.src)}
+          key={imageObj.id}
+          onClick={() => this.showPreview(imageObj.url)}
+          onKeyPress={() => this.showPreview(imageObj.url)}
           role="link"
           tabIndex={0}
         >
           <img
-            src={imageObj.src}
-            alt="Leitura Infantil"
+            src={imageObj.url}
+            alt={imageObj.name}
           />
         </a>
       ))
@@ -89,6 +72,11 @@ class RequestDetails extends React.Component {
 
   renderContent() {
     const { previewVisible, previewImage } = this.state;
+    const { request } = this.props;
+
+    if (!request) {
+      return <Loading />;
+    }
 
     if (this.state.contactFormVisible) {
       return (
@@ -104,10 +92,10 @@ class RequestDetails extends React.Component {
         <div className={styles.itemDetails}>
           <ItemIndicator className={styles.itemIndicator} request={request} size="lg" />
           <div>
-            <h1>{request.item}</h1>
+            <h1>{request.title}</h1>
             <p className={styles.updatedAt}>
               Atualizado em {
-                moment(request.data).format('DD / MMMM / YYYY').replace(/(\/)/g, 'de')
+                moment(request.updatedAt).format('DD / MMMM / YYYY').replace(/(\/)/g, 'de')
               }
             </p>
           </div>
@@ -126,16 +114,19 @@ class RequestDetails extends React.Component {
               infinite={false}
               {...carouselSettings}
             >
-              {this.renderImages(imagesArray)}
+              {this.renderImages(request.images)}
             </Carousel>
           </div>
           <Arrow size={32} color={colors.purple_400} onClick={() => this.carousel.next()} />
         </div>
-        <button
-          onClick={() => this.showContactForm()}
-        >
-          QUERO AJUDAR!
-        </button>
+        <div className={styles.buttonWrapper}>
+          <button
+            className={cx(styles.button, styles.helpButton)}
+            onClick={() => this.showContactForm()}
+          >
+            QUERO AJUDAR!
+          </button>
+        </div>
         <Modal
           visible={previewVisible}
           footer={null}
