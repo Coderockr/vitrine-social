@@ -125,7 +125,7 @@ O status code deve ser 200 ou 201
 
 Realizar busca das necessidades
 
-## Search [/v1/search?text={text}&category={categories}&org={org}&page={page}]
+## Search [/v1/search?text={text}&categories={categories}&org={org}&order_by={order_by}&page={page}]
 
 ### Fazer busca [GET]
 
@@ -133,6 +133,7 @@ Realizar busca das necessidades
     + text: texto a ser pesquisado (string, optional) - Texto a ser pesquidado
     + categories: 1,2,3 (string, optional) - Ids das categorias
     + org: 1 (number, optional) - Id da entidade para filtrar
+    + order_by: id, asc (string, optional) - Campo e ordem dos resultados
     + page: 1 (number, optional) - Paginação (vai trazer sempre 10 por página)
 
 + Request Busca das necessidades
