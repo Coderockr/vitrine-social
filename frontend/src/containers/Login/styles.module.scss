@@ -1,4 +1,5 @@
 require('../../utils/styles/colors.js');
+@import 'src/utils/styles/common.scss';
 
 .layout {
   position: absolute;
@@ -44,17 +45,7 @@ require('../../utils/styles/colors.js');
   flex-direction: column;
   align-items: center;
 
-  .button {
-    border-radius: 30px;
-    font-size: 23px;
-    line-height: 36px;
-    font-weight: normal;
-    color: $white;
-    text-align: center;
-    padding: 12px 20px;
-    outline: none;
-    cursor: pointer;
-    margin: 20px 0;
+  .loginButton {
     background-color: $pink_400;
 
     &:hover,

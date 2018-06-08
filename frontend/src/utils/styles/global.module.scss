@@ -187,7 +187,8 @@ require('./colors.js');
   .ant-input,
   .ant-input-affix-wrapper,
   .ant-select-selection,
-  .ant-select-open .ant-select-selection {
+  .ant-select-open .ant-select-selection,
+  .ant-select-auto-complete.ant-select .ant-input {
     color: $blue_900;
     border-color: $purple_400;
     border-width: 2px;
@@ -220,14 +221,21 @@ require('./colors.js');
       padding-right: 15px;
     }
 
+    .ant-input:not([disabled]):hover,
     .ant-input,
-    .ant-input:focus {
+    .ant-input:focus,
+    .ant-select-selection:hover,
+    .ant-select-selection,
+    .ant-input-number,
+    .ant-input-number:not([disabled]):hover,
+    .ant-select-auto-complete.ant-select .ant-input {
       box-shadow: none;
       border-color: $red_400;
     }
 
     .ant-input::placeholder,
-    .ant-input-prefix {
+    .ant-input-prefix,
+    .ant-select-arrow {
       color: $red_400;
     }
   }
@@ -383,6 +391,7 @@ require('./colors.js');
   @media (max-width: 696px) {
     .ant-modal-content {
       border-radius: 0;
+      min-height: 100vh;
     }
   }
 }

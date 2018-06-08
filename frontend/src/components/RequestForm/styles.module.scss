@@ -29,26 +29,17 @@ require('../../utils/styles/colors.js');
   display: flex;
   justify-content: center;
 
-  .button {
-    border-radius: 30px;
-    font-size: 23px;
-    line-height: 36px;
-    font-weight: normal;
-    color: $white;
-    text-align: center;
-    padding: 12px 20px;
-    outline: none;
-    cursor: pointer;
-    margin: 40px 10px 10px 0;
-    margin-bottom: 20px;
-  }
-
   .saveButton {
     background-color: $pink_400;
     
     &:hover,
     &:focus {
       background-color: $pink_800;
+    }
+    
+    &:disabled {
+      background-color: $grey_150;
+      cursor: not-allowed;
     }
   }
 

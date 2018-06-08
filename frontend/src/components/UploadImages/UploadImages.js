@@ -9,15 +9,17 @@ class UploadImages extends React.Component {
   }
 
   componentWillMount() {
-    const fileList = this.props.images.map(image => (
-      {
-        uid: image.id,
-        name: image.name.images,
-        status: 'done',
-        url: image.url,
-      }
-    ));
-    this.setState({ fileList });
+    if (this.props.images) {
+      const fileList = this.props.images.map(image => (
+        {
+          uid: image.id,
+          name: image.name.images,
+          status: 'done',
+          url: image.url,
+        }
+      ));
+      this.setState({ fileList });
+    }
   }
 
   handleCancel = () => this.setState({ previewVisible: false })

@@ -1,14 +1,6 @@
 require('../../utils/styles/colors.js');
 @import 'src/utils/styles/common.scss';
 
-.modalFixed {
-  overflow: hidden;
-}
-
-.blurRow {
-  filter: blur(4px);
-}
-
 .title {
   margin: 30px 0 50px 0;
   text-align: center;
@@ -56,20 +48,6 @@ require('../../utils/styles/colors.js');
 .buttonWrapper {
   display: flex;
   justify-content: center;
-
-  .button {
-    border-radius: 30px;
-    font-size: 23px;
-    line-height: 36px;
-    font-weight: normal;
-    color: $white;
-    text-align: center;
-    padding: 12px 20px;
-    outline: none;
-    cursor: pointer;
-    margin: 40px 10px 10px 0;
-    margin-bottom: 20px;
-  }
 
   .saveButton {
     background-color: $pink_400;

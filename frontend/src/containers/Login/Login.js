@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout, Row, Col, Form, Icon, Input } from 'antd';
+import cx from 'classnames';
 import Header from '../../components/Header';
 import BottomNotification from '../../components/BottomNotification';
 import api from '../../utils/api';
@@ -81,7 +82,7 @@ class Login extends React.Component {
                 </FormItem>
                 <FormItem>
                   <div className={styles.buttonWrapper}>
-                    <button type="primary" htmlType="submit" className={styles.button}>
+                    <button type="primary" htmlType="submit" className={cx(styles.button, styles.loginButton)}>
                       LOG IN
                     </button>
                   </div>

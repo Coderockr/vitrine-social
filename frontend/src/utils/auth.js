@@ -8,6 +8,7 @@ const authorizeAPI = (token) => {
 
 export const authorizeUser = (response) => {
   authorizeAPI(response.token);
+  storage.setItem('token', response.token);
   storage.setItem('loggedUser', JSON.stringify(response.organization));
 };
 

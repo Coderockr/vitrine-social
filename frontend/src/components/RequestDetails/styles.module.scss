@@ -4,13 +4,16 @@ require('../../utils/styles/colors.js');
 .contentWrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin: 20px 5px 0 5px;
 
   .itemDetails {
     display: flex;
     flex-direction: row;
     margin-left: 80px;
+
+    .itemIndicator {
+      margin-bottom: 30px
+    }
 
     h1 {
       background-color: transparent;
@@ -34,13 +37,13 @@ require('../../utils/styles/colors.js');
       padding-right: 8px;
       padding-left: 8px;
       border-radius: 10px;
-      margin-bottom: 40px;
       margin-left: 20px;
     }
   }
 
   .organizationBox {
     padding-left: 80px;
+    margin-bottom: 20px;
 
     .organizationBorder {
       border-left: 5px solid $ambar_400;
@@ -88,19 +91,13 @@ require('../../utils/styles/colors.js');
     }
   }
 
-  button {
+  .buttonWrapper {
+    display: flex;
+    justify-content: center;
+  }
+
+  .helpButton {
     background-color: $pink_400;
-    border-radius: 30px;
-    font-size: 23px;
-    line-height: 36px;
-    font-weight: normal;
-    color: white;
-    text-align: center;
-    padding: 12px 20px;
-    outline: none;
-    cursor: pointer;
-    margin-top: 40px;
-    margin-bottom: 20px;
 
     &:hover,
     &:focus {

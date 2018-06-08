@@ -5,6 +5,10 @@ import ProgressCircle from '../ProgressCircle';
 import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
 
+const calculateProgress = (receivedQty, requiredQty) => (
+  Math.ceil((receivedQty / requiredQty) * 100)
+);
+
 const ItemIndicator = ({ request, size, className }) => (
   <div className={
     cx(
@@ -15,14 +19,17 @@ const ItemIndicator = ({ request, size, className }) => (
   >
     <div className={cx(styles.requestIcon, styles[size])}>
       <Icon
-        icon={request.category}
+        icon={request.category.slug}
         size={size === 'lg' ? 85 : 60}
         color={colors.ambar_400}
       />
       <div className={cx(styles.progressCircleContainer, styles[size])}>
-        <ProgressCircle progress={60} size={size} />
+        <ProgressCircle
+          progress={calculateProgress(request.reachedQuantity, request.requiredQuantity)}
+          size={size}
+        />
         <div className={cx(styles.lasteQtd, styles[size])}>
-          <p>Faltam 4</p>
+          <p>Faltam {request.requiredQuantity - request.reachedQuantity} {request.unit}</p>
         </div>
       </div>
     </div>
