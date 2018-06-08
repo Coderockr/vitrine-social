@@ -186,6 +186,7 @@ class OrganizationProfile extends React.Component {
           loading={this.state.loading}
           activeRequests={this.state.loading ? null : this.state.activeRequests}
           inactiveRequests={this.state.loading ? null : this.state.inactiveRequests}
+          onSave={() => this.fetchData()}
         />
       </Layout>
     );

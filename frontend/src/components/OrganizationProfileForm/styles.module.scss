@@ -1,14 +1,6 @@
 require('../../utils/styles/colors.js');
 @import 'src/utils/styles/common.scss';
 
-.modalFixed {
-  overflow: hidden;
-}
-
-.blurRow {
-  filter: blur(4px);
-}
-
 .title {
   margin: 30px 0 50px 0;
   text-align: center;

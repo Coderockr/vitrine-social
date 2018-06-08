@@ -44,6 +44,14 @@
   margin-bottom: 20px;
 }
 
+.modalFixed {
+  overflow: hidden;
+}
+
+.blurRow {
+  filter: blur(4px);
+}
+
 @media (max-width: 800px) {
   .modal {
     position: relative;

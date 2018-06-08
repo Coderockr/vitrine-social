@@ -29,7 +29,7 @@ const ItemIndicator = ({ request, size, className }) => (
           size={size}
         />
         <div className={cx(styles.lasteQtd, styles[size])}>
-          <p>Faltam {request.requiredQuantity - request.reachedQuantity} {request.unity}</p>
+          <p>Faltam {request.requiredQuantity - request.reachedQuantity} {request.unit}</p>
         </div>
       </div>
     </div>

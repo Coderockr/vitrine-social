@@ -16,6 +16,7 @@ class Requests extends React.Component {
       showModal: false,
       request: null,
       status: 'ACTIVE',
+      saveEnabled: false,
     };
 
     this.showModal = this.showModal.bind(this);
@@ -113,6 +114,9 @@ class Requests extends React.Component {
               <RequestForm
                 visible={this.state.showModal === 'editForm'}
                 onCancel={() => this.onCancel()}
+                onSave={this.props.onSave}
+                saveEnabled={this.state.saveEnabled}
+                enableSave={enable => this.setState({ saveEnabled: enable })}
                 request={this.state.request}
               />
             }
