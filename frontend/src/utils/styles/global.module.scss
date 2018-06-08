@@ -343,6 +343,25 @@ require('./colors.js');
     height: 100px;
   }
 
+  .ant-notification.ant-notification-bottomRight {
+    width: 100%;
+    max-width: none;
+    left: 0;
+    margin-right: 0;
+
+    .ant-notification-notice-close-x {
+      &::after {
+        font-size: 16px;
+        color: $white;
+      }
+    }
+
+    .ant-notification-notice-message {
+      color: $white;
+      font-size: 16px;
+    }
+  }
+
   @media (max-height: 900px) {
     .ant-modal {
       top: 20px;

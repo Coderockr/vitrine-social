@@ -64,7 +64,7 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 				"video": "Novo Link do video",
 				"email": "teste@coderockr.com.br",
 				"street": "Rua teste",
-				"number": 123,
+				"number": "123",
 				"neighborhood": "Centro",
 				"city": "Joinville",
 				"state": "SC",
@@ -90,7 +90,7 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 							Video: "",
 							Address: model.Address{
 								Street:       "",
-								Number:       0,
+								Number:       "",
 								Complement:   nulls.String{},
 								Neighborhood: "",
 								City:         "",

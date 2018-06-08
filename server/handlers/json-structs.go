@@ -72,7 +72,7 @@ type needJSON struct {
 
 type addressJSON struct {
 	Street       string       `json:"street"`
-	Number       int64        `json:"number"`
+	Number       string       `json:"number"`
 	Complement   nulls.String `json:"complement"`
 	Neighborhood string       `json:"neighborhood"`
 	City         string       `json:"city"`

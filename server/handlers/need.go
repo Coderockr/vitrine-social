@@ -3,12 +3,17 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/gobuffalo/uuid"
 	"github.com/gorilla/mux"
+	"github.com/graymeta/stow"
 )
 
 type (
@@ -16,10 +21,15 @@ type (
 	NeedRepository interface {
 		Get(id int64) (*model.Need, error)
 		Update(model.Need) (model.Need, error)
+		CreateImage(i model.NeedImage) (model.NeedImage, error)
 	}
 
 	needOrganizationRepository interface {
 		Get(id int64) (*model.Organization, error)
+	}
+
+	needStorageContainer interface {
+		Put(name string, r io.Reader, size int64, metadata map[string]interface{}) (stow.Item, error)
 	}
 )
 
@@ -137,6 +147,52 @@ func UpdateNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.
 		_, err = repo.Update(*need)
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar dados da necessidade: %s", err))
+			return
+		}
+
+		HandleHTTPSuccessNoContent(w)
+	}
+}
+
+// UploadNeedImagesHandler upload file to storage and save new image
+func UploadNeedImagesHandler(repo NeedRepository, container needStorageContainer) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		id, err := strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+			return
+		}
+
+		file, handler, err := r.FormFile("images")
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível ler o arquivo"))
+			return
+		}
+		defer file.Close()
+
+		fileName := strings.Split(handler.Filename, ".")
+
+		uuid := uuid.Must(uuid.NewV4())
+		path := "need-" + vars["id"] + "/" + uuid.String() + "." + fileName[1]
+		item, err := container.Put(path, file, handler.Size, nil)
+		if err != nil {
+			log.Fatalf("Erro ao salvar arquivo: %v\n", err)
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar arquivo"))
+			return
+		}
+
+		image := model.NeedImage{
+			Image: model.Image{
+				Name: fileName[0],
+				URL:  item.ID(),
+			},
+			NeedID: id,
+		}
+
+		image, err = repo.CreateImage(image)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar imagem: %s", err))
 			return
 		}
 

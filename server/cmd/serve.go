@@ -23,6 +23,7 @@ import (
 	"github.com/Coderockr/vitrine-social/server/db/repo"
 	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/middlewares"
+	"github.com/Coderockr/vitrine-social/server/storage"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -52,6 +53,11 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	cR := repo.NewCategoryRepository(conn)
 	sR := repo.NewSearchRepository(conn)
 
+	storageContainer, err := storage.Connect()
+	if err != nil {
+		panic(err)
+	}
+
 	needResponseRepo := repo.NewNeedResponseRepository(conn)
 
 	mux := mux.NewRouter()
@@ -60,8 +66,8 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	options := getJWTOptions()
 
 	AuthHandler := handlers.AuthHandler{
-		UserGetter:   oR,
-		TokenManager: &handlers.JWTManager{OP: options},
+		OrganizationGetter: oR,
+		TokenManager:       &handlers.JWTManager{OP: options},
 	}
 
 	authMiddleware := negroni.New()
@@ -97,6 +103,8 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo)).
 		Methods("POST")
+
+	v1.HandleFunc("/need/{id}/images", handlers.UploadNeedImagesHandler(nR, storageContainer)).Methods("POST")
 
 	// Category Routes
 	v1.HandleFunc("/categories", handlers.GetAllCategoriesHandler(cR, nR)).Methods("GET")

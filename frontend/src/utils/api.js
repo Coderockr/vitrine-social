@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const api = axios.create({
+export const headers = { 'Content-type': 'application/x-www-form-urlencoded' };
+
+const ax = () => axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   timeout: 5000,
-  headers: {
-    'Content-type': 'application/x-www-form-urlencoded',
-    'Access-Control-Allow-Origin': '*',
-  },
 });
+
+const api = ax();
 
 export default api;

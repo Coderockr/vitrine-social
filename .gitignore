@@ -19,9 +19,12 @@ vendor.orig
 coverage.txt
 server-cmd
 .data/
+docs/node_modules
 .vscode/
+server/config/dev.env
 
 #Mac OS Thumb
 .DS_Store
 
 server/config/.env
+server/tmp
