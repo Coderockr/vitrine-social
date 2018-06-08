@@ -19,21 +19,10 @@ func NewSearchRepository(db *sqlx.DB) *SearchRepository {
 	}
 }
 
-// DBSearch estrutura de busca de necessidade
-type DBSearch struct {
-	model.Need
-	OrganizationName string `db:"organization_name"`
-	OrganizationLogo string `db:"organization_logo"`
-	OrganizationSlug string `db:"organization_slug"`
-	CategoryID       int64  `db:"category_id"`
-	CategoryName     string `db:"category_name"`
-	CategoryIcon     string `db:"category_icon"`
-}
-
 // Search needs by text, category or organization
-func (r *SearchRepository) Search(text string, categoriesID []int, organizationsID int64, page int64) ([]DBSearch, error) {
+func (r *SearchRepository) Search(text string, categoriesID []int, organizationsID int64, page int64) ([]model.SearchNeed, error) {
 	var filter string
-	var numParams int
+	numParams := 3
 
 	args := []interface{}{
 		"%" + text + "%",
@@ -49,7 +38,7 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 	if len(categoriesID) > 0 {
 		var binds string
 		for i := range categoriesID {
-			binds += fmt.Sprintf("$%d,", i+numParams+3)
+			binds += fmt.Sprintf("$%d,", i+numParams)
 			args = append(args, categoriesID[i])
 		}
 		binds = binds[0 : len(binds)-1]
@@ -67,7 +56,7 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 		LIMIT 10 OFFSET $2
 	`, filter)
 
-	dbNeeds := []DBSearch{}
+	dbNeeds := []model.SearchNeed{}
 	err := r.db.Select(&dbNeeds, sql, args...)
 
 	return dbNeeds, err

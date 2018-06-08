@@ -109,6 +109,17 @@ type Address struct {
 	Zipcode      string       `valid:"required" db:"zipcode"`
 }
 
+// SearchNeed estrutura de busca de necessidade
+type SearchNeed struct {
+	Need
+	OrganizationName string `db:"organization_name"`
+	OrganizationLogo string `db:"organization_logo"`
+	OrganizationSlug string `db:"organization_slug"`
+	CategoryID       int64  `db:"category_id"`
+	CategoryName     string `db:"category_name"`
+	CategoryIcon     string `db:"category_icon"`
+}
+
 func (s *needStatus) Scan(src interface{}) error {
 	var str string
 

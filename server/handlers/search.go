@@ -6,13 +6,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Coderockr/vitrine-social/server/db/repo"
+	"github.com/Coderockr/vitrine-social/server/model"
 )
 
 type (
 	// SearchNeedRepository represet operations for need repository.
 	SearchNeedRepository interface {
-		Search(text string, categoriesID []int, organizationsID int64, page int64) ([]repo.DBSearch, error)
+		Search(text string, categoriesID []int, organizationsID int64, page int64) ([]model.SearchNeed, error)
 	}
 )
 
@@ -56,10 +56,10 @@ func SearchHandler(sR SearchNeedRepository) func(w http.ResponseWriter, r *http.
 	}
 }
 
-func convertDBToNeed(dbSearch []repo.DBSearch) []searchResultJSON {
+func convertDBToNeed(searchNeed []model.SearchNeed) []searchResultJSON {
 	var need []searchResultJSON
-	need = make([]searchResultJSON, len(dbSearch))
-	for i, s := range dbSearch {
+	need = make([]searchResultJSON, len(searchNeed))
+	for i, s := range searchNeed {
 		need[i] = searchResultJSON{
 			ID:               s.ID,
 			Title:            s.Title,
