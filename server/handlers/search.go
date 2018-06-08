@@ -12,7 +12,7 @@ import (
 type (
 	// SearchNeedRepository represet operations for need repository.
 	SearchNeedRepository interface {
-		Search(text string, categoriesID []int, organizationsID int64, page int64) ([]model.SearchNeed, error)
+		Search(text string, categoriesID []int, organizationsID int64, orderBy []string, page int64) ([]model.SearchNeed, error)
 	}
 )
 
@@ -21,14 +21,32 @@ func SearchHandler(sR SearchNeedRepository) func(w http.ResponseWriter, r *http.
 	return func(w http.ResponseWriter, r *http.Request) {
 		queryValues := r.URL.Query()
 
-		if len(queryValues) < 1 {
+		var orgID int64
+		var categoriesID []int
+		var orderBy []string
+		var err error
+
+		if len(queryValues.Get("text")) < 1 || len(queryValues.Get("page")) < 1 {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Parametros inválidos"))
 			return
 		}
 
-		orgID, err := strconv.ParseInt(queryValues.Get("org"), 10, 64)
-		if err != nil {
-			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", queryValues.Get("org")))
+		if len(queryValues.Get("org")) > 0 {
+			orgID, err = strconv.ParseInt(queryValues.Get("org"), 10, 64)
+			if err != nil {
+				HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", queryValues.Get("org")))
+			}
+		}
+
+		if len(queryValues.Get("categories")) > 0 {
+			IDsplited := strings.Split(queryValues.Get("categories"), ",")
+			categoriesID = make([]int, len(IDsplited))
+			for i, v := range IDsplited {
+				categoriesID[i], err = strconv.Atoi(v)
+				if err != nil {
+					HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", v))
+				}
+			}
 		}
 
 		page, err := strconv.ParseInt(queryValues.Get("page"), 10, 64)
@@ -36,16 +54,11 @@ func SearchHandler(sR SearchNeedRepository) func(w http.ResponseWriter, r *http.
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", queryValues.Get("page")))
 		}
 
-		IDsplited := strings.Split(queryValues.Get("categories"), ",")
-		categoriesID := make([]int, len(IDsplited))
-		for i, v := range IDsplited {
-			categoriesID[i], err = strconv.Atoi(v)
-			if err != nil {
-				HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", v))
-			}
+		if len(queryValues.Get("order_by")) > 0 {
+			orderBy = strings.Split(queryValues.Get("order_by"), ",")
 		}
 
-		needs, err := sR.Search(queryValues.Get("text"), categoriesID, orgID, page)
+		needs, err := sR.Search(queryValues.Get("text"), categoriesID, orgID, orderBy, page)
 
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, err)
@@ -66,8 +79,10 @@ func convertDBToNeed(searchNeed []model.SearchNeed) []searchResultJSON {
 			Description:      s.Description,
 			RequiredQuantity: s.RequiredQuantity,
 			ReachedQuantity:  s.ReachedQuantity,
-			Unity:            s.Unity,
+			Unit:             s.Unity,
 			DueDate:          s.DueDate,
+			CreatedAt:        s.CreatedAt,
+			UpdatedAt:        s.UpdatedAt,
 			Category: categoryJSON{
 				ID:   s.CategoryID,
 				Name: s.CategoryName,

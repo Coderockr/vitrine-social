@@ -87,8 +87,10 @@ type searchResultJSON struct {
 	Description      string               `json:"description"`
 	RequiredQuantity int                  `json:"requiredQuantity"`
 	ReachedQuantity  int                  `json:"reachedQuantity"`
-	Unity            string               `json:"unity"`
+	Unit             string               `json:"unit"`
 	DueDate          *time.Time           `json:"dueDate"`
+	CreatedAt        *time.Time           `json:"createdAt"`
+	UpdatedAt        *time.Time           `json:"updatedAt"`
 	Category         categoryJSON         `json:"category"`
 	Organization     baseOrganizationJSON `json:"organization"`
 }

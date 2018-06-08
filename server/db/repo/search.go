@@ -20,7 +20,7 @@ func NewSearchRepository(db *sqlx.DB) *SearchRepository {
 }
 
 // Search needs by text, category or organization
-func (r *SearchRepository) Search(text string, categoriesID []int, organizationsID int64, page int64) ([]model.SearchNeed, error) {
+func (r *SearchRepository) Search(text string, categoriesID []int, organizationsID int64, orderBy []string, page int64) ([]model.SearchNeed, error) {
 	var filter string
 	numParams := 3
 
@@ -38,11 +38,33 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 	if len(categoriesID) > 0 {
 		var binds string
 		for i := range categoriesID {
-			binds += fmt.Sprintf("$%d,", i+numParams)
+			binds += fmt.Sprintf("$%d,", numParams)
 			args = append(args, categoriesID[i])
+			numParams++
 		}
 		binds = binds[0 : len(binds)-1]
 		filter = fmt.Sprintf("%s and n.category_id IN (%s) ", filter, binds)
+	}
+
+	if len(orderBy) > 0 {
+		switch orderBy[0] {
+		case
+			"id",
+			"updated_at":
+			break
+		default:
+			orderBy[0] = "created_at"
+		}
+
+		if len(orderBy) == 2 {
+			if orderBy[1] != "asc" && orderBy[1] != "desc" {
+				return nil, fmt.Errorf("Método de ordenação não reconhecido")
+			}
+		} else {
+			orderBy = append(orderBy, "asc")
+		}
+
+		filter = fmt.Sprintf("%s ORDER BY %s %s ", filter, "n."+orderBy[0], orderBy[1])
 	}
 
 	sql := fmt.Sprintf(`
