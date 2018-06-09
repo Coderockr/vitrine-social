@@ -38,6 +38,7 @@ func unserializeDate(value interface{}) interface{} {
 	}
 }
 
+// Date is a scalar type represents a Date with the format "yyyy-mm-dd". The Date is serialized as an string
 var Date = graphql.NewScalar(graphql.ScalarConfig{
 	Name: "Date",
 	Description: "The `Date` scalar type represents a Date with the format \"yyyy-mm-dd\"." +

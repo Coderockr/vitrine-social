@@ -1,6 +1,7 @@
 package graphql
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -9,10 +10,13 @@ import (
 	"github.com/graphql-go/handler"
 )
 
+var errTokenOrgNotFound = errors.New("token organization not found")
+
 type (
 	needRepo interface {
 		Get(int64) (*model.Need, error)
 		Create(model.Need) (model.Need, error)
+		Update(model.Need) (model.Need, error)
 	}
 
 	orgRepo interface {
@@ -65,6 +69,7 @@ func NewHandler(
 					"updatePassword":     newUpdatePasswordMutation(oR.ChangePassword),
 					"organizationUpdate": newOrganizationUpdateMutation(oR.Update),
 					"needCreate":         newNeedCreateMutation(nR.Create),
+					"needUpdate":         newNeedUpdateMutation(nR.Get, nR.Update),
 				},
 			),
 		},

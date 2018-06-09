@@ -34,6 +34,10 @@ var (
 		Type: graphql.NewNonNull(graphql.Int),
 	}
 
+	intInput = &graphql.InputObjectFieldConfig{
+		Type: graphql.Int,
+	}
+
 	nonNullIntField = &graphql.Field{
 		Type: graphql.NewNonNull(graphql.Int),
 	}
@@ -133,7 +137,7 @@ var (
 		},
 	})
 
-	needStatusInput = graphql.InputObjectFieldConfig{
+	needStatusInput = &graphql.InputObjectFieldConfig{
 		Type: needStatusEnum,
 	}
 
