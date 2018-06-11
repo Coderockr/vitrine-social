@@ -2,7 +2,6 @@ package storage_test
 
 import (
 	"log"
-	"os"
 	"testing"
 
 	"github.com/Coderockr/vitrine-social/server/storage"
@@ -10,8 +9,7 @@ import (
 )
 
 func TestConnect(t *testing.T) {
-	env := os.Getenv("VITRINESOCIAL_ENV")
-	err := godotenv.Load("../config/" + env + ".env")
+	err := godotenv.Load("../config/test.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}

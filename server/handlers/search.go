@@ -12,7 +12,7 @@ import (
 type (
 	// SearchNeedRepository represet operations for need repository.
 	SearchNeedRepository interface {
-		Search(text string, categoriesID []int, organizationsID int64, orderBy []string, page int64) ([]model.SearchNeed, error)
+		Search(text string, categoriesID []int, organizationsID int64, orderBy string, order string, page int64) ([]model.SearchNeed, error)
 	}
 )
 
@@ -23,7 +23,6 @@ func SearchHandler(sR SearchNeedRepository) func(w http.ResponseWriter, r *http.
 
 		var orgID int64
 		var categoriesID []int
-		var orderBy []string
 		var err error
 
 		if len(queryValues.Get("text")) < 1 || len(queryValues.Get("page")) < 1 {
@@ -34,17 +33,19 @@ func SearchHandler(sR SearchNeedRepository) func(w http.ResponseWriter, r *http.
 		if len(queryValues.Get("org")) > 0 {
 			orgID, err = strconv.ParseInt(queryValues.Get("org"), 10, 64)
 			if err != nil {
-				HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", queryValues.Get("org")))
+				HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender a organização: %s", queryValues.Get("org")))
+				return
 			}
 		}
 
 		if len(queryValues.Get("categories")) > 0 {
-			IDsplited := strings.Split(queryValues.Get("categories"), ",")
-			categoriesID = make([]int, len(IDsplited))
-			for i, v := range IDsplited {
+			idSplited := strings.Split(queryValues.Get("categories"), ",")
+			categoriesID = make([]int, len(idSplited))
+			for i, v := range idSplited {
 				categoriesID[i], err = strconv.Atoi(v)
 				if err != nil {
-					HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", v))
+					HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender a categoria: %s", v))
+					return
 				}
 			}
 		}
@@ -54,11 +55,11 @@ func SearchHandler(sR SearchNeedRepository) func(w http.ResponseWriter, r *http.
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", queryValues.Get("page")))
 		}
 
-		if len(queryValues.Get("order_by")) > 0 {
-			orderBy = strings.Split(queryValues.Get("order_by"), ",")
-		}
+		text := queryValues.Get("text")
+		orderBy := queryValues.Get("order_by")
+		order := queryValues.Get("order")
 
-		needs, err := sR.Search(queryValues.Get("text"), categoriesID, orgID, orderBy, page)
+		needs, err := sR.Search(text, categoriesID, orgID, orderBy, order, page)
 
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, err)

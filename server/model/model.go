@@ -117,7 +117,6 @@ type SearchNeed struct {
 	OrganizationName string `db:"organization_name"`
 	OrganizationLogo string `db:"organization_logo"`
 	OrganizationSlug string `db:"organization_slug"`
-	CategoryID       int64  `db:"category_id"`
 	CategoryName     string `db:"category_name"`
 	CategoryIcon     string `db:"category_icon"`
 }
