@@ -25,7 +25,7 @@ func SearchHandler(sR SearchNeedRepository) func(w http.ResponseWriter, r *http.
 		var categoriesID []int
 		var err error
 
-		if len(queryValues.Get("text")) < 1 || len(queryValues.Get("page")) < 1 {
+		if len(queryValues.Get("page")) < 1 {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Parametros inválidos"))
 			return
 		}
@@ -56,7 +56,7 @@ func SearchHandler(sR SearchNeedRepository) func(w http.ResponseWriter, r *http.
 		}
 
 		text := queryValues.Get("text")
-		orderBy := queryValues.Get("order_by")
+		orderBy := queryValues.Get("orderBy")
 		order := queryValues.Get("order")
 
 		needs, err := sR.Search(text, categoriesID, orgID, orderBy, order, page)

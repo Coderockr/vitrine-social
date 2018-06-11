@@ -24,12 +24,16 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 	var filter string
 
 	args := []interface{}{
-		"%" + text + "%",
 		(page - 1) * 10,
 	}
 
+	if len(text) > 0 {
+		filter += " and (LOWER(n.title) LIKE $2 OR LOWER(n.description) LIKE $2)"
+		args = append(args, "%"+text+"%")
+	}
+
 	if organizationsID > 0 {
-		filter += "and n.organization_id = $3"
+		filter += fmt.Sprintf(" and n.organization_id = $%d", len(args)+1)
 		args = append(args, organizationsID)
 	}
 
@@ -70,9 +74,9 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 		FROM needs n
 			INNER JOIN organizations o on (o.id = n.organization_id)
 			INNER JOIN categories c on (c.id = n.category_id)
-		WHERE (LOWER(n.title) LIKE $1 OR LOWER(n.description) LIKE $1)
+		WHERE n.status = 'ACTIVE'
 			%s
-		LIMIT 10 OFFSET $2
+		LIMIT 10 OFFSET $1
 	`, filter)
 
 	dbNeeds := []model.SearchNeed{}
