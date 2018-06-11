@@ -87,7 +87,7 @@ func convertDBToNeed(searchNeed []model.SearchNeed) []searchResultJSON {
 			Category: categoryJSON{
 				ID:   s.CategoryID,
 				Name: s.CategoryName,
-				Icon: s.CategoryIcon,
+				Slug: s.CategorySlug,
 			},
 			Organization: baseOrganizationJSON{
 				ID:   s.OrganizationID,

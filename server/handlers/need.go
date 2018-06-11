@@ -74,7 +74,7 @@ func GetNeedHandler(repo NeedRepository, oRepo needOrganizationRepository) func(
 			Category: categoryJSON{
 				ID:   n.Category.ID,
 				Name: n.Category.Name,
-				Icon: n.Category.Icon,
+				Slug: n.Category.Slug,
 			},
 			Organization: baseOrganizationJSON{
 				ID:   o.ID,

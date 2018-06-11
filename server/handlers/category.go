@@ -30,7 +30,7 @@ func GetAllCategoriesHandler(cR CategoryRepository, nR NeedRepository) func(http
 				categoryJSON: categoryJSON{
 					ID:   c.ID,
 					Name: c.Name,
-					Icon: c.Icon,
+					Slug: c.Slug,
 				},
 				NeedsCount: c.NeedsCount,
 			})

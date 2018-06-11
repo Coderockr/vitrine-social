@@ -42,7 +42,7 @@ type organizationJSON struct {
 type categoryJSON struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
-	Icon string `json:"icon"`
+	Slug string `json:"slug"`
 }
 
 type categoryWithCountJSON struct {
