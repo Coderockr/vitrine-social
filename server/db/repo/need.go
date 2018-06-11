@@ -97,8 +97,9 @@ func (r *NeedRepository) Update(n model.Need) (model.Need, error) {
 			required_qtd = $4,
 			reached_qtd = $5,
 			due_date = $6,
-			unity = $7
-		WHERE id = $8
+			unity = $7,
+			status = $8
+		WHERE id = $9
 		`,
 		n.CategoryID,
 		n.Title,
@@ -107,6 +108,7 @@ func (r *NeedRepository) Update(n model.Need) (model.Need, error) {
 		n.ReachedQuantity,
 		n.DueDate,
 		n.Unity,
+		n.Status,
 		n.ID,
 	)
 

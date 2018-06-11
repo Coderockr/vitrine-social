@@ -101,6 +101,7 @@ func UpdateNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.
 			ReachedQuantity  int
 			DueDate          *jsonTime
 			Unity            string
+			Status           string
 		}
 		err := requestToJSONObject(r, &bodyVars)
 		if err != nil {
@@ -134,6 +135,12 @@ func UpdateNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.
 		var dueDate *time.Time
 		if bodyVars.DueDate != nil {
 			dueDate = &bodyVars.DueDate.Time
+		}
+
+		err = need.Status.Scan(bodyVars.Status)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("%s não é um status válido: %s", bodyVars.Status, err))
+			return
 		}
 
 		need.CategoryID = bodyVars.Category
