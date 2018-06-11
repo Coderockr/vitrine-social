@@ -72,7 +72,7 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 				catMap[n.CategoryID] = categoryJSON{
 					ID:   n.Category.ID,
 					Name: n.Category.Name,
-					Icon: n.Category.Icon,
+					Slug: n.Category.Slug,
 				}
 			}
 

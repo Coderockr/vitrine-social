@@ -96,7 +96,7 @@ type NeedResponse struct {
 type Category struct {
 	ID         int64  `valid:"required" db:"id"`
 	Name       string `valid:"required" db:"name"`
-	Icon       string `valid:"required" db:"icon"`
+	Slug       string `valid:"required" db:"slug"`
 	NeedsCount int64  `db:"count_need"`
 }
 
@@ -118,7 +118,7 @@ type SearchNeed struct {
 	OrganizationLogo string `db:"organization_logo"`
 	OrganizationSlug string `db:"organization_slug"`
 	CategoryName     string `db:"category_name"`
-	CategoryIcon     string `db:"category_icon"`
+	CategorySlug     string `db:"category_slug"`
 }
 
 func (s *needStatus) Scan(src interface{}) error {

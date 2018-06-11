@@ -66,7 +66,7 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 
 	sql := fmt.Sprintf(`
 		SELECT n.*, o.name as organization_name, o.logo as organization_logo, o.slug as organization_slug,
-					 c.name as category_name, c.icon as category_icon
+					 c.name as category_name, c.slug as category_slug
 		FROM needs n
 			INNER JOIN organizations o on (o.id = n.organization_id)
 			INNER JOIN categories c on (c.id = n.category_id)
