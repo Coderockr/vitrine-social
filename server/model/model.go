@@ -68,7 +68,10 @@ type Need struct {
 	CategoryID       int64      `valid:"required" db:"category_id"`
 	OrganizationID   int64      `valid:"required" db:"organization_id"`
 	Category         Category
+	Organization     Organization
 	Images           []NeedImage
+	CreatedAt        *time.Time `db:"created_at"`
+	UpdatedAt        *time.Time `db:"updated_at"`
 }
 
 // NeedImage de uma necessidade
@@ -106,6 +109,16 @@ type Address struct {
 	City         string       `valid:"required" db:"city"`
 	State        string       `valid:"required" db:"state"`
 	Zipcode      string       `valid:"required" db:"zipcode"`
+}
+
+// SearchNeed estrutura de busca de necessidade
+type SearchNeed struct {
+	Need
+	OrganizationName string `db:"organization_name"`
+	OrganizationLogo string `db:"organization_logo"`
+	OrganizationSlug string `db:"organization_slug"`
+	CategoryName     string `db:"category_name"`
+	CategoryIcon     string `db:"category_icon"`
 }
 
 func (s *needStatus) Scan(src interface{}) error {

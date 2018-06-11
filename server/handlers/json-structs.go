@@ -80,6 +80,21 @@ type addressJSON struct {
 	Zipcode      string       `json:"zipcode"`
 }
 
+// SearchResult formato do resultado da busca
+type searchResultJSON struct {
+	ID               int64                `json:"id"`
+	Title            string               `json:"title"`
+	Description      string               `json:"description"`
+	RequiredQuantity int                  `json:"requiredQuantity"`
+	ReachedQuantity  int                  `json:"reachedQuantity"`
+	Unit             string               `json:"unit"`
+	DueDate          *time.Time           `json:"dueDate"`
+	CreatedAt        *time.Time           `json:"createdAt"`
+	UpdatedAt        *time.Time           `json:"updatedAt"`
+	Category         categoryJSON         `json:"category"`
+	Organization     baseOrganizationJSON `json:"organization"`
+}
+
 func requestToJSONObject(req *http.Request, jsonDoc interface{}) error {
 	defer req.Body.Close()
 

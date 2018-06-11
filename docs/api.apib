@@ -125,7 +125,7 @@ O status code deve ser 200 ou 201
 
 Realizar busca das necessidades
 
-## Search [/v1/search?text={text}&category={categories}&org={org}&page={page}]
+## Search [/v1/search?text={text}&categories={categories}&org={org}&order_by={order_by}&order={order}&page={page}]
 
 ### Fazer busca [GET]
 
@@ -133,6 +133,8 @@ Realizar busca das necessidades
     + text: texto a ser pesquisado (string, optional) - Texto a ser pesquidado
     + categories: 1,2,3 (string, optional) - Ids das categorias
     + org: 1 (number, optional) - Id da entidade para filtrar
+    + order_by: id (string, optional) - Campo de ordenação dos resultados
+    + order: asc (string, optional) - Ordem dos resultados
     + page: 1 (number, optional) - Paginação (vai trazer sempre 10 por página)
 
 + Request Busca das necessidades
@@ -143,7 +145,7 @@ Realizar busca das necessidades
             Content-Type: application/json
 
 + Response 200 (application/json)
-    + Attributes (array[BaseNeed])
+    + Attributes (array[SearchNeed])
 
 # Group Organization
 
@@ -413,6 +415,21 @@ Realizar busca das necessidades
 
 ## CreateNeedPayload (NeedPayload)
 + organization (number) - ID da ONG
+
+## SearchOrganization (object)
++ id (number) - Código da organização
++ name (string) - Nome da organização
+
+## SearchNeed (object)
++ id (number) - Código da necessidade
++ title (string) - Resumo da necessidade
++ description (string) - Descrição detalhada da necessidade
++ requiredQuantity (number) - Quantidade necessária
++ reachedQuantity (number) - Quantidade alcançada
++ unity: kg (string) - Unidade da necessidade
++ dueDate: `2017-08-17` (string) - Data final da necessidade
++ category (Category) - Categoria da necessidade
++ organization (SearchOrganization) - Organização da necessidade
 
 ## BaseNeed (object)
 + id (number) - Código da necessidade
