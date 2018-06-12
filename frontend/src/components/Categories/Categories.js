@@ -25,7 +25,7 @@ const Categories = ({ loading, categories }) => (
 
 const renderCategories = categories => (
   categories.map(category => (
-    <div className={styles.categoryWrapper}>
+    <div key={category.id} className={styles.categoryWrapper}>
       <CategoriesItem
         title={category.name}
         image={category.slug}

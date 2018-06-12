@@ -7,13 +7,16 @@ import api from '../../utils/api';
 
 class Home extends React.Component {
   state = {
-    loading: true,
+    loadingCategories: true,
+    loadingRequests: true,
     categories: [],
     requests: [],
+    page: 1,
   }
 
   componentWillMount() {
     this.fetchCategories();
+    this.fetchRequests();
   }
 
   fetchCategories() {
@@ -21,7 +24,18 @@ class Home extends React.Component {
       (response) => {
         this.setState({
           categories: response.data,
-          loading: false,
+          loadingCategories: false,
+        });
+      },
+    );
+  }
+
+  fetchRequests() {
+    api.get(`search?page=${this.state.page}`).then(
+      (response) => {
+        this.setState({
+          requests: response.data,
+          loadingRequests: false,
         });
       },
     );
@@ -31,12 +45,12 @@ class Home extends React.Component {
     return (
       <Layout>
         <Categories
-          loading={this.state.loading}
-          categories={this.state.loading ? null : this.state.categories}
+          loading={this.state.loadingCategories}
+          categories={this.state.loadingCategories ? null : this.state.categories}
         />
         <Requests
-          loading={this.state.loading}
-          activeRequests={this.state.loading ? null : this.state.requests}
+          loading={this.state.loadingRequests}
+          activeRequests={this.state.loadingRequests ? null : this.state.requests}
         />
         <Pagination />
       </Layout>
