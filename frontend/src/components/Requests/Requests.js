@@ -50,7 +50,7 @@ class Requests extends React.Component {
       return <Loading />;
     }
 
-    const requests = (this.state.status === 'ACTIVE' ? this.props.activeRequests : this.props.inactiveRequests);
+    const requests = (this.state.status === 'INACTIVE' ? this.props.inactiveRequests : this.props.activeRequests);
     if (requests.length === 0) {
       const status = this.state.status === 'ACTIVE' ? 'ativa' : 'inativa';
       return (
@@ -62,7 +62,7 @@ class Requests extends React.Component {
 
     return (
       requests.map((request) => {
-        if (request.status !== this.state.status) {
+        if (request.status && request.status !== this.state.status) {
           return null;
         }
         return (

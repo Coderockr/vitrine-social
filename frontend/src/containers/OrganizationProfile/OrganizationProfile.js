@@ -66,13 +66,14 @@ class OrganizationProfile extends React.Component {
   }
 
   fetchData() {
+    const user = getUser();
     api.get('organization/1').then(
       (response) => {
         this.setState({
           organization: response.data,
           activeRequests: this.filterRequestsByStatus(response.data.needs, true),
           inactiveRequests: this.filterRequestsByStatus(response.data.needs, false),
-          isOrganization: getUser().id === response.data.id,
+          isOrganization: user ? user.id === response.data.id : false,
           loading: false,
         });
       },

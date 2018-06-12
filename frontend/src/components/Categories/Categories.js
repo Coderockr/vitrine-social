@@ -2,26 +2,9 @@ import React from 'react';
 import { Row, Col } from 'antd';
 import CategoriesItem from '../../components/CategoriesItem';
 import styles from './styles.module.scss';
+import Loading from '../Loading/Loading';
 
-const allCategories = [
-  { title: 'Alimentos', image: 'alimentos' },
-  { title: 'Roupas', image: 'roupas' },
-  { title: 'Brinquedos', image: 'brinquedos' },
-  { title: 'Saúde', image: 'saude' },
-  { title: 'Higiene Pessoal', image: 'higiene' },
-  { title: 'Serviços', image: 'servicos', active: true },
-  { title: 'Materiais de Construção', image: 'construcao' },
-  { title: 'Voluntários', image: 'voluntarios' },
-  { title: 'Móveis', image: 'moveis' },
-  { title: 'Equipamentos', image: 'equipamentos' },
-  { title: 'Artigos Domésticos', image: 'domesticos' },
-  { title: 'Livros', image: 'livros' },
-  { title: 'Papelaria', image: 'papelaria' },
-  { title: 'Pets', image: 'pet' },
-  { title: 'Outros', image: 'outros' },
-];
-
-const Categories = () => (
+const Categories = ({ loading, categories }) => (
   <div className={styles.categories}>
     <Row>
       <Col span={20} offset={2}>
@@ -33,7 +16,7 @@ const Categories = () => (
     <Row>
       <Col span={22} offset={1}>
         <div className={styles.categoriesWrapper}>
-          {renderCategories(allCategories)}
+          {loading ? <Loading /> : renderCategories(categories)}
         </div>
       </Col>
     </Row>
@@ -42,10 +25,10 @@ const Categories = () => (
 
 const renderCategories = categories => (
   categories.map(category => (
-    <div className={styles.categoryWrapper}>
+    <div key={category.id} className={styles.categoryWrapper}>
       <CategoriesItem
-        title={category.title}
-        image={category.image}
+        title={category.name}
+        image={category.slug}
         active={category.active}
       />
     </div>
