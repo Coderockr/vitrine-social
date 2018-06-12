@@ -302,13 +302,17 @@ class RequestForm extends React.Component {
 
 const WrappedRequestForm = Form.create({
   onValuesChange(props, changedValues, allValues) {
+    if (!props.request) {
+      return props.enableSave(true);
+    }
+
     let enable = false;
     Object.keys(allValues).forEach((key) => {
       if (key !== 'category' && props.request[key] !== allValues[key]) {
         enable = true;
       }
     });
-    props.enableSave(enable);
+    return props.enableSave(enable);
   },
 })(RequestForm);
 

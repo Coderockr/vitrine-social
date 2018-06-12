@@ -22,6 +22,7 @@ class OrganizationProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
       arrowSize: mediaQuery.matches ? 60 : 32,
       isOrganization: false,
       editProfileVisible: false,
@@ -32,7 +33,7 @@ class OrganizationProfile extends React.Component {
   }
 
   componentWillMount() {
-    this.beforeFetch();
+    this.fetchData();
   }
 
   componentWillUnmount() {
@@ -43,11 +44,6 @@ class OrganizationProfile extends React.Component {
     this.setState({
       arrowSize: mediaQuery.matches ? 60 : 32,
     });
-  }
-
-  beforeFetch() {
-    this.setState({ loading: true });
-    setTimeout(() => this.fetchData(), 2000);
   }
 
   activeStatusFilter(request) {
@@ -67,7 +63,8 @@ class OrganizationProfile extends React.Component {
 
   fetchData() {
     const user = getUser();
-    api.get('organization/1').then(
+    const { match: { params } } = this.props;
+    api.get(`organization/${params.organizationId}`).then(
       (response) => {
         this.setState({
           organization: response.data,
@@ -132,7 +129,7 @@ class OrganizationProfile extends React.Component {
           </div>
           <div className={cx(styles.border, styles.addressBorder)}>
             <h1>Endereço</h1>
-            <a>{`${address.street} ${address.number}, ${address.complement}, Bairro ${address.neighborhood}, ${address.city} - ${address.state} `}</a>
+            <a>{`${address.street} ${address.number}, ${address.complement ? `${address.complement},` : ''} Bairro ${address.neighborhood}, ${address.city} - ${address.state} `}</a>
           </div>
           <div className={cx(styles.border, styles.imagesBorder)}>
             <h1>Imagens da Organização</h1>
