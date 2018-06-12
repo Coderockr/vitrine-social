@@ -34,6 +34,7 @@ class RequestDetails extends React.Component {
     contactFormVisible: false,
     previewVisible: false,
     previewImage: '',
+    responseFeedback: false,
   }
 
   showContactForm() {
@@ -49,6 +50,11 @@ class RequestDetails extends React.Component {
       previewImage: imgSource,
       previewVisible: mediaQuery.matches,
     });
+  }
+
+  closeModal() {
+    this.props.onCancel();
+    this.setState({ contactFormVisible: false });
   }
 
   renderImages(images) {
@@ -83,6 +89,8 @@ class RequestDetails extends React.Component {
         <ContactForm
           visible={this.state.contactFormVisible}
           onClick={() => this.setState({ contactFormVisible: false })}
+          onFeedback={visible => this.setState({ responseFeedback: visible })}
+          request={request}
         />
       );
     }
@@ -146,8 +154,9 @@ class RequestDetails extends React.Component {
         width={800}
         className={styles.modal}
         destroyOnClose
-        onCancel={this.props.onCancel}
+        onCancel={() => this.closeModal()}
         closable={!this.state.contactFormVisible}
+        wrapClassName={this.state.responseFeedback && styles.modalFixed}
       >
         {this.renderContent()}
       </Modal>
