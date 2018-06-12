@@ -101,8 +101,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		negroni.WrapFunc(handlers.CreateNeedHandler(nR.Create)),
 	)).Methods("POST")
 
-	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo)).
-		Methods("POST")
+	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo)).Methods("POST")
 
 	v1.HandleFunc("/need/{id}/images", handlers.UploadNeedImagesHandler(nR, storageContainer)).Methods("POST")
 

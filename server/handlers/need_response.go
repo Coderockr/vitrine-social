@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/gorilla/mux"
@@ -57,9 +56,7 @@ func NeedResponse(needRepo NeedRepository, needResponseRepo needResponseReposito
 			return
 		}
 
-		now := time.Now()
 		newID, err := needResponseRepo.CreateResponse(&model.NeedResponse{
-			Date:    &now,
 			Email:   bodyVars["email"],
 			Name:    bodyVars["name"],
 			Phone:   bodyVars["phone"],
@@ -67,13 +64,12 @@ func NeedResponse(needRepo NeedRepository, needResponseRepo needResponseReposito
 			Message: bodyVars["message"],
 			NeedID:  n.ID,
 		})
+
 		if err != nil {
 			HandleHTTPError(w, http.StatusForbidden, err)
 			return
 		}
 
 		HandleHTTPSuccess(w, map[string]int64{"id": newID})
-
 	}
-
 }

@@ -18,9 +18,9 @@ func NewNeedResponseRepository(db *sqlx.DB) *NeedResponseRepository {
 // CreateResponse create NeedResponse in database
 func (r *NeedResponseRepository) CreateResponse(nr *model.NeedResponse) (int64, error) {
 	var newID int64
-	var query = `INSERT INTO need_response 
-	(email, name, phone, address, message, need_id)
-	 VALUES ($1, $2, $3, $4, $5, $6) returning id;`
+	var query = `
+		INSERT INTO needs_responses (email, name, phone, address, message, need_id)
+	 	VALUES ($1, $2, $3, $4, $5, $6) returning id;`
 	err := r.db.QueryRow(query, nr.Email, nr.Name, nr.Phone, nr.Address, nr.Message, nr.NeedID).Scan(&newID)
 	if err != nil {
 		return 0, err

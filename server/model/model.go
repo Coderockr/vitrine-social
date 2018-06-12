@@ -82,14 +82,14 @@ type NeedImage struct {
 
 // NeedResponse resposta a necessidade cadastrada da organização
 type NeedResponse struct {
-	ID      int64      `valid:"required" db:"id"`
-	Date    *time.Time `valid:"required" db:"date"`
-	Email   string     `valid:"required" db:"email"`
-	Name    string     `valid:"required" db:"name"`
-	Phone   string     `valid:"required" db:"phone"`
-	Address string     `db:"address"`
-	Message string     `db:"message"`
-	NeedID  int64      `valid:"required" db:"need_id"`
+	ID        int64     `valid:"required" db:"id"`
+	Email     string    `valid:"required" db:"email"`
+	Name      string    `valid:"required" db:"name"`
+	Phone     string    `valid:"required" db:"phone"`
+	Address   string    `db:"address"`
+	Message   string    `db:"message"`
+	NeedID    int64     `valid:"required" db:"need_id"`
+	CreatedAt time.Time `valid:"required" db:"created_at"`
 }
 
 // Category de uma necessidade
