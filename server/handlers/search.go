@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/Coderockr/vitrine-social/server/db/repo"
 	"github.com/Coderockr/vitrine-social/server/model"
 )
 
@@ -76,25 +77,16 @@ func convertDBToNeed(count int, currentPage int, searchNeed []model.SearchNeed) 
 	need := searchResultJSON{
 		Pagination: paginationJSON{
 			TotalResults: count,
-			TotalPages:   int(math.Ceil(float64(count) / 10)),
+			TotalPages:   int(math.Ceil(float64(count) / repo.ResultsPerPage)),
 			CurrentPage:  currentPage,
 		},
 		Results: make([]needJSON, len(searchNeed)),
 	}
 
 	var dueDate *jsonTime
-	var createdAt *jsonTime
-	var updatedAt *jsonTime
-
 	for i, s := range searchNeed {
 		if s.DueDate != nil {
 			dueDate = &jsonTime{*s.DueDate}
-		}
-		if s.CreatedAt != nil {
-			createdAt = &jsonTime{*s.CreatedAt}
-		}
-		if s.UpdatedAt != nil {
-			updatedAt = &jsonTime{*s.UpdatedAt}
 		}
 
 		need.Results[i] = needJSON{
@@ -105,8 +97,8 @@ func convertDBToNeed(count int, currentPage int, searchNeed []model.SearchNeed) 
 			ReachedQuantity:  s.ReachedQuantity,
 			Unit:             s.Unit,
 			DueDate:          dueDate,
-			CreatedAt:        createdAt,
-			UpdatedAt:        updatedAt,
+			CreatedAt:        s.CreatedAt,
+			UpdatedAt:        s.UpdatedAt,
 			Images:           needImagesToImageJSON(s.Images),
 			Category: categoryJSON{
 				ID:   s.CategoryID,

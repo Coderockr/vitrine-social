@@ -68,8 +68,8 @@ type needJSON struct {
 	Unit             string               `json:"unit"`
 	DueDate          *jsonTime            `json:"dueDate"`
 	Status           string               `json:"status"`
-	CreatedAt        *jsonTime            `json:"createdAt"`
-	UpdatedAt        *jsonTime            `json:"updatedAt"`
+	CreatedAt        time.Time            `json:"createdAt"`
+	UpdatedAt        *time.Time           `json:"updatedAt"`
 }
 
 type addressJSON struct {

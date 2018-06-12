@@ -70,7 +70,7 @@ type Need struct {
 	Category         Category
 	Organization     Organization
 	Images           []NeedImage
-	CreatedAt        *time.Time `db:"created_at"`
+	CreatedAt        time.Time  `db:"created_at"`
 	UpdatedAt        *time.Time `db:"updated_at"`
 }
 

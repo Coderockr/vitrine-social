@@ -8,6 +8,9 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// ResultsPerPage limits the result
+const ResultsPerPage = 10
+
 // SearchRepository is an implementation for Postgres
 type SearchRepository struct {
 	db *sqlx.DB
@@ -87,7 +90,7 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 		filter = fmt.Sprintf("%s ORDER BY %s %s ", filter, "n."+orderBy, order)
 	}
 
-	args = append(args, (page-1)*10)
+	args = append(args, (page-1)*ResultsPerPage)
 
 	sql := fmt.Sprintf(`
 		SELECT n.*, o.name as organization_name, o.logo as organization_logo, o.slug as organization_slug, o.phone as organization_phone,
@@ -97,13 +100,15 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 			INNER JOIN categories c on (c.id = n.category_id)
 		WHERE n.id > 0
 			%s
-		LIMIT 10 OFFSET $%d
-	`, filter, len(args))
+		LIMIT %d OFFSET $%d
+	`, filter, ResultsPerPage, len(args))
 
 	dbNeeds := []model.SearchNeed{}
 	err = r.db.Select(&dbNeeds, sql, args...)
 
-	dbNeeds, err = r.getNeedsImages(dbNeeds)
+	if len(dbNeeds) > 0 {
+		dbNeeds, err = r.getNeedsImages(dbNeeds)
+	}
 
 	return dbNeeds, dbNeedsCount, err
 }
