@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { Row, Col } from 'antd';
+import { Link } from 'react-router-dom';
 import ItemIndicator from '../ItemIndicator';
 import styles from './styles.module.scss';
 
@@ -19,9 +20,7 @@ class RequestCard extends React.PureComponent {
             <ItemIndicator request={request} />
             <div className={styles.organizationContent}>
               <h2>{request.title}</h2>
-              <a target="_blank">
-                {request.organization.name}
-              </a>
+              <Link to={`/organization/${request.organization.id}`}>{request.organization.name}</Link>
               <p>
                 Atualizado em: {
                   moment(request.updatedAt)

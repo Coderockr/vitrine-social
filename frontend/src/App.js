@@ -29,7 +29,7 @@ const App = () => (
     <Provider store={store}>
       <div className="App">
         <Route exact path="/" component={Home} />
-        <Route exact path="/organization" component={OrganizationProfile} />
+        <Route exact path="/organization/:organizationId" component={OrganizationProfile} />
         <Route exact path="/login" component={Login} />
       </div>
     </Provider>

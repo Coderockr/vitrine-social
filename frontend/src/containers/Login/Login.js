@@ -22,10 +22,12 @@ class Login extends React.Component {
   }
 
   loginUser(params) {
+    const { history } = this.props;
     api.post('auth/login', params).then(
       (response) => {
         if (response.data) {
           authorizeUser(response.data);
+          history.push(`/organization/${response.data.organization.id}`);
         }
         return null;
       }, (error) => {
