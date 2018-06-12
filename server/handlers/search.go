@@ -2,17 +2,19 @@ package handlers
 
 import (
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 	"strings"
 
+	"github.com/Coderockr/vitrine-social/server/db/repo"
 	"github.com/Coderockr/vitrine-social/server/model"
 )
 
 type (
 	// SearchNeedRepository represet operations for need repository.
 	SearchNeedRepository interface {
-		Search(text string, categoriesID []int, organizationsID int64, orderBy string, order string, page int64) ([]model.SearchNeed, error)
+		Search(text string, categoriesID []int, organizationsID int64, status string, orderBy string, order string, page int) ([]model.SearchNeed, int, error)
 	}
 )
 
@@ -50,50 +52,65 @@ func SearchHandler(sR SearchNeedRepository) func(w http.ResponseWriter, r *http.
 			}
 		}
 
-		page, err := strconv.ParseInt(queryValues.Get("page"), 10, 64)
+		page, err := strconv.Atoi(queryValues.Get("page"))
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", queryValues.Get("page")))
 		}
 
 		text := queryValues.Get("text")
+		status := queryValues.Get("status")
 		orderBy := queryValues.Get("orderBy")
 		order := queryValues.Get("order")
 
-		needs, err := sR.Search(text, categoriesID, orgID, orderBy, order, page)
+		needs, count, err := sR.Search(text, categoriesID, orgID, status, orderBy, order, page)
 
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, err)
 			return
 		}
 
-		HandleHTTPSuccess(w, convertDBToNeed(needs))
+		HandleHTTPSuccess(w, convertDBToNeed(count, page, needs))
 	}
 }
 
-func convertDBToNeed(searchNeed []model.SearchNeed) []searchResultJSON {
-	var need []searchResultJSON
-	need = make([]searchResultJSON, len(searchNeed))
+func convertDBToNeed(count int, currentPage int, searchNeed []model.SearchNeed) searchResultJSON {
+	need := searchResultJSON{
+		Pagination: paginationJSON{
+			TotalResults: count,
+			TotalPages:   int(math.Ceil(float64(count) / repo.ResultsPerPage)),
+			CurrentPage:  currentPage,
+		},
+		Results: make([]needJSON, len(searchNeed)),
+	}
+
+	var dueDate *jsonTime
 	for i, s := range searchNeed {
-		need[i] = searchResultJSON{
+		if s.DueDate != nil {
+			dueDate = &jsonTime{*s.DueDate}
+		}
+
+		need.Results[i] = needJSON{
 			ID:               s.ID,
 			Title:            s.Title,
 			Description:      s.Description,
 			RequiredQuantity: s.RequiredQuantity,
 			ReachedQuantity:  s.ReachedQuantity,
-			Unit:             s.Unity,
-			DueDate:          s.DueDate,
+			Unit:             s.Unit,
+			DueDate:          dueDate,
 			CreatedAt:        s.CreatedAt,
 			UpdatedAt:        s.UpdatedAt,
+			Images:           needImagesToImageJSON(s.Images),
 			Category: categoryJSON{
 				ID:   s.CategoryID,
 				Name: s.CategoryName,
 				Slug: s.CategorySlug,
 			},
 			Organization: baseOrganizationJSON{
-				ID:   s.OrganizationID,
-				Name: s.OrganizationName,
-				Logo: s.OrganizationLogo,
-				Slug: s.OrganizationSlug,
+				ID:    s.OrganizationID,
+				Name:  s.OrganizationName,
+				Logo:  s.OrganizationLogo,
+				Slug:  s.OrganizationSlug,
+				Phone: s.OrganizationPhone,
 			},
 		}
 	}

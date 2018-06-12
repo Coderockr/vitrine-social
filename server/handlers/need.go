@@ -69,7 +69,7 @@ func GetNeedHandler(repo NeedRepository, oRepo needOrganizationRepository) func(
 			Description:      n.Description,
 			RequiredQuantity: n.RequiredQuantity,
 			ReachedQuantity:  n.ReachedQuantity,
-			Unity:            n.Unity,
+			Unit:             n.Unit,
 			DueDate:          dueDate,
 			Category: categoryJSON{
 				ID:   n.Category.ID,
@@ -100,7 +100,7 @@ func UpdateNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.
 			RequiredQuantity int
 			ReachedQuantity  int
 			DueDate          *jsonTime
-			Unity            string
+			Unit             string
 			Status           string
 		}
 		err := requestToJSONObject(r, &bodyVars)
@@ -149,7 +149,7 @@ func UpdateNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.
 		need.RequiredQuantity = bodyVars.RequiredQuantity
 		need.ReachedQuantity = bodyVars.ReachedQuantity
 		need.DueDate = dueDate
-		need.Unity = bodyVars.Unity
+		need.Unit = bodyVars.Unit
 
 		_, err = repo.Update(*need)
 		if err != nil {

@@ -43,7 +43,7 @@ func TestUpdateNeedHandler(t *testing.T) {
 				"requiredQuantity": 20,
 				"reachedQuantity": 10,
 				"dueDate": "2018-05-30",
-				"unity": "KG",
+				"unit": "KG",
 				"status": "ACTIVE"
 			  }`,
 			status:   http.StatusBadRequest,
@@ -72,7 +72,7 @@ func TestUpdateNeedHandler(t *testing.T) {
 				"requiredQuantity": 20,
 				"reachedQuantity": 10,
 				"dueDate": "2018-05-30",
-				"unity": "KG",
+				"unit": "KG",
 				"status": "ACTIVE"
 			  }`,
 			status:   http.StatusNoContent,

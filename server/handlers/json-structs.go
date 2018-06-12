@@ -22,15 +22,15 @@ func (t *jsonTime) UnmarshalJSON(b []byte) (err error) {
 }
 
 type baseOrganizationJSON struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-	Logo string `json:"logo"`
-	Slug string `json:"slug"`
+	ID    int64  `json:"id"`
+	Name  string `json:"name"`
+	Logo  string `json:"logo"`
+	Slug  string `json:"slug"`
+	Phone string `json:"phone"`
 }
 
 type organizationJSON struct {
 	baseOrganizationJSON
-	Phone   string      `json:"phone"`
 	About   string      `json:"about"`
 	Video   string      `json:"video"`
 	Email   string      `json:"email"`
@@ -65,9 +65,11 @@ type needJSON struct {
 	Description      string               `json:"description"`
 	RequiredQuantity int                  `json:"requiredQuantity"`
 	ReachedQuantity  int                  `json:"reachedQuantity"`
-	Unity            string               `json:"unity"`
+	Unit             string               `json:"unit"`
 	DueDate          *jsonTime            `json:"dueDate"`
 	Status           string               `json:"status"`
+	CreatedAt        time.Time            `json:"createdAt"`
+	UpdatedAt        *time.Time           `json:"updatedAt"`
 }
 
 type addressJSON struct {
@@ -80,19 +82,16 @@ type addressJSON struct {
 	Zipcode      string       `json:"zipcode"`
 }
 
+type paginationJSON struct {
+	TotalResults int `json:"totalResults"`
+	TotalPages   int `json:"totalPages"`
+	CurrentPage  int `json:"currentPage"`
+}
+
 // SearchResult formato do resultado da busca
 type searchResultJSON struct {
-	ID               int64                `json:"id"`
-	Title            string               `json:"title"`
-	Description      string               `json:"description"`
-	RequiredQuantity int                  `json:"requiredQuantity"`
-	ReachedQuantity  int                  `json:"reachedQuantity"`
-	Unit             string               `json:"unit"`
-	DueDate          *time.Time           `json:"dueDate"`
-	CreatedAt        *time.Time           `json:"createdAt"`
-	UpdatedAt        *time.Time           `json:"updatedAt"`
-	Category         categoryJSON         `json:"category"`
-	Organization     baseOrganizationJSON `json:"organization"`
+	Pagination paginationJSON `json:"pagination"`
+	Results    []needJSON     `json:"results"`
 }
 
 func requestToJSONObject(req *http.Request, jsonDoc interface{}) error {
