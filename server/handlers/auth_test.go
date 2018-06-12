@@ -31,9 +31,10 @@ func TestAuthHandler_Login(t *testing.T) {
 					ID:       1554,
 					Password: string(password),
 				},
-				Name: "Jhon Doe",
-				Logo: "Logo",
-				Slug: "jhon_doe",
+				Name:  "Jhon Doe",
+				Logo:  "Logo",
+				Slug:  "jhon_doe",
+				Phone: "123",
 			},
 		},
 	}
@@ -92,7 +93,8 @@ func TestAuthHandler_Login(t *testing.T) {
 							"id": 1554,
 							"name": "Jhon Doe",
 							"logo": "Logo",
-							"slug": "jhon_doe"
+							"slug": "jhon_doe",
+							"phone": ""
 						},
 						"token": "this-is-my-token"
 					}`,

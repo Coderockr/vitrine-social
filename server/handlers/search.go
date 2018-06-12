@@ -114,10 +114,11 @@ func convertDBToNeed(count int, currentPage int, searchNeed []model.SearchNeed) 
 				Slug: s.CategorySlug,
 			},
 			Organization: baseOrganizationJSON{
-				ID:   s.OrganizationID,
-				Name: s.OrganizationName,
-				Logo: s.OrganizationLogo,
-				Slug: s.OrganizationSlug,
+				ID:    s.OrganizationID,
+				Name:  s.OrganizationName,
+				Logo:  s.OrganizationLogo,
+				Slug:  s.OrganizationSlug,
+				Phone: s.OrganizationPhone,
 			},
 		}
 	}

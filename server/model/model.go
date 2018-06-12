@@ -114,11 +114,12 @@ type Address struct {
 // SearchNeed estrutura de busca de necessidade
 type SearchNeed struct {
 	Need
-	OrganizationName string `db:"organization_name"`
-	OrganizationLogo string `db:"organization_logo"`
-	OrganizationSlug string `db:"organization_slug"`
-	CategoryName     string `db:"category_name"`
-	CategorySlug     string `db:"category_slug"`
+	OrganizationName  string `db:"organization_name"`
+	OrganizationLogo  string `db:"organization_logo"`
+	OrganizationSlug  string `db:"organization_slug"`
+	OrganizationPhone string `db:"organization_phone"`
+	CategoryName      string `db:"category_name"`
+	CategorySlug      string `db:"category_slug"`
 }
 
 func (s *needStatus) Scan(src interface{}) error {
