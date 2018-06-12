@@ -1,7 +1,7 @@
-# Este PR é relacionado a qual issue?
+# This PR is connected to a issue?
 
 connected to #
 
-## Este PR precisa de atenção especial em algum detalhe?
+## This PR needs some special attention?
 
-Caso positivo descreva aqui
+If needed describe here
