@@ -77,8 +77,17 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 			}
 
 			var dueDate *jsonTime
+			var createdAt *jsonTime
+			var updatedAt *jsonTime
+
 			if n.DueDate != nil {
 				dueDate = &jsonTime{*n.DueDate}
+			}
+			if n.CreatedAt != nil {
+				createdAt = &jsonTime{*n.CreatedAt}
+			}
+			if n.UpdatedAt != nil {
+				updatedAt = &jsonTime{*n.UpdatedAt}
 			}
 			oJSON.Needs = append(oJSON.Needs, needJSON{
 				ID:               n.ID,
@@ -86,8 +95,10 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 				Description:      n.Description,
 				RequiredQuantity: n.RequiredQuantity,
 				ReachedQuantity:  n.ReachedQuantity,
-				Unity:            n.Unity,
+				Unit:             n.Unit,
 				DueDate:          dueDate,
+				CreatedAt:        createdAt,
+				UpdatedAt:        updatedAt,
 				Category:         catMap[n.CategoryID],
 				Organization:     oJSON.baseOrganizationJSON,
 				Images:           needImagesToImageJSON(n.Images),

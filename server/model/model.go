@@ -62,7 +62,7 @@ type Need struct {
 	Description      string     `valid:"required" db:"description"`
 	RequiredQuantity int        `db:"required_qtd"`
 	ReachedQuantity  int        `db:"reached_qtd"`
-	Unity            string     `valid:"required" db:"unity"`
+	Unit             string     `valid:"required" db:"unit"`
 	DueDate          *time.Time `db:"due_date"`
 	Status           needStatus `valid:"required" db:"status"`
 	CategoryID       int64      `valid:"required" db:"category_id"`
