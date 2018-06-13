@@ -24,9 +24,23 @@ class Results extends React.Component {
     }
   }
 
+  onChangePage(page) {
+    this.setState({
+      page,
+    }, () => {
+      const { history } = this.props;
+      history.push(`/search/text=${this.state.text}&page=${this.state.page}&status=ACTIVE`);
+    });
+  }
+
   fetchRequests() {
-    this.setState({ loading: true });
     const { match: { params } } = this.props;
+    const textParam = params.searchParams.split('&', 1)[0];
+    let searchedtext = textParam.split('=')[1];
+    if (!textParam.includes('text=')) {
+      searchedtext = '';
+    }
+    this.setState({ text: searchedtext, loading: true });
     let search = params.searchParams;
     if (!search) {
       search = `page=${this.state.page}`;
@@ -35,6 +49,7 @@ class Results extends React.Component {
       (response) => {
         this.setState({
           requests: response.data.results,
+          pagination: response.data.pagination,
           loading: false,
         });
       },
@@ -43,20 +58,14 @@ class Results extends React.Component {
 
   searchRequests(text) {
     const { history } = this.props;
-    history.push(`/search/text=${text}&page=1`);
+    history.push(`/search/text=${text}&page=1&status=ACTIVE`);
   }
 
   render() {
-    const { match: { params } } = this.props;
-    const textParam = params.searchParams.split('&', 1)[0];
-    let searchedtext = textParam.split('=')[1];
-    if (!textParam.includes('text=')) {
-      searchedtext = '';
-    }
     return (
       <Layout>
         <Search
-          text={searchedtext}
+          text={this.state.text}
           search={text => this.searchRequests(text)}
         />
         <Requests
@@ -64,7 +73,13 @@ class Results extends React.Component {
           activeRequests={this.state.loading ? null : this.state.requests}
           search
         />
-        {!this.state.loading && <Pagination />}
+        {this.state.pagination &&
+          <Pagination
+            current={this.state.page}
+            total={this.state.pagination.totalResults}
+            onChange={page => this.onChangePage(page)}
+          />
+        }
       </Layout>
     );
   }

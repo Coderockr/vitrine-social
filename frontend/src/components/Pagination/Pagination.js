@@ -3,9 +3,13 @@ import { Pagination as AntPagination } from 'antd';
 
 import styles from './styles.module.scss';
 
-const Pagination = () => (
-  <div className={styles.wrapper}>
-    <AntPagination total={50} />
+const Pagination = ({ current, total, onChange }) => (
+  <div className={styles.wrapper} hidden={total <= 10}>
+    <AntPagination
+      current={current}
+      total={total}
+      onChange={onChange}
+    />
   </div>
 );
 
