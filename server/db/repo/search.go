@@ -29,7 +29,7 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 	var args []interface{}
 
 	if len(text) > 0 {
-		filter += " and (LOWER(n.title) LIKE $2 OR LOWER(n.description) LIKE $2)"
+		filter += " and (LOWER(n.title) LIKE $1 OR LOWER(n.description) LIKE $1)"
 		args = append(args, "%"+text+"%")
 	}
 
