@@ -2,17 +2,22 @@ import React from 'react';
 import cx from 'classnames';
 import styles from './styles.module.scss';
 import Icon from '../Icons';
-import { ambar_400, white } from '../../utils/styles/colors.js';
 
-const CategoriesItem = ({ image, title, active }) => (
+const CategoriesItem = ({
+  image,
+  title,
+  active,
+  onClick,
+}) => (
   <div className={cx(styles.categoriesItem, { [styles.active]: active })}>
-    <div className={styles.categoriesImage}>
+    <button className={styles.categoriesImage} onClick={onClick}>
       <Icon
+        className={styles.categoriesIcon}
         icon={image}
         size={70}
-        color={active ? white : ambar_400}
+        color="currentColor"
       />
-    </div>
+    </button>
     <div className={styles.categoriesCard}>
       <p className={styles.categoriesTitle}>{ title }</p>
     </div>

@@ -16,7 +16,16 @@ class Results extends React.Component {
     this.fetchRequests();
   }
 
+  componentDidUpdate(prevProps) {
+    const { match: { params } } = this.props;
+    const previousParams = prevProps.match.params;
+    if (previousParams && params.searchParams !== previousParams.searchParams) {
+      this.fetchRequests();
+    }
+  }
+
   fetchRequests() {
+    this.setState({ loading: true });
     const { match: { params } } = this.props;
     let search = params.searchParams;
     if (!search) {
@@ -39,7 +48,11 @@ class Results extends React.Component {
 
   render() {
     const { match: { params } } = this.props;
-    const searchedtext = params.searchParams.split('&', 1)[0].split('=')[1];
+    const textParam = params.searchParams.split('&', 1)[0];
+    let searchedtext = textParam.split('=')[1];
+    if (!textParam.includes('text=')) {
+      searchedtext = '';
+    }
     return (
       <Layout>
         <Search

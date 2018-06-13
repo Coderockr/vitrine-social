@@ -47,6 +47,11 @@ class Home extends React.Component {
     history.push(`/search/text=${text}&page=1`);
   }
 
+  searchByCategory(categoryId) {
+    const { history } = this.props;
+    history.push(`/search/categories=${categoryId}&page=1`);
+  }
+
   render() {
     return (
       <Layout>
@@ -55,6 +60,7 @@ class Home extends React.Component {
           loading={this.state.loadingCategories}
           categories={this.state.loadingCategories ? null : this.state.categories}
           hasSearch
+          onClick={id => this.searchByCategory(id)}
         />
         <Requests
           loading={this.state.loadingRequests}
