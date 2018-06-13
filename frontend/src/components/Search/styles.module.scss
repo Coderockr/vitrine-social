@@ -2,6 +2,9 @@ require('../../utils/styles/colors.js');
 
 .search {
   background-color: $cian_400;
+  position: absolute;
+  width: 100%;
+  left: 0;
 
   .wrapper {
     display: flex;
@@ -33,6 +36,7 @@ require('../../utils/styles/colors.js');
   }
 
   button {
+    cursor: pointer;
     outline: none;
     position: relative;
     float: right;

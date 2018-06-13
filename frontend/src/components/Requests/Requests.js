@@ -79,11 +79,11 @@ class Requests extends React.Component {
 
   render() {
     return (
-      <div className={styles.requests}>
+      <div className={this.props.search ? styles.searchMargin : styles.requests}>
         <Row>
           <Col span={20} offset={2}>
             <h2 className={styles.containerTitle}>
-              <span>SOLICITAÇÕES RECENTES</span>
+              <span>{this.props.search ? 'RESULTADO DA BUSCA' : 'SOLICITAÇÕES RECENTES'}</span>
             </h2>
           </Col>
         </Row>

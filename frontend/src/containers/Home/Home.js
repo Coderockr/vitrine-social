@@ -1,4 +1,5 @@
 import React from 'react';
+import Search from '../../components/Search';
 import Categories from '../../components/Categories';
 import Pagination from '../../components/Pagination';
 import Layout from '../../components/Layout';
@@ -34,19 +35,26 @@ class Home extends React.Component {
     api.get(`search?page=${this.state.page}`).then(
       (response) => {
         this.setState({
-          requests: response.data,
+          requests: response.data.results,
           loadingRequests: false,
         });
       },
     );
   }
 
+  searchRequests(text) {
+    const { history } = this.props;
+    history.push(`/search/text=${text}&page=1`);
+  }
+
   render() {
     return (
       <Layout>
+        <Search search={text => this.searchRequests(text)} />
         <Categories
           loading={this.state.loadingCategories}
           categories={this.state.loadingCategories ? null : this.state.categories}
+          hasSearch
         />
         <Requests
           loading={this.state.loadingRequests}

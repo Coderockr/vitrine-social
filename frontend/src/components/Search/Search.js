@@ -36,8 +36,13 @@ class Search extends React.Component {
           xs={{ span: 20, offset: 2 }}
         >
           <div className={styles.wrapper}>
-            <input type="text" placeholder={this.state.placeholder} />
-            <button>
+            <input
+              type="text"
+              placeholder={this.state.placeholder}
+              ref={(ref) => { this.input = ref; }}
+              defaultValue={this.props.text}
+            />
+            <button onClick={() => this.props.search(this.input.value)}>
               <Icon icon="lupa" size={32} color={colors.grey_400} />
             </button>
           </div>

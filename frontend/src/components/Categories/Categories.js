@@ -4,8 +4,8 @@ import CategoriesItem from '../../components/CategoriesItem';
 import styles from './styles.module.scss';
 import Loading from '../Loading/Loading';
 
-const Categories = ({ loading, categories }) => (
-  <div className={styles.categories}>
+const Categories = ({ loading, categories, hasSearch }) => (
+  <div className={hasSearch ? styles.searchMargin : styles.categories}>
     <Row>
       <Col span={20} offset={2}>
         <h2 className={styles.containerTitle}>
