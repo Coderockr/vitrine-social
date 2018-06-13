@@ -20,6 +20,15 @@ class Home extends React.Component {
     this.fetchRequests();
   }
 
+  onChangePage(page) {
+    this.setState({
+      page,
+      loadingRequests: true,
+    }, () => {
+      this.fetchRequests();
+    });
+  }
+
   fetchCategories() {
     api.get('categories').then(
       (response) => {
@@ -32,10 +41,11 @@ class Home extends React.Component {
   }
 
   fetchRequests() {
-    api.get(`search?page=${this.state.page}`).then(
+    api.get(`search?page=${this.state.page}&status=ACTIVE`).then(
       (response) => {
         this.setState({
           requests: response.data.results,
+          pagination: response.data.pagination,
           loadingRequests: false,
         });
       },
@@ -44,12 +54,12 @@ class Home extends React.Component {
 
   searchRequests(text) {
     const { history } = this.props;
-    history.push(`/search/text=${text}&page=1`);
+    history.push(`/search/text=${text}&page=1&status=ACTIVE`);
   }
 
   searchByCategory(categoryId) {
     const { history } = this.props;
-    history.push(`/search/categories=${categoryId}&page=1`);
+    history.push(`/search/categories=${categoryId}&page=1&status=ACTIVE`);
   }
 
   render() {
@@ -66,7 +76,13 @@ class Home extends React.Component {
           loading={this.state.loadingRequests}
           activeRequests={this.state.loadingRequests ? null : this.state.requests}
         />
-        <Pagination />
+        {this.state.pagination &&
+        <Pagination
+          current={this.state.page}
+          total={this.state.pagination.totalResults}
+          onChange={page => this.onChangePage(page)}
+        />
+        }
       </Layout>
     );
   }
