@@ -52,7 +52,7 @@ func TestCreateNeedHandler(t *testing.T) {
 			response: `{"code":400, "message":"failed because i want"}`,
 		},
 		"right values were sent": {
-			body:   `{"organization": 1, "category": 99, "title": "test 1", "description": "test 2","requiredQuantity":3,"dueDate":"2017-10-01"}`,
+			body:   `{"organization": 1, "category": 99, "title": "test 1", "description": "test 2","requiredQuantity":3,"dueDate":"2017-10-01","unit":"KG"}`,
 			userID: 1,
 			status: http.StatusOK,
 			create: func(n model.Need) (model.Need, error) {
@@ -74,7 +74,7 @@ func TestCreateNeedHandler(t *testing.T) {
 			response: `{"id":1}`,
 		},
 		"right values were sent (duedate is nil)": {
-			body:   `{"organization": 1, "category": 99, "title": "test 1", "description": "test 2","requiredQuantity":3}`,
+			body:   `{"organization": 1, "category": 99, "title": "test 1", "description": "test 2","requiredQuantity":3,"unit":"KG"}`,
 			userID: 1,
 			status: http.StatusOK,
 			create: func(n model.Need) (model.Need, error) {

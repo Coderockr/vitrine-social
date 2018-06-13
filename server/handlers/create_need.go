@@ -18,6 +18,7 @@ func CreateNeedHandler(create func(model.Need) (model.Need, error)) func(http.Re
 			Description      string
 			RequiredQuantity int
 			ReachedQuantity  int
+			Unit             string
 			DueDate          *jsonTime
 		}
 		err := requestToJSONObject(r, &bodyVars)
@@ -44,6 +45,7 @@ func CreateNeedHandler(create func(model.Need) (model.Need, error)) func(http.Re
 			Description:      bodyVars.Description,
 			RequiredQuantity: bodyVars.RequiredQuantity,
 			ReachedQuantity:  bodyVars.ReachedQuantity,
+			Unit:             bodyVars.Unit,
 			DueDate:          dueDate,
 		})
 
