@@ -36,6 +36,11 @@ class Home extends React.Component {
           categories: response.data,
           loadingCategories: false,
         });
+      }, (error) => {
+        this.setState({
+          loadingCategories: false,
+          errorCategories: error,
+        });
       },
     );
   }
@@ -47,6 +52,11 @@ class Home extends React.Component {
           requests: response.data.results,
           pagination: response.data.pagination,
           loadingRequests: false,
+        });
+      }, (error) => {
+        this.setState({
+          loadingRequests: false,
+          errorRequests: error,
         });
       },
     );
@@ -71,10 +81,12 @@ class Home extends React.Component {
           categories={this.state.loadingCategories ? null : this.state.categories}
           hasSearch
           onClick={id => this.searchByCategory(id)}
+          error={this.state.errorCategories}
         />
         <Requests
           loading={this.state.loadingRequests}
           activeRequests={this.state.loadingRequests ? null : this.state.requests}
+          error={this.state.errorRequests}
         />
         {this.state.pagination &&
         <Pagination

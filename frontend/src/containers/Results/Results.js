@@ -52,6 +52,11 @@ class Results extends React.Component {
           pagination: response.data.pagination,
           loading: false,
         });
+      }, (error) => {
+        this.setState({
+          loading: false,
+          error,
+        });
       },
     );
   }
@@ -71,6 +76,7 @@ class Results extends React.Component {
         <Requests
           loading={this.state.loading}
           activeRequests={this.state.loading ? null : this.state.requests}
+          error={this.state.error}
           search
         />
         {this.state.pagination &&

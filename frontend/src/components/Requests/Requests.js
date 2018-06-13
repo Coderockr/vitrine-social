@@ -6,6 +6,7 @@ import RequestForm from '../../components/RequestForm';
 import RequestDetails from '../../components/RequestDetails';
 import styles from './styles.module.scss';
 import Loading from '../Loading/Loading';
+import ErrorCard from '../../components/ErrorCard';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -49,6 +50,10 @@ class Requests extends React.Component {
   renderRequests() {
     if (this.props.loading) {
       return <Loading />;
+    }
+
+    if (this.props.error) {
+      return <ErrorCard text="Não foi possível listar as solicitações!" />;
     }
 
     const requests = (this.state.status === 'INACTIVE' ? this.props.inactiveRequests : this.props.activeRequests);

@@ -10,7 +10,8 @@ import colors from '../../utils/styles/colors';
 import api from '../../utils/api';
 import { getUser } from '../../utils/auth';
 import styles from './styles.module.scss';
-import Loading from '../../components/Loading/Loading';
+import Loading from '../../components/Loading';
+import ErrorCard from '../../components/ErrorCard';
 
 const carouselSettings = {
   slidesToShow: 1,
@@ -72,6 +73,12 @@ class OrganizationProfile extends React.Component {
           inactiveRequests: this.filterRequestsByStatus(response.data.needs, false),
           isOrganization: user ? user.id === response.data.id : false,
           loading: false,
+          error: true,
+        });
+      }, (error) => {
+        this.setState({
+          loading: false,
+          error,
         });
       },
     );
@@ -84,6 +91,13 @@ class OrganizationProfile extends React.Component {
   }
 
   renderOrganizationInfo() {
+    if (this.state.loading) {
+      return <Loading />;
+    }
+    if (this.state.error) {
+      return <ErrorCard text="Não foi possível carregar os dados da Organização!" />;
+    }
+
     const { organization } = this.state;
     const { address } = organization;
 
@@ -175,7 +189,7 @@ class OrganizationProfile extends React.Component {
               <h2 className={styles.containerTitle}>
                 <span>PERFIL DA ORGANIZAÇÃO</span>
               </h2>
-              {this.state.loading ? <Loading /> : this.renderOrganizationInfo()}
+              {this.renderOrganizationInfo()}
             </div>
           </Col>
         </Row>
@@ -185,6 +199,7 @@ class OrganizationProfile extends React.Component {
           activeRequests={this.state.loading ? null : this.state.activeRequests}
           inactiveRequests={this.state.loading ? null : this.state.inactiveRequests}
           onSave={() => this.fetchData()}
+          error={this.state.error}
         />
       </Layout>
     );

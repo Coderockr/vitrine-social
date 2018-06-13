@@ -1,0 +1,25 @@
+require('../../utils/styles/colors.js');
+
+.errorWrapper {
+  background-color: $red_000;
+  border: 2px solid $red_100;
+  border-radius: 6px;
+  padding: 50px 100px;
+  margin: 50px 0;
+  display: flex;
+  justify-content: center;
+
+  .errorText {
+    color: $textDark;
+    font-size: 20px;
+    font-weight: normal;
+    margin: 0;
+    text-align: center;
+  }
+}
+
+@media (max-width: 460px) {
+  .errorWrapper {
+    padding: 50px 50px;
+  }
+}
