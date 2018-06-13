@@ -37,6 +37,8 @@ module.exports = {
   teal_400: '#31E0D5',
   teal_500: '#20B8AF',
 
+  red_000: '#F1C8C4',
+  red_100: '#BD6F6D',
   red_400: '#D0021B',
   red_800: '#A51A2B',
 };
