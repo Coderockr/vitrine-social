@@ -15,9 +15,22 @@ require('../../utils/styles/colors.js');
     background: $white;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    outline: none;
+
+    &:hover {
+      background: $ambar_400;
+      .categoriesIcon {
+        color: $white;
+      }
+    } 
 
     svg {
       display: inline-flex;
+    }
+
+    .categoriesIcon {
+      color: $ambar_400;
     }
   }
 

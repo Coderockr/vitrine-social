@@ -3,12 +3,12 @@ require('../../utils/styles/colors.js');
 
 .categories {
   margin-top: 50px;
+}
 
-  .categoriesWrapper {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+.categoriesWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .categoryWrapper {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Radio } from 'antd';
+import cx from 'classnames';
 import RequestCard from '../../components/RequestCard';
 import RequestForm from '../../components/RequestForm';
 import RequestDetails from '../../components/RequestDetails';
@@ -79,11 +80,11 @@ class Requests extends React.Component {
 
   render() {
     return (
-      <div className={styles.requests}>
+      <div className={cx(styles.requests, { [styles.requestsSearch]: this.props.search })} >
         <Row>
           <Col span={20} offset={2}>
             <h2 className={styles.containerTitle}>
-              <span>SOLICITAÇÕES RECENTES</span>
+              <span>{this.props.search ? 'RESULTADO DA BUSCA' : 'SOLICITAÇÕES RECENTES'}</span>
             </h2>
           </Col>
         </Row>
