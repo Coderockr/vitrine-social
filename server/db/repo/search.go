@@ -29,17 +29,18 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 	var args []interface{}
 
 	if len(text) > 0 {
-		filter += fmt.Sprintf(" and (LOWER(n.title) LIKE $%d OR LOWER(n.description) LIKE $%d)", len(args)+1, len(args)+1)
+		filter += fmt.Sprintf(" and (LOWER(n.title) LIKE $%d OR LOWER(n.description) LIKE $%d OR LOWER(o.name) LIKE $%d)", len(args)+1, len(args)+1, len(args)+1)
 		args = append(args, "%"+text+"%")
 	}
 
 	if len(status) > 0 {
-		if status != "active" && status != "inactive" {
+		status = strings.ToUpper(status)
+		if status != "ACTIVE" && status != "INACTIVE" {
 			return nil, 0, fmt.Errorf("O status informado é inválido")
 		}
 
 		filter += fmt.Sprintf(" and n.status = $%d", len(args)+1)
-		args = append(args, strings.ToUpper(status))
+		args = append(args, status)
 	}
 
 	if organizationsID > 0 {
