@@ -1,0 +1,120 @@
+require('../../utils/styles/colors.js');
+@import 'src/utils/styles/common.scss';
+
+.sectionWrapper {
+  text-align: center;
+  margin-top: 80px;
+}
+
+.title {
+  color: $grey_500;
+  font-size: 40px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.mainText {
+  margin: 30px 50px;
+  font-size: 18px;
+}
+
+img {
+  margin: 20px;
+}
+
+a {
+  text-decoration: underline;
+}
+
+.itemSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .item {
+    display: flex;
+    flex-direction: row;
+    border: 4px dashed;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    text-align: center;
+
+    .itemNumber {
+      width: 80px;
+      height: 80px;
+      font-size: 50px;
+      font-weight: 500;
+    }
+
+    .itemIcon {
+      width: 80px;
+    }
+  }
+}
+
+.logo {
+  width: 600px;
+}
+
+.itemAmbar {
+  border-color: $ambar_400;
+  color: $ambar_400;
+}
+
+.itemCian {
+  border-color: $cian_400;
+  color: $cian_400;
+}
+
+.itemPurple {
+  border-color: $purple_400;
+  color: $purple_400;
+}
+
+.itemPink {
+  border-color: $pink_400;
+  color: $pink_400;
+  background: $pink_400;
+}
+
+@media (max-width: 820px) {
+  .image {
+    max-width: 620px;
+  }
+}
+
+@media (max-width: 740px) {
+  .image {
+    max-width: 520px;
+  }
+
+  img {
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 630px) {
+  .title {
+    font-size: 35px;
+  }
+
+  img {
+    max-width: 320px;
+  }
+
+  .image {
+    max-width: 420px;
+  }
+
+  .itemSection {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .image {
+    max-width: 320px;
+  }
+}

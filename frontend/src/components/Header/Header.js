@@ -64,10 +64,10 @@ class Header extends React.Component {
         selectedKeys={[window.location.pathname]}
       >
         <Menu.Item key="/">
-          <Link to="/">Sobre o Projeto</Link>
+          <Link to="/">Home</Link>
         </Menu.Item>
-        <Menu.Item key="/organization">
-          <Link to="/organization">Quero Participar</Link>
+        <Menu.Item key="/about">
+          <Link to="/about">Sobre o Projeto</Link>
         </Menu.Item>
         <Menu.Item key="/contact">
           <Link to="/contact">Contato</Link>

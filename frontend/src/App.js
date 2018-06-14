@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 
 import Home from './containers/Home';
+import About from './containers/About';
 import Results from './containers/Results';
 import Login from './containers/Login';
 import OrganizationProfile from './containers/OrganizationProfile';
@@ -19,6 +20,7 @@ const App = () => (
   <Router>
     <div className="App">
       <Route exact path="/" component={Home} />
+      <Route exact path="/about" component={About} />
       <Route exact path="/search/:searchParams" component={Results} />
       <Route exact path="/organization/:organizationId" component={OrganizationProfile} />
       <Route exact path="/login" component={Login} />
