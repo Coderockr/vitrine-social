@@ -62,8 +62,10 @@ const About = () => (
         <h2 className={styles.containerTitle}>
           <span>{'NOSSA HISTÓRIA'}</span>
         </h2>
-        <div className={styles.mainText}>
+        <a target="_blank" rel="me" href="http://www.coderockr.com">
           <img className={styles.logo} src="./assets/images/coderockr.svg" alt="coderockr" />
+        </a>
+        <div className={styles.mainText}>
           <p>
           O projeto Vitrine Social foi desenvolvido pela equipe da Coderockr durante os
           Coderockr Jams, eventos internos da Coderockr realizados com o propósito de aprender sobre
@@ -73,7 +75,7 @@ const About = () => (
           <p>
           Em um desses eventos decidimos trabalhar em uma ideia para ajudar a comunidade, e então
           surgiu o Vitrine Social. Começamos a análise e discussão do projeto testando a
-          metodologia <a href="https://blog.coderockr.com/modelando-sistemas-usando-event-storming-1e18e6563eaa">Event Storming</a> e
+          metodologia <a target="_blank" rel="me" href="https://blog.coderockr.com/modelando-sistemas-usando-event-storming-1e18e6563eaa">Event Storming</a> e
           continuamos com o desenvolvimento a partir do que definimos neste processo.
           </p>
           <p>
