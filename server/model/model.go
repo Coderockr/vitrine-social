@@ -9,6 +9,17 @@ import (
 	"github.com/gobuffalo/pop/nulls"
 )
 
+const (
+	// PasswordResetPermission allows the user to change its password without sending the current one
+	PasswordResetPermission = "password:reset"
+)
+
+// Token represents a parsed and validated JWT token
+type Token struct {
+	UserID      int64
+	Permissions map[string]bool
+}
+
 // User you know it
 type User struct {
 	Email    string `valid:"email,required" db:"email"`

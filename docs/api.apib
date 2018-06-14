@@ -121,6 +121,25 @@ O status code deve ser 200 ou 201
 + Response 400 (application/json)
     + Attributes (Error)
 
+## Resetar Senha [/v1/auth/reset-password]
+
+### Resetar Senha [POST]
+
++ Request Resetar Senha
+
+    + Headers
+
+            Accept: application/json
+            Content-Type: application/json
+            Authorization: JWT
+
+    + Attributes (ResetUpdate)
+
++ Response 200
+
++ Response 400 (application/json)
+    + Attributes (Error)
+
 # Group Search
 
 Realizar busca das necessidades
@@ -465,6 +484,10 @@ Realizar busca das necessidades
 ## PasswordUpdate (object)
 + currentPassword: 123 (string) - Senha Atual
 + newPassword: 1234 (string) - Nova Senha
+
+## ResetUpdate (object)
++ newPassword: 1234 (string) - Nova Senha
+
 
 ## Image (object)
 + id (number) - Código da imagem

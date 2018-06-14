@@ -15,6 +15,8 @@ const (
 	TokenKey = "token"
 	// UserKey is the context key for the autheticathed user
 	UserKey = "user"
+	// PermissionsKey is the context key for the token permissions
+	PermissionsKey = "permissions"
 )
 
 type (
@@ -25,8 +27,8 @@ type (
 
 	// TokenManager represet operations for application tokens.
 	TokenManager interface {
-		CreateToken(model.User) (string, error)
-		ValidateToken(string) (int64, error)
+		CreateToken(u model.User, permissions *[]string) (string, error)
+		ValidateToken(string) (*model.Token, error)
 	}
 
 	// AuthHandler represent all the handler endpoints and middlewares.
@@ -69,7 +71,7 @@ func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	token, err := a.TokenManager.CreateToken(user)
+	token, err := a.TokenManager.CreateToken(user, nil)
 	if err != nil {
 		HandleHTTPError(w, http.StatusInternalServerError, errors.New("Error while Signing Token"))
 		return
@@ -98,6 +100,14 @@ func GetToken(r *http.Request) string {
 	return context.Get(r, TokenKey).(string)
 }
 
+// HasPermission returns if the current token has a certain permission
+func HasPermission(r *http.Request, p string) bool {
+	perms := context.Get(r, PermissionsKey).(map[string]bool)
+
+	_, ok := perms[p]
+	return ok
+}
+
 // AuthMiddleware valida o token e filtra usuários não logados corretamente
 func (a *AuthHandler) AuthMiddleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	token := r.Header.Get("Authorization")
@@ -105,7 +115,7 @@ func (a *AuthHandler) AuthMiddleware(w http.ResponseWriter, r *http.Request, nex
 		HandleHTTPError(w, http.StatusUnauthorized, errors.New("Error no token is provided"))
 		return
 	}
-	userID, err := a.TokenManager.ValidateToken(token)
+	t, err := a.TokenManager.ValidateToken(token)
 
 	if err != nil {
 		HandleHTTPError(w, http.StatusUnauthorized, err)
@@ -113,7 +123,8 @@ func (a *AuthHandler) AuthMiddleware(w http.ResponseWriter, r *http.Request, nex
 	}
 
 	context.Set(r, TokenKey, token)
-	context.Set(r, UserKey, userID)
+	context.Set(r, UserKey, t.UserID)
+	context.Set(r, PermissionsKey, t.Permissions)
 	next(w, r)
 	context.Clear(r)
 }

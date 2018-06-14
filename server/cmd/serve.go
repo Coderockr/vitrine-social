@@ -79,6 +79,10 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		negroni.WrapFunc(handlers.UpdatePasswordHandler(oR)),
 	)).Methods("POST")
 
+	v1.Path("/auth/reset-password").Handler(authMiddleware.With(
+		negroni.WrapFunc(handlers.ResetPasswordHandler(oR)),
+	)).Methods("POST")
+
 	v1.HandleFunc("/search", handlers.SearchHandler(sR)).Methods("GET")
 
 	v1.HandleFunc("/organization/{id:[0-9]+}", handlers.GetOrganizationHandler(oR.Get)).Methods("GET")

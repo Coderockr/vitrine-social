@@ -40,9 +40,12 @@ var impersonateCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		token, err := manager.CreateToken(model.User{
-			ID: id,
-		})
+		token, err := manager.CreateToken(
+			model.User{
+				ID: id,
+			},
+			nil,
+		)
 		if err != nil {
 			log.Fatal(err)
 			os.Exit(1)
