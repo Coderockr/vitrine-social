@@ -120,7 +120,8 @@ func createCmdFunc(cmd *cobra.Command, args []string) {
 
 	manager := handlers.JWTManager{OP: options}
 
-	token, err := manager.CreateToken(o.User)
+	p := []string{model.PasswordResetPermission}
+	token, err := manager.CreateToken(o.User, &p)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)

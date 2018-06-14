@@ -16,8 +16,8 @@ import (
 
 type (
 	tokenManagerMock struct {
-		CreateTokenFN   func(model.User) (string, error)
-		ValidateTokenFN func(string) (int64, error)
+		CreateTokenFN   func(model.User, *[]string) (string, error)
+		ValidateTokenFN func(string) (*model.Token, error)
 	}
 )
 
@@ -79,7 +79,7 @@ func TestAuthHandler_Login(t *testing.T) {
 			"email_senha_valido",
 			fields{
 				tokenManager: &tokenManagerMock{
-					CreateTokenFN: func(u model.User) (string, error) {
+					CreateTokenFN: func(u model.User, p *[]string) (string, error) {
 						return "this-is-my-token", nil
 					},
 				},
@@ -131,28 +131,28 @@ func TestJWTManager_CanReadItsOwnTokens(t *testing.T) {
 	for name, opt := range jwtOptions {
 		t.Run(name, func(t *testing.T) {
 			tm := JWTManager{OP: opt}
-			token, err := tm.CreateToken(u)
+			token, err := tm.CreateToken(u, nil)
 			if err != nil {
 				t.Fatalf("Should not fail with: %s", err.Error())
 				t.FailNow()
 			}
 
-			id, err := tm.ValidateToken(token)
+			tk, err := tm.ValidateToken(token)
 			if err != nil {
 				t.Fatalf("Should not fail with: %s", err.Error())
 				t.FailNow()
 			}
 
-			require.Equal(t, id, u.ID)
+			require.Equal(t, tk.UserID, u.ID)
 		})
 	}
 
 }
 
-func (t *tokenManagerMock) CreateToken(user model.User) (string, error) {
-	return t.CreateTokenFN(user)
+func (t *tokenManagerMock) CreateToken(user model.User, ps *[]string) (string, error) {
+	return t.CreateTokenFN(user, ps)
 }
 
-func (t *tokenManagerMock) ValidateToken(token string) (int64, error) {
+func (t *tokenManagerMock) ValidateToken(token string) (*model.Token, error) {
 	return t.ValidateTokenFN(token)
 }

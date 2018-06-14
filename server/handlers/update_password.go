@@ -44,3 +44,30 @@ func UpdatePasswordHandler(repo UpdatePasswordOrganizationRepository) func(w htt
 		HandleHTTPSuccess(w, nil)
 	}
 }
+
+// ResetPasswordHandler resets the current user password, if it has the permissions
+func ResetPasswordHandler(repo UpdatePasswordOrganizationRepository) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var handlerForm map[string]string
+
+		err := requestToJSONObject(r, &handlerForm)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		if HasPermission(r, model.PasswordResetPermission) == false {
+			HandleHTTPError(w, http.StatusBadRequest, errors.New("you do not have the right permissions to perform this action"))
+			return
+		}
+
+		userID := GetUserID(r)
+		organization, err := repo.Get(userID)
+
+		newPassword := strings.TrimSpace(handlerForm["newPassword"])
+
+		repo.ResetPasswordTo(organization, newPassword)
+
+		HandleHTTPSuccess(w, nil)
+	}
+}
