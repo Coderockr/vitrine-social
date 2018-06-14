@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col } from 'antd';
 import cx from 'classnames';
+import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import styles from './styles.module.scss';
 
@@ -47,11 +48,39 @@ const About = () => (
       </Col>
     </Row>
     <Row>
-      <Col span={20} offset={2}>
-        <h2 className={cx(styles.containerTitle, styles.sectionWrapper)}>
+      <Col span={20} offset={2} className={styles.sectionWrapper}>
+        <h2 className={styles.containerTitle}>
           <span>{'COMO FUNCIONA?'}</span>
         </h2>
         {renderItemSections()}
+        {renderLastSection()}
+        <img className={styles.image} src="./assets/images/community.svg" alt="community" />
+      </Col>
+    </Row>
+    <Row>
+      <Col span={20} offset={2} className={styles.sectionWrapper}>
+        <h2 className={styles.containerTitle}>
+          <span>{'NOSSA HISTÓRIA'}</span>
+        </h2>
+        <div>
+          <img className={styles.logo} src="./assets/images/coderockr.svg" alt="coderockr" />
+          <p className={styles.mainText}>
+          O projeto Vitrine Social foi desenvolvido pela equipe da Coderockr durante os
+          Coderockr Jams, eventos internos da Coderockr realizados com o propósito de aprender sobre
+          novas tecnologias e metodologias, e também onde os colaboradores podem compartilhar
+          seus conhecimentos com o restante da equipe.
+          </p>
+          <p className={styles.mainText}>
+          Em um desses eventos decidimos trabalhar em uma ideia para ajudar a comunidade, e então
+          surgiu o Vitrine Social. Começamos a análise e discussão do projeto testando a
+          metodologia <a className={styles.link} href="https://blog.coderockr.com/modelando-sistemas-usando-event-storming-1e18e6563eaa">Event Storming</a> e
+          continuamos com o desenvolvimento a partir do que definimos neste processo.
+          </p>
+          <p className={styles.mainText}>
+          Pretendemos dar continuidade ao projeto e criar novas funcionalidades de acordo com as
+          sugestões das entidades e dos doadores. Se você tiver alguma sugestão <Link to="/contact">entre em contato!</Link>
+          </p>
+        </div>
       </Col>
     </Row>
   </Layout>
@@ -61,11 +90,25 @@ const renderItemSections = () => (
   itemSections.map(item => (
     <div className={styles.itemSection}>
       <div className={cx(styles.item, item.style)}>
-        <p className={cx(styles.itemNumber, item.style)}>{item.number}</p>
+        <span className={cx(styles.itemNumber, item.style)}>{item.number}</span>
       </div>
       <p className={styles.mainText}>{item.text}</p>
     </div>
   ))
+);
+
+const renderLastSection = () => (
+  <div className={styles.itemSection}>
+    <div className={cx(styles.itemPink, styles.item)}>
+      <img className={styles.itemIcon} src="./assets/images/heart.svg" alt="heart" />
+    </div>
+    <p className={styles.mainText}>
+    Pronto! Doando desta forma, além poupar o seu tempo buscando entidades confiáveis, você ainda
+    tem a certeza de que os recursos doados serão recebidos e utilizados de forma eficiente pelas
+    entidades que mais os necessitam! Seja uma entidade grande e de renome, ou aquela pequena
+    entidade que você ainda não conhecia.
+    </p>
+  </div>
 );
 
 export default About;
