@@ -2,8 +2,23 @@ require('../../utils/styles/colors.js');
 @import 'src/utils/styles/common.scss';
 
 .sectionWrapper {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
   margin-top: 80px;
+  justify-content: center;
+
+  p {
+    margin: 30px 50px;
+    font-size: 18px;
+  }
+}
+
+.lastSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 60px;
+  margin-bottom: 100px;
 }
 
 .title {
@@ -14,6 +29,7 @@ require('../../utils/styles/colors.js');
 }
 
 .mainText {
+  text-align: center;
   margin: 30px 50px;
   font-size: 18px;
 }

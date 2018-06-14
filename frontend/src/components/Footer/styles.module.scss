@@ -1,17 +1,28 @@
 require('../../utils/styles/colors.js');
 
-.footerWrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+.appFooter {
+  height: 80px;
+  padding: 15px 50px;
 }
 
-.iconWrapper {
+.footerWrapper {
   display: flex;
+  justify-content: space-between;
 }
 
 .copyright {
   color: $white;
-  margin-top: 20px;
+  margin: auto 0;
+}
+
+@media (max-width: 540px) {
+  .appFooter {
+    padding: 15px 20px;
+  }
+}
+
+@media (max-width: 460px) {
+  .copyright {
+    font-size: 10px;
+  }
 }
