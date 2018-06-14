@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Layout as AntLayout } from 'antd';
 import Header from '../Header';
+import Footer from '../Footer';
 
 const { Content } = AntLayout;
 
@@ -17,6 +18,7 @@ const Layout = ({ children }) => (
         </Col>
       </Row>
     </Content>
+    <Footer />
   </AntLayout>
 );
 

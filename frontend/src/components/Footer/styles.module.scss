@@ -1,0 +1,17 @@
+require('../../utils/styles/colors.js');
+
+.footerWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.iconWrapper {
+  display: flex;
+}
+
+.copyright {
+  color: $white;
+  margin-top: 20px;
+}
