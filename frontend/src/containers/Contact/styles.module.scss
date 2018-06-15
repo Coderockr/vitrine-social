@@ -1,0 +1,15 @@
+require('../../utils/styles/colors.js');
+@import 'src/utils/styles/common.scss';
+
+.contactWrapper {
+  text-align: center;
+  margin: 80px 20px;
+
+  .title {
+    margin-bottom: 50px;
+  }
+
+  .sendButton {
+    background-color: $pink_400;
+  }
+}

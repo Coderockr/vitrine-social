@@ -29,15 +29,16 @@ class Login extends React.Component {
         if (response.data) {
           authorizeUser(response.data);
           history.push(`/organization/${response.data.organization.id}`);
+          return BottomNotification({ message: 'Login realizado com sucesso!', success: true });
         }
         return null;
       }, (error) => {
         if (!error.response) {
-          return BottomNotification('Problema de conexão com a API.');
+          return BottomNotification({ message: 'Problema de conexão com a API.', success: false });
         } if (error.response.status === 401) {
-          return BottomNotification('Usuário e/ou senha incorretos.');
+          return BottomNotification({ message: 'Usuário e/ou senha incorretos.', success: false });
         } if (error.response.data.message) {
-          return BottomNotification(error.response.data.message);
+          return BottomNotification({ message: error.response.data.message, success: false });
         }
         return null;
       },

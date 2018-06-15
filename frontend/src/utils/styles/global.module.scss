@@ -236,7 +236,8 @@ require('./colors.js');
 
     .ant-input::placeholder,
     .ant-input-prefix,
-    .ant-select-arrow {
+    .ant-select-arrow,
+    .ant-select-selection__placeholder {
       color: $red_400;
     }
   }
