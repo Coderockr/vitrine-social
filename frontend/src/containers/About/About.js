@@ -8,7 +8,7 @@ import styles from './styles.module.scss';
 const itemSections = [
   {
     number: 1,
-    text: 'Ao acessar a Vitrine Social o doador visualiza as solicitações de doações de diversas entidades beneficentes em um só lugar, podendo ele percorrer pelas mais recentes, filtar por categorias, ou mesmo buscar por solicitações ou entidades específicas.',
+    text: 'Ao acessar a Vitrine Social o doador visualiza as solicitações de doações de diversas entidades beneficentes em um só lugar, podendo ver as mais recentes, filtrar por categorias ou mesmo buscar por solicitações ou entidades específicas.',
     style: styles.itemAmbar,
   },
   {
@@ -18,7 +18,7 @@ const itemSections = [
   },
   {
     number: 3,
-    text: 'Ao  clicar em “quero ajudar” o doador pode optar por entar em contato diretamente com a entidade beneficente por telefone, ou então deixar uma mensagem através da plataforma, para posteriormente tratarem sobre os detalhes logisticos da doação.',
+    text: 'Ao  clicar em “quero ajudar” o doador pode optar por entar em contato diretamente com a entidade beneficente por telefone ou então deixar uma mensagem através da plataforma, para posteriormente tratarem sobre os detalhes logisticos da doação.',
     style: styles.itemPurple,
   },
 ];
@@ -38,8 +38,8 @@ const About = () => (
           <p className={styles.mainText}>
           Ajudar o próximo nem sempre é algo fácil. Muitas vezes, apesar de querermos colaborar
           com alguma causa social, somos desestimulados a ajudar, seja por desconhecer as entidades
-          beneficentes mais necessitadas, ou também pela dificuldade de entrar em contato e informar
-          sobre qual é a melhor forma de ajudar. Para simplificar este processo,
+          beneficentes mais necessitadas ou também pela dificuldade de entrar em contato e informar
+          sobre qual é a melhor forma de ajudar. Para simplificar este processo
           criamos a Vitrine Social.
           </p>
           <img src="./assets/images/brand.svg" alt="brand" />
@@ -62,19 +62,19 @@ const About = () => (
         <h2 className={styles.containerTitle}>
           <span>{'NOSSA HISTÓRIA'}</span>
         </h2>
-        <a target="_blank" rel="me" href="http://www.coderockr.com">
+        <a className={styles.logoLink} target="_blank" rel="me" href="http://www.coderockr.com">
           <img className={styles.logo} src="./assets/images/coderockr.svg" alt="coderockr" />
         </a>
         <div className={styles.mainText}>
           <p>
           O projeto Vitrine Social foi desenvolvido pela equipe da Coderockr durante os
           Coderockr Jams, eventos internos da Coderockr realizados com o propósito de aprender sobre
-          novas tecnologias e metodologias, e também onde os colaboradores podem compartilhar
+          novas tecnologias e metodologias e também onde os colaboradores podem compartilhar
           seus conhecimentos com o restante da equipe.
           </p>
           <p>
-          Em um desses eventos decidimos trabalhar em uma ideia para ajudar a comunidade, e então
-          surgiu o Vitrine Social. Começamos a análise e discussão do projeto testando a
+          Em um desses eventos decidimos trabalhar em uma ideia para ajudar a comunidade e então
+          surgiu a Vitrine Social. Começamos a análise e discussão do projeto testando a
           metodologia <a target="_blank" rel="me" href="https://blog.coderockr.com/modelando-sistemas-usando-event-storming-1e18e6563eaa">Event Storming</a> e
           continuamos com o desenvolvimento a partir do que definimos neste processo.
           </p>
@@ -105,9 +105,9 @@ const renderLastSection = () => (
       <img className={styles.itemIcon} src="./assets/images/heart.svg" alt="heart" />
     </div>
     <p>
-    Pronto! Doando desta forma, além poupar o seu tempo buscando entidades confiáveis, você ainda
+    Pronto! Doando desta forma, além de poupar o seu tempo buscando entidades confiáveis, você ainda
     tem a certeza de que os recursos doados serão recebidos e utilizados de forma eficiente pelas
-    entidades que mais os necessitam! Seja uma entidade grande e de renome, ou aquela pequena
+    entidades que mais os necessitam! Seja uma entidade grande e de renome ou aquela pequena
     entidade que você ainda não conhecia.
     </p>
   </div>

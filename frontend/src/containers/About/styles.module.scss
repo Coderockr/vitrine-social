@@ -11,6 +11,11 @@ require('../../utils/styles/colors.js');
     margin: 30px 50px;
     font-size: 18px;
   }
+
+  img {
+    margin: 15px;
+    align-self: center;
+  }
 }
 
 .lastSection {
@@ -33,16 +38,11 @@ require('../../utils/styles/colors.js');
   text-align: center;
   margin: 30px 50px;
   font-size: 18px;
-}
 
-img {
-  margin: 15px;
-  align-self: center;
-}
-
-a {
-  text-decoration: underline;
-  align-self: center;
+  a {
+    text-decoration: underline;
+    align-self: center;
+  }
 }
 
 .itemSection {
@@ -72,9 +72,12 @@ a {
   }
 }
 
+.logoLink {
+  align-self: center;
+}
+
 .logo {
   width: 600px;
-  margin-bottom: 80px;
 }
 
 .itemAmbar {
@@ -114,8 +117,10 @@ a {
     max-width: 520px;
   }
 
-  img {
-    max-width: 520px;
+  .sectionWrapper {
+    img {
+      max-width: 520px;
+    }
   }
 }
 
@@ -124,8 +129,10 @@ a {
     font-size: 35px;
   }
 
-  img {
-    max-width: 320px;
+  .sectionWrapper {
+    img {
+      max-width: 320px;
+    }
   }
 
   .image {
