@@ -73,7 +73,6 @@ class OrganizationProfile extends React.Component {
           inactiveRequests: this.filterRequestsByStatus(response.data.needs, false),
           isOrganization: user ? user.id === response.data.id : false,
           loading: false,
-          error: true,
         });
       }, (error) => {
         this.setState({

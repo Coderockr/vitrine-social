@@ -58,25 +58,27 @@ const About = () => (
       </Col>
     </Row>
     <Row>
-      <Col span={20} offset={2} className={styles.sectionWrapper}>
+      <Col span={20} offset={2} className={styles.lastSection}>
         <h2 className={styles.containerTitle}>
           <span>{'NOSSA HISTÓRIA'}</span>
         </h2>
-        <div>
+        <a target="_blank" rel="me" href="http://www.coderockr.com">
           <img className={styles.logo} src="./assets/images/coderockr.svg" alt="coderockr" />
-          <p className={styles.mainText}>
+        </a>
+        <div className={styles.mainText}>
+          <p>
           O projeto Vitrine Social foi desenvolvido pela equipe da Coderockr durante os
           Coderockr Jams, eventos internos da Coderockr realizados com o propósito de aprender sobre
           novas tecnologias e metodologias, e também onde os colaboradores podem compartilhar
           seus conhecimentos com o restante da equipe.
           </p>
-          <p className={styles.mainText}>
+          <p>
           Em um desses eventos decidimos trabalhar em uma ideia para ajudar a comunidade, e então
           surgiu o Vitrine Social. Começamos a análise e discussão do projeto testando a
-          metodologia <a className={styles.link} href="https://blog.coderockr.com/modelando-sistemas-usando-event-storming-1e18e6563eaa">Event Storming</a> e
+          metodologia <a target="_blank" rel="me" href="https://blog.coderockr.com/modelando-sistemas-usando-event-storming-1e18e6563eaa">Event Storming</a> e
           continuamos com o desenvolvimento a partir do que definimos neste processo.
           </p>
-          <p className={styles.mainText}>
+          <p>
           Pretendemos dar continuidade ao projeto e criar novas funcionalidades de acordo com as
           sugestões das entidades e dos doadores. Se você tiver alguma sugestão <Link to="/contact">entre em contato!</Link>
           </p>
@@ -92,7 +94,7 @@ const renderItemSections = () => (
       <div className={cx(styles.item, item.style)}>
         <span className={cx(styles.itemNumber, item.style)}>{item.number}</span>
       </div>
-      <p className={styles.mainText}>{item.text}</p>
+      <p>{item.text}</p>
     </div>
   ))
 );
@@ -102,7 +104,7 @@ const renderLastSection = () => (
     <div className={cx(styles.itemPink, styles.item)}>
       <img className={styles.itemIcon} src="./assets/images/heart.svg" alt="heart" />
     </div>
-    <p className={styles.mainText}>
+    <p>
     Pronto! Doando desta forma, além poupar o seu tempo buscando entidades confiáveis, você ainda
     tem a certeza de que os recursos doados serão recebidos e utilizados de forma eficiente pelas
     entidades que mais os necessitam! Seja uma entidade grande e de renome, ou aquela pequena

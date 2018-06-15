@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout, Row, Col, Form, Icon, Input } from 'antd';
 import cx from 'classnames';
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 import BottomNotification from '../../components/BottomNotification';
 import api from '../../utils/api';
 import { authorizeUser } from '../../utils/auth';
@@ -93,6 +94,7 @@ class Login extends React.Component {
             </Col>
           </Row>
         </Content>
+        <Footer className={styles.footer} />
       </Layout>
     );
   }

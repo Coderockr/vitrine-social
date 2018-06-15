@@ -2,11 +2,27 @@ require('../../utils/styles/colors.js');
 @import 'src/utils/styles/common.scss';
 
 .sectionWrapper {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
   margin-top: 80px;
+  justify-content: center;
+
+  p {
+    margin: 30px 50px;
+    font-size: 18px;
+  }
+}
+
+.lastSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 60px;
+  margin-bottom: 100px;
 }
 
 .title {
+  text-align: center;
   color: $grey_500;
   font-size: 40px;
   margin-left: 10px;
@@ -14,16 +30,19 @@ require('../../utils/styles/colors.js');
 }
 
 .mainText {
+  text-align: center;
   margin: 30px 50px;
   font-size: 18px;
 }
 
 img {
-  margin: 20px;
+  margin: 15px;
+  align-self: center;
 }
 
 a {
   text-decoration: underline;
+  align-self: center;
 }
 
 .itemSection {
@@ -55,6 +74,7 @@ a {
 
 .logo {
   width: 600px;
+  margin-bottom: 80px;
 }
 
 .itemAmbar {
@@ -85,6 +105,11 @@ a {
 }
 
 @media (max-width: 740px) {
+  .logo {
+    max-width: 520px;
+    margin-bottom: 30px;
+  }
+
   .image {
     max-width: 520px;
   }
@@ -107,6 +132,11 @@ a {
     max-width: 420px;
   }
 
+  .logo {
+    max-width: 420px;
+    margin-bottom: 30px;
+  }
+
   .itemSection {
     flex-direction: column;
     text-align: center;
@@ -114,6 +144,11 @@ a {
 }
 
 @media (max-width: 520px) {
+  .logo {
+    max-width: 300px;
+    margin-bottom: 30px;
+  }
+
   .image {
     max-width: 320px;
   }
