@@ -127,5 +127,5 @@ func createCmdFunc(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	fmt.Printf("%s/complete-register/%s", os.Getenv("FRONTEND_URL"), token)
+	fmt.Printf("%s/complete-registration/%s", os.Getenv("FRONTEND_URL"), token)
 }
