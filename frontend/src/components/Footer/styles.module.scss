@@ -8,6 +8,10 @@ require('../../utils/styles/colors.js');
 .footerWrapper {
   display: flex;
   justify-content: space-between;
+  
+  a {
+    color: $white;
+  }
 }
 
 .copyright {

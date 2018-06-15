@@ -14,7 +14,7 @@ const Footer = ({ className }) => (
     <Row>
       <Col>
         <div className={styles.footerWrapper}>
-          <p className={styles.copyright}>Vitrine Social ©2018 Created by Coderockr</p>
+          <p className={styles.copyright}>Vitrine Social ©2018 Created by  <a target="_blank" rel="me" href="http://www.coderockr.com">Coderockr</a></p>
           <div>
             <a target="_blank" rel="me" href="https://www.facebook.com/avitrinesocial/"><Icon type="facebook" style={iconStyle} /></a>
             <a target="_blank" rel="me" href="https://www.instagram.com/avitrine.social/"><Icon type="instagram" style={iconStyle} /></a>
