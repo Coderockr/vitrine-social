@@ -6,7 +6,7 @@ import Footer from '../Footer';
 const { Content } = AntLayout;
 
 const Layout = ({ children }) => (
-  <AntLayout>
+  <AntLayout style={{ height: "100vh" }}>
     <Header />
     <Content>
       <Row>
