@@ -67,6 +67,7 @@ class Results extends React.Component {
   }
 
   render() {
+    const { pagination } = this.state;
     return (
       <Layout>
         <Search
@@ -79,10 +80,10 @@ class Results extends React.Component {
           error={this.state.error}
           search
         />
-        {this.state.pagination &&
+        {pagination &&
           <Pagination
             current={this.state.page}
-            total={this.state.pagination.totalResults}
+            total={pagination.totalResults}
             onChange={page => this.onChangePage(page)}
           />
         }
