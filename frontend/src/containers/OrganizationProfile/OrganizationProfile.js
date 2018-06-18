@@ -4,6 +4,7 @@ import { Row, Col, Carousel, Avatar } from 'antd';
 import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
+import ChangePassword from '../../components/ChangePassword';
 import OrganizationProfileForm from '../../components/OrganizationProfileForm';
 import { maskPhone } from '../../utils/mask';
 import colors from '../../utils/styles/colors';
@@ -27,6 +28,7 @@ class OrganizationProfile extends React.Component {
       arrowSize: mediaQuery.matches ? 60 : 32,
       isOrganization: false,
       editProfileVisible: false,
+      changePasswordVisible: false,
       saveEnabled: false,
     };
 
@@ -117,6 +119,18 @@ class OrganizationProfile extends React.Component {
               saveEnabled={this.state.saveEnabled}
               enableSave={enable => this.setState({ saveEnabled: enable })}
               organization={organization}
+            />
+            <button
+              className={styles.editButton}
+              onClick={() => this.setState({ changePasswordVisible: true })}
+            >
+              ALTERAR SENHA
+            </button>
+            <ChangePassword
+              modal
+              user
+              visible={this.state.changePasswordVisible}
+              onCancel={() => this.setState({ changePasswordVisible: false })}
             />
           </div>
         }

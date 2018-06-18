@@ -26,6 +26,7 @@ require('../../utils/styles/colors.js');
       padding: 10px 20px;
       border: none;
       border-radius: 20px;
+      margin-left: 20px;
 
       &:hover {
         background-color: $teal_500;
