@@ -372,15 +372,14 @@ require('./colors.js');
     }
   }
 
-  @media (max-height: 900px) {
-    .ant-modal {
-      top: 20px;
-    }
+  .ant-modal {
+    margin-bottom: 90px;
   }
 
   @media (max-width: 800px) {
     .ant-modal {
       top: 0;
+      margin-bottom: 0;
     }
 
     .ant-carousel .slick-slide {

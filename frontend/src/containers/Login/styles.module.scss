@@ -11,11 +11,13 @@ require('../../utils/styles/colors.js');
   }
 
   .content {
-    position: absolute;
+    position: relative;
     display: table;
-    padding-top: 85px;
     height: 100%;
     width: 100%;
+    margin-top: -85px;
+    margin-bottom: -80px;
+    min-height: 700px;
 
     .row {
       display: table-cell;
@@ -31,8 +33,7 @@ require('../../utils/styles/colors.js');
   }
 
   .footer {
-    position: absolute;
-    bottom: 0;
+    position: relative;
     width: 100%;
   }
 }
