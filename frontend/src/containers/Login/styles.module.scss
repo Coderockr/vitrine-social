@@ -54,10 +54,12 @@ require('../../utils/styles/colors.js');
 
   .loginButton {
     background-color: $pink_400;
+    min-height: 60px;
 
     &:hover,
     &:focus {
       background-color: $pink_800;
+      border-color: transparent;
     }
   }
 }

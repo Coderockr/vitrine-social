@@ -34,3 +34,28 @@ require('../../utils/styles/colors.js');
   margin-top: 20px;
   background-color: transparent;
 }
+
+.userTitleItem {
+  text-align: center;
+  font-weight: 700;
+  cursor: default;
+
+  &:hover {
+    background: transparent;
+  }
+}
+
+.userMenuItem {
+  a {
+    margin-left: -5px;
+    margin-right: 5px;
+
+    &:hover {
+      color: $white;
+    }
+  }
+
+  &:hover {
+    background: $ambar_400;
+  }
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Row, Col, Form, Icon, Input } from 'antd';
+import { Layout, Row, Col, Form, Icon, Input, Button } from 'antd';
 import cx from 'classnames';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
@@ -12,6 +12,10 @@ const FormItem = Form.Item;
 const { Content } = Layout;
 
 class Login extends React.Component {
+  state = {
+    loading: false,
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -24,6 +28,7 @@ class Login extends React.Component {
 
   loginUser(params) {
     const { history } = this.props;
+    this.setState({ loading: true });
     api.post('auth/login', params).then(
       (response) => {
         if (response.data) {
@@ -31,6 +36,7 @@ class Login extends React.Component {
           history.push(`/organization/${response.data.organization.id}`);
           return BottomNotification({ message: 'Login realizado com sucesso!', success: true });
         }
+        this.setState({ loading: false });
         return null;
       }, (error) => {
         if (!error.response) {
@@ -40,6 +46,7 @@ class Login extends React.Component {
         } if (error.response.data.message) {
           return BottomNotification({ message: error.response.data.message, success: false });
         }
+        this.setState({ loading: false });
         return null;
       },
     );
@@ -86,9 +93,9 @@ class Login extends React.Component {
                 </FormItem>
                 <FormItem>
                   <div className={styles.buttonWrapper}>
-                    <button type="primary" htmlType="submit" className={cx(styles.button, styles.loginButton)}>
+                    <Button type="primary" htmlType="submit" className={cx(styles.button, styles.loginButton)} loading={this.state.loading}>
                       LOG IN
-                    </button>
+                    </Button>
                   </div>
                 </FormItem>
               </Form>

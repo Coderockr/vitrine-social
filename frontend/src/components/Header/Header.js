@@ -1,12 +1,28 @@
 import React from 'react';
-import { Row, Col, Modal, Layout, Menu } from 'antd';
+import { Row, Col, Modal, Layout, Menu, Dropdown, Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 import cx from 'classnames';
+import { getUser, deauthorizeUser } from '../../utils/auth';
 import Icon from '../../components/Icons';
 import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
 
 const mediaQuery = window.matchMedia('(max-width: 685px)');
+
+const userMenu = user => (
+  <Menu>
+    <Menu.Item key="0" className={styles.userTitleItem}>
+      <p>{user.name}</p>
+    </Menu.Item>
+    <Menu.Divider />
+    <Menu.Item key="1" className={styles.userMenuItem}>
+      <Link to={`/organization/${user.id}`}>Meu Perfil</Link>
+    </Menu.Item>
+    <Menu.Item key="2" className={styles.userMenuItem}>
+      <Link onClick={() => deauthorizeUser()} to="/login">Log Out</Link>
+    </Menu.Item>
+  </Menu>
+);
 
 class Header extends React.Component {
   constructor(props) {
@@ -54,6 +70,35 @@ class Header extends React.Component {
     );
   }
 
+  renderUserMenuItem() {
+    const user = getUser();
+    if (!user) {
+      return (
+        <Menu.Item key="/login">
+          <Link to="/login">Login</Link>
+        </Menu.Item>
+      );
+    }
+
+    return (
+      <Menu.Item key={`/organization/${user.id}`}>
+        <Dropdown overlay={userMenu(user)} placement="bottomCenter">
+          <Avatar
+            icon="user"
+            style={{
+              fontSize: 33,
+              color: colors.white,
+              backgroundColor: colors.ambar_200,
+              textShadow: '2px 1px 1px #FF974A',
+            }}
+            src={user.logo}
+            size="small"
+          />
+        </Dropdown>
+      </Menu.Item>
+    );
+  }
+
   renderMenu(collapsed) {
     return (
       <Menu
@@ -72,9 +117,7 @@ class Header extends React.Component {
         <Menu.Item key="/contact">
           <Link to="/contact">Contato</Link>
         </Menu.Item>
-        <Menu.Item key="/login">
-          <Link to="/login">Login</Link>
-        </Menu.Item>
+        {this.renderUserMenuItem()}
       </Menu>
     );
   }

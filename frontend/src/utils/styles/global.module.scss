@@ -321,6 +321,16 @@ require('./colors.js');
     }
   }
 
+   .ant-avatar-sm {
+    border: 2px solid $ambar_400;
+    width: 40px;
+    height: 40px;
+    
+    * {
+      line-height: 40px;
+    }
+  }
+
   .ant-avatar-lg {
     width: 230px;
     height: 230px;
