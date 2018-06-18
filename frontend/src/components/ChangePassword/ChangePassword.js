@@ -2,12 +2,18 @@ import React from 'react';
 import { Row, Col, Modal, Form, Icon, Input } from 'antd';
 import cx from 'classnames';
 import BottomNotification from '../../components/BottomNotification';
+import ResponseFeedback from '../ResponseFeedback';
 import api, { headers } from '../../utils/api';
 import styles from './styles.module.scss';
 
 const FormItem = Form.Item;
 
 class ChangePassword extends React.Component {
+  state = {
+    responseFeedback: '',
+    responseFeedbackMessage: '',
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -15,13 +21,32 @@ class ChangePassword extends React.Component {
         return BottomNotification({ message: 'Senhas não conferem! Verifique e tente novamente!', success: false });
       }
       if (!err) {
-        this.changePassword(values.newPassword);
+        if (this.props.user) {
+          return this.changePassword(values.newPassword, values.currentPassword);
+        }
+        return this.resetPassword(values.newPassword);
       }
       return err;
     });
   }
 
-  changePassword(newPassword) {
+  changePassword(newPassword, currentPassword) {
+    api.post('auth/update-password', { newPassword, currentPassword }).then(
+      () => {
+        this.setState({
+          responseFeedback: 'success',
+          responseFeedbackMessage: 'Senha alterada com sucesso!',
+        });
+      }, () => {
+        this.setState({
+          responseFeedback: 'error',
+          responseFeedbackMessage: 'Não foi possível alterar a sua senha! Verifique sua senha atual e tente novamente',
+        });
+      },
+    );
+  }
+
+  resetPassword(newPassword) {
     const { history } = this.props;
     api.defaults.headers = { ...headers, Authorization: this.props.token };
     api.post('auth/reset-password', { newPassword }).then(
@@ -34,6 +59,17 @@ class ChangePassword extends React.Component {
     );
   }
 
+  closeModal() {
+    this.props.onCancel();
+    setTimeout(() => {
+      this.props.form.resetFields();
+      this.setState({
+        responseFeedback: '',
+        responseFeedbackMessage: '',
+      });
+    }, 100);
+  }
+
   renderModal() {
     return (
       <Modal
@@ -42,10 +78,19 @@ class ChangePassword extends React.Component {
         width={800}
         className={styles.modal}
         destroyOnClose
-        onCancel={this.props.onCancel}
-        // wrapClassName={this.state.responseFeedback && styles.modalFixed}
+        onCancel={() => this.closeModal()}
+        wrapClassName={this.state.responseFeedback && styles.modalFixed}
       >
         {this.renderForm()}
+        <ResponseFeedback
+          small
+          type={this.state.responseFeedback}
+          message={this.state.responseFeedbackMessage}
+          onClick={this.state.responseFeedback === 'error' ?
+            () => this.setState({ responseFeedback: '', responseFeedbackMessage: '' }) :
+            () => this.closeModal()
+          }
+        />
       </Modal>
     );
   }
@@ -54,7 +99,11 @@ class ChangePassword extends React.Component {
     const { getFieldDecorator } = this.props.form;
 
     return (
-      <Row className={this.props.modal ? styles.rowModal : styles.row}>
+      <Row className={cx(
+        this.props.modal ? styles.rowModal : styles.row,
+        { [styles.blurRow]: this.state.responseFeedback },
+      )}
+      >
         <Col
           xxl={{ span: 6, offset: 9 }}
           lg={{ span: 8, offset: 8 }}
@@ -64,6 +113,15 @@ class ChangePassword extends React.Component {
         >
           <h1>Alterar a Senha</h1>
           <Form onSubmit={this.handleSubmit}>
+            {this.props.user && (
+              <FormItem>
+                {getFieldDecorator('currentPassword', {
+                  rules: [{ required: true, message: 'Informe sua senha atual!' }],
+                })(
+                  <Input prefix={<Icon type="lock" />} type="password" placeholder="Senha atual" size="large" />,
+                )}
+              </FormItem>
+            )}
             <FormItem>
               {getFieldDecorator('newPassword', {
                 rules: [{ required: true, message: 'Informe sua nova senha!' }],

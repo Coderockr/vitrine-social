@@ -48,7 +48,7 @@ class ResponseFeedback extends React.Component {
   render() {
     return (
       <div className={styles.wrapper} hidden={!this.props.type}>
-        <Row type="flex" align="bottom" justify="center" className={styles.row}>
+        <Row type="flex" align={this.props.small ? 'middle' : 'bottom'} justify="center" className={styles.row}>
           <Col>
             {this.renderFeedback()}
           </Col>

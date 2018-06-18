@@ -34,8 +34,9 @@ require('../../utils/styles/colors.js');
   .message {
     font-size: 18px;
     font-weight: 400;
-    margin-top: 10px;
+    margin: 10px 30px;
     text-shadow: 0 0 5px $white;
+    text-align: center;
   }
 }
 
