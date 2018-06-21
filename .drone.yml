@@ -1,0 +1,42 @@
+pipeline:
+  test-backend:
+    image: golang
+    commands:
+      - make tests
+
+  build-backend:
+    image: golang
+    commands:
+      - make build
+
+  build-frontend:
+    image: node:9
+    commands:
+      - cd Frontend
+      - npm install
+      - npm build
+
+  notify-success:
+    image: plugins/slack
+    channel: hackathon
+    username: drone
+    webhook: https://hooks.slack.com/services/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
+    template: >
+     {{#success build.status}}
+       build {{build.number}} on {{build.branch}} succeeded. Good job. Details: {{ build.link }}
+     {{/success}}
+    when:
+      status: success
+      branch: master
+
+  notify-failure:
+    image: plugins/slack
+    channel: hackathon
+    username: drone
+    webhook: https://hooks.slack.com/services/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
+    template: >
+     {{#failure build.status}}
+       build {{build.number}} on {{build.branch}} failed. Fix me please. Details: {{ build.link }}
+     {{/failure}}
+    when:
+      status: failure

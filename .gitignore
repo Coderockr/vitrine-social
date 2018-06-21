@@ -17,7 +17,6 @@ vendor
 vendor.orig
 
 coverage.txt
-server-cmd
 .data/
 docs/node_modules
 .vscode/
@@ -28,3 +27,6 @@ server/config/dev.env
 
 server/config/.env
 server/tmp
+
+# Compiled file
+server/vitrine-social
