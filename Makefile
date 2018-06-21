@@ -6,6 +6,7 @@ export VITRINESOCIAL_ENV ?= dev
 export DATABASE_HOST ?= 0.0.0.0
 export m ?= default
 export commit ?= HEAD
+export bin ?= vitrine-social
 
 .PHONY: build
 
@@ -18,6 +19,9 @@ install: ## install project dependences
 	go get -u github.com/golang/dep/cmd/dep
 	go get -u github.com/haya14busa/goverage
 	cd server; dep ensure -v
+
+build: install ## builds the application to the paramters bin (bin=vitrine-social)
+	cd server && go build -v -o $(bin) .
 
 new-migration: ## create a new migration, use make new-migration m=message to set the message
 	sql-migrate new -config=./devops/dbconfig.yml -env=production "$(m)"
