@@ -2,11 +2,16 @@ language: go
 go:
  - "1.10.x"
 
+before_install:
+  - export VITRINESOCIAL_ENV=test
+  - mkdir server/tmp # create storage directory
+
+install:
+  - make install
+
 script:
- - export VITRINESOCIAL_ENV=test
- - mkdir server/tmp # create storage directory
- - make install
  - make coverage
+ - make build
 
 after_success:
 - make send-statiscs commit=$TRAVIS_COMMIT
