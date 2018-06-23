@@ -2,6 +2,7 @@ package storage_test
 
 import (
 	"log"
+	"os"
 	"testing"
 
 	"github.com/Coderockr/vitrine-social/server/storage"
@@ -10,6 +11,7 @@ import (
 
 func TestConnect(t *testing.T) {
 	err := godotenv.Load("../config/test.env")
+	os.Setenv("STORAGE_LOCAL_PATH", os.TempDir())
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
