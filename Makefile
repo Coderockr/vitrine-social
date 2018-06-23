@@ -18,6 +18,7 @@ setup: ## initial project setup
 install: ## install project dependences
 	go get -u github.com/golang/dep/cmd/dep
 	go get -u github.com/haya14busa/goverage
+	go get -u golang.org/x/lint/golint
 	cd server; dep ensure -v
 
 install-frontend: ## install frontend dependences
@@ -74,6 +75,9 @@ docs-open:
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help: ## show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+lint: ## show source lint
+	golint `find server -type d -maxdepth 1`
 
 tests: ## run go tests
 	cd server && go test -v -race ./...
