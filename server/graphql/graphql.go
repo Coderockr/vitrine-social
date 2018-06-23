@@ -8,6 +8,7 @@ import (
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
+	graphqlmultipart "github.com/lucassabreu/graphql-multipart-middleware"
 )
 
 var errTokenOrgNotFound = errors.New("token organization not found")
@@ -84,9 +85,15 @@ func NewHandler(
 		log.Fatal(err)
 	}
 
-	return handler.New(&handler.Config{
+	h := handler.New(&handler.Config{
 		Schema:   &schema,
 		Pretty:   true,
 		GraphiQL: true,
 	})
+
+	return graphqlmultipart.NewHandler(
+		&schema,
+		60*1024*1024,
+		h,
+	)
 }

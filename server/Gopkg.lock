@@ -232,6 +232,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:cdb8afaf3839033fbbd15b9dd5612f4ae739a148f873fe63344c57681ff5e069"
+  name = "github.com/lucassabreu/graphql-multipart-middleware"
+  packages = ["."]
+  pruneopts = ""
+  revision = "7b0992a3dfb69b2d848bc4b4669cc79318a0010b"
+
+[[projects]]
+  branch = "master"
   digest = "1:cb9eb7103fd9c020b9392a3db36ca6a2ea8e71ea625851f0b3de9ba5271523e2"
   name = "github.com/lucassabreu/stow"
   packages = ["s3"]
@@ -414,6 +422,7 @@
     "github.com/gorilla/context",
     "github.com/gorilla/mux",
     "github.com/graphql-go/graphql",
+    "github.com/graphql-go/graphql/language/ast",
     "github.com/graphql-go/handler",
     "github.com/graymeta/stow",
     "github.com/graymeta/stow/google",
@@ -421,6 +430,7 @@
     "github.com/jmoiron/sqlx",
     "github.com/joho/godotenv",
     "github.com/lib/pq",
+    "github.com/lucassabreu/graphql-multipart-middleware",
     "github.com/lucassabreu/stow/s3",
     "github.com/sendgrid/sendgrid-go",
     "github.com/sendgrid/sendgrid-go/helpers/mail",
