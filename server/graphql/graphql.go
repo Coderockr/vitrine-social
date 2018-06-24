@@ -19,13 +19,14 @@ type (
 		GetUserByEmail(string) (model.User, error)
 	}
 
+	catRepo interface {
+		Get(int64) (*model.Category, error)
+		GetAll() ([]model.Category, error)
+	}
+
 	tokenManager interface {
 		CreateToken(u model.User, ps *[]string) (string, error)
 		ValidateToken(token string) (*model.Token, error)
-	}
-
-	catRepo interface {
-		Get(int64) (*model.Category, error)
 	}
 )
 
@@ -40,11 +41,12 @@ func NewHandler(
 	rootQuery := graphql.ObjectConfig{
 		Name: "RootQuery",
 		Fields: graphql.Fields{
-			"search":       newSearchQuery(),
-			"need":         newNeedQuery(nR.Get, oR.Get),
-			"organization": newOrganizationQuery(oR.Get),
-			"category":     newCategoryQuery(cR.Get),
-			"viewer":       newViewerQuery(tm.ValidateToken, oR.Get),
+			"search":        newSearchQuery(),
+			"need":          newNeedQuery(nR.Get, oR.Get),
+			"organization":  newOrganizationQuery(oR.Get),
+			"category":      newCategoryQuery(cR.Get),
+			"viewer":        newViewerQuery(tm.ValidateToken, oR.Get),
+			"allCategories": newAllCategoriesQuery(cR.GetAll),
 		},
 	}
 
