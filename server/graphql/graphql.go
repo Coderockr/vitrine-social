@@ -44,9 +44,13 @@ func NewHandler(
 	}
 
 	rootMutation := graphql.ObjectConfig{
-		Name:   "RootMutation",
-		Fields: graphql.Fields{},
+		Name: "RootMutation",
+		Fields: graphql.Fields{
+			"login": newLoginMutation(oR.GetUserByEmail, tm.CreateToken),
+		},
 	}
+
+	loginType.AddFieldConfig("organization", oQuery)
 
 	schema, err := graphql.NewSchema(graphql.SchemaConfig{
 		Query:    graphql.NewObject(rootQuery),
