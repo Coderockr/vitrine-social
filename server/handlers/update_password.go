@@ -48,7 +48,7 @@ func UpdatePasswordHandler(repo UpdatePasswordOrganizationRepository) func(w htt
 		}
 
 		if _, err = repo.ChangePassword(*organization, cPassword, nPassword); err != nil {
-			HandleHTTPError(w, http.StatusBadRequest, err)
+			HandleHTTPError(w, http.StatusUnauthorized, err)
 			return
 		}
 
