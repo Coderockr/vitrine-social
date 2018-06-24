@@ -17,6 +17,7 @@ type (
 	orgRepo interface {
 		Get(int64) (*model.Organization, error)
 		GetUserByEmail(string) (model.User, error)
+		ChangePassword(o model.Organization, cPassword, nPassword string) (model.Organization, error)
 	}
 
 	catRepo interface {
@@ -58,7 +59,9 @@ func NewHandler(
 			"viewer": newViewerMutation(
 				tm.ValidateToken,
 				oR.Get,
-				graphql.Fields{},
+				graphql.Fields{
+					"updatePassword": newUpdatePasswordMutation(oR.ChangePassword),
+				},
 			),
 		},
 	}
