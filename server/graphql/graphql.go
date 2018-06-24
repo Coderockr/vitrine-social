@@ -55,6 +55,11 @@ func NewHandler(
 		Name: "RootMutation",
 		Fields: graphql.Fields{
 			"login": newLoginMutation(oR.GetUserByEmail, tm.CreateToken, oR.Get),
+			"viewer": newViewerMutation(
+				tm.ValidateToken,
+				oR.Get,
+				graphql.Fields{},
+			),
 		},
 	}
 
