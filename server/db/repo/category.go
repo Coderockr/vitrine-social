@@ -1,6 +1,8 @@
 package repo
 
 import (
+	"errors"
+
 	"github.com/golang/sync/syncmap"
 
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -36,6 +38,23 @@ func (r *CategoryRepository) Get(id int64) (*model.Category, error) {
 
 	categoryCache.Store(id, c)
 	return c, nil
+}
+
+// GetNeedsCount returns needs count for a Category
+func (r *CategoryRepository) GetNeedsCount(c *model.Category) (int64, error) {
+	if c == nil {
+		return 0, errors.New("no category informed")
+	}
+
+	count := int64(0)
+
+	err := r.db.Get(
+		&count,
+		"SELECT COUNT(n.id) FROM needs n WHERE n.category_id = $1",
+		c.ID,
+	)
+
+	return count, err
 }
 
 // GetAll return all categories

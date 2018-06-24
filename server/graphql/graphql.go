@@ -22,6 +22,7 @@ type (
 	catRepo interface {
 		Get(int64) (*model.Category, error)
 		GetAll() ([]model.Category, error)
+		GetNeedsCount(*model.Category) (int64, error)
 	}
 
 	tokenManager interface {
@@ -44,7 +45,7 @@ func NewHandler(
 			"search":        newSearchQuery(),
 			"need":          newNeedQuery(nR.Get, oR.Get),
 			"organization":  newOrganizationQuery(oR.Get),
-			"category":      newCategoryQuery(cR.Get),
+			"category":      newCategoryQuery(cR.Get, cR.GetNeedsCount),
 			"viewer":        newViewerQuery(tm.ValidateToken, oR.Get),
 			"allCategories": newAllCategoriesQuery(cR.GetAll),
 		},
