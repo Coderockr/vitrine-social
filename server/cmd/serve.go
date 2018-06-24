@@ -146,7 +146,10 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	v1.HandleFunc("/contact", handlers.ContactHandler(mailer)).Methods("POST")
 
-	mux.Handle("/graphql", graphql.NewHandler())
+	mux.Handle("/graphql", graphql.NewHandler(
+		oR,
+		tm,
+	))
 
 	n := negroni.Classic()
 	n.Use(negroni.HandlerFunc(middlewares.Cors))
