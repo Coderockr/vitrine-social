@@ -147,6 +147,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	v1.HandleFunc("/contact", handlers.ContactHandler(mailer)).Methods("POST")
 
 	mux.Handle("/graphql", graphql.NewHandler(
+		nR,
 		oR,
 		tm,
 		cR,

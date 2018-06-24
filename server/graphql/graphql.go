@@ -9,6 +9,10 @@ import (
 )
 
 type (
+	needRepo interface {
+		Get(int64) (*model.Need, error)
+	}
+
 	orgRepo interface {
 		Get(int64) (*model.Organization, error)
 		GetUserByEmail(string) (model.User, error)
@@ -26,6 +30,7 @@ type (
 
 // NewHandler returns a handler for the GraphQL implementation of the API
 func NewHandler(
+	nR needRepo,
 	oR orgRepo,
 	tm tokenManager,
 	cR catRepo,
@@ -37,6 +42,7 @@ func NewHandler(
 	rootQuery := graphql.ObjectConfig{
 		Name: "RootQuery",
 		Fields: graphql.Fields{
+			"need":         newNeedQuery(nR.Get, oR.Get),
 			"organization": oQuery,
 			"category":     cQuery,
 			"viewer":       newViewerQuery(tm.ValidateToken, oR.Get),
@@ -49,6 +55,9 @@ func NewHandler(
 			"login": newLoginMutation(oR.GetUserByEmail, tm.CreateToken),
 		},
 	}
+
+	needType.AddFieldConfig("organization", oQuery)
+	needType.AddFieldConfig("category", cQuery)
 
 	loginType.AddFieldConfig("organization", oQuery)
 
