@@ -18,20 +18,27 @@ type (
 		CreateToken(u model.User, ps *[]string) (string, error)
 		ValidateToken(token string) (*model.Token, error)
 	}
+
+	catRepo interface {
+		Get(int64) (model.Category, error)
+	}
 )
 
 // NewHandler returns a handler for the GraphQL implementation of the API
 func NewHandler(
 	oR orgRepo,
 	tm tokenManager,
+	cR catRepo,
 ) http.Handler {
 
 	oQuery := newOrganizationQuery(oR.Get)
+	cQuery := newCategoryQuery(cR.Get)
 
 	rootQuery := graphql.ObjectConfig{
 		Name: "RootQuery",
 		Fields: graphql.Fields{
 			"organization": oQuery,
+			"category":     cQuery,
 			"viewer":       newViewerQuery(tm.ValidateToken, oR.Get),
 		},
 	}

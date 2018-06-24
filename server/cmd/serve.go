@@ -149,6 +149,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	mux.Handle("/graphql", graphql.NewHandler(
 		oR,
 		tm,
+		cR,
 	))
 
 	n := negroni.Classic()
