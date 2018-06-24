@@ -19,26 +19,11 @@ func newCategoryQuery(get getCatFn) *graphql.Field {
 		Type: categoryType,
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 			id, _ := p.Args["id"].(int)
-
-			c, err := get(int64(id))
-
-			if err != nil {
-				return nil, err
+			if n, ok := p.Source.(*model.Need); ok {
+				id = int(n.CategoryID)
 			}
 
-			cJSON := categoryJSON{
-				ID:   c.ID,
-				Name: c.Name,
-				Slug: c.Slug,
-			}
-
-			return cJSON, nil
+			return get(int64(id))
 		},
 	}
-}
-
-type categoryJSON struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-	Slug string `json:"slug"`
 }

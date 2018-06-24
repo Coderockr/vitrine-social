@@ -23,9 +23,9 @@ type Token struct {
 
 // User you know it
 type User struct {
-	Email    string `valid:"email,required" db:"email"`
-	Password string `valid:"required" db:"password"`
-	ID       int64  `valid:"-"`
+	Email    string `valid:"email,required" db:"email" json:"email"`
+	Password string `valid:"required" db:"password" json:"password"`
+	ID       int64  `valid:"-" json:"id"`
 }
 
 // Image vinculada a uma necessidade
@@ -38,17 +38,17 @@ type Image struct {
 //Organization dados dos usuários que podem logar no sistema
 type Organization struct {
 	User
-	Name        string `valid:"required" db:"name"`
+	Name        string `valid:"required" db:"name" json:"name"`
 	Logo        *OrganizationImage
-	LogoImageID string `valid:"optional" db:"logo_image_id"`
-	Phone       string `valid:"required" db:"phone"`
-	About       string `db:"about"`
-	Video       string `valid:"required" db:"video"`
-	Slug        string `valid:"required" db:"slug"`
-	Address     Address
-	Needs       []Need
-	Images      []OrganizationImage
-	CreatedAt   *time.Time `db:"created_at"`
+	LogoImageID string              `valid:"optional" db:"logo_image_id"`
+	Phone       string              `valid:"required" db:"phone" json:"phone"`
+	About       string              `db:"about" json:"about"`
+	Video       string              `valid:"required" db:"video" json:"video"`
+	Slug        string              `valid:"required" db:"slug" json:"slug"`
+	Address     Address             `json:"address"`
+	Needs       []Need              `json:"needs"`
+	Images      []OrganizationImage `json:"images"`
+	CreatedAt   *time.Time          `db:"created_at" json:"created_at"`
 }
 
 // OrganizationImage de uma organização
@@ -70,21 +70,21 @@ var (
 
 // Need uma necessidade da organização
 type Need struct {
-	ID               int64      `valid:"required" db:"id"`
-	Title            string     `valid:"required" db:"title"`
-	Description      string     `valid:"required" db:"description"`
-	RequiredQuantity int        `db:"required_qtd"`
-	ReachedQuantity  int        `db:"reached_qtd"`
-	Unit             string     `valid:"required" db:"unit"`
-	DueDate          *time.Time `db:"due_date"`
-	Status           needStatus `valid:"required" db:"status"`
-	CategoryID       int64      `valid:"required" db:"category_id"`
-	OrganizationID   int64      `valid:"required" db:"organization_id"`
+	ID               int64      `valid:"required" db:"id" json:"id"`
+	Title            string     `valid:"required" db:"title" json:"title"`
+	Description      string     `valid:"required" db:"description" json:"description"`
+	RequiredQuantity int        `db:"required_qtd" json:"requiredQuantity"`
+	ReachedQuantity  int        `db:"reached_qtd" json:"reachedQuantity"`
+	Unit             string     `valid:"required" db:"unit" json:"unit"`
+	DueDate          *time.Time `db:"due_date" json:"dueDate"`
+	Status           needStatus `valid:"required" db:"status" json:"status"`
+	CategoryID       int64      `valid:"required" db:"category_id" json:"categoryId"`
+	OrganizationID   int64      `valid:"required" db:"organization_id" json:"organizationId"`
 	Category         Category
 	Organization     Organization
-	Images           []NeedImage
-	CreatedAt        time.Time  `db:"created_at"`
-	UpdatedAt        *time.Time `db:"updated_at"`
+	Images           []NeedImage `json:"images"`
+	CreatedAt        time.Time   `db:"created_at" json:"createdAt"`
+	UpdatedAt        *time.Time  `db:"updated_at" json:"updatedAt"`
 }
 
 // NeedImage de uma necessidade
@@ -107,21 +107,21 @@ type NeedResponse struct {
 
 // Category de uma necessidade
 type Category struct {
-	ID         int64  `valid:"required" db:"id"`
-	Name       string `valid:"required" db:"name"`
-	Slug       string `valid:"required" db:"slug"`
-	NeedsCount int64  `db:"count_need"`
+	ID         int64  `valid:"required" db:"id" json:"id"`
+	Name       string `valid:"required" db:"name" json:"name"`
+	Slug       string `valid:"required" db:"slug" json:"slug"`
+	NeedsCount int64  `db:"count_need" json:"needs_count"`
 }
 
 // Address de uma organização
 type Address struct {
-	Street       string       `valid:"required" db:"street"`
-	Number       string       `valid:"required" db:"number"`
-	Complement   nulls.String `db:"complement"`
-	Neighborhood string       `valid:"required" db:"neighborhood"`
-	City         string       `valid:"required" db:"city"`
-	State        string       `valid:"required" db:"state"`
-	Zipcode      string       `valid:"required" db:"zipcode"`
+	Street       string       `valid:"required" db:"street" json:"street"`
+	Number       string       `valid:"required" db:"number" json:"number"`
+	Complement   nulls.String `db:"complement" json:"complement"`
+	Neighborhood string       `valid:"required" db:"neighborhood" json:"neighbordhood"`
+	City         string       `valid:"required" db:"city" json:"city"`
+	State        string       `valid:"required" db:"state" json:"state"`
+	Zipcode      string       `valid:"required" db:"zipcode" json:"zipcode"`
 }
 
 // SearchNeed estrutura de busca de necessidade
