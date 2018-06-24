@@ -42,6 +42,7 @@ func NewHandler(
 	rootQuery := graphql.ObjectConfig{
 		Name: "RootQuery",
 		Fields: graphql.Fields{
+			"search":       newSearchQuery(),
 			"need":         newNeedQuery(nR.Get, oR.Get),
 			"organization": oQuery,
 			"category":     cQuery,
