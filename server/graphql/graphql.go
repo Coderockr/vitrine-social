@@ -12,6 +12,7 @@ import (
 type (
 	needRepo interface {
 		Get(int64) (*model.Need, error)
+		Create(model.Need) (model.Need, error)
 	}
 
 	orgRepo interface {
@@ -63,6 +64,7 @@ func NewHandler(
 				graphql.Fields{
 					"updatePassword":     newUpdatePasswordMutation(oR.ChangePassword),
 					"organizationUpdate": newOrganizationUpdateMutation(oR.Update),
+					"needCreate":         newNeedCreateMutation(nR.Create),
 				},
 			),
 		},

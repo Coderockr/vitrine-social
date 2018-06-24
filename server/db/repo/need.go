@@ -68,6 +68,16 @@ func (r *NeedRepository) Create(n model.Need) (model.Need, error) {
 		return n, err
 	}
 
+	c, err := r.catRepo.Get(n.CategoryID)
+	if err != nil {
+		return n, err
+	}
+
+	if c == nil {
+		return n, fmt.Errorf("category with id %d not found", n.CategoryID)
+	}
+
+	n.Category = *c
 	n.Status = model.NeedStatusActive
 
 	err = r.db.QueryRow(
