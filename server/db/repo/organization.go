@@ -2,7 +2,6 @@ package repo
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/Coderockr/vitrine-social/server/security"
@@ -60,11 +59,8 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 	}
 
 	for i := range o.Needs {
-		o.Needs[i].Category, err = r.catRepo.Get(o.Needs[i].CategoryID)
-		if err != nil {
-			fmt.Println("test?")
-			return nil, err
-		}
+		c, _ := r.catRepo.Get(o.Needs[i].CategoryID)
+		o.Needs[i].Category = *c
 
 		o.Needs[i].Images, err = getNeedImages(r.db, &o.Needs[i])
 		if err != nil {

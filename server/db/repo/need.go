@@ -36,7 +36,8 @@ func (r *NeedRepository) Get(id int64) (*model.Need, error) {
 
 	n.Images, err = getNeedImages(r.db, n)
 
-	n.Category, err = r.catRepo.Get(n.CategoryID)
+	c, _ := r.catRepo.Get(n.CategoryID)
+	n.Category = *c
 
 	o, err := r.orgRepo.GetBaseOrganization(n.OrganizationID)
 	n.Organization = *o

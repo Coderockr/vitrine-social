@@ -6,7 +6,7 @@ import (
 )
 
 type (
-	getCatFn func(int64) (model.Category, error)
+	getCatFn func(int64) (*model.Category, error)
 )
 
 func newCategoryQuery(get getCatFn) *graphql.Field {

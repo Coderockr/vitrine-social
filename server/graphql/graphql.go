@@ -24,7 +24,7 @@ type (
 	}
 
 	catRepo interface {
-		Get(int64) (model.Category, error)
+		Get(int64) (*model.Category, error)
 	}
 )
 
