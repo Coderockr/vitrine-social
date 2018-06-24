@@ -110,10 +110,6 @@ var needStatusEnum = graphql.NewEnum(graphql.EnumConfig{
 			Value:       model.NeedStatusInactive,
 			Description: "A inactive Need",
 		},
-		"EMPTY": &graphql.EnumValueConfig{
-			Value:       model.NeedStatusEmpty,
-			Description: "An invalid status",
-		},
 	},
 })
 

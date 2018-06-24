@@ -25,7 +25,18 @@ type loginJSON struct {
 	OrganizationID int64  `json:"organizationId"`
 }
 
-func newLoginMutation(get getUserByEmail, cT createToken) *graphql.Field {
+func newLoginMutation(get getUserByEmail, cT createToken, getOrg getOrgFn) *graphql.Field {
+
+	loginType.AddFieldConfig(
+		"organization",
+		newOrganizationField(func(p graphql.ResolveParams) (*model.Organization, error) {
+			if l, ok := p.Source.(loginJSON); ok {
+				return getOrg(l.OrganizationID)
+			}
+			return nil, nil
+		}),
+	)
+
 	return &graphql.Field{
 		Name:        "LoginMutation",
 		Description: "Authenticate the user and returns a token and organization if succeded",
