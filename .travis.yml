@@ -17,9 +17,6 @@ cache:
   directories:
     - "node_modules"
 
-before_script:
-  - ssh-keygen -R $DEPLOY_HOST
-
 script:
   - make coverage
   #- 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then make build; fi'
@@ -29,6 +26,9 @@ script:
   #- 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then yarn build; fi'
   - yarn build
   - cd .. #back to root directory
+
+before_deploy:
+  - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H $DEPLOY_HOST 2>&1 | tee -a $HOME/.ssh/known_hosts
 
 deploy:
   - provider: script
