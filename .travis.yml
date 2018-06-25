@@ -9,6 +9,8 @@ before_install:
   - export VITRINESOCIAL_ENV=production
   - mkdir server/tmp # create storage directory
   - openssl aes-256-cbc -K $encrypted_c41c576030a0_key -iv $encrypted_c41c576030a0_iv -in vitrinesocial.pem.enc -out devops/vitrinesocial.pem -d #decrypt aws key
+  - chmod 400 devops/vitrinesocial.pem
+
 
 install:
   - make install
