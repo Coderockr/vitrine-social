@@ -13,19 +13,16 @@ before_install:
 
 install:
   - make install
-  - cd frontend
-  - yarn install
-  - cd .. #back to root directory
+  - make install-frontend
 
 cache:
   directories:
     - "node_modules"
 
 script:
+  - make tests
+  - make tests-frontend
   - make coverage
-  - cd frontend
-  - yarn test
-  - cd .. #back to root directory
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then make build && make build-frontend; fi'
 
 deploy:

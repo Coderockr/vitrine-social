@@ -20,6 +20,9 @@ install: ## install project dependences
 	go get -u github.com/haya14busa/goverage
 	cd server; dep ensure -v
 
+install-frontend: ## install frontend dependences
+	cd frontend && yarn install
+
 build: install ## builds the application to the paramters bin (bin=vitrine-social)
 	cd server && go build -v -o $(bin) .
 
@@ -74,6 +77,9 @@ help: ## show this help
 
 tests: ## run go tests
 	cd server && go test -v -race ./...
+
+tests-frontend: ## run frontend tests
+	cd frontend && yarn test
 
 coverage: ## outputs coverage to coverage.out
 	cd server && goverage -v -race -coverprofile=coverage.out ./...
