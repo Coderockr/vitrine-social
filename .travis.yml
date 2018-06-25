@@ -11,7 +11,6 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_c41c576030a0_key -iv $encrypted_c41c576030a0_iv -in vitrinesocial.pem.enc -out devops/vitrinesocial.pem -d #decrypt aws key
   - chmod 400 devops/vitrinesocial.pem
 
-
 install:
   - make install
   - cd frontend
@@ -31,9 +30,6 @@ script:
   #- 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then yarn build; fi'
   - yarn build
   - cd .. #back to root directory
-
-# before_deploy:
-#   - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H $DEPLOY_HOST 2>&1 | tee -a $HOME/.ssh/known_hosts
 
 deploy:
   - provider: script
