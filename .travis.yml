@@ -9,7 +9,8 @@ before_install:
 
 install:
   - make install
-  - cd Frontend && yarn install
+  - cd Frontend
+  - yarn install
 
 cache:
   directories:
@@ -18,6 +19,7 @@ cache:
 script:
   - make coverage
   - make build
+  - cd Frontend
   - yarn test
   - yarn build
 
@@ -28,7 +30,7 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: $AWS_BUCKET
-    local_dir: build
+    local_dir: Frontend/build
 
 after_success:
   - make send-statiscs commit=$TRAVIS_COMMIT
