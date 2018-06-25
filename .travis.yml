@@ -11,6 +11,7 @@ install:
   - make install
   - cd frontend
   - yarn install
+  - cd .. #back to root directory
 
 cache:
   directories:
@@ -18,19 +19,27 @@ cache:
 
 script:
   - make coverage
-  - make build
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then make build; fi'
   - cd frontend
   - yarn test
-  - yarn build
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then yarn build; fi'
+  - cd .. #back to root directory
 
 deploy:
   - provider: script
     script: ./devops/deploy.sh
+    skip_cleanup: true
+    on:
+      all_branches: true
+
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: $AWS_BUCKET
     local_dir: frontend/build
+    skip_cleanup: true
+    on:
+      all_branches: true
 
 after_success:
   - make send-statiscs commit=$TRAVIS_COMMIT
