@@ -2,9 +2,6 @@ language: go
 go:
   - "1.10.x"
 
-addons:
-  ssh_known_hosts: $DEPLOY_HOST
-
 before_install:
   - export VITRINESOCIAL_ENV=production
   - mkdir server/tmp # create storage directory
@@ -19,6 +16,9 @@ install:
 cache:
   directories:
     - "node_modules"
+
+before_script:
+  - ssh-keygen -R $DEPLOY_HOST
 
 script:
   - make coverage
