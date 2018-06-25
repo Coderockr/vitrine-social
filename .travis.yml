@@ -1,20 +1,37 @@
 language: go
 go:
- - "1.10.x"
+  - "1.10.x"
 
 before_install:
-  - export VITRINESOCIAL_ENV=test
+  - export VITRINESOCIAL_ENV=production
   - mkdir server/tmp # create storage directory
+  - openssl aes-256-cbc -K $encrypted_c41c576030a0_key -iv $encrypted_c41c576030a0_iv -in vitrinesocial.pem.enc -out devops/vitrinesocial.pem -d #decrypt aws key
 
 install:
   - make install
+  - cd Frontend && yarn install
+
+cache:
+  directories:
+    - "node_modules"
 
 script:
- - make coverage
- - make build
+  - make coverage
+  - make build
+  - yarn test
+  - yarn build
+
+deploy:
+  - provider: script
+    script: ./devops/deploy.sh
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: $AWS_BUCKET
+    local_dir: build
 
 after_success:
-- make send-statiscs commit=$TRAVIS_COMMIT
+  - make send-statiscs commit=$TRAVIS_COMMIT
 
 notifications:
   email:
