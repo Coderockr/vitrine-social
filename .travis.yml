@@ -2,6 +2,9 @@ language: go
 go:
   - "1.10.x"
 
+addons:
+  ssh_known_hosts: ec2-13-59-124-240.us-east-2.compute.amazonaws.com
+
 before_install:
   - export VITRINESOCIAL_ENV=production
   - mkdir server/tmp # create storage directory
@@ -27,8 +30,8 @@ script:
   - yarn build
   - cd .. #back to root directory
 
-before_deploy:
-  - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H $DEPLOY_HOST 2>&1 | tee -a $HOME/.ssh/known_hosts
+# before_deploy:
+#   - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H $DEPLOY_HOST 2>&1 | tee -a $HOME/.ssh/known_hosts
 
 deploy:
   - provider: script
