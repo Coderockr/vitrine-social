@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Stop server service
 ssh -i ./devops/vitrinesocial.pem -t $DEPLOY_USER@$DEPLOY_HOST 'sudo systemctl stop vitrine-social'
 

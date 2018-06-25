@@ -23,6 +23,10 @@ install: ## install project dependences
 build: install ## builds the application to the paramters bin (bin=vitrine-social)
 	cd server && go build -v -o $(bin) .
 
+build-frontend: ## builds frontend application
+	cd frontend && yarn install
+	cd frontend && yarn build
+
 new-migration: ## create a new migration, use make new-migration m=message to set the message
 	sql-migrate new -config=./devops/dbconfig.yml -env=production "$(m)"
 
