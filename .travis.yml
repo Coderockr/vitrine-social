@@ -23,6 +23,7 @@ script:
   - make tests
   - make tests-frontend
   - make coverage
+  - go get github.com/rubenv/sql-migrate/...;
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
       go get github.com/rubenv/sql-migrate/...;
       make build && make build-frontend;
