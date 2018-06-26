@@ -38,6 +38,7 @@ deploy:
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: $AWS_BUCKET
     local_dir: frontend/build
+    region: sa-east-1
     skip_cleanup: true
 
 after_success:
