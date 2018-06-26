@@ -30,6 +30,7 @@ class OrganizationProfile extends React.Component {
       editProfileVisible: false,
       changePasswordVisible: false,
       saveEnabled: false,
+      imagesEnabled: false,
     };
 
     mediaQuery.addListener(this.widthChange.bind(this));
@@ -158,33 +159,37 @@ class OrganizationProfile extends React.Component {
             <h1>Endereço</h1>
             <a>{`${address.street} ${address.number}, ${address.complement ? `${address.complement},` : ''} Bairro ${address.neighborhood}, ${address.city} - ${address.state} `}</a>
           </div>
-          <div className={cx(styles.border, styles.imagesBorder)}>
-            <h1>Imagens da Organização</h1>
-          </div>
-          <div className={styles.arrowWrapper}>
-            <Arrow
-              size={this.state.arrowSize}
-              color={colors.teal_400}
-              onClick={() => this.carousel.prev()}
-              left
-              over
-            />
-            <div className={styles.carouselWrapper}>
-              <Carousel
-                ref={(ref) => { this.carousel = ref; }}
-                infinite={false}
-                {...carouselSettings}
-              >
-                {this.renderImages(organization.images)}
-              </Carousel>
+          {this.state.imagesEnabled &&
+          <div>
+            <div className={cx(styles.border, styles.imagesBorder)}>
+              <h1>Imagens da Organização</h1>
             </div>
-            <Arrow
-              size={this.state.arrowSize}
-              color={colors.teal_400}
-              onClick={() => this.carousel.next()}
-              over
-            />
+            <div className={styles.arrowWrapper}>
+              <Arrow
+                size={this.state.arrowSize}
+                color={colors.teal_400}
+                onClick={() => this.carousel.prev()}
+                left
+                over
+              />
+              <div className={styles.carouselWrapper}>
+                <Carousel
+                  ref={(ref) => { this.carousel = ref; }}
+                  infinite={false}
+                  {...carouselSettings}
+                >
+                  {this.renderImages(organization.images)}
+                </Carousel>
+              </div>
+              <Arrow
+                size={this.state.arrowSize}
+                color={colors.teal_400}
+                onClick={() => this.carousel.next()}
+                over
+              />
+            </div>
           </div>
+          }
         </Col>
       </div>
     );
