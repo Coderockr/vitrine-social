@@ -1,9 +1,9 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Vitrine Social",
+  "name": "Vitrine Social",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "favicon.ipng",
       "sizes": "192x192",
       "type": "image/png"
     }

@@ -12,7 +12,12 @@ const iconStyle = {
 const Footer = ({ className }) => (
   <Layout.Footer className={cx(styles.appFooter, className)}>
     <Row>
-      <Col>
+      <Col
+        xxl={{ span: 14, offset: 5 }}
+        xl={{ span: 20, offset: 2 }}
+        lg={{ span: 22, offset: 1 }}
+        md={{ span: 24, offset: 0 }}
+      >
         <div className={styles.footerWrapper}>
           <p className={styles.copyright}>Vitrine Social ©2018 Created by  <a target="_blank" rel="me" href="http://www.coderockr.com">Coderockr</a></p>
           <div>

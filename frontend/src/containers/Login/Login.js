@@ -16,6 +16,10 @@ class Login extends React.Component {
     loading: false,
   }
 
+  componentDidMount() {
+    document.title = 'Vitrine Social - Login';
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -39,6 +43,7 @@ class Login extends React.Component {
         this.setState({ loading: false });
         return null;
       }, (error) => {
+        this.setState({ loading: false });
         if (!error.response) {
           return BottomNotification({ message: 'Problema de conexão com a API.', success: false });
         } if (error.response.status === 401) {
@@ -46,7 +51,6 @@ class Login extends React.Component {
         } if (error.response.data.message) {
           return BottomNotification({ message: error.response.data.message, success: false });
         }
-        this.setState({ loading: false });
         return null;
       },
     );
@@ -67,7 +71,7 @@ class Login extends React.Component {
               sm={{ span: 12, offset: 6 }}
               xs={{ span: 20, offset: 2 }}
             >
-              <h1>Login da Organização</h1>
+              <h1>LOGIN DA ORGANIZAÇÃO</h1>
               <Form onSubmit={this.handleSubmit}>
                 <FormItem>
                   {getFieldDecorator('email', {

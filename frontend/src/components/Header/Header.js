@@ -70,7 +70,7 @@ class Header extends React.Component {
     );
   }
 
-  renderUserMenuItem() {
+  renderUserMenuItem(collapsed) {
     const user = getUser();
     if (!user) {
       return (
@@ -78,6 +78,10 @@ class Header extends React.Component {
           <Link to="/login">Login</Link>
         </Menu.Item>
       );
+    }
+
+    if (collapsed) {
+      return null;
     }
 
     return (
@@ -100,6 +104,7 @@ class Header extends React.Component {
   }
 
   renderMenu(collapsed) {
+    const user = getUser();
     return (
       <Menu
         className={collapsed ? styles.menuModal : styles.appHeader}
@@ -108,16 +113,23 @@ class Header extends React.Component {
         theme={collapsed ? 'light' : 'dark'}
         selectedKeys={[window.location.pathname]}
       >
-        <Menu.Item key="/">
-          <Link to="/">Home</Link>
-        </Menu.Item>
         <Menu.Item key="/about">
           <Link to="/about">Sobre o Projeto</Link>
         </Menu.Item>
         <Menu.Item key="/contact">
           <Link to="/contact">Contato</Link>
         </Menu.Item>
-        {this.renderUserMenuItem()}
+        {collapsed && user &&
+        <Menu.Item>
+          <Link to={`/organization/${user.id}`}>Meu Perfil</Link>
+        </Menu.Item>
+        }
+        {collapsed && user &&
+        <Menu.Item>
+          <Link onClick={() => deauthorizeUser()} to="/login">Log Out</Link>
+        </Menu.Item>
+        }
+        {this.renderUserMenuItem(collapsed)}
       </Menu>
     );
   }
@@ -134,7 +146,9 @@ class Header extends React.Component {
             lg={{ span: 22, offset: 1 }}
             md={{ span: 24, offset: 0 }}
           >
-            <img className={styles.logo} src="./assets/images/vitrinesocial.svg" alt="logo" />
+            <Link to="/">
+              <img className={styles.logo} src={`${process.env.REACT_APP_HOST}/assets/images/vitrinesocial.svg`} alt="logo" />
+            </Link>
             {this.state.collapsed ? this.renderMenuButton() : this.renderMenu()}
           </Col>
         </Row>
