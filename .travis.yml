@@ -23,7 +23,7 @@ script:
   - make tests
   - make tests-frontend
   - make coverage
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then make build && make build-frontend; fi'
+  - 'if [ "$TRAVIS_BRANCH" == "master" ]; then make build && make build-frontend; fi'
 
 deploy:
   - provider: script # Deploy Backend
