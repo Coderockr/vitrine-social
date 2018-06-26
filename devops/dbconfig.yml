@@ -1,6 +1,6 @@
 production:
     dialect: postgres
-    datasource: postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable
+    datasource: postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/vitrine?sslmode=disable
     dir: devops/migrations
     table: migrations
 
