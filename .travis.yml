@@ -1,15 +1,44 @@
 language: go
 go:
- - "1.10.x"
+  - "1.10.x"
+
+addons:
+  ssh_known_hosts: ec2-13-59-124-240.us-east-2.compute.amazonaws.com
+
+before_install:
+  - export VITRINESOCIAL_ENV=production
+  - mkdir server/tmp # create storage directory
+  - openssl aes-256-cbc -K $encrypted_c41c576030a0_key -iv $encrypted_c41c576030a0_iv -in vitrinesocial.pem.enc -out devops/vitrinesocial.pem -d #decrypt aws key
+  - chmod 400 devops/vitrinesocial.pem
+
+install:
+  - make install
+  - make install-frontend
+
+cache:
+  directories:
+    - "node_modules"
 
 script:
- - export VITRINESOCIAL_ENV=test
- - mkdir server/tmp # create storage directory
- - make install
- - make coverage
+  - make tests
+  - make tests-frontend
+  - make coverage
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then make build && make build-frontend; fi'
+
+deploy:
+  - provider: script # Deploy Backend
+    script: ./devops/deploy.sh
+    skip_cleanup: true
+
+  - provider: s3 # Deploy Frontend
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: $AWS_BUCKET
+    local_dir: frontend/build
+    skip_cleanup: true
 
 after_success:
-- make send-statiscs commit=$TRAVIS_COMMIT
+  - make send-statiscs commit=$TRAVIS_COMMIT
 
 notifications:
   email:
