@@ -134,7 +134,7 @@ class Header extends React.Component {
             lg={{ span: 22, offset: 1 }}
             md={{ span: 24, offset: 0 }}
           >
-            <div className={styles.logo} />
+            <img className={styles.logo} src="./assets/images/vitrinesocial.svg" alt="logo" />
             {this.state.collapsed ? this.renderMenuButton() : this.renderMenu()}
           </Col>
         </Row>

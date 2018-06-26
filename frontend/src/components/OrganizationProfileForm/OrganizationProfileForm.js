@@ -29,6 +29,7 @@ class OrganizationProfileForm extends React.Component {
     responseFeedbackMessage: '',
     states: [{ id: -1, sigla: 'Indisponíveis' }],
     cities: [{ id: -1, nome: 'Indisponíveis' }],
+    imagesEnabled: false,
   }
 
   componentDidMount() {
@@ -385,6 +386,7 @@ class OrganizationProfileForm extends React.Component {
                   <TextArea rows={5} placeholder="Sobre a Organização" />,
                 )}
               </FormItem>
+              {this.state.imagesEnabled &&
               <FormItem>
                 <Col
                   md={{ span: 18, offset: 3 }}
@@ -395,6 +397,7 @@ class OrganizationProfileForm extends React.Component {
                   <UploadImages images={organization.images} />
                 </Col>
               </FormItem>
+              }
               <FormItem>
                 <div className={styles.buttonWrapper}>
                   <button

@@ -35,6 +35,7 @@ class RequestForm extends React.Component {
     categories: [],
     responseFeedback: '',
     responseFeedbackMessage: '',
+    imagesEnabled: false,
   }
 
   componentWillMount() {
@@ -258,6 +259,7 @@ class RequestForm extends React.Component {
                   </FormItem>
                 </Col>
               </FormItem>
+              {this.state.imagesEnabled &&
               <FormItem>
                 <Col
                   md={{ span: 18, offset: 3 }}
@@ -268,6 +270,7 @@ class RequestForm extends React.Component {
                   <UploadImages images={request ? request.images : null} />
                 </Col>
               </FormItem>
+              }
               <FormItem>
                 <div className={styles.buttonWrapper}>
                   <button

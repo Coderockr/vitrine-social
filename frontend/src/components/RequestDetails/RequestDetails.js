@@ -35,6 +35,7 @@ class RequestDetails extends React.Component {
     previewVisible: false,
     previewImage: '',
     responseFeedback: false,
+    imagesEnabled: false,
   }
 
   showContactForm() {
@@ -114,6 +115,7 @@ class RequestDetails extends React.Component {
             <p className={styles.description}>{request.description}</p>
           </div>
         </div>
+        {this.state.imagesEnabled &&
         <div className={styles.arrowWrapper}>
           <Arrow size={32} color={colors.purple_400} onClick={() => this.carousel.prev()} left />
           <div className={styles.carouselWrapper}>
@@ -127,6 +129,7 @@ class RequestDetails extends React.Component {
           </div>
           <Arrow size={32} color={colors.purple_400} onClick={() => this.carousel.next()} />
         </div>
+        }
         <div className={styles.buttonWrapper}>
           <button
             className={cx(styles.button, styles.helpButton)}
