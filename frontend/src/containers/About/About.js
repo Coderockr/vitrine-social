@@ -70,7 +70,7 @@ class About extends React.Component {
               Ajudar o próximo nem sempre é algo fácil. Muitas vezes, apesar de querermos colaborar
               com alguma causa social, somos desestimulados a ajudar, seja por desconhecer as
               entidades beneficentes mais necessitadas ou também pela dificuldade de entrar em
-              contato e informar sobre qual é a melhor forma de ajudar. Para simplificar este
+              contato e se informar sobre qual é a melhor forma de ajudar. Para simplificar este
               processo criamos a Vitrine Social.
               </p>
               <img src="./assets/images/brand.svg" alt="brand" />
