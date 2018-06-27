@@ -36,7 +36,7 @@ new-migration: ## create a new migration, use make new-migration m=message to se
 migrations: ## run pending migrations
 	docker-compose up -d postgres
 	go get github.com/rubenv/sql-migrate/...
-	sql-migrate up -config=devops/dbconfig.yml -env=production
+	sql-migrate up -config=devops/dbconfig.yml -env=$$VITRINESOCIAL_ENV
 
 migrations-on-docker: ## run migrations inside docker
 	docker-compose up -d
@@ -57,7 +57,7 @@ serve-on-docker: ## start the server inside docker
 serve-watch: ## start server with hot reload
 	docker-compose up -d postgres
 	go get -u github.com/codegangsta/gin
-	cd server; API_PORT=8001 gin --port 8000 --appPort 8001 --bin server-cmd run serve
+	cd server; API_PORT=8001 gin --port 8000 --appPort 8001 --bin $(bin) run serve
 
 postgres-cmd: ## open the postgresql command line
 	docker-compose exec postgres psql -h $$DATABASE_HOST -U postgres vitrine
