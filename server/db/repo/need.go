@@ -98,7 +98,8 @@ func (r *NeedRepository) Update(n model.Need) (model.Need, error) {
 			reached_qtd = $5,
 			due_date = $6,
 			unit = $7,
-			status = $8
+			status = $8,
+			updated_at = now()
 		WHERE id = $9
 		`,
 		n.CategoryID,
