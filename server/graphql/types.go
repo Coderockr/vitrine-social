@@ -156,6 +156,12 @@ var (
 			"status": &graphql.Field{
 				Type: needStatusEnum,
 			},
+			"createdAt": &graphql.Field{
+				Type: graphql.NewNonNull(DateTime),
+			},
+			"updatedAt": &graphql.Field{
+				Type: DateTime,
+			},
 		},
 	})
 
