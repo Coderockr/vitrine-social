@@ -57,7 +57,7 @@ serve-on-docker: ## start the server inside docker
 serve-watch: ## start server with hot reload
 	docker-compose up -d postgres
 	go get -u github.com/codegangsta/gin
-	cd server; API_PORT=8001 gin --port 8000 --appPort 8001 --bin server-cmd run serve
+	cd server; API_PORT=8001 gin --port 8000 --appPort 8001 --bin $(bin) run serve
 
 postgres-cmd: ## open the postgresql command line
 	docker-compose exec postgres psql -h $$DATABASE_HOST -U postgres vitrine
