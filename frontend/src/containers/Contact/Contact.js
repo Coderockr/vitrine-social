@@ -19,6 +19,10 @@ const reasons = [
 ];
 
 class Contact extends React.Component {
+  componentDidMount() {
+    document.title = 'Vitrine Social - Contato';
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -54,7 +58,7 @@ class Contact extends React.Component {
         <Row>
           <Col span={20} offset={2}>
             <div className={styles.contactWrapper}>
-              <h1 className={styles.title}>Entre em contato</h1>
+              <h1 className={styles.title}>ENTRE EM CONTATO</h1>
               <Form onSubmit={this.handleSubmit}>
                 <FormItem
                   {...formItemLayout}

@@ -16,6 +16,10 @@ class Results extends React.Component {
     this.fetchRequests();
   }
 
+  componentDidMount() {
+    document.title = 'Vitrine Social - Resultados da Busca';
+  }
+
   componentDidUpdate(prevProps) {
     const { match: { params } } = this.props;
     const previousParams = prevProps.match.params;

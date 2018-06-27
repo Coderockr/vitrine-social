@@ -40,6 +40,10 @@ class OrganizationProfile extends React.Component {
     this.fetchData();
   }
 
+  componentDidMount() {
+    document.title = 'Vitrine Social - Perfil da Organização';
+  }
+
   componentWillUnmount() {
     mediaQuery.removeListener(this.widthChange);
   }

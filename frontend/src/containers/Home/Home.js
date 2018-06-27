@@ -20,6 +20,10 @@ class Home extends React.Component {
     this.fetchRequests();
   }
 
+  componentDidMount() {
+    document.title = 'Vitrine Social';
+  }
+
   onChangePage(page) {
     this.setState({
       page,
