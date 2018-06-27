@@ -36,7 +36,7 @@ new-migration: ## create a new migration, use make new-migration m=message to se
 migrations: ## run pending migrations
 	docker-compose up -d postgres
 	go get github.com/rubenv/sql-migrate/...
-	sql-migrate up -config=devops/dbconfig.yml -env=production
+	sql-migrate up -config=devops/dbconfig.yml -env=$$VITRINESOCIAL_ENV
 
 migrations-on-docker: ## run migrations inside docker
 	docker-compose up -d
