@@ -82,8 +82,10 @@ func GetNeedHandler(repo NeedRepository, oRepo needOrganizationRepository) func(
 				Logo: o.Logo,
 				Slug: o.Slug,
 			},
-			Images: needImagesToImageJSON(n.Images),
-			Status: string(n.Status),
+			Images:    needImagesToImageJSON(n.Images),
+			Status:    string(n.Status),
+			CreatedAt: n.CreatedAt,
+			UpdatedAt: n.UpdatedAt,
 		}
 
 		HandleHTTPSuccess(w, nJSON)
