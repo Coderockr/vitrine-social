@@ -116,19 +116,19 @@ class RequestDetails extends React.Component {
           </div>
         </div>
         {this.state.imagesEnabled &&
-        <div className={styles.arrowWrapper}>
-          <Arrow size={32} color={colors.purple_400} onClick={() => this.carousel.prev()} left />
-          <div className={styles.carouselWrapper}>
-            <Carousel
-              ref={(ref) => { this.carousel = ref; }}
-              infinite={false}
-              {...carouselSettings}
-            >
-              {this.renderImages(request.images)}
-            </Carousel>
+          <div className={styles.arrowWrapper}>
+            <Arrow size={32} color={colors.purple_400} onClick={() => this.carousel.prev()} left />
+            <div className={styles.carouselWrapper}>
+              <Carousel
+                ref={(ref) => { this.carousel = ref; }}
+                infinite={false}
+                {...carouselSettings}
+              >
+                {this.renderImages(request.images)}
+              </Carousel>
+            </div>
+            <Arrow size={32} color={colors.purple_400} onClick={() => this.carousel.next()} />
           </div>
-          <Arrow size={32} color={colors.purple_400} onClick={() => this.carousel.next()} />
-        </div>
         }
         <div className={styles.buttonWrapper}>
           <button
