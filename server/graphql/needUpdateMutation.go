@@ -18,7 +18,7 @@ var needPatchInput = graphql.NewInputObject(graphql.InputObjectConfig{
 		"description":      stringInput,
 		"requiredQuantity": intInput,
 		"reachedQuantity":  intInput,
-		"unity":            stringInput,
+		"unit":             stringInput,
 		"dueDate":          dateInput,
 		"categoryId":       intInput,
 		"status":           needStatusInput,

@@ -23,7 +23,7 @@ var needCreateInput = graphql.NewInputObject(graphql.InputObjectConfig{
 			Type:         graphql.Int,
 			DefaultValue: 0,
 		},
-		"unity":      nonNullStringInput,
+		"unit":       nonNullStringInput,
 		"dueDate":    dateInput,
 		"categoryId": nonNullIntInput,
 	},

@@ -50,7 +50,7 @@ func newUpdatePasswordMutation(cp changePasswordFn) *graphql.Field {
 					return nil, err
 				}
 
-				return map[string]interface{}{"organization": o}, nil
+				return map[string]interface{}{"organization": &o}, nil
 			}
 			return nil, errors.New("organization not found")
 		},

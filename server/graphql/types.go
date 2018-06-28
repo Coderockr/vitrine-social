@@ -149,7 +149,7 @@ var (
 			"description":      nonNullStringField,
 			"requiredQuantity": intField,
 			"reachedQuantity":  intField,
-			"unity":            stringField,
+			"unit":             stringField,
 			"dueDate": &graphql.Field{
 				Type: Date,
 			},
