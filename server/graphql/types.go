@@ -141,6 +141,39 @@ var (
 		Type: needStatusEnum,
 	}
 
+	needImageType = graphql.NewObject(graphql.ObjectConfig{
+		Name: "NeedImage",
+		Fields: graphql.Fields{
+			"id": &graphql.Field{
+				Type: graphql.NewNonNull(graphql.Int),
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if i, ok := p.Source.(model.NeedImage); ok {
+						return i.ID, nil
+					}
+					return nil, nil
+				},
+			},
+			"name": &graphql.Field{
+				Type: graphql.NewNonNull(graphql.String),
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if i, ok := p.Source.(model.NeedImage); ok {
+						return i.Name, nil
+					}
+					return nil, nil
+				},
+			},
+			"url": &graphql.Field{
+				Type: graphql.NewNonNull(graphql.String),
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if i, ok := p.Source.(model.NeedImage); ok {
+						return i.URL, nil
+					}
+					return nil, nil
+				},
+			},
+		},
+	})
+
 	needType = graphql.NewObject(graphql.ObjectConfig{
 		Name: "Need",
 		Fields: graphql.Fields{
@@ -161,6 +194,9 @@ var (
 			},
 			"updatedAt": &graphql.Field{
 				Type: DateTime,
+			},
+			"images": &graphql.Field{
+				Type: graphql.NewList(needImageType),
 			},
 		},
 	})
