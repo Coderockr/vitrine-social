@@ -387,16 +387,16 @@ class OrganizationProfileForm extends React.Component {
                 )}
               </FormItem>
               {this.state.imagesEnabled &&
-              <FormItem>
-                <Col
-                  md={{ span: 18, offset: 3 }}
-                  sm={{ span: 22, offset: 1 }}
-                  xs={{ span: 24, offset: 0 }}
-                >
-                  <h2 className={styles.galleryHeader}>Galeria de Imagens</h2>
-                  <UploadImages images={organization.images} />
-                </Col>
-              </FormItem>
+                <FormItem>
+                  <Col
+                    md={{ span: 18, offset: 3 }}
+                    sm={{ span: 22, offset: 1 }}
+                    xs={{ span: 24, offset: 0 }}
+                  >
+                    <h2 className={styles.galleryHeader}>Galeria de Imagens</h2>
+                    <UploadImages images={organization.images} />
+                  </Col>
+                </FormItem>
               }
               <FormItem>
                 <div className={styles.buttonWrapper}>

@@ -93,11 +93,11 @@ class Home extends React.Component {
           error={this.state.errorRequests}
         />
         {this.state.pagination &&
-        <Pagination
-          current={this.state.page}
-          total={this.state.pagination.totalResults}
-          onChange={page => this.onChangePage(page)}
-        />
+          <Pagination
+            current={this.state.page}
+            total={this.state.pagination.totalResults}
+            onChange={page => this.onChangePage(page)}
+          />
         }
       </Layout>
     );

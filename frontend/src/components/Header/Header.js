@@ -120,14 +120,14 @@ class Header extends React.Component {
           <Link to="/contact">Contato</Link>
         </Menu.Item>
         {collapsed && user &&
-        <Menu.Item>
-          <Link to={`/organization/${user.id}`}>Meu Perfil</Link>
-        </Menu.Item>
+          <Menu.Item>
+            <Link to={`/organization/${user.id}`}>Meu Perfil</Link>
+          </Menu.Item>
         }
         {collapsed && user &&
-        <Menu.Item>
-          <Link onClick={() => deauthorizeUser()} to="/login">Log Out</Link>
-        </Menu.Item>
+          <Menu.Item>
+            <Link onClick={() => deauthorizeUser()} to="/login">Log Out</Link>
+          </Menu.Item>
         }
         {this.renderUserMenuItem(collapsed)}
       </Menu>
@@ -147,7 +147,7 @@ class Header extends React.Component {
             md={{ span: 24, offset: 0 }}
           >
             <Link to="/">
-              <img className={styles.logo} src={`${process.env.REACT_APP_HOST}/assets/images/vitrinesocial.svg`} alt="logo" />
+              <img className={styles.logo} src={`${process.env.REACT_APP_HOST}assets/images/vitrinesocial.svg`} alt="logo" />
             </Link>
             {this.state.collapsed ? this.renderMenuButton() : this.renderMenu()}
           </Col>
