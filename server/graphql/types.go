@@ -106,6 +106,9 @@ var (
 					return nil, nil
 				},
 			},
+			"images": &graphql.Field{
+				Type: graphql.NewList(graphql.NewNonNull(organizationImageType)),
+			},
 		},
 	})
 
@@ -119,6 +122,39 @@ var (
 			"city":          stringField,
 			"state":         stringField,
 			"zipcode":       stringField,
+		},
+	})
+
+	organizationImageType = graphql.NewObject(graphql.ObjectConfig{
+		Name: "OrganizationImage",
+		Fields: graphql.Fields{
+			"id": &graphql.Field{
+				Type: graphql.NewNonNull(graphql.Int),
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if i, ok := p.Source.(model.OrganizationImage); ok {
+						return i.ID, nil
+					}
+					return nil, nil
+				},
+			},
+			"name": &graphql.Field{
+				Type: graphql.NewNonNull(graphql.String),
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if i, ok := p.Source.(model.OrganizationImage); ok {
+						return i.Name, nil
+					}
+					return nil, nil
+				},
+			},
+			"url": &graphql.Field{
+				Type: graphql.NewNonNull(graphql.String),
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if i, ok := p.Source.(model.OrganizationImage); ok {
+						return i.URL, nil
+					}
+					return nil, nil
+				},
+			},
 		},
 	})
 
