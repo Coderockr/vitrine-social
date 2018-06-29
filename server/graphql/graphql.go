@@ -33,6 +33,10 @@ type (
 		GetNeedsCount(*model.Category) (int64, error)
 	}
 
+	searchRepo interface {
+		Search(text string, categoriesID []int, organizationsID int64, status string, orderBy string, order string, page int) (results []model.SearchNeed, count int, err error)
+	}
+
 	tokenManager interface {
 		CreateToken(u model.User, ps *[]string) (string, error)
 		ValidateToken(token string) (*model.Token, error)
@@ -45,14 +49,15 @@ func NewHandler(
 	oR orgRepo,
 	tm tokenManager,
 	cR catRepo,
+	sR searchRepo,
 ) http.Handler {
 
 	rootQuery := graphql.ObjectConfig{
 		Name: "RootQuery",
 		Fields: graphql.Fields{
-			"search":        newSearchQuery(),
+			"search":        newSearchQuery(sR.Search),
 			"need":          newNeedQuery(nR.Get, oR.Get),
-			"organization":  newOrganizationQuery(oR.Get),
+			"organization":  newOrganizationQuery(oR.Get, sR.Search),
 			"category":      newCategoryQuery(cR.Get, cR.GetNeedsCount),
 			"viewer":        newViewerQuery(tm.ValidateToken, oR.Get),
 			"allCategories": newAllCategoriesQuery(cR.GetAll),

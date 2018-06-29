@@ -82,7 +82,7 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 
 		if len(order) > 0 {
 			if order != "asc" && order != "desc" {
-				return nil, 0, fmt.Errorf("Método de ordenação não reconhecido")
+				return nil, 0, fmt.Errorf("Método de ordenação %s não reconhecido", order)
 			}
 		} else {
 			order = "asc"
@@ -94,8 +94,14 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 	args = append(args, (page-1)*ResultsPerPage)
 
 	sql := fmt.Sprintf(`
-		SELECT n.*, o.name as organization_name, o.slug as organization_slug, o.phone as organization_phone,
-					 c.name as category_name, c.slug as category_slug, oi.url as organization_logo
+		SELECT
+			n.*,
+			o.name as organization_name, 
+			o.slug as organization_slug, 
+			o.phone as organization_phone,
+			c.name as category_name, 
+			c.slug as category_slug, 
+			oi.url as organization_logo
 		FROM needs n
 			INNER JOIN organizations o on (o.id = n.organization_id)
 			INNER JOIN categories c on (c.id = n.category_id)

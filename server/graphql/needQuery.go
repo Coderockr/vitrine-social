@@ -18,6 +18,10 @@ func newNeedQuery(get getNeedFn, getOrg getOrgFn) *graphql.Field {
 				return getOrg(n.OrganizationID)
 			}
 
+			if n, ok := p.Source.(model.SearchNeed); ok {
+				return getOrg(n.OrganizationID)
+			}
+
 			return nil, nil
 		}),
 	)
@@ -28,6 +32,16 @@ func newNeedQuery(get getNeedFn, getOrg getOrgFn) *graphql.Field {
 			if n, ok := p.Source.(*model.Need); ok && n != nil {
 				return &n.Category, nil
 			}
+
+			if n, ok := p.Source.(model.SearchNeed); ok {
+				c := &model.Category{
+					ID:   n.CategoryID,
+					Name: n.CategoryName,
+					Slug: n.CategorySlug,
+				}
+				return c, nil
+			}
+
 			return nil, nil
 		}),
 	)

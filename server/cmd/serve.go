@@ -151,6 +151,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		oR,
 		tm,
 		cR,
+		sR,
 	))
 
 	n := negroni.Classic()
