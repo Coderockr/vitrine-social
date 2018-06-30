@@ -80,6 +80,9 @@ var (
 					return nil, nil
 				},
 			},
+			"images": &graphql.Field{
+				Type: graphql.NewList(organizationImageType),
+			},
 			"name": nonNullStringField,
 			"logo": &graphql.Field{
 				Type: graphql.String,
@@ -111,9 +114,6 @@ var (
 					}
 					return nil, nil
 				},
-			},
-			"images": &graphql.Field{
-				Type: graphql.NewList(graphql.NewNonNull(organizationImageType)),
 			},
 		},
 	})

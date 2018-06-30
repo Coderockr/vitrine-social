@@ -1,15 +1,18 @@
 package graphql
 
 import (
+	"errors"
+
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/graphql-go/graphql"
 )
 
 type (
-	getNeedFn func(int64) (*model.Need, error)
+	getNeedFn        func(int64) (*model.Need, error)
+	getNeedsImagesFn func(model.Need) ([]model.NeedImage, error)
 )
 
-func newNeedQuery(get getNeedFn, getOrg getOrgFn) *graphql.Field {
+func newNeedQuery(get getNeedFn, getOrg getOrgFn, getImages getNeedsImagesFn) *graphql.Field {
 
 	needType.AddFieldConfig(
 		"organization",
@@ -45,6 +48,21 @@ func newNeedQuery(get getNeedFn, getOrg getOrgFn) *graphql.Field {
 			return nil, nil
 		}),
 	)
+
+	needType.AddFieldConfig("images", &graphql.Field{
+		Type: graphql.NewList(graphql.NewNonNull(needImageType)),
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			if n, ok := p.Source.(*model.Need); ok && n != nil {
+				return n.Images, nil
+			}
+
+			if n, ok := p.Source.(model.SearchNeed); ok {
+				return getImages(n.Need)
+			}
+
+			return nil, errors.New("needType not recognized")
+		},
+	})
 
 	return &graphql.Field{
 		Name:        "NeedQuery",

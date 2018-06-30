@@ -16,6 +16,7 @@ var errTokenOrgNotFound = errors.New("token organization not found")
 type (
 	needRepo interface {
 		Get(int64) (*model.Need, error)
+		GetNeedsImages(model.Need) ([]model.NeedImage, error)
 		Create(model.Need) (model.Need, error)
 		Update(model.Need) (model.Need, error)
 	}
@@ -56,7 +57,7 @@ func NewHandler(
 		Name: "RootQuery",
 		Fields: graphql.Fields{
 			"search":        newSearchQuery(sR.Search),
-			"need":          newNeedQuery(nR.Get, oR.Get),
+			"need":          newNeedQuery(nR.Get, oR.Get, nR.GetNeedsImages),
 			"organization":  newOrganizationQuery(oR.Get, sR.Search),
 			"category":      newCategoryQuery(cR.Get, cR.GetNeedsCount),
 			"viewer":        newViewerQuery(tm.ValidateToken, oR.Get),
