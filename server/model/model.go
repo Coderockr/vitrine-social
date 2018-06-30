@@ -82,7 +82,7 @@ type Need struct {
 	Organization     Organization
 	Images           []NeedImage `json:"images"`
 	CreatedAt        time.Time   `db:"created_at" json:"createdAt"`
-	UpdatedAt        *time.Time  `db:"updated_at" json:"updatedAt"`
+	UpdatedAt        time.Time   `db:"updated_at" json:"updatedAt"`
 }
 
 // NeedImage de uma necessidade
