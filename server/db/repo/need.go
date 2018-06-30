@@ -37,6 +37,7 @@ func (r *NeedRepository) Get(id int64) (*model.Need, error) {
 	return n, nil
 }
 
+// GetNeedsImages retrive the images of a Need
 func (r *NeedRepository) GetNeedsImages(n model.Need) ([]model.NeedImage, error) {
 	return getNeedImages(r.db, &n)
 }
