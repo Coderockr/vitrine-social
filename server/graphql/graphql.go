@@ -26,6 +26,7 @@ type (
 		Update(model.Organization) (model.Organization, error)
 		GetUserByEmail(string) (model.User, error)
 		ChangePassword(o model.Organization, cPassword, nPassword string) (model.Organization, error)
+		ResetPasswordTo(*model.Organization, string) error
 	}
 
 	catRepo interface {
@@ -68,7 +69,8 @@ func NewHandler(
 	rootMutation := graphql.ObjectConfig{
 		Name: "RootMutation",
 		Fields: graphql.Fields{
-			"login": newLoginMutation(oR.GetUserByEmail, tm.CreateToken, oR.Get),
+			"login":         newLoginMutation(oR.GetUserByEmail, tm.CreateToken, oR.Get),
+			"resetPassword": newResetPasswordMutation(tm.ValidateToken, oR.Get, oR.ResetPasswordTo),
 			"viewer": newViewerMutation(
 				tm.ValidateToken,
 				oR.Get,
