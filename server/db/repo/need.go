@@ -37,6 +37,10 @@ func (r *NeedRepository) Get(id int64) (*model.Need, error) {
 	return n, nil
 }
 
+func (r *NeedRepository) GetNeedsImages(n model.Need) ([]model.NeedImage, error) {
+	return getNeedImages(r.db, &n)
+}
+
 // getNeedImages without the need data
 func getNeedImages(db *sqlx.DB, n *model.Need) ([]model.NeedImage, error) {
 	images := []model.NeedImage{}
