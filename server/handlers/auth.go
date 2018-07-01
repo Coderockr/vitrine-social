@@ -13,8 +13,6 @@ import (
 const (
 	// TokenKey is the context key for the JWT token
 	TokenKey = "token"
-	// UserKey is the context key for the autheticathed user
-	UserKey = "user"
 	// PermissionsKey is the context key for the token permissions
 	PermissionsKey = "permissions"
 )
@@ -90,21 +88,23 @@ func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 	HandleHTTPSuccess(w, json)
 }
 
+func GetModelToken(r *http.Request) model.Token {
+	return context.Get(r, TokenKey).(model.Token)
+}
+
 // GetUserID retorna o id do usuário logado.
 func GetUserID(r *http.Request) int64 {
-	return context.Get(r, UserKey).(int64)
+	return GetModelToken(r).UserID
 }
 
 // GetToken retorna o token do usuário logado
 func GetToken(r *http.Request) string {
-	return context.Get(r, TokenKey).(string)
+	return GetModelToken(r).Token
 }
 
 // HasPermission returns if the current token has a certain permission
 func HasPermission(r *http.Request, p string) bool {
-	perms := context.Get(r, PermissionsKey).(map[string]bool)
-
-	_, ok := perms[p]
+	_, ok := GetModelToken(r).Permissions[p]
 	return ok
 }
 
@@ -122,9 +122,7 @@ func (a *AuthHandler) AuthMiddleware(w http.ResponseWriter, r *http.Request, nex
 		return
 	}
 
-	context.Set(r, TokenKey, token)
-	context.Set(r, UserKey, t.UserID)
-	context.Set(r, PermissionsKey, t.Permissions)
+	context.Set(r, TokenKey, t)
 	next(w, r)
 	context.Clear(r)
 }
