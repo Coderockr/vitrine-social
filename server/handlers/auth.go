@@ -88,8 +88,9 @@ func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 	HandleHTTPSuccess(w, json)
 }
 
-func GetModelToken(r *http.Request) model.Token {
-	return context.Get(r, TokenKey).(model.Token)
+// GetModelToken retrieves the model.Token from the requests context
+func GetModelToken(r *http.Request) *model.Token {
+	return context.Get(r, TokenKey).(*model.Token)
 }
 
 // GetUserID retorna o id do usuário logado.
