@@ -238,9 +238,21 @@
   revision = "150dc57a1b433e64154302bdc40b6bb8aefa313a"
   version = "v1.0.0"
 
+[[projects]]
+  branch = "v3"
+  name = "gopkg.in/alexcesaro/quotedprintable.v3"
+  packages = ["."]
+  revision = "2caba252f4dc53eaf6b553000885530023f54623"
+
+[[projects]]
+  name = "gopkg.in/gomail.v2"
+  packages = ["."]
+  revision = "41f3572897373c5538c50a2402db15db079fa4fd"
+  version = "2.0.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "59b5847cdd72f839c4e6dbd0dde6a766c825c82066a9b5da4b7b8cb123b8cf58"
+  inputs-digest = "d0f034d7f5bb42cc8a3661d4079652d11c2249355b7fcfaacdd795b9a8c280c5"
   solver-name = "gps-cdcl"
   solver-version = 1
