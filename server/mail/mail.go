@@ -23,7 +23,7 @@ type EmailParams struct {
 // Connect - Create and return a dialer
 func Connect() (Mailer, error) {
 	mailPort, _ := strconv.Atoi(os.Getenv("MAIL_PORT"))
-	d := gomail.NewDialer(os.Getenv("MAIL_HOST"), mailPort, os.Getenv("MAIL_USER"), os.Getenv("MAIL_PASS"))
+	d := gomail.NewPlainDialer(os.Getenv("MAIL_HOST"), mailPort, os.Getenv("MAIL_USER"), os.Getenv("MAIL_PASS"))
 	s, err := d.Dial()
 
 	return Mailer{
