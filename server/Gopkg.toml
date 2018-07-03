@@ -48,7 +48,3 @@
 [[constraint]]
   name = "github.com/gobuffalo/pop"
   version = "4.5.9"
-
-[[constraint]]
-  name = "github.com/go-gomail/gomail"
-  version = "2.0.0"
