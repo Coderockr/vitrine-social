@@ -12,11 +12,11 @@ type Mailer interface {
 
 // EmailParams struct with emails infos
 type EmailParams struct {
-	From       string
 	To         string
 	Subject    string
 	Body       string
 	TemplateID string
+	Variables  map[string]string
 }
 
 // Connect - Create and return a dialer

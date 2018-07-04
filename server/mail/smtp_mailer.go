@@ -25,7 +25,7 @@ func SMTPConnect() (Mailer, error) {
 // SendEmail - Send email with SMTPMailer
 func (mailer SMTPMailer) SendEmail(params EmailParams) error {
 	message := gomail.NewMessage()
-	message.SetHeader("From", params.From)
+	message.SetHeader("From", os.Getenv("MAIL_FROM"))
 	message.SetHeader("To", params.To)
 	message.SetHeader("Subject", params.Subject)
 	message.SetBody("text/html", params.Body)

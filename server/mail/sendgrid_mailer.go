@@ -1,6 +1,8 @@
 package mail
 
 import (
+	"fmt"
+	"log"
 	"os"
 
 	sendgrid "github.com/sendgrid/sendgrid-go"
@@ -30,7 +32,7 @@ func SendgridConnect() (Mailer, error) {
 func (mailer SendGridMailer) SendEmail(params EmailParams) error {
 	var err error
 
-	from := mail.NewEmail("", params.From)
+	from := mail.NewEmail("Vitrine Social", os.Getenv("MAIL_FROM"))
 	to := mail.NewEmail("", params.To)
 	message := mail.NewSingleEmail(from, params.Subject, to, params.Body, params.Body)
 
@@ -38,7 +40,24 @@ func (mailer SendGridMailer) SendEmail(params EmailParams) error {
 		message.SetTemplateID(params.TemplateID)
 	}
 
-	_, err = mailer.Client.Send(message)
+	if len(params.Variables) > 0 {
+		personalization := mail.NewPersonalization()
+		personalization.AddTos(to)
+		for i := range params.Variables {
+			personalization.SetSubstitution(i, params.Variables[i])
+		}
+		message = message.AddPersonalizations(personalization)
+	}
+
+	response, err := mailer.Client.Send(message)
+
+	if err != nil {
+		log.Println(err)
+	} else {
+		fmt.Println(response.StatusCode)
+		fmt.Println(response.Body)
+		fmt.Println(response.Headers)
+	}
 
 	return err
 }
