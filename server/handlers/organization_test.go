@@ -2,6 +2,7 @@ package handlers_test
 
 import (
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -21,6 +22,11 @@ type (
 		GetFN         func(id int64) (*model.Organization, error)
 		UpdateFN      func(o model.Organization) (model.Organization, error)
 		DeleteImageFN func(imageID int64, organizationID int64) error
+	}
+
+	organizationImageStorage struct {
+		DeleteImageFN func(*model.Token, int64) error
+		CreateImageFN func(*model.Token, *multipart.FileHeader) (*model.OrganizationImage, error)
 	}
 )
 
@@ -112,7 +118,7 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			r, _ := http.NewRequest("PUT", "/v1/organization/"+v.params.organizationID, strings.NewReader(v.body))
 			r = mux.SetURLVars(r, map[string]string{"id": v.params.organizationID})
-			context.Set(r, handlers.UserKey, v.params.userID)
+			context.Set(r, handlers.TokenKey, &model.Token{UserID: v.params.userID})
 
 			resp := httptest.NewRecorder()
 
@@ -134,7 +140,13 @@ func TestDeleteOrganizationImageHandler(t *testing.T) {
 		userID         int64
 		organizationID string
 		imageID        string
-		repository     handlers.OrganizationRepository
+		imageStorage   organizationImageStorage
+	}
+
+	noError := organizationImageStorage{
+		DeleteImageFN: func(t *model.Token, imageID int64) error {
+			return nil
+		},
 	}
 
 	tests := map[string]struct {
@@ -143,7 +155,7 @@ func TestDeleteOrganizationImageHandler(t *testing.T) {
 		response string
 		params   params
 	}{
-		"should fail beacuse trying to remove imagem from another organization": {
+		"should fail because trying to remove a imagem from another organization": {
 			body:     ``,
 			status:   http.StatusBadRequest,
 			response: ``,
@@ -151,15 +163,7 @@ func TestDeleteOrganizationImageHandler(t *testing.T) {
 				userID:         2,
 				organizationID: "1",
 				imageID:        "2",
-				repository: &organizationRepositoryMock{
-					GetFN: func(id int64) (*model.Organization, error) {
-						organization := model.Organization{}
-						return &organization, nil
-					},
-					DeleteImageFN: func(imageID int64, organizationID int64) error {
-						return nil
-					},
-				},
+				imageStorage:   noError,
 			},
 		},
 		"should success beacuse the right values were sent": {
@@ -170,27 +174,7 @@ func TestDeleteOrganizationImageHandler(t *testing.T) {
 				userID:         1,
 				organizationID: "1",
 				imageID:        "1",
-				repository: &organizationRepositoryMock{
-					GetFN: func(id int64) (*model.Organization, error) {
-						organization := model.Organization{
-							User: model.User{
-								Email:    "test@coderockr",
-								Password: "",
-								ID:       1,
-							},
-							Name:    "",
-							Logo:    "",
-							Phone:   "",
-							About:   "",
-							Video:   "",
-							Address: model.Address{},
-						}
-						return &organization, nil
-					},
-					DeleteImageFN: func(imageID int64, organizationID int64) error {
-						return nil
-					},
-				},
+				imageStorage:   noError,
 			},
 		},
 	}
@@ -199,11 +183,11 @@ func TestDeleteOrganizationImageHandler(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			r, _ := http.NewRequest("DELETE", "/v1/organization/"+v.params.organizationID+"/image/"+v.params.imageID, strings.NewReader(v.body))
 			r = mux.SetURLVars(r, map[string]string{"id": v.params.organizationID, "image_id": v.params.imageID})
-			context.Set(r, handlers.UserKey, v.params.userID)
+			context.Set(r, handlers.TokenKey, &model.Token{UserID: v.params.userID})
 
 			resp := httptest.NewRecorder()
 
-			handlers.DeleteOrganizationImageHandler(v.params.repository)(resp, r)
+			handlers.DeleteOrganizationImageHandler(&v.params.imageStorage)(resp, r)
 
 			result := resp.Result()
 			body, _ := ioutil.ReadAll(result.Body)
@@ -226,4 +210,12 @@ func (r *organizationRepositoryMock) Update(o model.Organization) (model.Organiz
 
 func (r *organizationRepositoryMock) DeleteImage(imageID int64, organizationID int64) error {
 	return r.DeleteImageFN(imageID, organizationID)
+}
+
+func (iS *organizationImageStorage) DeleteOrganizationImage(t *model.Token, imageID int64) error {
+	return iS.DeleteImageFN(t, imageID)
+}
+
+func (iS *organizationImageStorage) CreateOrganizationImage(t *model.Token, f *multipart.FileHeader) (*model.OrganizationImage, error) {
+	return iS.CreateImageFN(t, f)
 }

@@ -102,7 +102,7 @@ func TestUpdateNeedHandler(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			r, _ := http.NewRequest("PUT", "/v1/need/"+v.params.needID, strings.NewReader(v.body))
 			r = mux.SetURLVars(r, map[string]string{"id": v.params.needID})
-			context.Set(r, handlers.UserKey, v.params.userID)
+			context.Set(r, handlers.TokenKey, &model.Token{UserID: v.params.userID})
 
 			resp := httptest.NewRecorder()
 
