@@ -22,6 +22,7 @@ import (
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/repo"
 	"github.com/Coderockr/vitrine-social/server/handlers"
+	"github.com/Coderockr/vitrine-social/server/mail"
 	"github.com/Coderockr/vitrine-social/server/middlewares"
 	"github.com/Coderockr/vitrine-social/server/storage"
 	"github.com/gorilla/context"
@@ -54,6 +55,11 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	sR := repo.NewSearchRepository(conn)
 
 	storageContainer, err := storage.Connect()
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = mail.Connect()
 	if err != nil {
 		panic(err)
 	}
