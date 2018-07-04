@@ -1,6 +1,7 @@
 package mail
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 
@@ -10,9 +11,19 @@ import (
 )
 
 // Mailer is a implementation to send emails
-type Mailer struct {
-	Dial   *gomail.SendCloser
-	Client *sendgrid.Client
+type Mailer interface {
+	SendEmail(EmailParams) error
+}
+
+// SendGridMailer is a implementation of SendGrid API
+type SendGridMailer struct {
+	Client       *sendgrid.Client
+	mailSettings *mail.MailSettings
+}
+
+// SMTPMailer is a implementation of SMTP
+type SMTPMailer struct {
+	Dial *gomail.SendCloser
 }
 
 // EmailParams struct with emails infos
@@ -27,65 +38,56 @@ type EmailParams struct {
 // Connect - Create and return a dialer
 func Connect() (Mailer, error) {
 	method := os.Getenv("MAIL_METHOD")
-	var mailer Mailer
-	var err error
 
 	switch method {
 	case "sendgrid":
 		client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
-		mailer = Mailer{
-			Dial:   nil,
-			Client: client,
+		var mailSettings *mail.MailSettings
+
+		if os.Getenv("MAIL_SANDBOX") == "true" {
+			mailSettings = mail.NewMailSettings()
+			mailSettings.SetSandboxMode(mail.NewSetting(true))
 		}
-		err = nil
+
+		return SendGridMailer{Client: client, mailSettings: mailSettings}, nil
 
 	case "smtp":
 		var dial gomail.SendCloser
 		mailPort, _ := strconv.Atoi(os.Getenv("MAIL_PORT"))
 		dialer := gomail.NewPlainDialer(os.Getenv("MAIL_HOST"), mailPort, os.Getenv("MAIL_USER"), os.Getenv("MAIL_PASS"))
-		dial, err = dialer.Dial()
+		dial, err := dialer.Dial()
 
-		mailer = Mailer{
-			Dial:   &dial,
-			Client: nil,
-		}
+		return SMTPMailer{Dial: &dial}, err
+
+	default:
+		return nil, fmt.Errorf("mail method %s is not known", method)
 	}
-
-	return mailer, err
 }
 
 // SendEmail - Send email
-func (mailer Mailer) SendEmail(params EmailParams) error {
+func (mailer SendGridMailer) SendEmail(params EmailParams) error {
 	var err error
-	method := os.Getenv("MAIL_METHOD")
 
-	switch method {
-	case "sendgrid":
-		from := mail.NewEmail("", params.From)
-		to := mail.NewEmail("", params.To)
-		message := mail.NewSingleEmail(from, params.Subject, to, params.Body, params.Body)
+	from := mail.NewEmail("", params.From)
+	to := mail.NewEmail("", params.To)
+	message := mail.NewSingleEmail(from, params.Subject, to, params.Body, params.Body)
 
-		if os.Getenv("MAIL_SANDBOX") == "true" {
-			mailSettings := mail.NewMailSettings()
-			mailSettings.SetSandboxMode(mail.NewSetting(true))
-			message.SetMailSettings(mailSettings)
-		}
-
-		if params.TemplateID != "" {
-			message.SetTemplateID(params.TemplateID)
-		}
-
-		_, err = mailer.Client.Send(message)
-
-	case "smtp":
-		message := gomail.NewMessage()
-		message.SetHeader("From", params.From)
-		message.SetHeader("To", params.To)
-		message.SetHeader("Subject", params.Subject)
-		message.SetBody("text/html", params.Body)
-
-		err = gomail.Send(*mailer.Dial, message)
+	if params.TemplateID != "" {
+		message.SetTemplateID(params.TemplateID)
 	}
 
+	_, err = mailer.Client.Send(message)
+
 	return err
+}
+
+// SendEmail - Send email
+func (mailer SMTPMailer) SendEmail(params EmailParams) error {
+	message := gomail.NewMessage()
+	message.SetHeader("From", params.From)
+	message.SetHeader("To", params.To)
+	message.SetHeader("Subject", params.Subject)
+	message.SetBody("text/html", params.Body)
+
+	return gomail.Send(*mailer.Dial, message)
 }
