@@ -154,6 +154,21 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/sendgrid/rest"
+  packages = ["."]
+  revision = "306b9bef57dc36f3435ccfcc08fe6ae2c6920344"
+  version = "v2.4.1"
+
+[[projects]]
+  name = "github.com/sendgrid/sendgrid-go"
+  packages = [
+    ".",
+    "helpers/mail"
+  ]
+  revision = "8caf17aa96b4a98bae8bd216878dd50ff12897b5"
+  version = "v3.4.1"
+
+[[projects]]
   name = "github.com/spf13/cobra"
   packages = ["."]
   revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
@@ -253,6 +268,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d0f034d7f5bb42cc8a3661d4079652d11c2249355b7fcfaacdd795b9a8c280c5"
+  inputs-digest = "49076282ab7a724a91b895ab54837d72d58ff8fab84ab083fb9f406f61663de5"
   solver-name = "gps-cdcl"
   solver-version = 1
