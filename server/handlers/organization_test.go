@@ -43,7 +43,7 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 		response string
 		params   params
 	}{
-		"should fail beacuse trying to update another organization": {
+		"should fail because trying to update another organization": {
 			body:     ``,
 			status:   http.StatusBadRequest,
 			response: ``,
@@ -61,7 +61,7 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 				},
 			},
 		},
-		"should success beacuse the right values were sent": {
+		"should success because the right values were sent": {
 			body: `{
 				"name": "Novo Nome",
 				"logo": "Novo Logo",
@@ -166,7 +166,7 @@ func TestDeleteOrganizationImageHandler(t *testing.T) {
 				imageStorage:   noError,
 			},
 		},
-		"should success beacuse the right values were sent": {
+		"should success because the right values were sent": {
 			body:     ``,
 			status:   http.StatusNoContent,
 			response: ``,
