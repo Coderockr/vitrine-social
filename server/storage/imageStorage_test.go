@@ -19,7 +19,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 
 	type test struct {
 		token     *model.Token
-		needId    int64
+		needID    int64
 		fh        *multipart.FileHeader
 		err       string
 		container *containerMock
@@ -57,7 +57,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 	tests := map[string]test{
 		"when_need_not_exists": test{
 			token:     &model.Token{},
-			needId:    404,
+			needID:    404,
 			fh:        nil,
 			err:       "there is no need with the id 404",
 			container: c,
@@ -69,7 +69,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 		},
 		"when_org_does_not_own_need": test{
 			token:     &model.Token{UserID: 403},
-			needId:    405,
+			needID:    405,
 			fh:        nil,
 			err:       "need 405 does not belong to organization 403",
 			container: c,
@@ -77,7 +77,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 		},
 		"when_fails_to_process_file": test{
 			token:     &model.Token{UserID: 888},
-			needId:    405,
+			needID:    405,
 			fh:        &multipart.FileHeader{Filename: "upload.png"},
 			err:       "there was a problem with the file upload.png",
 			container: c,
@@ -85,7 +85,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 		},
 		"when_fails_to_load_to_container": test{
 			token:     &model.Token{UserID: 888},
-			needId:    405,
+			needID:    405,
 			fh:        r.MultipartForm.File["to_fail"][0],
 			err:       "there was a problem saving the file imageStorage_test.go",
 			container: c,
@@ -93,7 +93,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 		},
 		"when_fails_to_save_to_database": test{
 			token:  &model.Token{UserID: 888},
-			needId: 405,
+			needID: 405,
 			fh:     r.MultipartForm.File["not_to_fail"][0],
 			err:    "it have failed to save",
 			container: &containerMock{
@@ -130,7 +130,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 				NeedRepository: p.needRepo,
 			}
 
-			_, err := iS.CreateNeedImage(p.token, p.needId, p.fh)
+			_, err := iS.CreateNeedImage(p.token, p.needID, p.fh)
 			require.Equal(t, err.Error(), p.err)
 
 			if len(p.container.pedingActions) != 0 {
