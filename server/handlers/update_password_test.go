@@ -17,6 +17,7 @@ import (
 type (
 	UpdatePasswordOrganizationRepositoryMock struct {
 		GetFN             func(id int64) (*model.Organization, error)
+		GetByEmailFN      func(email string) (*model.Organization, error)
 		ResetPasswordToFN func(o *model.Organization, password string) error
 	}
 )
@@ -52,6 +53,9 @@ func TestUpdatePasswordHandler(t *testing.T) {
 						}
 						return organization, err
 					},
+					GetByEmailFN: func(email string) (*model.Organization, error) {
+						return nil, nil
+					},
 					ResetPasswordToFN: func(*model.Organization, string) error {
 						return nil
 					},
@@ -76,6 +80,9 @@ func TestUpdatePasswordHandler(t *testing.T) {
 							},
 						}
 						return organization, err
+					},
+					GetByEmailFN: func(email string) (*model.Organization, error) {
+						return nil, nil
 					},
 					ResetPasswordToFN: func(*model.Organization, string) error {
 						return nil
@@ -106,6 +113,10 @@ func TestUpdatePasswordHandler(t *testing.T) {
 
 func (r *UpdatePasswordOrganizationRepositoryMock) Get(id int64) (*model.Organization, error) {
 	return r.GetFN(id)
+}
+
+func (r *UpdatePasswordOrganizationRepositoryMock) GetByEmail(email string) (*model.Organization, error) {
+	return r.GetByEmailFN(email)
 }
 
 func (r *UpdatePasswordOrganizationRepositoryMock) ResetPasswordTo(o *model.Organization, password string) error {

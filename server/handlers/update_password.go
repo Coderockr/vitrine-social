@@ -107,11 +107,10 @@ func ForgotPasswordHandler(repo UpdatePasswordOrganizationRepository, mailer mai
 		Emjson := mail.EmailParams{
 			To:         organization.User.Email,
 			Subject:    "Esqueci minha senha",
-			Body:       token,
-			TemplateID: "13f681b3-d48c-4b66-9204-e07f3afb33ed",
+			TemplateID: os.Getenv("SENDGRID_TEMPLATE_FORGOT_PASSWORD"),
 			Variables: map[string]string{
 				"{{name}}": organization.Name,
-				"{{link}}": token,
+				"{{link}}": os.Getenv("FRONTEND_URL") + "/recover-password/" + token,
 			},
 		}
 
