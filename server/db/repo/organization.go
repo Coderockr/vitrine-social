@@ -1,9 +1,7 @@
 package repo
 
 import (
-	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/Coderockr/vitrine-social/server/security"
 
@@ -186,19 +184,6 @@ func (r *OrganizationRepository) ResetPasswordTo(o *model.Organization, password
 	}
 	o.Password = hash
 	return nil
-}
-
-// ChangePassword will update a organization password given its old password
-func (r *OrganizationRepository) ChangePassword(o model.Organization, currentPassword, newPassword string) (model.Organization, error) {
-	err := security.CompareHashAndPassword(o.Password, currentPassword)
-	if err != nil {
-		return o, errors.New("Senha inválida")
-	}
-
-	newPassword = strings.TrimSpace(newPassword)
-
-	r.ResetPasswordTo(&o, newPassword)
-	return o, nil
 }
 
 // CreateImage creates a new organization image based on the struct
