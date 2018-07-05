@@ -3,17 +3,17 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
-	"io"
-	"log"
+	"mime/multipart"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
-	"github.com/gobuffalo/uuid"
 	"github.com/gorilla/mux"
-	"github.com/graymeta/stow"
+)
+
+const (
+	defaultMaxMemory = 32 << 20 // 32 MB
 )
 
 type (
@@ -29,7 +29,8 @@ type (
 	}
 
 	needStorageContainer interface {
-		Put(name string, r io.Reader, size int64, metadata map[string]interface{}) (stow.Item, error)
+		CreateNeedImage(*model.Token, int64, *multipart.FileHeader) (*model.NeedImage, error)
+		DeleteNeedImage(t *model.Token, nID, iID int64) error
 	}
 )
 
@@ -164,7 +165,7 @@ func UpdateNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.
 }
 
 // UploadNeedImagesHandler upload file to storage and save new image
-func UploadNeedImagesHandler(repo NeedRepository, container needStorageContainer) func(w http.ResponseWriter, r *http.Request) {
+func UploadNeedImagesHandler(container needStorageContainer) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id, err := strconv.ParseInt(vars["id"], 10, 64)
@@ -173,35 +174,47 @@ func UploadNeedImagesHandler(repo NeedRepository, container needStorageContainer
 			return
 		}
 
-		file, handler, err := r.FormFile("images")
-		if err != nil {
+		if err := r.ParseMultipartForm(defaultMaxMemory); err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		files := r.MultipartForm.File["images"]
+		if len(files) == 0 {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível ler o arquivo"))
 			return
 		}
-		defer file.Close()
 
-		fileName := strings.Split(handler.Filename, ".")
-
-		uuid := uuid.Must(uuid.NewV4())
-		path := "need-" + vars["id"] + "/" + uuid.String() + "." + fileName[1]
-		item, err := container.Put(path, file, handler.Size, nil)
+		t := GetModelToken(r)
+		i, err := container.CreateNeedImage(t, id, files[0])
 		if err != nil {
-			log.Fatalf("Erro ao salvar arquivo: %v\n", err)
-			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar arquivo"))
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar imagem: %s", err))
 			return
 		}
 
-		image := model.NeedImage{
-			Image: model.Image{
-				Name: fileName[0],
-				URL:  item.ID(),
-			},
-			NeedID: id,
+		HandleHTTPSuccess(w, map[string]int64{"id": i.ID})
+	}
+}
+
+// DeleteNeedImagesHandler will delete the image
+func DeleteNeedImagesHandler(storage needStorageContainer) func(w http.ResponseWriter, req *http.Request) {
+	return func(w http.ResponseWriter, req *http.Request) {
+		vars := mux.Vars(req)
+		needID, err := strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+			return
 		}
 
-		image, err = repo.CreateImage(image)
+		imageID, err := strconv.ParseInt(vars["image_id"], 10, 64)
 		if err != nil {
-			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar imagem: %s", err))
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["image_id"]))
+			return
+		}
+
+		t := GetModelToken(req)
+		if err = storage.DeleteNeedImage(t, needID, imageID); err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
 			return
 		}
 

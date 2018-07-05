@@ -111,6 +111,7 @@ func (m *JWTManager) ValidateToken(tokenString string) (*model.Token, error) {
 	t := model.Token{
 		UserID:      v.UserID,
 		Permissions: make(map[string]bool),
+		Token:       tokenString,
 	}
 	if v.Permissions != nil {
 		for _, p := range *v.Permissions {

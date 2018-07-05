@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"mime/multipart"
 	"net/http"
 	"strconv"
 
@@ -16,6 +17,11 @@ type (
 		Get(id int64) (*model.Organization, error)
 		Update(o model.Organization) (model.Organization, error)
 		DeleteImage(imageID int64, organizationID int64) error
+	}
+
+	organizationStorage interface {
+		DeleteOrganizationImage(*model.Token, int64) error
+		CreateOrganizationImage(*model.Token, *multipart.FileHeader) (*model.OrganizationImage, error)
 	}
 )
 
@@ -147,8 +153,45 @@ func UpdateOrganizationHandler(repo OrganizationRepository) func(w http.Response
 	}
 }
 
+// UploadOrganizationImageHandler upload file to storage and save new image
+func UploadOrganizationImageHandler(container organizationStorage) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		organizationID, err := strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+			return
+		}
+
+		t := GetModelToken(r)
+		if organizationID == 0 || organizationID != t.UserID {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("você não possui acesso a organização %d", organizationID))
+			return
+		}
+
+		if err := r.ParseMultipartForm(defaultMaxMemory); err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		files := r.MultipartForm.File["images"]
+		if len(files) == 0 {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível ler o arquivo"))
+			return
+		}
+
+		i, err := container.CreateOrganizationImage(t, files[0])
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar imagem: %s", err))
+			return
+		}
+
+		HandleHTTPSuccess(w, map[string]int64{"id": i.ID})
+	}
+}
+
 // DeleteOrganizationImageHandler will delete the image
-func DeleteOrganizationImageHandler(repo OrganizationRepository) func(w http.ResponseWriter, req *http.Request) {
+func DeleteOrganizationImageHandler(storage organizationStorage) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		vars := mux.Vars(req)
 		organizationID, err := strconv.ParseInt(vars["id"], 10, 64)
@@ -163,19 +206,15 @@ func DeleteOrganizationImageHandler(repo OrganizationRepository) func(w http.Res
 			return
 		}
 
-		userID := GetUserID(req)
-		if organizationID == 0 || organizationID != userID {
+		t := GetModelToken(req)
+
+		if organizationID == 0 || organizationID != t.UserID {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("você não possui permissão para remover a Imagem %d", imageID))
 			return
 		}
 
-		err = repo.DeleteImage(imageID, organizationID)
-		switch {
-		case err == sql.ErrNoRows:
-			HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Não foi encontrada Imagem com ID: %d", imageID))
-			return
-		case err != nil:
-			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao deletar Imagem: %s", err))
+		if err = storage.DeleteOrganizationImage(t, imageID); err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
 			return
 		}
 

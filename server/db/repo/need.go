@@ -33,8 +33,15 @@ func (r *NeedRepository) Get(id int64) (*model.Need, error) {
 		return nil, err
 	}
 
+	n.Images, err = getNeedImages(r.db, n)
+
 	n.Category, err = r.catRepo.Get(n.CategoryID)
 	return n, nil
+}
+
+// GetNeedsImages retrive the images of a Need
+func (r *NeedRepository) GetNeedsImages(n model.Need) ([]model.NeedImage, error) {
+	return getNeedImages(r.db, &n)
 }
 
 // getNeedImages without the need data
@@ -137,6 +144,12 @@ func (r *NeedRepository) CreateImage(i model.NeedImage) (model.NeedImage, error)
 	}
 
 	return i, nil
+}
+
+// DeleteImage delete a image from a need
+func (r *NeedRepository) DeleteImage(imageID, needID int64) error {
+	_, err := r.db.Exec(`DELETE FROM needs_images WHERE id = $1 AND need_id = $2`, imageID, needID)
+	return err
 }
 
 func validate(r *NeedRepository, n model.Need) (model.Need, error) {
