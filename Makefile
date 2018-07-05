@@ -82,6 +82,10 @@ lint: ## show source lint
 tests: ## run go tests
 	cd server && go test -v -race ./...
 
+tests-watch:
+	go get github.com/smartystreets/goconvey
+	cd server && goconvey
+
 tests-frontend: ## run frontend tests
 	cd frontend && yarn test
 
