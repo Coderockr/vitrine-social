@@ -100,7 +100,7 @@ func TestCreateNeedHandler(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			r, _ := http.NewRequest("POST", "/v1/need", strings.NewReader(v.body))
 			resp := httptest.NewRecorder()
-			context.Set(r, handlers.UserKey, v.userID)
+			context.Set(r, handlers.TokenKey, &model.Token{UserID: v.userID})
 
 			handlers.CreateNeedHandler(v.create)(resp, r)
 

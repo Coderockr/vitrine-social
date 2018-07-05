@@ -89,7 +89,7 @@ func TestUpdatePasswordHandler(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			r, _ := http.NewRequest("POST", "/v1/update-password", strings.NewReader(v.body))
 			resp := httptest.NewRecorder()
-			context.Set(r, handlers.UserKey, v.params.userID)
+			context.Set(r, handlers.TokenKey, &model.Token{UserID: v.params.userID})
 
 			handlers.UpdatePasswordHandler(v.params.repository)(resp, r)
 

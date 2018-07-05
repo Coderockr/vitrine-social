@@ -18,6 +18,7 @@ const (
 type Token struct {
 	UserID      int64
 	Permissions map[string]bool
+	Token       string
 }
 
 // User you know it

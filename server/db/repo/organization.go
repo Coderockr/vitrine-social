@@ -185,3 +185,22 @@ func (r *OrganizationRepository) ResetPasswordTo(o *model.Organization, password
 	o.Password = hash
 	return nil
 }
+
+// CreateImage creates a new organization image based on the struct
+func (r *OrganizationRepository) CreateImage(i model.OrganizationImage) (model.OrganizationImage, error) {
+	err := r.db.QueryRow(
+		`INSERT INTO organizations_images (organization_id, name, url)
+			VALUES($1, $2, $3)
+			RETURNING id
+		`,
+		i.OrganizationID,
+		i.Image.Name,
+		i.Image.URL,
+	).Scan(&i.ID)
+
+	if err != nil {
+		return i, err
+	}
+
+	return i, nil
+}
