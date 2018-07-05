@@ -135,7 +135,7 @@ func (s *ImageStorage) createImage(fh *multipart.FileHeader, folder string) (*mo
 	defer file.Close()
 
 	if err != nil {
-		log.Fatalf("[ImageStorage] Error upload file %s: %#v", fh.Filename, err)
+		log.Printf("[ImageStorage] Error upload file %s: %#v", fh.Filename, err)
 		return nil, fmt.Errorf("there was a problem with the file %s", fh.Filename)
 	}
 
@@ -153,7 +153,7 @@ func (s *ImageStorage) createImage(fh *multipart.FileHeader, folder string) (*mo
 	)
 
 	if err != nil {
-		log.Fatalf("[ImageStorage] Error uploading file to container %s: %#v", fh.Filename, err)
+		log.Printf("[ImageStorage] Error uploading file to container %s: %#v", fh.Filename, err)
 		return nil, fmt.Errorf("there was a problem saving the file %s", fh.Filename)
 	}
 	i := model.Image{

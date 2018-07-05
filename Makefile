@@ -7,6 +7,7 @@ export DATABASE_HOST ?= 0.0.0.0
 export m ?= default
 export commit ?= HEAD
 export bin ?= vitrine-social
+export testWatchPort=8091
 
 .PHONY: build
 
@@ -84,7 +85,7 @@ tests: ## run go tests
 
 tests-watch:
 	go get github.com/smartystreets/goconvey
-	cd server && goconvey
+	cd server && goconvey -port $(testWatchPort)
 
 tests-frontend: ## run frontend tests
 	cd frontend && yarn test
