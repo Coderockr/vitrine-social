@@ -34,13 +34,16 @@ func (mailer SendGridMailer) SendEmail(params EmailParams) error {
 	to := mail.NewEmail("", params.To)
 	message := mail.NewV3MailInit(from, params.Subject, to)
 
-	if params.TemplateID != "" {
-		message.SetTemplateID(params.TemplateID)
+	if params.Template != "" {
+		switch params.Template {
+		case ForgotPasswordTemplate:
+			message.SetTemplateID(os.Getenv("SENDGRID_TEMPLATE_FORGOT_PASSWORD"))
+		}
 	}
 
 	if len(params.Variables) > 0 {
 		for i := range params.Variables {
-			message.Personalizations[0].SetSubstitution(i, params.Variables[i])
+			message.Personalizations[0].SetSubstitution("{{"+i+"}}", params.Variables[i])
 		}
 	}
 

@@ -59,6 +59,14 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		panic(err)
 	}
 
+	iS := &storage.ImageStorage{
+		Container:              storageContainer,
+		NeedRepository:         nR,
+		OrganizationRepository: oR,
+	}
+
+	tm := &handlers.JWTManager{OP: getJWTOptions()}
+
 	mailer, err := mail.Connect()
 	if err != nil {
 		panic(err)
@@ -69,11 +77,10 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	mux := mux.NewRouter()
 
 	v1 := mux.PathPrefix("/v1").Subrouter()
-	options := getJWTOptions()
 
 	AuthHandler := handlers.AuthHandler{
 		OrganizationGetter: oR,
-		TokenManager:       &handlers.JWTManager{OP: options},
+		TokenManager:       tm,
 	}
 
 	authMiddleware := negroni.New()
@@ -89,7 +96,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		negroni.WrapFunc(handlers.ResetPasswordHandler(oR)),
 	)).Methods("POST")
 
-	v1.HandleFunc("/auth/forgot-password", handlers.ForgotPasswordHandler(oR, mailer)).Methods("POST")
+	v1.HandleFunc("/auth/forgot-password", handlers.ForgotPasswordHandler(oR, mailer, tm)).Methods("POST")
 
 	v1.HandleFunc("/search", handlers.SearchHandler(sR)).Methods("GET")
 
@@ -99,8 +106,12 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		negroni.WrapFunc(handlers.UpdateOrganizationHandler(oR)),
 	)).Methods("PUT")
 
+	v1.Path("/organization/{id:[0-9]+}/images").Handler(authMiddleware.With(
+		negroni.WrapFunc(handlers.UploadOrganizationImageHandler(iS)),
+	)).Methods("POST")
+
 	v1.Path("/organization/{id:[0-9]+}/image/{image_id:[0-9]+}").Handler(authMiddleware.With(
-		negroni.WrapFunc(handlers.DeleteOrganizationImageHandler(oR)),
+		negroni.WrapFunc(handlers.DeleteOrganizationImageHandler(iS)),
 	)).Methods("DELETE")
 
 	v1.HandleFunc("/need/{id}", handlers.GetNeedHandler(nR, oR)).Methods("GET")
@@ -115,7 +126,13 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo)).Methods("POST")
 
-	v1.HandleFunc("/need/{id}/images", handlers.UploadNeedImagesHandler(nR, storageContainer)).Methods("POST")
+	v1.Path("/need/{id:[0-9]+}/images").Handler(authMiddleware.With(
+		negroni.WrapFunc(handlers.UploadNeedImagesHandler(iS)),
+	)).Methods("POST")
+
+	v1.Path("/need/{id:[0-9]+}/image/{image_id:[0-9]+}").Handler(authMiddleware.With(
+		negroni.WrapFunc(handlers.DeleteNeedImagesHandler(iS)),
+	)).Methods("DELETE")
 
 	// Category Routes
 	v1.HandleFunc("/categories", handlers.GetAllCategoriesHandler(cR, nR)).Methods("GET")

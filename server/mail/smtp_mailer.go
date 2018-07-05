@@ -28,7 +28,7 @@ func (mailer SMTPMailer) SendEmail(params EmailParams) error {
 	message.SetHeader("From", os.Getenv("MAIL_FROM"))
 	message.SetHeader("To", params.To)
 	message.SetHeader("Subject", params.Subject)
-	message.SetBody("text/html", params.Body)
+	message.SetBody("text/html", "")
 
 	return gomail.Send(*mailer.Dial, message)
 }

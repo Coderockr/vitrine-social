@@ -7,6 +7,7 @@ export DATABASE_HOST ?= 0.0.0.0
 export m ?= default
 export commit ?= HEAD
 export bin ?= vitrine-social
+export testWatchPort=8091
 
 .PHONY: build
 
@@ -18,6 +19,7 @@ setup: ## initial project setup
 install: ## install project dependences
 	go get -u github.com/golang/dep/cmd/dep
 	go get -u github.com/haya14busa/goverage
+	go get -u golang.org/x/lint/golint
 	cd server; dep ensure -v
 
 install-frontend: ## install frontend dependences
@@ -75,8 +77,15 @@ docs-open:
 help: ## show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+lint: ## show source lint
+	golint `find server -type d -maxdepth 1`
+
 tests: ## run go tests
 	cd server && go test -v -race ./...
+
+tests-watch:
+	go get github.com/smartystreets/goconvey
+	cd server && goconvey -port $(testWatchPort)
 
 tests-frontend: ## run frontend tests
 	cd frontend && yarn test

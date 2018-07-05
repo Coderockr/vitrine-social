@@ -2,11 +2,9 @@ package handlers
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/Coderockr/vitrine-social/server/mail"
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -78,7 +76,7 @@ func ResetPasswordHandler(repo UpdatePasswordOrganizationRepository) func(w http
 }
 
 // ForgotPasswordHandler create a token to reset password and send it to email
-func ForgotPasswordHandler(repo UpdatePasswordOrganizationRepository, mailer mail.Mailer) func(w http.ResponseWriter, r *http.Request) {
+func ForgotPasswordHandler(repo UpdatePasswordOrganizationRepository, mailer mail.Mailer, jm *JWTManager) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var handlerForm map[string]string
 
@@ -90,45 +88,31 @@ func ForgotPasswordHandler(repo UpdatePasswordOrganizationRepository, mailer mai
 
 		organization, err := repo.GetByEmail(handlerForm["email"])
 		if organization == nil {
-			HandleHTTPError(w, http.StatusUnauthorized, errors.New("Email não encontrado"))
-			os.Exit(1)
+			HandleHTTPError(w, http.StatusUnauthorized, errors.New("Não há organização com este email"))
+			return
 		}
-
-		options := getJWTOptions()
-		manager := JWTManager{OP: options}
 
 		p := []string{model.PasswordResetPermission}
-		token, err := manager.CreateToken(organization.User, &p)
+		token, err := jm.CreateToken(organization.User, &p)
 		if err != nil {
-			log.Fatal(err)
-			os.Exit(1)
+			return
 		}
 
-		Emjson := mail.EmailParams{
-			To:         organization.User.Email,
-			Subject:    "Esqueci minha senha",
-			TemplateID: os.Getenv("SENDGRID_TEMPLATE_FORGOT_PASSWORD"),
+		emailParams := mail.EmailParams{
+			To:       organization.User.Email,
+			Subject:  "Esqueci minha senha",
+			Template: mail.ForgotPasswordTemplate,
 			Variables: map[string]string{
-				"{{name}}": organization.Name,
-				"{{link}}": os.Getenv("FRONTEND_URL") + "/recover-password/" + token,
+				"name": organization.Name,
+				"link": os.Getenv("FRONTEND_URL") + "/recover-password/" + token,
 			},
 		}
 
-		err = mailer.SendEmail(Emjson)
-		if err != nil {
+		if err := mailer.SendEmail(emailParams); err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, errors.New("Falha ao enviar o email"))
-			os.Exit(1)
+			return
 		}
 
 		HandleHTTPSuccessNoContent(w)
-	}
-}
-
-func getJWTOptions() JWTOptions {
-	return JWTOptions{
-		SigningMethod: os.Getenv("VITRINESOCIAL_SIGNING_METHOD"),
-		PrivateKey:    []byte(os.Getenv("VITRINESOCIAL_PRIVATE_KEY")), // $ openssl genrsa -out app.rsa keysize
-		PublicKey:     []byte(os.Getenv("VITRINESOCIAL_PUBLIC_KEY")),  // $ openssl rsa -in app.rsa -pubout > app.rsa.pub
-		Expiration:    24 * 3 * time.Hour,
 	}
 }

@@ -5,6 +5,11 @@ import (
 	"os"
 )
 
+type emailTemplate string
+
+// ForgotPasswordTemplate is the ID for email template
+const ForgotPasswordTemplate = emailTemplate("forgot-password-template")
+
 // Mailer is a implementation to send emails
 type Mailer interface {
 	SendEmail(EmailParams) error
@@ -12,11 +17,10 @@ type Mailer interface {
 
 // EmailParams struct with emails infos
 type EmailParams struct {
-	To         string
-	Subject    string
-	Body       string
-	TemplateID string
-	Variables  map[string]string
+	To        string
+	Subject   string
+	Template  emailTemplate
+	Variables map[string]string
 }
 
 // Connect - Create and return a dialer
