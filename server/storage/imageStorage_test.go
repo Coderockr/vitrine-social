@@ -18,7 +18,57 @@ import (
 )
 
 func TestDeleteNeedImage(t *testing.T) {
+	assert := assert.New(t)
 
+	repo := &needRepositoryMock{}
+	c := &containerMock{}
+
+	n := &model.Need{
+		ID:             405,
+		OrganizationID: 888,
+	}
+
+	repo.On("Get", int64(405)).
+		Once().
+		Return(n, nil)
+
+	ni := model.NeedImage{
+		NeedID: n.ID,
+		Image: model.Image{
+			ID:  305,
+			URL: "http://localhost/305.png",
+		},
+	}
+
+	repo.On("GetNeedsImages", *n).
+		Once().
+		Return([]model.NeedImage{ni}, nil)
+
+	repo.On("DeleteImage", ni.ID, ni.NeedID).
+		Once().
+		Return(nil)
+
+	c.On("RemoveItem", ni.URL).
+		Once().
+		Return(nil)
+
+	iS := storage.ImageStorage{
+		NeedRepository: repo,
+		Container:      c,
+	}
+
+	err := iS.DeleteNeedImage(
+		&model.Token{
+			UserID: 888,
+		},
+		ni.NeedID,
+		ni.ID,
+	)
+
+	assert.Empty(err, "should've not fail")
+
+	c.AssertExpectations(t)
+	repo.AssertExpectations(t)
 }
 
 func TestDeleteNeedImageShouldFail(t *testing.T) {
