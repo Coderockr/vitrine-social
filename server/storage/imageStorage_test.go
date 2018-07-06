@@ -12,12 +12,75 @@ import (
 	"github.com/Coderockr/vitrine-social/server/storage"
 	testutil "github.com/Coderockr/vitrine-social/server/testutils"
 	"github.com/graymeta/stow"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
-func TestCreateNeedImageShouldFail(t *testing.T) {
+func TestCreateNeedImage(t *testing.T) {
+	assert := assert.New(t)
 
+	repo := &needRepositoryMock{}
+	c := &containerMock{}
+
+	repo.On("Get", int64(405)).
+		Return(
+			&model.Need{
+				ID:             405,
+				OrganizationID: 888,
+			},
+			nil,
+		)
+
+	iM := &itemMock{}
+	c.On("Put", mock.Anything, mock.Anything, mock.Anything, mock.Anything).
+		Run(func(args mock.Arguments) {
+			iM.url = args.String(0)
+			iM.md = args.Get(3).(map[string]interface{})
+		}).
+		Return(iM, nil)
+
+	call := repo.On("CreateImage", mock.Anything)
+	call.Run(func(args mock.Arguments) {
+		nI := args.Get(0).(model.NeedImage)
+		nI.ID = 333
+		call.Return(nI, nil)
+	})
+
+	iS := storage.ImageStorage{
+		Container:      c,
+		NeedRepository: repo,
+	}
+
+	r := testutil.NewFileUploadRequest(
+		"/test",
+		"POST",
+		make(map[string]string),
+		map[string]string{"images": "imageStorage_test.go"},
+	)
+
+	r.ParseMultipartForm(32 << 20)
+
+	nI, err := iS.CreateNeedImage(
+		&model.Token{
+			UserID: 888,
+		},
+		405,
+		r.MultipartForm.File["images"][0],
+	)
+
+	assert.Empty(err, "should've not fail")
+
+	assert.Equal(int64(333), nI.ID)
+	assert.Equal("imageStorage_test", nI.Name)
+	assert.Equal(int64(405), nI.NeedID)
+	assert.Regexp("^need-405/.*\\.go$", nI.URL)
+
+	c.AssertExpectations(t)
+	repo.AssertExpectations(t)
+}
+
+func TestCreateNeedImageShouldFail(t *testing.T) {
 	type test struct {
 		token     *model.Token
 		needID    int64
