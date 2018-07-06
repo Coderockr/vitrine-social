@@ -10,7 +10,7 @@ import (
 
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/Coderockr/vitrine-social/server/storage"
-	testutil "github.com/Coderockr/vitrine-social/server/testutils"
+	"github.com/Coderockr/vitrine-social/server/testutils"
 	"github.com/graymeta/stow"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -197,7 +197,7 @@ func TestCreateOrganizationImage(t *testing.T) {
 		OrganizationRepository: repo,
 	}
 
-	r := testutil.NewFileUploadRequest(
+	r := testutils.NewFileUploadRequest(
 		"/test",
 		"POST",
 		make(map[string]string),
@@ -231,7 +231,7 @@ func TestCreateOrganizationImageShouldFail(t *testing.T) {
 		repo      *orgRepositoryMock
 	}
 
-	r := testutil.NewFileUploadRequest(
+	r := testutils.NewFileUploadRequest(
 		"/test",
 		"POST",
 		make(map[string]string),
@@ -347,7 +347,7 @@ func TestCreateNeedImage(t *testing.T) {
 		NeedRepository: repo,
 	}
 
-	r := testutil.NewFileUploadRequest(
+	r := testutils.NewFileUploadRequest(
 		"/test",
 		"POST",
 		make(map[string]string),
@@ -385,7 +385,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 		needRepo  *needRepositoryMock
 	}
 
-	r := testutil.NewFileUploadRequest(
+	r := testutils.NewFileUploadRequest(
 		"/test",
 		"POST",
 		make(map[string]string),
