@@ -17,6 +17,149 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestCreateOrganizationImage(t *testing.T) {
+	assert := assert.New(t)
+
+	repo := &orgRepositoryMock{}
+	c := &containerMock{}
+
+	iM := &itemMock{}
+	c.On("Put", mock.Anything, mock.Anything, mock.Anything, mock.Anything).
+		Run(func(args mock.Arguments) {
+			iM.url = args.String(0)
+			iM.md = args.Get(3).(map[string]interface{})
+
+			assert.Regexp("^organization-888/.*\\.go$", iM.url)
+		}).
+		Return(iM, nil)
+
+	call := repo.On("CreateImage", mock.Anything)
+	call.Run(func(args mock.Arguments) {
+		nI := args.Get(0).(model.OrganizationImage)
+		nI.ID = 333
+		call.Return(nI, nil)
+	})
+
+	iS := storage.ImageStorage{
+		Container:              c,
+		OrganizationRepository: repo,
+	}
+
+	r := testutil.NewFileUploadRequest(
+		"/test",
+		"POST",
+		make(map[string]string),
+		map[string]string{"images": "imageStorage_test.go"},
+	)
+
+	r.ParseMultipartForm(32 << 20)
+
+	nI, err := iS.CreateOrganizationImage(
+		&model.Token{UserID: 888},
+		r.MultipartForm.File["images"][0],
+	)
+
+	assert.Empty(err, "should've not fail")
+
+	assert.Equal(int64(333), nI.ID)
+	assert.Equal("imageStorage_test", nI.Name)
+	assert.Equal(int64(888), nI.OrganizationID)
+	assert.Regexp("^organization-888/.*\\.go$", nI.URL)
+
+	c.AssertExpectations(t)
+	repo.AssertExpectations(t)
+}
+
+func TestCreateOrganizationImageShouldFail(t *testing.T) {
+	type test struct {
+		token     *model.Token
+		fh        *multipart.FileHeader
+		err       string
+		container *containerMock
+		repo      *orgRepositoryMock
+	}
+
+	r := testutil.NewFileUploadRequest(
+		"/test",
+		"POST",
+		make(map[string]string),
+		map[string]string{
+			"to_fail":     "imageStorage_test.go",
+			"not_to_fail": "imageStorage.go",
+		},
+	)
+
+	r.ParseMultipartForm(32 << 20)
+
+	tests := map[string]test{
+		"when_fails_to_process_file": test{
+			token: &model.Token{UserID: 888},
+			fh:    &multipart.FileHeader{Filename: "upload.png"},
+			err:   "there was a problem with the file upload.png",
+		},
+		"when_fails_to_load_to_container": test{
+			token: &model.Token{UserID: 888},
+			fh:    r.MultipartForm.File["to_fail"][0],
+			err:   "there was a problem saving the file imageStorage_test.go",
+			container: func() *containerMock {
+				c := &containerMock{}
+				c.On("Put", mock.Anything, mock.Anything, mock.Anything, mock.Anything).
+					Return(nil, errors.New("fail to save it"))
+				return c
+			}(),
+		},
+		"when_fails_to_save_to_database": test{
+			token: &model.Token{UserID: 888},
+			fh:    r.MultipartForm.File["not_to_fail"][0],
+			err:   "it have failed to save",
+			container: func() *containerMock {
+				c := &containerMock{}
+
+				i := &itemMock{}
+				c.On("Put", mock.Anything, mock.Anything, mock.Anything, mock.Anything).
+					Run(func(args mock.Arguments) {
+						i.url = args.String(0)
+						i.md = args.Get(3).(map[string]interface{})
+
+						c.On("RemoveItem", i.url).Once().Return(nil)
+					}).
+					Return(i, nil)
+
+				return c
+			}(),
+			repo: func() *orgRepositoryMock {
+				repo := &orgRepositoryMock{}
+				call := repo.On("CreateImage", mock.Anything)
+				call.Run(func(args mock.Arguments) {
+					call.Return(args.Get(0).(model.OrganizationImage), errors.New("it have failed to save"))
+				})
+				return repo
+			}(),
+		},
+	}
+
+	for n, p := range tests {
+		t.Run(n, func(t *testing.T) {
+			iS := storage.ImageStorage{
+				Container:              p.container,
+				OrganizationRepository: p.repo,
+			}
+
+			_, err := iS.CreateOrganizationImage(p.token, p.fh)
+			require.Equal(t, err.Error(), p.err)
+
+			if p.container != nil {
+				p.container.AssertExpectations(t)
+			}
+
+			if p.repo != nil {
+				p.repo.AssertExpectations(t)
+			}
+		})
+
+	}
+}
+
 func TestCreateNeedImage(t *testing.T) {
 	assert := assert.New(t)
 
