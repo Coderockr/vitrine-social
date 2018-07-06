@@ -17,6 +17,108 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestDeleteNeedImage(t *testing.T) {
+
+}
+
+func TestDeleteNeedImageShouldFail(t *testing.T) {
+	type test struct {
+		repo    *needRepositoryMock
+		token   *model.Token
+		needID  int64
+		imageID int64
+		err     string
+	}
+
+	tests := map[string]test{
+		"when_need_does_not_exists": test{
+			token: &model.Token{UserID: 888},
+			repo: func() *needRepositoryMock {
+				r := &needRepositoryMock{}
+				r.On("Get", int64(404)).
+					Return(nil, errors.New("not found"))
+				return r
+			}(),
+			needID: 404,
+			err:    "there is no need with the id 404",
+		},
+		"when_org_does_not_own_need": test{
+			token: &model.Token{UserID: 888},
+			repo: func() *needRepositoryMock {
+				r := &needRepositoryMock{}
+				r.On("Get", int64(405)).
+					Return(
+						&model.Need{
+							ID:             405,
+							OrganizationID: 777,
+						},
+						nil,
+					)
+				return r
+			}(),
+			needID: 405,
+			err:    "need 405 does not belong to organization 888",
+		},
+		"when_fail_to_select_images": test{
+			token: &model.Token{UserID: 888},
+			repo: func() *needRepositoryMock {
+				r := &needRepositoryMock{}
+				n := &model.Need{
+					ID:             405,
+					OrganizationID: 888,
+				}
+				r.On("Get", int64(405)).
+					Return(n, nil)
+
+				r.On("GetNeedsImages", *n).
+					Return([]model.NeedImage{}, errors.New("failed here"))
+
+				return r
+			}(),
+			needID:  405,
+			imageID: 404,
+			err:     "failed here",
+		},
+		"when_image_need_does_not_exist": test{
+			token: &model.Token{UserID: 888},
+			repo: func() *needRepositoryMock {
+				r := &needRepositoryMock{}
+				n := &model.Need{
+					ID:             405,
+					OrganizationID: 888,
+				}
+				r.On("Get", int64(405)).
+					Return(n, nil)
+
+				r.On("GetNeedsImages", *n).
+					Return([]model.NeedImage{model.NeedImage{}}, nil)
+
+				return r
+			}(),
+			needID:  405,
+			imageID: 404,
+			err:     "there is no image with id 404 at the need 405",
+		},
+	}
+
+	for n, params := range tests {
+		t.Run(n, func(t *testing.T) {
+
+			iS := storage.ImageStorage{NeedRepository: params.repo}
+
+			err := iS.DeleteNeedImage(
+				params.token,
+				params.needID,
+				params.imageID,
+			)
+
+			require.Equal(t, err.Error(), params.err)
+
+			params.repo.AssertExpectations(t)
+		})
+	}
+}
+
 func TestCreateOrganizationImage(t *testing.T) {
 	assert := assert.New(t)
 
