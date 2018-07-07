@@ -17,6 +17,114 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestDeleteOrganizationImage(t *testing.T) {
+	assert := assert.New(t)
+
+	repo := &orgRepositoryMock{}
+	c := &containerMock{}
+
+	oi := model.OrganizationImage{
+		OrganizationID: 888,
+		Image: model.Image{
+			ID:  405,
+			URL: "http://localhost/405.png",
+		},
+	}
+
+	o := &model.Organization{
+		User:   model.User{ID: oi.ID},
+		Images: []model.OrganizationImage{oi},
+	}
+
+	repo.On("Get", o.ID).
+		Once().
+		Return(o, nil)
+
+	repo.On("DeleteImage", oi.ID, oi.OrganizationID).
+		Once().
+		Return(nil)
+
+	c.On("RemoveItem", oi.URL).
+		Once().
+		Return(nil)
+
+	iS := storage.ImageStorage{
+		OrganizationRepository: repo,
+		Container:              c,
+	}
+
+	err := iS.DeleteOrganizationImage(
+		&model.Token{UserID: o.ID},
+		oi.ID,
+	)
+
+	assert.Empty(err, "should've not fail")
+
+	c.AssertExpectations(t)
+	repo.AssertExpectations(t)
+}
+
+func TestDeleteOrganizationImageShouldFail(t *testing.T) {
+	type test struct {
+		repo    *orgRepositoryMock
+		token   *model.Token
+		imageID int64
+		err     string
+	}
+
+	tests := map[string]test{
+		"when_org_does_not_exists": test{
+			token: &model.Token{UserID: 888},
+			repo: func() *orgRepositoryMock {
+				r := &orgRepositoryMock{}
+				r.On("Get", int64(888)).
+					Return(nil, errors.New("not found"))
+				return r
+			}(),
+			err: "not found",
+		},
+		"when_image_need_does_not_exist": test{
+			token: &model.Token{UserID: 888},
+			repo: func() *orgRepositoryMock {
+				r := &orgRepositoryMock{}
+				o := &model.Organization{
+					User: model.User{ID: 888},
+					Images: []model.OrganizationImage{
+						model.OrganizationImage{
+							Image: model.Image{
+								ID:  405,
+								URL: "http://localhost/image.png",
+							},
+						},
+					},
+				}
+
+				r.On("Get", o.ID).Return(o, nil)
+
+				return r
+			}(),
+			imageID: 404,
+			err:     "there is no image with id 404 at the organization 888",
+		},
+	}
+
+	for n, params := range tests {
+		t.Run(n, func(t *testing.T) {
+
+			iS := storage.ImageStorage{OrganizationRepository: params.repo}
+
+			err := iS.DeleteOrganizationImage(
+				params.token,
+				params.imageID,
+			)
+
+			require.Equal(t, err.Error(), params.err)
+
+			params.repo.AssertExpectations(t)
+		})
+	}
+}
+
 func TestDeleteNeedImage(t *testing.T) {
 	assert := assert.New(t)
 
@@ -543,6 +651,9 @@ type orgRepositoryMock struct {
 
 func (m *orgRepositoryMock) Get(id int64) (*model.Organization, error) {
 	args := m.Called(id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*model.Organization), args.Error(1)
 }
 
