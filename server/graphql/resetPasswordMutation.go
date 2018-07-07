@@ -18,26 +18,25 @@ var resetPasswordPayload = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-func newResetPasswordMutation(validate validateTokenFn, get getOrgFn, reset resetPasswordToFn) *graphql.Field {
+func newResetPasswordMutation(get getOrgFn, reset resetPasswordToFn) *graphql.Field {
 	return &graphql.Field{
 		Name:        "ResetPasswordMutation",
 		Description: "Reset the Organizations password to a new password",
 		Args: graphql.FieldConfigArgument{
-			"token":       nonNullStringArgument,
 			"newPassword": nonNullStringArgument,
 		},
 		Type: resetPasswordPayload,
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-			t, err := validate(p.Args["token"].(string))
-			if err != nil {
-				return nil, err
+			o, ok := p.Source.(*model.Organization)
+			if !ok {
+				return nil, errTokenOrgNotFound
 			}
 
+			t := getToken(p.Context)
 			if !t.Permissions[model.PasswordResetPermission] {
 				return nil, errors.New("token does not have permission to reset the password")
 			}
 
-			o, _ := get(t.UserID)
 			if err := reset(o, p.Args["newPassword"].(string)); err != nil {
 				return nil, err
 			}

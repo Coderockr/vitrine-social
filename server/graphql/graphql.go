@@ -1,10 +1,12 @@
 package graphql
 
 import (
+	"context"
 	"errors"
 	"log"
 	"net/http"
 
+	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
@@ -41,7 +43,6 @@ type (
 
 	tokenManager interface {
 		CreateToken(u model.User, ps *[]string) (string, error)
-		ValidateToken(token string) (*model.Token, error)
 	}
 )
 
@@ -61,7 +62,7 @@ func NewHandler(
 			"need":          newNeedQuery(nR.Get, oR.Get, nR.GetNeedsImages),
 			"organization":  newOrganizationQuery(oR.Get, sR.Search),
 			"category":      newCategoryQuery(cR.Get, cR.GetNeedsCount),
-			"viewer":        newViewerQuery(tm.ValidateToken, oR.Get),
+			"viewer":        newViewerQuery(oR.Get),
 			"allCategories": newAllCategoriesQuery(cR.GetAll),
 		},
 	}
@@ -69,16 +70,15 @@ func NewHandler(
 	rootMutation := graphql.ObjectConfig{
 		Name: "RootMutation",
 		Fields: graphql.Fields{
-			"login":         newLoginMutation(oR.GetUserByEmail, tm.CreateToken, oR.Get),
-			"resetPassword": newResetPasswordMutation(tm.ValidateToken, oR.Get, oR.ResetPasswordTo),
+			"login": newLoginMutation(oR.GetUserByEmail, tm.CreateToken, oR.Get),
 			"viewer": newViewerMutation(
-				tm.ValidateToken,
 				oR.Get,
 				graphql.Fields{
 					"updatePassword":     newUpdatePasswordMutation(oR.ChangePassword),
 					"organizationUpdate": newOrganizationUpdateMutation(oR.Update),
 					"needCreate":         newNeedCreateMutation(nR.Create),
 					"needUpdate":         newNeedUpdateMutation(nR.Get, nR.Update),
+					"resetPassword":      newResetPasswordMutation(oR.Get, oR.ResetPasswordTo),
 				},
 			),
 		},
@@ -95,13 +95,37 @@ func NewHandler(
 
 	h := handler.New(&handler.Config{
 		Schema:   &schema,
-		Pretty:   true,
-		GraphiQL: true,
+		Pretty:   false,
+		GraphiQL: false,
 	})
 
-	return graphqlmultipart.NewHandler(
-		&schema,
-		60*1024*1024,
-		h,
-	)
+	giqlHandler := &graphiqlHandler{
+		next: graphqlmultipart.NewHandler(
+			&schema,
+			60*1024*1024,
+			h,
+		),
+	}
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		giqlHandler.ServeHTTP(
+			w,
+			r.WithContext(
+				context.WithValue(r.Context(), contextTokenKey, handlers.GetModelToken(r)),
+			),
+		)
+	})
+}
+
+type contextKey string
+
+const contextTokenKey = contextKey("tokenKey")
+
+func getToken(c context.Context) *model.Token {
+	switch t := c.Value(contextTokenKey).(type) {
+	case *model.Token:
+		return t
+	default:
+		return nil
+	}
 }

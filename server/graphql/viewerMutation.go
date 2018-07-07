@@ -2,7 +2,7 @@ package graphql
 
 import "github.com/graphql-go/graphql"
 
-func newViewerMutation(validate validateTokenFn, get getOrgFn, fields graphql.Fields) *graphql.Field {
+func newViewerMutation(get getOrgFn, fields graphql.Fields) *graphql.Field {
 	viewerMutationType := graphql.NewObject(graphql.ObjectConfig{
 		Name:   "ViewerMutations",
 		Fields: fields,
@@ -11,10 +11,7 @@ func newViewerMutation(validate validateTokenFn, get getOrgFn, fields graphql.Fi
 	return &graphql.Field{
 		Name:        "Viewer mutations",
 		Description: "Mutations that need authentication",
-		Args: graphql.FieldConfigArgument{
-			"token": nonNullStringArgument,
-		},
-		Type:    viewerMutationType,
-		Resolve: getViewerByToken(validate, get),
+		Type:        viewerMutationType,
+		Resolve:     getViewerByToken(get),
 	}
 }

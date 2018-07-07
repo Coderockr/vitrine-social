@@ -109,21 +109,29 @@ func HasPermission(r *http.Request, p string) bool {
 	return ok
 }
 
-// AuthMiddleware valida o token e filtra usuários não logados corretamente
-func (a *AuthHandler) AuthMiddleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+// AuthenticationMiddleware will try to process a token sent through Authentication header, if it is informmed
+func (a *AuthHandler) AuthenticationMiddleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	token := r.Header.Get("Authorization")
-	if token == "" {
-		HandleHTTPError(w, http.StatusUnauthorized, errors.New("Error no token is provided"))
-		return
-	}
-	t, err := a.TokenManager.ValidateToken(token)
-
-	if err != nil {
-		HandleHTTPError(w, http.StatusUnauthorized, err)
-		return
+	var t *model.Token
+	if token != "" {
+		var err error
+		if t, err = a.TokenManager.ValidateToken(token); err != nil {
+			HandleHTTPError(w, http.StatusUnauthorized, err)
+			return
+		}
 	}
 
 	context.Set(r, TokenKey, t)
 	next(w, r)
 	context.Clear(r)
+}
+
+// OnlyAuthenticatedMiddleware filtra usuários não logados
+func (a *AuthHandler) OnlyAuthenticatedMiddleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	if GetModelToken(r) == nil {
+		HandleHTTPError(w, http.StatusUnauthorized, errors.New("Error no token is provided"))
+		return
+	}
+
+	next(w, r)
 }
