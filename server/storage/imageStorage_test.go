@@ -12,13 +12,11 @@ import (
 	"github.com/Coderockr/vitrine-social/server/storage"
 	"github.com/Coderockr/vitrine-social/server/testutils"
 	"github.com/graymeta/stow"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestDeleteOrganizationImage(t *testing.T) {
-	assert := assert.New(t)
 
 	repo := &orgRepositoryMock{}
 	c := &containerMock{}
@@ -58,7 +56,7 @@ func TestDeleteOrganizationImage(t *testing.T) {
 		oi.ID,
 	)
 
-	assert.Empty(err, "should've not fail")
+	require.Empty(t, err, "should've not fail")
 
 	c.AssertExpectations(t)
 	repo.AssertExpectations(t)
@@ -126,7 +124,6 @@ func TestDeleteOrganizationImageShouldFail(t *testing.T) {
 }
 
 func TestDeleteNeedImage(t *testing.T) {
-	assert := assert.New(t)
 
 	repo := &needRepositoryMock{}
 	c := &containerMock{}
@@ -173,7 +170,7 @@ func TestDeleteNeedImage(t *testing.T) {
 		ni.ID,
 	)
 
-	assert.Empty(err, "should've not fail")
+	require.Empty(t, err, "should've not fail")
 
 	c.AssertExpectations(t)
 	repo.AssertExpectations(t)
@@ -278,7 +275,6 @@ func TestDeleteNeedImageShouldFail(t *testing.T) {
 }
 
 func TestCreateOrganizationImage(t *testing.T) {
-	assert := assert.New(t)
 
 	repo := &orgRepositoryMock{}
 	c := &containerMock{}
@@ -289,7 +285,7 @@ func TestCreateOrganizationImage(t *testing.T) {
 			iM.url = args.String(0)
 			iM.md = args.Get(3).(map[string]interface{})
 
-			assert.Regexp("^organization-888/.*\\.go$", iM.url)
+			require.Regexp(t, "^organization-888/.*\\.go$", iM.url)
 		}).
 		Return(iM, nil)
 
@@ -319,12 +315,12 @@ func TestCreateOrganizationImage(t *testing.T) {
 		r.MultipartForm.File["images"][0],
 	)
 
-	assert.Empty(err, "should've not fail")
+	require.Empty(t, err, "should've not fail")
 
-	assert.Equal(int64(333), nI.ID)
-	assert.Equal("imageStorage_test", nI.Name)
-	assert.Equal(int64(888), nI.OrganizationID)
-	assert.Regexp("^organization-888/.*\\.go$", nI.URL)
+	require.Equal(t, int64(333), nI.ID)
+	require.Equal(t, "imageStorage_test", nI.Name)
+	require.Equal(t, int64(888), nI.OrganizationID)
+	require.Regexp(t, "^organization-888/.*\\.go$", nI.URL)
 
 	c.AssertExpectations(t)
 	repo.AssertExpectations(t)
@@ -421,7 +417,6 @@ func TestCreateOrganizationImageShouldFail(t *testing.T) {
 }
 
 func TestCreateNeedImage(t *testing.T) {
-	assert := assert.New(t)
 
 	repo := &needRepositoryMock{}
 	c := &containerMock{}
@@ -472,12 +467,12 @@ func TestCreateNeedImage(t *testing.T) {
 		r.MultipartForm.File["images"][0],
 	)
 
-	assert.Empty(err, "should've not fail")
+	require.Empty(t, err, "should've not fail")
 
-	assert.Equal(int64(333), nI.ID)
-	assert.Equal("imageStorage_test", nI.Name)
-	assert.Equal(int64(405), nI.NeedID)
-	assert.Regexp("^need-405/.*\\.go$", nI.URL)
+	require.Equal(t, int64(333), nI.ID)
+	require.Equal(t, "imageStorage_test", nI.Name)
+	require.Equal(t, int64(405), nI.NeedID)
+	require.Regexp(t, "^need-405/.*\\.go$", nI.URL)
 
 	c.AssertExpectations(t)
 	repo.AssertExpectations(t)
