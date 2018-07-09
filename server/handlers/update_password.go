@@ -3,8 +3,10 @@ package handlers
 import (
 	"errors"
 	"net/http"
+	"os"
 	"strings"
 
+	"github.com/Coderockr/vitrine-social/server/mail"
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/Coderockr/vitrine-social/server/security"
 )
@@ -13,6 +15,7 @@ type (
 	// UpdatePasswordOrganizationRepository represet operations for organization repository.
 	UpdatePasswordOrganizationRepository interface {
 		Get(id int64) (*model.Organization, error)
+		GetByEmail(email string) (*model.Organization, error)
 		ResetPasswordTo(o *model.Organization, password string) error
 	}
 )
@@ -69,5 +72,47 @@ func ResetPasswordHandler(repo UpdatePasswordOrganizationRepository) func(w http
 		repo.ResetPasswordTo(organization, newPassword)
 
 		HandleHTTPSuccess(w, nil)
+	}
+}
+
+// ForgotPasswordHandler create a token to reset password and send it to email
+func ForgotPasswordHandler(repo UpdatePasswordOrganizationRepository, mailer mail.Mailer, jm *JWTManager) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var handlerForm map[string]string
+
+		err := requestToJSONObject(r, &handlerForm)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		organization, err := repo.GetByEmail(handlerForm["email"])
+		if organization == nil {
+			HandleHTTPError(w, http.StatusUnauthorized, errors.New("Não há organização com este email"))
+			return
+		}
+
+		p := []string{model.PasswordResetPermission}
+		token, err := jm.CreateToken(organization.User, &p)
+		if err != nil {
+			return
+		}
+
+		emailParams := mail.EmailParams{
+			To:       organization.User.Email,
+			Subject:  "Esqueci minha senha",
+			Template: mail.ForgotPasswordTemplate,
+			Variables: map[string]string{
+				"name": organization.Name,
+				"link": os.Getenv("FRONTEND_URL") + "/recover-password/" + token,
+			},
+		}
+
+		if err := mailer.SendEmail(emailParams); err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, errors.New("Falha ao enviar o email"))
+			return
+		}
+
+		HandleHTTPSuccessNoContent(w)
 	}
 }

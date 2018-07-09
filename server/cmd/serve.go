@@ -67,7 +67,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	tm := &handlers.JWTManager{OP: getJWTOptions()}
 
-	_, err = mail.Connect()
+	mailer, err := mail.Connect()
 	if err != nil {
 		panic(err)
 	}
@@ -95,6 +95,8 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	v1.Path("/auth/reset-password").Handler(authMiddleware.With(
 		negroni.WrapFunc(handlers.ResetPasswordHandler(oR)),
 	)).Methods("POST")
+
+	v1.HandleFunc("/auth/forgot-password", handlers.ForgotPasswordHandler(oR, mailer, tm)).Methods("POST")
 
 	v1.HandleFunc("/search", handlers.SearchHandler(sR)).Methods("GET")
 

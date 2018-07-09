@@ -30,12 +30,21 @@ func SendgridConnect() (Mailer, error) {
 func (mailer SendGridMailer) SendEmail(params EmailParams) error {
 	var err error
 
-	from := mail.NewEmail("", params.From)
+	from := mail.NewEmail("Vitrine Social", os.Getenv("MAIL_FROM"))
 	to := mail.NewEmail("", params.To)
-	message := mail.NewSingleEmail(from, params.Subject, to, params.Body, params.Body)
+	message := mail.NewV3MailInit(from, params.Subject, to)
 
-	if params.TemplateID != "" {
-		message.SetTemplateID(params.TemplateID)
+	if params.Template != "" {
+		switch params.Template {
+		case ForgotPasswordTemplate:
+			message.SetTemplateID(os.Getenv("SENDGRID_TEMPLATE_FORGOT_PASSWORD"))
+		}
+	}
+
+	if len(params.Variables) > 0 {
+		for i := range params.Variables {
+			message.Personalizations[0].SetSubstitution("{{"+i+"}}", params.Variables[i])
+		}
 	}
 
 	_, err = mailer.Client.Send(message)
