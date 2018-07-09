@@ -84,6 +84,7 @@ func (s *ImageStorage) CreateNeedImage(t *model.Token, needID int64, fh *multipa
 
 	image, err = s.NeedRepository.CreateImage(image)
 	if err != nil {
+		s.Container.RemoveItem(i.URL)
 		return nil, err
 	}
 
@@ -124,6 +125,7 @@ func (s *ImageStorage) CreateOrganizationImage(t *model.Token, fh *multipart.Fil
 
 	image, err = s.OrganizationRepository.CreateImage(image)
 	if err != nil {
+		s.Container.RemoveItem(i.URL)
 		return nil, err
 	}
 
