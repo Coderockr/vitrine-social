@@ -140,6 +140,26 @@ O status code deve ser 200 ou 201
 + Response 400 (application/json)
     + Attributes (Error)
 
+## Esqueci minha Senha [/v1/auth/forgot-password]
+
+### Esqueci minha Senha [POST]
+
++ Request Resetar Senha
+
+    + Headers
+
+            Accept: application/json
+            Content-Type: application/json
+            Authorization: JWT
+
+    + Attributes
+        + email (string) - E-mail
+
++ Response 200
+
++ Response 400 (application/json)
+    + Attributes (Error)
+
 # Group Search
 
 Realizar busca das necessidades
