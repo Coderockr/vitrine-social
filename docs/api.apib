@@ -435,6 +435,25 @@ Realizar busca das necessidades
 + Response 404 (application/json)
     + Attributes (Error)
 
+# Group Contact
+
+## Contato [/v1/contact]
+
+### Send [POST]
+
++ Request
+    + Attributes
+        + name (string) - Nome
+        + email (string) - E-mail
+        + phone (string) - Telefone
+        + reason (string) - Motivo do Contato
+        + message (string) - Mensagem enviada para a Coderockr
+
++ Response 200 (application/json)
+
++ Response 404 (application/json)
+    + Attributes (Error)
+
 # Data Structures
 
 ## Created (object)

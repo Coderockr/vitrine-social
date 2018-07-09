@@ -38,6 +38,8 @@ func (mailer SendGridMailer) SendEmail(params EmailParams) error {
 		switch params.Template {
 		case ForgotPasswordTemplate:
 			message.SetTemplateID(os.Getenv("SENDGRID_TEMPLATE_FORGOT_PASSWORD"))
+		case ContactTemplate:
+			message.SetTemplateID(os.Getenv("SENDGRID_TEMPLATE_CONTACT"))
 		}
 	}
 
