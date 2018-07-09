@@ -25,7 +25,7 @@ func ContactHandler(mailer mail.Mailer) func(w http.ResponseWriter, r *http.Requ
 		}
 
 		emailParams := mail.EmailParams{
-			To:       os.Getenv("MAIL_FROM"),
+			To:       os.Getenv("MAIL_RECEIVE"),
 			Subject:  "Vitrine Social - Contato",
 			Template: mail.ContactTemplate,
 			Variables: map[string]string{
