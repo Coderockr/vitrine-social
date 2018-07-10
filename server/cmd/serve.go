@@ -124,7 +124,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		negroni.WrapFunc(handlers.CreateNeedHandler(nR.Create)),
 	)).Methods("POST")
 
-	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo)).Methods("POST")
+	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo, mailer)).Methods("POST")
 
 	v1.Path("/need/{id:[0-9]+}/images").Handler(authMiddleware.With(
 		negroni.WrapFunc(handlers.UploadNeedImagesHandler(iS)),
