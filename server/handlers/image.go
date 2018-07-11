@@ -5,14 +5,6 @@ import (
 	"net/http"
 
 	"github.com/graymeta/stow"
-
-	"github.com/Coderockr/vitrine-social/server/model"
-)
-
-type (
-	imageStorage interface {
-		GetImage(*model.Token, int64) error
-	}
 )
 
 // GetImageHandler search an image and return
