@@ -11,6 +11,7 @@ import About from './containers/About';
 import Contact from './containers/Contact';
 import Results from './containers/Results';
 import Login from './containers/Login';
+import ForgotPassword from './containers/ForgotPassword';
 import ResetPassword from './containers/ResetPassword';
 import OrganizationProfile from './containers/OrganizationProfile';
 
@@ -27,6 +28,7 @@ const App = () => (
       <Route exact path="/search/:searchParams" component={Results} />
       <Route exact path="/organization/:organizationId" component={OrganizationProfile} />
       <Route exact path="/login" component={Login} />
+      <Route exact path="/forgot-password" component={ForgotPassword} />
       <Route exact path="/complete-registration/:token" component={ResetPassword} />
       <Route exact path="/recover-password/:token" component={ResetPassword} />
     </div>
