@@ -76,7 +76,7 @@ class ForgotPassword extends React.Component {
                 </FormItem>
                 <FormItem>
                   <div className={styles.buttonWrapper}>
-                    <Button type="primary" htmlType="submit" className={cx(styles.button, styles.loginButton)} loading={this.state.loading}>
+                    <Button type="primary" htmlType="submit" className={cx(styles.button, styles.sendButton)} loading={this.state.loading}>
                       ENVIAR
                     </Button>
                   </div>
