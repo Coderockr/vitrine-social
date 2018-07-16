@@ -11,6 +11,7 @@ import {
   AutoComplete,
 } from 'antd';
 import cx from 'classnames';
+import ReactGA from 'react-ga';
 import api from '../../utils/api';
 import ResponseFeedback from '../ResponseFeedback';
 import UploadImages from '../UploadImages';
@@ -39,6 +40,7 @@ class RequestForm extends React.Component {
   }
 
   componentWillMount() {
+    ReactGA.modalview('/request-form', null, 'Formulário de Solicitação');
     this.fetchCategories();
   }
 

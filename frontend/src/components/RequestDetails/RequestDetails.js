@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { Modal, Carousel } from 'antd';
 import cx from 'classnames';
+import ReactGA from 'react-ga';
 import styles from './styles.module.scss';
 import ItemIndicator from '../../components/ItemIndicator';
 import Arrow from '../../components/Arrow';
@@ -38,7 +39,15 @@ class RequestDetails extends React.Component {
     imagesEnabled: false,
   }
 
+  componentWillMount() {
+    ReactGA.modalview('/request-details', null, 'Detalhes da Solicitação');
+  }
+
   showContactForm() {
+    ReactGA.event({
+      category: 'Doador',
+      action: 'Click em Quero Ajudar',
+    });
     this.setState({
       contactFormVisible: true,
     });

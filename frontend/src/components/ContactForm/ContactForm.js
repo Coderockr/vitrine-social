@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Form, Input } from 'antd';
+import ReactGA from 'react-ga';
 import ResponseFeedback from '../ResponseFeedback';
 import Icon from '../../components/Icons';
 import styles from './styles.module.scss';
@@ -37,6 +38,10 @@ class ContactForm extends React.Component {
   }
 
   handleSubmit = (e) => {
+    ReactGA.event({
+      category: 'Doador',
+      action: 'Click em Enviar Contato',
+    });
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
