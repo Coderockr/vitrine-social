@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Modal, Form, Icon, Input } from 'antd';
 import cx from 'classnames';
+import ReactGA from 'react-ga';
 import BottomNotification from '../../components/BottomNotification';
 import ResponseFeedback from '../ResponseFeedback';
 import api, { headers } from '../../utils/api';
@@ -31,6 +32,10 @@ class ChangePassword extends React.Component {
   }
 
   changePassword(newPassword, currentPassword) {
+    ReactGA.event({
+      category: 'Entidade',
+      action: 'Click em Alterar a Senha',
+    });
     api.post('auth/update-password', { newPassword, currentPassword }).then(
       () => {
         this.setState({

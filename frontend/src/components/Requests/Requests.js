@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Radio } from 'antd';
 import cx from 'classnames';
+import ReactGA from 'react-ga';
 import RequestCard from '../../components/RequestCard';
 import RequestForm from '../../components/RequestForm';
 import RequestDetails from '../../components/RequestDetails';
@@ -37,6 +38,14 @@ class Requests extends React.Component {
       showModal: modal,
       request,
     });
+
+    if (modal === 'editForm') {
+      const action = request ? 'Editar' : 'Nova';
+      ReactGA.event({
+        category: 'Entidade',
+        action: `${action} Solicitação`,
+      });
+    }
   }
 
   statusChanged() {
@@ -45,6 +54,10 @@ class Requests extends React.Component {
       status = 'INACTIVE';
     }
     this.setState({ status });
+    ReactGA.event({
+      category: 'Entidade',
+      action: `Switch para Status ${status}`,
+    });
   }
 
   renderRequests() {

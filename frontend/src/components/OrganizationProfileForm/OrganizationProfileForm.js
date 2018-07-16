@@ -10,6 +10,7 @@ import {
   Select,
 } from 'antd';
 import cx from 'classnames';
+import ReactGA from 'react-ga';
 import UploadImages from '../UploadImages';
 import ResponseFeedback from '../ResponseFeedback';
 import { maskPhone, maskCep } from '../../utils/mask';
@@ -33,6 +34,7 @@ class OrganizationProfileForm extends React.Component {
   }
 
   componentDidMount() {
+    ReactGA.modalview('/organization-form', null, 'Editar Perfil Organização');
     this.getStates();
   }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Form, Input, Select } from 'antd';
 import cx from 'classnames';
+import ReactGA from 'react-ga';
 import styles from './styles.module.scss';
 import Layout from '../../components/Layout';
 import BottomNotification from '../../components/BottomNotification';
@@ -24,6 +25,10 @@ class Contact extends React.Component {
   }
 
   handleSubmit = (e) => {
+    ReactGA.event({
+      category: 'Usuario',
+      action: 'Enviar Contato Coderockr',
+    });
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
