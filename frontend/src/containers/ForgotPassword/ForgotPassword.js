@@ -1,45 +1,40 @@
 import React from 'react';
-import { Layout, Row, Col, Form, Icon, Input, Button } from 'antd';
+import { Layout, Row, Col, Form, Button, Input, Icon } from 'antd';
 import cx from 'classnames';
-import { Link } from 'react-router-dom';
+import api from '../../utils/api';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import BottomNotification from '../../components/BottomNotification';
-import api from '../../utils/api';
-import { authorizeUser } from '../../utils/auth';
 import styles from './styles.module.scss';
 
 const FormItem = Form.Item;
 const { Content } = Layout;
 
-class Login extends React.Component {
+class ForgotPassword extends React.Component {
   state = {
     loading: false,
   }
 
   componentDidMount() {
-    document.title = 'Vitrine Social - Login';
+    document.title = 'Vitrine Social - Esqueci a Senha';
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.loginUser(values);
+        this.forgotPassword(values);
       }
       return err;
     });
   }
 
-  loginUser(params) {
-    const { history } = this.props;
+  forgotPassword(params) {
     this.setState({ loading: true });
-    api.post('auth/login', params).then(
+    api.post('auth/forgot-password', params).then(
       (response) => {
         if (response.data) {
-          authorizeUser(response.data);
-          history.push(`/organization/${response.data.organization.id}`);
-          return BottomNotification({ message: 'Login realizado com sucesso!', success: true });
+          return BottomNotification({ message: 'Verifique seu e-mail e siga as instruções para resetar a sua senha!', success: true });
         }
         this.setState({ loading: false });
         return null;
@@ -47,10 +42,8 @@ class Login extends React.Component {
         this.setState({ loading: false });
         if (!error.response) {
           return BottomNotification({ message: 'Problema de conexão com a API.', success: false });
-        } if (error.response.status === 401) {
-          return BottomNotification({ message: 'Usuário e/ou senha incorretos.', success: false });
-        } if (error.response.data.message) {
-          return BottomNotification({ message: error.response.data.message, success: false });
+        } if (error.response.status === 404) {
+          return BottomNotification({ message: 'Verifique seu e-mail e siga as instruções para resetar a sua senha!', success: false });
         }
         return null;
       },
@@ -72,7 +65,7 @@ class Login extends React.Component {
               sm={{ span: 12, offset: 6 }}
               xs={{ span: 20, offset: 2 }}
             >
-              <h1>LOGIN DA ORGANIZAÇÃO</h1>
+              <h1>RECUPERAR A SENHA</h1>
               <Form onSubmit={this.handleSubmit}>
                 <FormItem>
                   {getFieldDecorator('email', {
@@ -82,24 +75,9 @@ class Login extends React.Component {
                   )}
                 </FormItem>
                 <FormItem>
-                  {getFieldDecorator('password', {
-                    rules: [{ required: true, message: 'Informe sua senha!' }],
-                  })(
-                    <Input prefix={<Icon type="lock" />} type="password" placeholder="Senha" size="large" />,
-                  )}
-                </FormItem>
-                <FormItem>
-                  <Link
-                    className={styles.forgotPassword}
-                    to="/forgot-password"
-                  >
-                    Esqueci a senha
-                  </Link>
-                </FormItem>
-                <FormItem>
                   <div className={styles.buttonWrapper}>
                     <Button type="primary" htmlType="submit" className={cx(styles.button, styles.loginButton)} loading={this.state.loading}>
-                      LOG IN
+                      ENVIAR
                     </Button>
                   </div>
                 </FormItem>
@@ -113,6 +91,6 @@ class Login extends React.Component {
   }
 }
 
-const WrappedLoginForm = Form.create()(Login);
+const WrappedForgotPasswordForm = Form.create()(ForgotPassword);
 
-export default WrappedLoginForm;
+export default WrappedForgotPasswordForm;
