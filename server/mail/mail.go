@@ -10,6 +10,9 @@ type emailTemplate string
 // ForgotPasswordTemplate is the ID for email template
 const ForgotPasswordTemplate = emailTemplate("forgot-password-template")
 
+// ContactTemplate is the ID for contact email template
+const ContactTemplate = emailTemplate("contact-template")
+
 // NeedResponseTemplate sis the ID for need response template
 const NeedResponseTemplate = emailTemplate("need-response-template")
 
