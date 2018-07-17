@@ -64,6 +64,12 @@ serve-watch: ## start server with hot reload
 postgres-cmd: ## open the postgresql command line
 	docker-compose exec postgres psql -h $$DATABASE_HOST -U postgres vitrine
 
+postgres-dump: ## dump database
+	docker-compose exec postgres sh -c "pg_dump -h $$DATABASE_HOST -U postgres -Fc -f vitrine/.data/vitrine.dump vitrine"
+
+postgres-restore: ## restore database
+	docker-compose exec postgres sh -c "pg_restore -h $$DATABASE_HOST -U postgres -v -c --if-exists -d vitrine vitrine/.data/vitrine.dump"
+
 docs-serve: ## start a server with the docs
 	cd docs && make serve
 
