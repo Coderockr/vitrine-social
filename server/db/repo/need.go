@@ -21,6 +21,7 @@ type NeedRepository struct {
 func NewNeedRepository(db *sqlx.DB) *NeedRepository {
 	return &NeedRepository{
 		db:      db,
+		orgRepo: NewOrganizationRepository(db),
 		catRepo: NewCategoryRepository(db),
 	}
 }
@@ -36,6 +37,9 @@ func (r *NeedRepository) Get(id int64) (*model.Need, error) {
 	n.Images, err = getNeedImages(r.db, n)
 
 	n.Category, err = r.catRepo.Get(n.CategoryID)
+
+	o, err := r.orgRepo.GetBaseOrganization(n.OrganizationID)
+	n.Organization = *o
 	return n, nil
 }
 
@@ -171,7 +175,7 @@ func validate(r *NeedRepository, n model.Need) (model.Need, error) {
 		return n, err
 	}
 
-	_, err = getBaseOrganization(r.db, n.OrganizationID)
+	_, err = r.orgRepo.GetBaseOrganization(n.OrganizationID)
 	switch {
 	case err == sql.ErrNoRows:
 		return n, fmt.Errorf("Não foi encontrada Organização com ID: %d", n.OrganizationID)
