@@ -37,6 +37,11 @@ func getBaseOrganization(db *sqlx.DB, id int64) (*model.Organization, error) {
 	return o, err
 }
 
+// GetBaseOrganization returns only the data about a organization, not its relations
+func (r *OrganizationRepository) GetBaseOrganization(id int64) (*model.Organization, error) {
+	return getBaseOrganization(r.db, id)
+}
+
 // Get one Organization from database
 func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 	o, err := getBaseOrganization(r.db, id)

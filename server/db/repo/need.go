@@ -21,6 +21,7 @@ type NeedRepository struct {
 func NewNeedRepository(db *sqlx.DB) *NeedRepository {
 	return &NeedRepository{
 		db:      db,
+		orgRepo: NewOrganizationRepository(db),
 		catRepo: NewCategoryRepository(db),
 	}
 }
@@ -36,6 +37,9 @@ func (r *NeedRepository) Get(id int64) (*model.Need, error) {
 	n.Images, err = getNeedImages(r.db, n)
 
 	n.Category, err = r.catRepo.Get(n.CategoryID)
+
+	o, err := r.orgRepo.GetBaseOrganization(n.OrganizationID)
+	n.Organization = *o
 	return n, nil
 }
 
