@@ -64,7 +64,7 @@ class Contact extends React.Component {
           <Col span={20} offset={2}>
             <div className={styles.contactWrapper}>
               <h1 className={styles.title}>ENTRE EM CONTATO</h1>
-              <Form onSubmit={this.handleSubmit}>
+              <Form>
                 <FormItem
                   {...formItemLayout}
                 >
@@ -127,7 +127,10 @@ class Contact extends React.Component {
                   )}
                 </FormItem>
                 <FormItem>
-                  <button className={cx(styles.button, styles.sendButton)} htmlType="submit">
+                  <button
+                    className={cx(styles.button, styles.sendButton)}
+                    onClick={this.handleSubmit}
+                  >
                     ENVIAR
                   </button>
                 </FormItem>

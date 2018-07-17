@@ -117,7 +117,7 @@ class ChangePassword extends React.Component {
           xs={{ span: 20, offset: 2 }}
         >
           <h1>Alterar a Senha</h1>
-          <Form onSubmit={this.handleSubmit}>
+          <Form>
             {this.props.user && (
               <FormItem>
                 {getFieldDecorator('currentPassword', {
@@ -143,7 +143,10 @@ class ChangePassword extends React.Component {
             </FormItem>
             <FormItem>
               <div className={styles.buttonWrapper}>
-                <button type="primary" htmlType="submit" className={cx(styles.button, styles.sendButton)}>
+                <button
+                  className={cx(styles.button, styles.sendButton)}
+                  onClick={this.handleSubmit}
+                >
                   ENVIAR
                 </button>
               </div>

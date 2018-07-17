@@ -51,7 +51,7 @@ const trackPageView = (location) => {
 };
 
 const initGA = (hist) => {
-  ReactGA.initialize('UA-122417824-1', { debug: true });
+  ReactGA.initialize('UA-122417824-1');
   trackPageView(hist.location);
   hist.listen(trackPageView);
 };
