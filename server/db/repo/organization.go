@@ -30,21 +30,16 @@ const allFields string = `
 	city as "address.city", state as "address.state", zipcode as "address.zipcode"
 `
 
-// getBaseOrganization returns only the data about a organization, not its relations
-func getBaseOrganization(db *sqlx.DB, id int64) (*model.Organization, error) {
-	o := &model.Organization{}
-	err := db.Get(o, "SELECT "+allFields+" FROM organizations WHERE id = $1", id)
-	return o, err
-}
-
 // GetBaseOrganization returns only the data about a organization, not its relations
 func (r *OrganizationRepository) GetBaseOrganization(id int64) (*model.Organization, error) {
-	return getBaseOrganization(r.db, id)
+	o := &model.Organization{}
+	err := r.db.Get(o, "SELECT "+allFields+" FROM organizations WHERE id = $1", id)
+	return o, err
 }
 
 // Get one Organization from database
 func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
-	o, err := getBaseOrganization(r.db, id)
+	o, err := r.GetBaseOrganization(id)
 	if err != nil {
 		return nil, err
 	}

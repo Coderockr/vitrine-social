@@ -175,7 +175,7 @@ func validate(r *NeedRepository, n model.Need) (model.Need, error) {
 		return n, err
 	}
 
-	_, err = getBaseOrganization(r.db, n.OrganizationID)
+	_, err = r.orgRepo.GetBaseOrganization(n.OrganizationID)
 	switch {
 	case err == sql.ErrNoRows:
 		return n, fmt.Errorf("Não foi encontrada Organização com ID: %d", n.OrganizationID)
