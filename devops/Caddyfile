@@ -1,0 +1,4 @@
+api.vitrinesocial.org {
+  # API load balancer
+  proxy /v1 localhost:8000
+}
