@@ -13,6 +13,11 @@ class RequestCard extends React.PureComponent {
       return (<div />);
     }
 
+    let dateText = `Criado em: ${moment(request.createdAt).format('LLL')}`;
+    if (request.updatedAt) {
+      dateText = `Atualizado em: ${moment(request.updatedAt).format('LLL')}`;
+    }
+
     return (
       <Row>
         <Col>
@@ -21,13 +26,7 @@ class RequestCard extends React.PureComponent {
             <div className={styles.organizationContent}>
               <h2>{request.title}</h2>
               <Link to={`/organization/${request.organization.id}`}>{request.organization.name}</Link>
-              <p>
-                Atualizado em: {
-                  moment(request.updatedAt)
-                    .format('DD / MMMM / YYYY')
-                    .replace(/(\/)/g, 'de')
-                }
-              </p>
+              <p>{dateText}</p>
             </div>
             <div className={styles.interestedContent}>
               <button

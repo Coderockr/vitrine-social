@@ -152,10 +152,7 @@ class RequestForm extends React.Component {
             <h1 className={styles.title}>
               {request ? 'Editar Solicitação' : 'Nova Solicitação'}
             </h1>
-            <Form
-              onSubmit={this.handleSubmit}
-              hideRequiredMark
-            >
+            <Form hideRequiredMark>
               <FormItem
                 className={request ? null : styles.statusFormItem}
                 {...formItemLayout}
@@ -278,6 +275,7 @@ class RequestForm extends React.Component {
                   <button
                     className={cx(styles.button, styles.saveButton)}
                     disabled={!this.props.saveEnabled}
+                    onClick={this.handleSubmit}
                   >
                     SALVAR
                   </button>

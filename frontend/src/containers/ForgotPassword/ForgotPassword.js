@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Row, Col, Form, Button, Input, Icon } from 'antd';
+import { Layout, Row, Col, Form, Input, Icon } from 'antd';
 import cx from 'classnames';
 import api from '../../utils/api';
 import Header from '../../components/Header';
@@ -32,12 +32,9 @@ class ForgotPassword extends React.Component {
   forgotPassword(params) {
     this.setState({ loading: true });
     api.post('auth/forgot-password', params).then(
-      (response) => {
-        if (response.data) {
-          return BottomNotification({ message: 'Verifique seu e-mail e siga as instruções para resetar a sua senha!', success: true });
-        }
+      () => {
         this.setState({ loading: false });
-        return null;
+        return BottomNotification({ message: 'Verifique seu e-mail e siga as instruções para resetar a sua senha!', success: true });
       }, (error) => {
         this.setState({ loading: false });
         if (!error.response) {
@@ -66,19 +63,27 @@ class ForgotPassword extends React.Component {
               xs={{ span: 20, offset: 2 }}
             >
               <h1>RECUPERAR A SENHA</h1>
-              <Form onSubmit={this.handleSubmit}>
+              <Form>
                 <FormItem>
                   {getFieldDecorator('email', {
-                    rules: [{ required: true, message: 'Informe seu usuário!' }],
+                    rules: [{
+                      type: 'email', message: 'E-mail inválido',
+                    }, {
+                        required: true, message: 'Informe seu email!',
+                    }],
                   })(
                     <Input prefix={<Icon type="user" />} placeholder="Usuário" size="large" />,
                   )}
                 </FormItem>
                 <FormItem>
                   <div className={styles.buttonWrapper}>
-                    <Button type="primary" htmlType="submit" className={cx(styles.button, styles.sendButton)} loading={this.state.loading}>
+                    <button
+                      className={cx(styles.button, styles.sendButton)}
+                      loading={this.state.loading}
+                      onClick={this.handleSubmit}
+                    >
                       ENVIAR
-                    </Button>
+                    </button>
                   </div>
                 </FormItem>
               </Form>

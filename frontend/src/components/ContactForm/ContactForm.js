@@ -52,7 +52,6 @@ class ContactForm extends React.Component {
               responseFeedback: 'success',
               responseFeedbackMessage: 'Formulário de contato enviado!',
             });
-            this.props.onSave();
           },
           () => {
             this.props.onFeedback(true);
@@ -93,7 +92,7 @@ class ContactForm extends React.Component {
               <p className={styles.organizationName}>{request.organization.name}</p>
               <p>Telefone: <span>{request.organization.phone}</span></p>
               <p className={styles.fillLabel}>Ou preencha o formulário:</p>
-              <Form onSubmit={this.handleSubmit}>
+              <Form>
                 <FormItem
                   {...formItemLayout}
                 >
@@ -142,7 +141,7 @@ class ContactForm extends React.Component {
                   )}
                 </FormItem>
                 <FormItem>
-                  <button htmlType="submit">
+                  <button onClick={this.handleSubmit}>
                     ENVIAR
                   </button>
                 </FormItem>

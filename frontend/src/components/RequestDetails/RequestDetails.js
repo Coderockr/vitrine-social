@@ -105,17 +105,18 @@ class RequestDetails extends React.Component {
       );
     }
 
+    let dateText = `Criado em: ${moment(request.createdAt).format('LLL')}`;
+    if (request.updatedAt) {
+      dateText = `Atualizado em: ${moment(request.updatedAt).format('LLL')}`;
+    }
+
     return (
       <div className={styles.contentWrapper}>
         <div className={styles.itemDetails}>
           <ItemIndicator className={styles.itemIndicator} request={request} size="lg" />
           <div>
             <h1>{request.title}</h1>
-            <p className={styles.updatedAt}>
-              Atualizado em {
-                moment(request.updatedAt).format('DD / MMMM / YYYY').replace(/(\/)/g, 'de')
-              }
-            </p>
+            <p className={styles.updatedAt}>{dateText}</p>
           </div>
         </div>
         <div className={styles.organizationBox}>

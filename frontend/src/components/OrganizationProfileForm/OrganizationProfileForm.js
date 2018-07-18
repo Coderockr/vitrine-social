@@ -243,7 +243,7 @@ class OrganizationProfileForm extends React.Component {
                 </div>
               </Upload>
             </div>
-            <Form onSubmit={this.handleSubmit}>
+            <Form>
               <FormItem {...formItemLayout}>
                 {getFieldDecorator('name', {
                   rules: [{ required: true, message: 'Preencha o nome da organização' }],
@@ -405,6 +405,7 @@ class OrganizationProfileForm extends React.Component {
                   <button
                     className={cx(styles.button, styles.saveButton)}
                     disabled={!this.props.saveEnabled}
+                    onClick={this.handleSubmit}
                   >
                     SALVAR
                   </button>

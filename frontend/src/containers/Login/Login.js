@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Row, Col, Form, Icon, Input, Button } from 'antd';
+import { Layout, Row, Col, Form, Icon, Input } from 'antd';
 import cx from 'classnames';
 import { Link } from 'react-router-dom';
 import Header from '../../components/Header';
@@ -73,7 +73,7 @@ class Login extends React.Component {
               xs={{ span: 20, offset: 2 }}
             >
               <h1>LOGIN DA ORGANIZAÇÃO</h1>
-              <Form onSubmit={this.handleSubmit}>
+              <Form>
                 <FormItem>
                   {getFieldDecorator('email', {
                     rules: [{ required: true, message: 'Informe seu usuário!' }],
@@ -98,9 +98,13 @@ class Login extends React.Component {
                 </FormItem>
                 <FormItem>
                   <div className={styles.buttonWrapper}>
-                    <Button type="primary" htmlType="submit" className={cx(styles.button, styles.loginButton)} loading={this.state.loading}>
+                    <button
+                      className={cx(styles.button, styles.loginButton)}
+                      loading={this.state.loading}
+                      onClick={this.handleSubmit}
+                    >
                       LOG IN
-                    </Button>
+                    </button>
                   </div>
                 </FormItem>
               </Form>
