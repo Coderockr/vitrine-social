@@ -8,7 +8,6 @@ import (
 
 	"github.com/Coderockr/vitrine-social/server/mail"
 	"github.com/Coderockr/vitrine-social/server/model"
-	"github.com/Coderockr/vitrine-social/server/security"
 )
 
 type (
@@ -17,6 +16,7 @@ type (
 		Get(id int64) (*model.Organization, error)
 		GetByEmail(email string) (*model.Organization, error)
 		ResetPasswordTo(o *model.Organization, password string) error
+		ChangePassword(o model.Organization, cPassword, newPassword string) (model.Organization, error)
 	}
 )
 
@@ -34,17 +34,25 @@ func UpdatePasswordHandler(repo UpdatePasswordOrganizationRepository) func(w htt
 		userID := GetUserID(r)
 		organization, err := repo.Get(userID)
 
-		err = security.CompareHashAndPassword(organization.Password, handlerForm["currentPassword"])
-		if err != nil {
-			HandleHTTPError(w, http.StatusUnauthorized, errors.New("Senha inválida"))
+		var cPassword, nPassword string
+		var ok bool
+
+		if cPassword, ok = handlerForm["currentPassword"]; !ok {
+			HandleHTTPError(w, http.StatusBadRequest, errors.New("você deve informar senha atual"))
 			return
 		}
 
-		newPassword := strings.TrimSpace(handlerForm["newPassword"])
+		if nPassword, ok = handlerForm["newPassword"]; !ok {
+			HandleHTTPError(w, http.StatusBadRequest, errors.New("você deve informar a nova senha"))
+			return
+		}
 
-		repo.ResetPasswordTo(organization, newPassword)
+		if _, err = repo.ChangePassword(*organization, cPassword, nPassword); err != nil {
+			HandleHTTPError(w, http.StatusUnauthorized, err)
+			return
+		}
 
-		HandleHTTPSuccess(w, nil)
+		HandleHTTPSuccessNoContent(w)
 	}
 }
 

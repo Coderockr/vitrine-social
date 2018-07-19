@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -19,6 +20,7 @@ type (
 		GetFN             func(id int64) (*model.Organization, error)
 		GetByEmailFN      func(email string) (*model.Organization, error)
 		ResetPasswordToFN func(o *model.Organization, password string) error
+		ChangePasswordFN  func(o model.Organization, oldPassword, newPassword string) (model.Organization, error)
 	}
 )
 
@@ -59,12 +61,15 @@ func TestUpdatePasswordHandler(t *testing.T) {
 					ResetPasswordToFN: func(*model.Organization, string) error {
 						return nil
 					},
+					ChangePasswordFN: func(o model.Organization, old, new string) (model.Organization, error) {
+						return o, errors.New("Senha inválida")
+					},
 				},
 			},
 		},
-		"should success beacuse the right values were sent": {
+		"should success because the right values were sent": {
 			body:     `{ "currentPassword": "test", "newPassword": "newtest" }`,
-			status:   http.StatusOK,
+			status:   http.StatusNoContent,
 			response: ``,
 			params: params{
 				userID: 1,
@@ -87,6 +92,9 @@ func TestUpdatePasswordHandler(t *testing.T) {
 					ResetPasswordToFN: func(*model.Organization, string) error {
 						return nil
 					},
+					ChangePasswordFN: func(o model.Organization, old, n string) (model.Organization, error) {
+						return o, nil
+					},
 				},
 			},
 		},
@@ -103,10 +111,10 @@ func TestUpdatePasswordHandler(t *testing.T) {
 			result := resp.Result()
 			body, _ := ioutil.ReadAll(result.Body)
 
+			require.Equal(t, v.status, resp.Code)
 			if len(v.response) > 0 {
 				require.JSONEq(t, v.response, string(body))
 			}
-			require.Equal(t, v.status, resp.Code)
 		})
 	}
 }
@@ -121,4 +129,8 @@ func (r *UpdatePasswordOrganizationRepositoryMock) GetByEmail(email string) (*mo
 
 func (r *UpdatePasswordOrganizationRepositoryMock) ResetPasswordTo(o *model.Organization, password string) error {
 	return r.ResetPasswordToFN(o, password)
+}
+
+func (r *UpdatePasswordOrganizationRepositoryMock) ChangePassword(o model.Organization, old, new string) (model.Organization, error) {
+	return r.ChangePasswordFN(o, old, new)
 }
