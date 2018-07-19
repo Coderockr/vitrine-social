@@ -16,7 +16,7 @@ setup: ## initial project setup
 	go get github.com/rubenv/sql-migrate/...
 	make install
 
-update-dev-dependences:
+update-dev-dependences: # update dev dependences to the most recent
 	go get -u github.com/golang/dep/cmd/dep
 	go get -u github.com/haya14busa/goverage
 	go get -u golang.org/x/lint/golint
