@@ -52,7 +52,7 @@ func UpdatePasswordHandler(repo UpdatePasswordOrganizationRepository) func(w htt
 			return
 		}
 
-		HandleHTTPSuccess(w, nil)
+		HandleHTTPSuccessNoContent(w)
 	}
 }
 

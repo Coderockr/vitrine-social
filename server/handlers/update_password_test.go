@@ -67,9 +67,9 @@ func TestUpdatePasswordHandler(t *testing.T) {
 				},
 			},
 		},
-		"should success beacuse the right values were sent": {
+		"should success because the right values were sent": {
 			body:     `{ "currentPassword": "test", "newPassword": "newtest" }`,
-			status:   http.StatusOK,
+			status:   http.StatusNoContent,
 			response: ``,
 			params: params{
 				userID: 1,
