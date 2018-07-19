@@ -16,10 +16,15 @@ setup: ## initial project setup
 	go get github.com/rubenv/sql-migrate/...
 	make install
 
-install: ## install project dependences
+update-dev-dependences:
 	go get -u github.com/golang/dep/cmd/dep
 	go get -u github.com/haya14busa/goverage
 	go get -u golang.org/x/lint/golint
+
+install: ## install project dependences
+	go get github.com/golang/dep/cmd/dep
+	go get github.com/haya14busa/goverage
+	go get golang.org/x/lint/golint
 	cd server; dep ensure -v
 
 install-frontend: ## install frontend dependences
