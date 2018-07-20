@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Row, Col, Form, Input, Icon } from 'antd';
+import { Layout, Row, Col, Form, Input, Icon, Button } from 'antd';
 import cx from 'classnames';
 import api from '../../utils/api';
 import Header from '../../components/Header';
@@ -77,13 +77,13 @@ class ForgotPassword extends React.Component {
                 </FormItem>
                 <FormItem>
                   <div className={styles.buttonWrapper}>
-                    <button
+                    <Button
                       className={cx(styles.button, styles.sendButton)}
                       loading={this.state.loading}
                       onClick={this.handleSubmit}
                     >
                       ENVIAR
-                    </button>
+                    </Button>
                   </div>
                 </FormItem>
               </Form>

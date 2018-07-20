@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Row, Col, Form, Icon, Input } from 'antd';
+import { Layout, Row, Col, Form, Icon, Input, Button } from 'antd';
 import cx from 'classnames';
 import { Link } from 'react-router-dom';
 import Header from '../../components/Header';
@@ -98,13 +98,13 @@ class Login extends React.Component {
                 </FormItem>
                 <FormItem>
                   <div className={styles.buttonWrapper}>
-                    <button
+                    <Button
                       className={cx(styles.button, styles.loginButton)}
                       loading={this.state.loading}
                       onClick={this.handleSubmit}
                     >
                       LOG IN
-                    </button>
+                    </Button>
                   </div>
                 </FormItem>
               </Form>
