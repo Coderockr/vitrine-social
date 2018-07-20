@@ -25,6 +25,7 @@ import (
 	"github.com/Coderockr/vitrine-social/server/mail"
 	"github.com/Coderockr/vitrine-social/server/middlewares"
 	"github.com/Coderockr/vitrine-social/server/storage"
+	"github.com/Coderockr/vitrine-social/server/trace"
 	"github.com/bugsnag/bugsnag-go/negroni"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
@@ -44,7 +45,7 @@ func init() {
 }
 
 func serveCmdFunc(cmd *cobra.Command, args []string) {
-	bugsnagNotifier := handlers.NewBugsnag()
+	bugsnagNotifier := trace.NewBugsnag()
 
 	conn, err := db.GetFromEnv()
 	if err != nil {
