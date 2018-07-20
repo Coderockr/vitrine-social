@@ -65,6 +65,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	}
 
 	iS := &storage.ImageStorage{
+		BasePublicURL:          os.Getenv("IMAGE_STORAGE_BASE_URL"),
 		Container:              storageContainer,
 		NeedRepository:         nR,
 		OrganizationRepository: oR,
