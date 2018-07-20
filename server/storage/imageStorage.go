@@ -26,9 +26,15 @@ type orgImageRepo interface {
 
 // ImageStorage will save files into the storage and reference then into the database
 type ImageStorage struct {
+	BasePublicURL          string
 	Container              stow.Container
 	NeedRepository         needImageRepo
 	OrganizationRepository orgImageRepo
+}
+
+func (s *ImageStorage) removeItem(url string) error {
+	url = url[len(s.BasePublicURL):]
+	return s.Container.RemoveItem(url)
 }
 
 // DeleteNeedImage removes the image from a need, if user has permission
@@ -53,7 +59,7 @@ func (s *ImageStorage) DeleteNeedImage(t *model.Token, needID, imageID int64) er
 			continue
 		}
 
-		s.Container.RemoveItem(i.URL)
+		s.removeItem(i.URL)
 		s.NeedRepository.DeleteImage(i.ID, i.NeedID)
 		return nil
 	}
@@ -84,7 +90,7 @@ func (s *ImageStorage) CreateNeedImage(t *model.Token, needID int64, fh *multipa
 
 	image, err = s.NeedRepository.CreateImage(image)
 	if err != nil {
-		s.Container.RemoveItem(i.URL)
+		s.removeItem(i.URL)
 		return nil, err
 	}
 
@@ -103,7 +109,7 @@ func (s *ImageStorage) DeleteOrganizationImage(t *model.Token, imageID int64) er
 			continue
 		}
 
-		s.Container.RemoveItem(i.URL)
+		s.removeItem(i.URL)
 		s.OrganizationRepository.DeleteImage(i.ID, i.OrganizationID)
 		return nil
 	}
@@ -125,7 +131,7 @@ func (s *ImageStorage) CreateOrganizationImage(t *model.Token, fh *multipart.Fil
 
 	image, err = s.OrganizationRepository.CreateImage(image)
 	if err != nil {
-		s.Container.RemoveItem(i.URL)
+		s.removeItem(i.URL)
 		return nil, err
 	}
 
@@ -158,9 +164,10 @@ func (s *ImageStorage) createImage(fh *multipart.FileHeader, folder string) (*mo
 		log.Printf("[ImageStorage] Error uploading file to container %s: %#v", fh.Filename, err)
 		return nil, fmt.Errorf("there was a problem saving the file %s", fh.Filename)
 	}
+
 	i := model.Image{
 		Name: fileName[0],
-		URL:  item.ID(),
+		URL:  s.BasePublicURL + item.ID(),
 	}
 	return &i, nil
 }
