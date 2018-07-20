@@ -9,7 +9,7 @@ import (
 	// support local storage
 	local "github.com/graymeta/stow/local"
 	// support s3 storage
-	s3 "github.com/graymeta/stow/s3"
+	s3 "github.com/lucassabreu/stow/s3"
 )
 
 // Connect to storage and return the container

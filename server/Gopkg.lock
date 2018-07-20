@@ -139,16 +139,15 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c3891f5d0148729fa4f9db23400d6bfd5dc6b1b21e09f5c594a8c57d91eaa901"
+  digest = "1:ad8c954d34fdfddf93bfb588d01e91519f8b8893c2d1c91240aa68c96aee967d"
   name = "github.com/graymeta/stow"
   packages = [
     ".",
     "google",
     "local",
-    "s3",
   ]
   pruneopts = ""
-  revision = "1c51f76db54d79c9db24cb131011632eb586196c"
+  revision = "7b5498c561bbfeb17e413eb96c9edaf88af3855f"
 
 [[projects]]
   digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
@@ -202,6 +201,14 @@
   ]
   pruneopts = ""
   revision = "90697d60dd844d5ef6ff15135d0203f65d2f53b8"
+
+[[projects]]
+  branch = "master"
+  digest = "1:cb9eb7103fd9c020b9392a3db36ca6a2ea8e71ea625851f0b3de9ba5271523e2"
+  name = "github.com/lucassabreu/stow"
+  packages = ["s3"]
+  pruneopts = ""
+  revision = "16de368348a3ba2a21c0aa23ff1f48ab5822cb30"
 
 [[projects]]
   digest = "1:7365acd48986e205ccb8652cc746f09c8b7876030d53710ea6ef7d0bd0dcd7ca"
@@ -381,10 +388,10 @@
     "github.com/graymeta/stow",
     "github.com/graymeta/stow/google",
     "github.com/graymeta/stow/local",
-    "github.com/graymeta/stow/s3",
     "github.com/jmoiron/sqlx",
     "github.com/joho/godotenv",
     "github.com/lib/pq",
+    "github.com/lucassabreu/stow/s3",
     "github.com/sendgrid/sendgrid-go",
     "github.com/sendgrid/sendgrid-go/helpers/mail",
     "github.com/spf13/cobra",
