@@ -68,5 +68,5 @@ func Container(location stow.Location, containerName string) (stow.Container, er
 			return nil, err
 		}
 	}
-	return container, nil
+	return container, err
 }
