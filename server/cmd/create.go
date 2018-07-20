@@ -38,7 +38,6 @@ var createCmd = &cobra.Command{
 var (
 	email        string
 	name         string
-	logo         string
 	phone        string
 	about        string
 	video        string
@@ -56,7 +55,6 @@ func init() {
 
 	createCmd.Flags().StringVarP(&email, "email", "e", "", "organization's e-mail")
 	createCmd.Flags().StringVarP(&name, "name", "n", "", "organization's name")
-	createCmd.Flags().StringVarP(&logo, "logo", "l", "", "organization's logo")
 	createCmd.Flags().StringVarP(&phone, "phone", "p", "", "organization's phone")
 	createCmd.Flags().StringVarP(&slug, "slug", "s", "", "organization's slug")
 	createCmd.Flags().StringVarP(&about, "about", "r", "", "organization's about")
@@ -70,7 +68,6 @@ func init() {
 
 	createCmd.MarkFlagRequired("email")
 	createCmd.MarkFlagRequired("name")
-	createCmd.MarkFlagRequired("logo")
 	createCmd.MarkFlagRequired("phone")
 	createCmd.MarkFlagRequired("slug")
 	createCmd.MarkFlagRequired("street")
@@ -95,7 +92,6 @@ func createCmdFunc(cmd *cobra.Command, args []string) {
 			Password: "",
 		},
 		Name:  name,
-		Logo:  logo,
 		Phone: phone,
 		Slug:  slug,
 		About: about,

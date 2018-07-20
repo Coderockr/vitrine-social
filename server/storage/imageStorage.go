@@ -1,10 +1,9 @@
 package storage
 
 import (
+	"bytes"
 	"fmt"
 	"log"
-	"mime/multipart"
-	"strings"
 
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/gobuffalo/uuid"
@@ -62,7 +61,7 @@ func (s *ImageStorage) DeleteNeedImage(t *model.Token, needID, imageID int64) er
 }
 
 // CreateNeedImage storages and links the uploaded file with the Need
-func (s *ImageStorage) CreateNeedImage(t *model.Token, needID int64, fh *multipart.FileHeader) (*model.NeedImage, error) {
+func (s *ImageStorage) CreateNeedImage(t *model.Token, needID int64, fr *bytes.Reader) (*model.NeedImage, error) {
 	n, err := s.NeedRepository.Get(needID)
 	if err != nil {
 		return nil, fmt.Errorf("there is no need with the id %d", needID)
@@ -72,7 +71,7 @@ func (s *ImageStorage) CreateNeedImage(t *model.Token, needID int64, fh *multipa
 		return nil, fmt.Errorf("need %d does not belong to organization %d", needID, t.UserID)
 	}
 
-	i, err := s.createImage(fh, fmt.Sprintf("need-%d", needID))
+	i, err := s.createImage(fr, fmt.Sprintf("need-%d", needID))
 	if err != nil {
 		return nil, err
 	}
@@ -112,8 +111,8 @@ func (s *ImageStorage) DeleteOrganizationImage(t *model.Token, imageID int64) er
 }
 
 // CreateOrganizationImage storages and link the image with the organization
-func (s *ImageStorage) CreateOrganizationImage(t *model.Token, fh *multipart.FileHeader) (*model.OrganizationImage, error) {
-	i, err := s.createImage(fh, fmt.Sprintf("organization-%d", t.UserID))
+func (s *ImageStorage) CreateOrganizationImage(t *model.Token, fr *bytes.Reader) (*model.OrganizationImage, error) {
+	i, err := s.createImage(fr, fmt.Sprintf("organization-%d", t.UserID))
 	if err != nil {
 		return nil, err
 	}
@@ -132,35 +131,26 @@ func (s *ImageStorage) CreateOrganizationImage(t *model.Token, fh *multipart.Fil
 	return &image, nil
 }
 
-func (s *ImageStorage) createImage(fh *multipart.FileHeader, folder string) (*model.Image, error) {
-	file, err := fh.Open()
-	defer file.Close()
+func (s *ImageStorage) createImage(fr *bytes.Reader, folder string) (*model.Image, error) {
+	fileName := uuid.Must(uuid.NewV4()).String() + ".png"
+	filePath := fmt.Sprintf("%s/%s", folder, fileName)
 
-	if err != nil {
-		log.Printf("[ImageStorage] Error upload file %s: %#v", fh.Filename, err)
-		return nil, fmt.Errorf("there was a problem with the file %s", fh.Filename)
-	}
-
-	fileName := strings.Split(fh.Filename, ".")
 	item, err := s.Container.Put(
-		fmt.Sprintf(
-			"%s/%s.%s",
-			folder,
-			uuid.Must(uuid.NewV4()).String(),
-			fileName[1],
-		),
-		file,
-		fh.Size,
+		filePath,
+		fr,
+		fr.Size(),
 		nil,
 	)
 
 	if err != nil {
-		log.Printf("[ImageStorage] Error uploading file to container %s: %#v", fh.Filename, err)
-		return nil, fmt.Errorf("there was a problem saving the file %s", fh.Filename)
+		log.Printf("[ImageStorage] Error uploading file to container: %#v", err)
+		return nil, fmt.Errorf("there was a problem saving the file")
 	}
+
 	i := model.Image{
-		Name: fileName[0],
+		Name: fileName,
 		URL:  item.ID(),
 	}
+
 	return &i, nil
 }

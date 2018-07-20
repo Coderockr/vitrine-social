@@ -80,7 +80,11 @@ func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 		Organization: baseOrganizationJSON{
 			ID:   organization.ID,
 			Name: organization.Name,
-			Logo: organization.Logo,
+			Logo: imageJSON{
+				ID:   organization.Logo.Image.ID,
+				Name: organization.Logo.Image.Name,
+				URL:  organization.Logo.Image.URL,
+			},
 			Slug: organization.Slug,
 		},
 	}

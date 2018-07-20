@@ -1,9 +1,10 @@
 package handlers
 
 import (
+	"bytes"
 	"database/sql"
+	"encoding/base64"
 	"fmt"
-	"mime/multipart"
 	"net/http"
 	"strconv"
 	"time"
@@ -29,7 +30,7 @@ type (
 	}
 
 	needStorageContainer interface {
-		CreateNeedImage(*model.Token, int64, *multipart.FileHeader) (*model.NeedImage, error)
+		CreateNeedImage(*model.Token, int64, *bytes.Reader) (*model.NeedImage, error)
 		DeleteNeedImage(t *model.Token, nID, iID int64) error
 	}
 )
@@ -80,7 +81,11 @@ func GetNeedHandler(repo NeedRepository, oRepo needOrganizationRepository) func(
 			Organization: baseOrganizationJSON{
 				ID:   o.ID,
 				Name: o.Name,
-				Logo: o.Logo,
+				Logo: imageJSON{
+					ID:   o.Logo.ID,
+					Name: o.Logo.Name,
+					URL:  o.Logo.URL,
+				},
 				Slug: o.Slug,
 			},
 			Images:    needImagesToImageJSON(n.Images),
@@ -167,6 +172,15 @@ func UpdateNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.
 // UploadNeedImagesHandler upload file to storage and save new image
 func UploadNeedImagesHandler(container needStorageContainer) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		var bodyVars struct {
+			Content string
+		}
+		err := requestToJSONObject(r, &bodyVars)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
+			return
+		}
+
 		vars := mux.Vars(r)
 		id, err := strconv.ParseInt(vars["id"], 10, 64)
 		if err != nil {
@@ -174,19 +188,17 @@ func UploadNeedImagesHandler(container needStorageContainer) func(w http.Respons
 			return
 		}
 
-		if err := r.ParseMultipartForm(defaultMaxMemory); err != nil {
-			HandleHTTPError(w, http.StatusBadRequest, err)
+		fileBytes, err := base64.StdEncoding.DecodeString(bodyVars.Content)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao decodificar base64: %s", err))
 			return
 		}
 
-		files := r.MultipartForm.File["images"]
-		if len(files) == 0 {
-			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível ler o arquivo"))
-			return
-		}
+		fileReader := bytes.NewReader(fileBytes)
 
 		t := GetModelToken(r)
-		i, err := container.CreateNeedImage(t, id, files[0])
+
+		i, err := container.CreateNeedImage(t, id, fileReader)
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar imagem: %s", err))
 			return

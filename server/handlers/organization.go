@@ -1,9 +1,10 @@
 package handlers
 
 import (
+	"bytes"
 	"database/sql"
+	"encoding/base64"
 	"fmt"
-	"mime/multipart"
 	"net/http"
 	"strconv"
 
@@ -16,12 +17,13 @@ type (
 	OrganizationRepository interface {
 		Get(id int64) (*model.Organization, error)
 		Update(o model.Organization) (model.Organization, error)
+		UpdateLogo(imageID int64, organizationID int64) error
 		DeleteImage(imageID int64, organizationID int64) error
 	}
 
 	organizationStorage interface {
 		DeleteOrganizationImage(*model.Token, int64) error
-		CreateOrganizationImage(*model.Token, *multipart.FileHeader) (*model.OrganizationImage, error)
+		CreateOrganizationImage(*model.Token, *bytes.Reader) (*model.OrganizationImage, error)
 	}
 )
 
@@ -49,9 +51,13 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 
 		oJSON := &organizationJSON{
 			baseOrganizationJSON: baseOrganizationJSON{
-				ID:    o.ID,
-				Name:  o.Name,
-				Logo:  o.Logo,
+				ID:   o.ID,
+				Name: o.Name,
+				Logo: imageJSON{
+					ID:   o.Logo.ID,
+					Name: o.Logo.Name,
+					URL:  o.Logo.URL,
+				},
 				Slug:  o.Slug,
 				Phone: o.Phone,
 			},
@@ -154,8 +160,18 @@ func UpdateOrganizationHandler(repo OrganizationRepository) func(w http.Response
 }
 
 // UploadOrganizationImageHandler upload file to storage and save new image
-func UploadOrganizationImageHandler(container organizationStorage) func(w http.ResponseWriter, r *http.Request) {
+func UploadOrganizationImageHandler(container organizationStorage, orgRepo OrganizationRepository) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		var bodyVars struct {
+			Content string
+			Logo    bool
+		}
+		err := requestToJSONObject(r, &bodyVars)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
+			return
+		}
+
 		vars := mux.Vars(r)
 		organizationID, err := strconv.ParseInt(vars["id"], 10, 64)
 		if err != nil {
@@ -169,21 +185,26 @@ func UploadOrganizationImageHandler(container organizationStorage) func(w http.R
 			return
 		}
 
-		if err := r.ParseMultipartForm(defaultMaxMemory); err != nil {
-			HandleHTTPError(w, http.StatusBadRequest, err)
+		fileBytes, err := base64.StdEncoding.DecodeString(bodyVars.Content)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao decodificar base64: %s", err))
 			return
 		}
 
-		files := r.MultipartForm.File["images"]
-		if len(files) == 0 {
-			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível ler o arquivo"))
-			return
-		}
+		fileReader := bytes.NewReader(fileBytes)
 
-		i, err := container.CreateOrganizationImage(t, files[0])
+		i, err := container.CreateOrganizationImage(t, fileReader)
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar imagem: %s", err))
 			return
+		}
+
+		if bodyVars.Logo == true {
+			err = orgRepo.UpdateLogo(i.ID, t.UserID)
+			if err != nil {
+				HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar imagem: %s", err))
+				return
+			}
 		}
 
 		HandleHTTPSuccess(w, map[string]int64{"id": i.ID})

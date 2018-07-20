@@ -1,8 +1,8 @@
 package handlers_test
 
 import (
+	"bytes"
 	"io/ioutil"
-	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -21,12 +21,13 @@ type (
 	organizationRepositoryMock struct {
 		GetFN         func(id int64) (*model.Organization, error)
 		UpdateFN      func(o model.Organization) (model.Organization, error)
+		UpdateLogoFN  func(imageID int64, organizationID int64) error
 		DeleteImageFN func(imageID int64, organizationID int64) error
 	}
 
 	organizationImageStorage struct {
 		DeleteImageFN func(*model.Token, int64) error
-		CreateImageFN func(*model.Token, *multipart.FileHeader) (*model.OrganizationImage, error)
+		CreateImageFN func(*model.Token, *bytes.Reader) (*model.OrganizationImage, error)
 	}
 )
 
@@ -64,7 +65,6 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 		"should success because the right values were sent": {
 			body: `{
 				"name": "Novo Nome",
-				"logo": "Novo Logo",
 				"phone": "123123",
 				"about": "Nova Descrição detalhada da ONG",
 				"video": "Novo Link do video",
@@ -89,8 +89,15 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 								Password: "",
 								ID:       1,
 							},
-							Name:  "",
-							Logo:  "",
+							Name: "",
+							Logo: &model.OrganizationImage{
+								OrganizationID: 1,
+								Image: model.Image{
+									ID:   1,
+									Name: "",
+									URL:  "",
+								},
+							},
 							Phone: "",
 							About: "",
 							Video: "",
@@ -212,10 +219,14 @@ func (r *organizationRepositoryMock) DeleteImage(imageID int64, organizationID i
 	return r.DeleteImageFN(imageID, organizationID)
 }
 
+func (iS *organizationRepositoryMock) UpdateLogo(imageID int64, organizationID int64) error {
+	return iS.UpdateLogoFN(imageID, organizationID)
+}
+
 func (iS *organizationImageStorage) DeleteOrganizationImage(t *model.Token, imageID int64) error {
 	return iS.DeleteImageFN(t, imageID)
 }
 
-func (iS *organizationImageStorage) CreateOrganizationImage(t *model.Token, f *multipart.FileHeader) (*model.OrganizationImage, error) {
+func (iS *organizationImageStorage) CreateOrganizationImage(t *model.Token, f *bytes.Reader) (*model.OrganizationImage, error) {
 	return iS.CreateImageFN(t, f)
 }
