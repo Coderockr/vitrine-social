@@ -1,15 +1,16 @@
 package storage_test
 
 import (
-	"bytes"
 	"errors"
 	"io"
+	"mime/multipart"
 	"net/url"
 	"testing"
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/Coderockr/vitrine-social/server/storage"
+	"github.com/Coderockr/vitrine-social/server/testutils"
 	"github.com/graymeta/stow"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -284,7 +285,7 @@ func TestCreateOrganizationImage(t *testing.T) {
 			iM.url = args.String(0)
 			iM.md = args.Get(3).(map[string]interface{})
 
-			require.Regexp(t, "^organization-888/.*\\.png$", iM.url)
+			require.Regexp(t, "^organization-888/.*\\.go$", iM.url)
 		}).
 		Return(iM, nil)
 
@@ -300,19 +301,26 @@ func TestCreateOrganizationImage(t *testing.T) {
 		OrganizationRepository: repo,
 	}
 
-	fileBytes := make([]byte, 100)
-	fileReader := bytes.NewReader(fileBytes)
+	r := testutils.NewFileUploadRequest(
+		"/test",
+		"POST",
+		make(map[string]string),
+		map[string]string{"images": "imageStorage_test.go"},
+	)
+
+	r.ParseMultipartForm(32 << 20)
 
 	nI, err := iS.CreateOrganizationImage(
 		&model.Token{UserID: 888},
-		fileReader,
+		r.MultipartForm.File["images"][0],
 	)
 
 	require.Empty(t, err, "should've not fail")
 
 	require.Equal(t, int64(333), nI.ID)
+	require.Equal(t, "imageStorage_test", nI.Name)
 	require.Equal(t, int64(888), nI.OrganizationID)
-	require.Regexp(t, "^organization-888/.*\\.png$", nI.URL)
+	require.Regexp(t, "^organization-888/.*\\.go$", nI.URL)
 
 	c.AssertExpectations(t)
 	repo.AssertExpectations(t)
@@ -321,24 +329,33 @@ func TestCreateOrganizationImage(t *testing.T) {
 func TestCreateOrganizationImageShouldFail(t *testing.T) {
 	type test struct {
 		token     *model.Token
-		fr        *bytes.Reader
+		fh        *multipart.FileHeader
 		err       string
 		container *containerMock
 		repo      *orgRepositoryMock
 	}
 
-	fileBytes := make([]byte, 0)
-	fileReader := bytes.NewReader(fileBytes)
+	r := testutils.NewFileUploadRequest(
+		"/test",
+		"POST",
+		make(map[string]string),
+		map[string]string{
+			"to_fail":     "imageStorage_test.go",
+			"not_to_fail": "imageStorage.go",
+		},
+	)
+
+	r.ParseMultipartForm(32 << 20)
 
 	tests := map[string]test{
 		"when_fails_to_process_file": test{
 			token: &model.Token{UserID: 888},
-			fr:    fileReader,
+			fh:    &multipart.FileHeader{Filename: "upload.png"},
 			err:   "there was a problem with the file upload.png",
 		},
 		"when_fails_to_load_to_container": test{
 			token: &model.Token{UserID: 888},
-			fr:    fileReader,
+			fh:    r.MultipartForm.File["to_fail"][0],
 			err:   "there was a problem saving the file imageStorage_test.go",
 			container: func() *containerMock {
 				c := &containerMock{}
@@ -349,7 +366,7 @@ func TestCreateOrganizationImageShouldFail(t *testing.T) {
 		},
 		"when_fails_to_save_to_database": test{
 			token: &model.Token{UserID: 888},
-			fr:    fileReader,
+			fh:    r.MultipartForm.File["not_to_fail"][0],
 			err:   "it have failed to save",
 			container: func() *containerMock {
 				c := &containerMock{}
@@ -384,7 +401,7 @@ func TestCreateOrganizationImageShouldFail(t *testing.T) {
 				OrganizationRepository: p.repo,
 			}
 
-			_, err := iS.CreateOrganizationImage(p.token, p.fr)
+			_, err := iS.CreateOrganizationImage(p.token, p.fh)
 			require.Equal(t, err.Error(), p.err)
 
 			if p.container != nil {
@@ -433,15 +450,21 @@ func TestCreateNeedImage(t *testing.T) {
 		NeedRepository: repo,
 	}
 
-	fileBytes := make([]byte, 100)
-	fileReader := bytes.NewReader(fileBytes)
+	r := testutils.NewFileUploadRequest(
+		"/test",
+		"POST",
+		make(map[string]string),
+		map[string]string{"images": "imageStorage_test.go"},
+	)
+
+	r.ParseMultipartForm(32 << 20)
 
 	nI, err := iS.CreateNeedImage(
 		&model.Token{
 			UserID: 888,
 		},
 		405,
-		fileReader,
+		r.MultipartForm.File["images"][0],
 	)
 
 	require.Empty(t, err, "should've not fail")
@@ -459,14 +482,23 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 	type test struct {
 		token     *model.Token
 		needID    int64
-		fr        *bytes.Reader
+		fh        *multipart.FileHeader
 		err       string
 		container *containerMock
 		needRepo  *needRepositoryMock
 	}
 
-	fileBytes := make([]byte, 100)
-	fileReader := bytes.NewReader(fileBytes)
+	r := testutils.NewFileUploadRequest(
+		"/test",
+		"POST",
+		make(map[string]string),
+		map[string]string{
+			"to_fail":     "imageStorage_test.go",
+			"not_to_fail": "imageStorage.go",
+		},
+	)
+
+	r.ParseMultipartForm(32 << 20)
 
 	genNeedRepoMock := func(id int64) *needRepositoryMock {
 		repo := &needRepositoryMock{}
@@ -485,7 +517,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 		"when_need_not_exists": test{
 			token:  &model.Token{},
 			needID: 404,
-			fr:     nil,
+			fh:     nil,
 			err:    "there is no need with the id 404",
 			needRepo: func() *needRepositoryMock {
 				repo := &needRepositoryMock{}
@@ -497,21 +529,21 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 		"when_org_does_not_own_need": test{
 			token:    &model.Token{UserID: 403},
 			needID:   405,
-			fr:       nil,
+			fh:       nil,
 			err:      "need 405 does not belong to organization 403",
 			needRepo: genNeedRepoMock(405),
 		},
 		"when_fails_to_process_file": test{
 			token:    &model.Token{UserID: 888},
 			needID:   405,
-			fr:       fileReader,
+			fh:       &multipart.FileHeader{Filename: "upload.png"},
 			err:      "there was a problem with the file upload.png",
 			needRepo: genNeedRepoMock(405),
 		},
 		"when_fails_to_load_to_container": test{
 			token:  &model.Token{UserID: 888},
 			needID: 405,
-			fr:     fileReader,
+			fh:     r.MultipartForm.File["to_fail"][0],
 			err:    "there was a problem saving the file imageStorage_test.go",
 			container: func() *containerMock {
 				c := &containerMock{}
@@ -524,7 +556,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 		"when_fails_to_save_to_database": test{
 			token:  &model.Token{UserID: 888},
 			needID: 405,
-			fr:     fileReader,
+			fh:     r.MultipartForm.File["to_fail"][0],
 			err:    "it have failed to save",
 			container: func() *containerMock {
 				c := &containerMock{}
@@ -569,7 +601,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 				NeedRepository: p.needRepo,
 			}
 
-			_, err := iS.CreateNeedImage(p.token, p.needID, p.fr)
+			_, err := iS.CreateNeedImage(p.token, p.needID, p.fh)
 			require.Equal(t, err.Error(), p.err)
 
 			if p.container != nil {

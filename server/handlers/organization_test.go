@@ -1,8 +1,8 @@
 package handlers_test
 
 import (
-	"bytes"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -27,7 +27,7 @@ type (
 
 	organizationImageStorage struct {
 		DeleteImageFN func(*model.Token, int64) error
-		CreateImageFN func(*model.Token, *bytes.Reader) (*model.OrganizationImage, error)
+		CreateImageFN func(*model.Token, *multipart.FileHeader) (*model.OrganizationImage, error)
 	}
 )
 
@@ -89,15 +89,7 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 								Password: "",
 								ID:       1,
 							},
-							Name: "",
-							Logo: &model.OrganizationImage{
-								OrganizationID: 1,
-								Image: model.Image{
-									ID:   1,
-									Name: "",
-									URL:  "",
-								},
-							},
+							Name:  "",
 							Phone: "",
 							About: "",
 							Video: "",
@@ -215,18 +207,18 @@ func (r *organizationRepositoryMock) Update(o model.Organization) (model.Organiz
 	return r.UpdateFN(o)
 }
 
-func (r *organizationRepositoryMock) DeleteImage(imageID int64, organizationID int64) error {
-	return r.DeleteImageFN(imageID, organizationID)
+func (r *organizationRepositoryMock) UpdateLogo(imageID int64, organizationID int64) error {
+	return r.UpdateLogoFN(imageID, organizationID)
 }
 
-func (iS *organizationRepositoryMock) UpdateLogo(imageID int64, organizationID int64) error {
-	return iS.UpdateLogoFN(imageID, organizationID)
+func (r *organizationRepositoryMock) DeleteImage(imageID int64, organizationID int64) error {
+	return r.DeleteImageFN(imageID, organizationID)
 }
 
 func (iS *organizationImageStorage) DeleteOrganizationImage(t *model.Token, imageID int64) error {
 	return iS.DeleteImageFN(t, imageID)
 }
 
-func (iS *organizationImageStorage) CreateOrganizationImage(t *model.Token, f *bytes.Reader) (*model.OrganizationImage, error) {
+func (iS *organizationImageStorage) CreateOrganizationImage(t *model.Token, f *multipart.FileHeader) (*model.OrganizationImage, error) {
 	return iS.CreateImageFN(t, f)
 }
