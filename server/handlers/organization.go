@@ -186,7 +186,7 @@ func UploadOrganizationImageHandler(container organizationStorage, orgRepo Organ
 			return
 		}
 
-		files := r.MultipartForm.File["images"]
+		files := r.MultipartForm.File["file"]
 		if len(files) == 0 {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível ler o arquivo"))
 			return
