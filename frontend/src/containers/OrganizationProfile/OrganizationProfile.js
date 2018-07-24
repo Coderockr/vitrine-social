@@ -30,7 +30,6 @@ class OrganizationProfile extends React.Component {
       editProfileVisible: false,
       changePasswordVisible: false,
       saveEnabled: false,
-      imagesEnabled: false,
     };
 
     mediaQuery.addListener(this.widthChange.bind(this));
@@ -151,10 +150,12 @@ class OrganizationProfile extends React.Component {
           sm={{ span: 18, offset: 3 }}
           xs={{ span: 24, offset: 0 }}
         >
-          <div className={cx(styles.border, styles.aboutBorder)}>
-            <h1>Sobre</h1>
-            <p>{organization.about}</p>
-          </div>
+          {this.state.organization.about &&
+            <div className={cx(styles.border, styles.aboutBorder)}>
+              <h1>Sobre</h1>
+              <p>{organization.about}</p>
+            </div>
+          }
           <div className={cx(styles.border, styles.phoneBorder)}>
             <h1>Telefone</h1>
             <a>{maskPhone(organization.phone)}</a>
@@ -163,7 +164,7 @@ class OrganizationProfile extends React.Component {
             <h1>Endereço</h1>
             <a>{`${address.street} ${address.number}, ${address.complement ? `${address.complement},` : ''} Bairro ${address.neighborhood}, ${address.city} - ${address.state} `}</a>
           </div>
-          {this.state.imagesEnabled &&
+          {this.state.organization.images.length > 0 &&
             <div>
               <div className={cx(styles.border, styles.imagesBorder)}>
                 <h1>Imagens da Organização</h1>
