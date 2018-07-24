@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { deauthorizeUser } from './auth';
+import BottomNotification from '../components/BottomNotification';
 
 const storage = window.localStorage;
 
@@ -20,5 +22,23 @@ const ax = () => axios.create({
 });
 
 const api = ax();
+
+api.interceptors.response.use(response => response,
+  (error) => {
+    if (error.response && error.response.data) {
+      const { code, message } = error.response.data;
+      if (code === 401 && message === 'Token Expired, get a new one') {
+        return BottomNotification({
+          message: 'Sua sessão expirou! Faça login novamente!',
+          success: false,
+          onClose: () => {
+            deauthorizeUser();
+            window.location.replace(`${process.env.REACT_APP_HOST}login`);
+          },
+        });
+      }
+    }
+    return Promise.reject(error);
+  });
 
 export default api;
