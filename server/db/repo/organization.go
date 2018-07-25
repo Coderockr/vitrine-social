@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"strings"
@@ -36,6 +37,10 @@ const allFields string = `
 func (r *OrganizationRepository) GetBaseOrganization(id int64) (*model.Organization, error) {
 	o := &model.Organization{}
 	err := r.db.Get(o, "SELECT "+allFields+" FROM organizations WHERE id = $1", id)
+
+	if err != nil {
+		return nil, err
+	}
 
 	o.Logo, err = r.GetLogo(*o)
 
@@ -162,6 +167,10 @@ func (r *OrganizationRepository) GetByEmail(email string) (*model.Organization, 
 	o := model.Organization{}
 	err := r.db.Get(&o, `SELECT `+allFields+` FROM organizations WHERE email = $1`, email)
 
+	if err != nil {
+		return nil, err
+	}
+
 	o.Logo, err = r.GetLogo(o)
 
 	return &o, err
@@ -232,9 +241,16 @@ func (r *OrganizationRepository) UpdateLogo(imageID int64, organizationID int64)
 // GetLogo returns organization logo image
 func (r *OrganizationRepository) GetLogo(o model.Organization) (*model.OrganizationImage, error) {
 	logo := &model.OrganizationImage{}
-	if o.LogoImageID == 0 {
+
+	logoID, err := o.LogoImageID.Value()
+	if logoID == nil || err != nil {
 		return logo, nil
 	}
-	err := r.db.Get(logo, "SELECT * FROM organizations_images WHERE id = $1", o.LogoImageID)
+
+	err = r.db.Get(logo, "SELECT * FROM organizations_images WHERE id = $1", o.LogoImageID)
+	if err == sql.ErrNoRows {
+		return logo, nil
+	}
+
 	return logo, err
 }

@@ -40,11 +40,11 @@ type Organization struct {
 	User
 	Name        string `valid:"required" db:"name"`
 	Logo        *OrganizationImage
-	LogoImageID int    `valid:"optional" db:"logo_image_id"`
-	Phone       string `valid:"required" db:"phone"`
-	About       string `db:"about"`
-	Video       string `valid:"required" db:"video"`
-	Slug        string `valid:"required" db:"slug"`
+	LogoImageID nulls.Int `valid:"optional" db:"logo_image_id"`
+	Phone       string    `valid:"required" db:"phone"`
+	About       string    `db:"about"`
+	Video       string    `valid:"required" db:"video"`
+	Slug        string    `valid:"required" db:"slug"`
 	Address     Address
 	Needs       []Need
 	Images      []OrganizationImage
