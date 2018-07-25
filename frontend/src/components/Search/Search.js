@@ -33,7 +33,7 @@ class Search extends React.Component {
           xxl={{ span: 10, offset: 7 }}
           xl={{ span: 14, offset: 5 }}
           sm={{ span: 16, offset: 4 }}
-          xs={{ span: 20, offset: 2 }}
+          xs={{ span: 22, offset: 1 }}
         >
           <div className={styles.wrapper}>
             <input

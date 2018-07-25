@@ -140,3 +140,19 @@ require('../../utils/styles/colors.js');
     padding: 0;
   }
 }
+
+@media (max-width: 348px) {
+  .itemDetails {
+    h1 {
+      padding-left: 5px !important;
+      padding-right: 5px !important;
+    }
+
+    .updatedAt {
+      margin-left: 5px !important;
+    }
+  }
+  .organizationBox {
+    padding-left: 5px !important;
+  }
+}

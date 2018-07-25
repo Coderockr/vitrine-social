@@ -78,3 +78,19 @@ require('../../utils/styles/colors.js');
     }
   }
 }
+
+@media (max-width: 393px) {
+  .categoriesItem {
+    width: 106px;
+    height: 106px;
+
+    .categoriesImage {
+      width: 76px;
+      height: 76px;
+
+      .categoriesIcon {
+        padding: 5px;
+      }
+    }
+  }
+}
