@@ -22,11 +22,11 @@ func (t *jsonTime) UnmarshalJSON(b []byte) (err error) {
 }
 
 type baseOrganizationJSON struct {
-	ID    int64  `json:"id"`
-	Name  string `json:"name"`
-	Logo  string `json:"logo"`
-	Slug  string `json:"slug"`
-	Phone string `json:"phone"`
+	ID    int64        `json:"id"`
+	Name  string       `json:"name"`
+	Logo  nulls.String `json:"logo"`
+	Slug  string       `json:"slug"`
+	Phone string       `json:"phone"`
 }
 
 type organizationJSON struct {
