@@ -48,6 +48,7 @@ type (
 
 	imageStorage interface {
 		CreateNeedImage(*model.Token, int64, *multipart.FileHeader) (*model.NeedImage, error)
+		CreateOrganizationImage(*model.Token, *multipart.FileHeader) (*model.OrganizationImage, error)
 	}
 )
 
@@ -80,12 +81,13 @@ func NewHandler(
 			"viewer": newViewerMutation(
 				oR.Get,
 				graphql.Fields{
-					"updatePassword":     newUpdatePasswordMutation(oR.ChangePassword),
-					"organizationUpdate": newOrganizationUpdateMutation(oR.Update),
-					"needCreate":         newNeedCreateMutation(nR.Create),
-					"needImageCreate":    newNeedImageCreateMutation(iS.CreateNeedImage),
-					"needUpdate":         newNeedUpdateMutation(nR.Get, nR.Update),
-					"resetPassword":      newResetPasswordMutation(oR.Get, oR.ResetPasswordTo),
+					"updatePassword":          newUpdatePasswordMutation(oR.ChangePassword),
+					"organizationUpdate":      newOrganizationUpdateMutation(oR.Update),
+					"organizationImageCreate": newOrganizationImageCreateMutation(iS.CreateOrganizationImage),
+					"needCreate":              newNeedCreateMutation(nR.Create),
+					"needImageCreate":         newNeedImageCreateMutation(iS.CreateNeedImage),
+					"needUpdate":              newNeedUpdateMutation(nR.Get, nR.Update),
+					"resetPassword":           newResetPasswordMutation(oR.Get, oR.ResetPasswordTo),
 				},
 			),
 		},
