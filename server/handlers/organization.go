@@ -66,10 +66,11 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 				State:        o.Address.State,
 				Zipcode:      o.Address.Zipcode,
 			},
-			About:  o.About,
-			Video:  o.Video,
-			Email:  o.Email,
-			Images: orgImagesToImageJSON(o.Images),
+			About:   o.About,
+			Video:   o.Video,
+			Email:   o.Email,
+			Images:  orgImagesToImageJSON(o.Images),
+			Website: o.Website,
 		}
 
 		oJSON.Needs = make([]needJSON, 0, len(o.Needs))
