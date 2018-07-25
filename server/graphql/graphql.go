@@ -50,6 +50,7 @@ type (
 		CreateNeedImage(*model.Token, int64, *multipart.FileHeader) (*model.NeedImage, error)
 		CreateOrganizationImage(*model.Token, *multipart.FileHeader) (*model.OrganizationImage, error)
 		DeleteNeedImage(t *model.Token, needID, imageID int64) error
+		DeleteOrganizationImage(t *model.Token, imageID int64) error
 	}
 )
 
@@ -85,6 +86,7 @@ func NewHandler(
 					"updatePassword":          newUpdatePasswordMutation(oR.ChangePassword),
 					"organizationUpdate":      newOrganizationUpdateMutation(oR.Update),
 					"organizationImageCreate": newOrganizationImageCreateMutation(iS.CreateOrganizationImage),
+					"organizationImageDelete": newOrganizationImageDeleteMutation(iS.DeleteOrganizationImage, oR.Get),
 					"needCreate":              newNeedCreateMutation(nR.Create),
 					"needImageCreate":         newNeedImageCreateMutation(iS.CreateNeedImage),
 					"needImageDelete":         newNeedImageDeleteMutation(iS.DeleteNeedImage, nR.Get),
