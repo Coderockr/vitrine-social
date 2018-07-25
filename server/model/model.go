@@ -3,7 +3,6 @@ package model
 import (
 	"database/sql/driver"
 	"errors"
-	"os"
 	"strings"
 	"time"
 
@@ -158,16 +157,6 @@ func (s *needStatus) Scan(src interface{}) error {
 	}
 
 	return nil
-}
-
-// GetLogoLink return link to logo image
-func (o Organization) GetLogoLink() string {
-	return os.Getenv("STORAGE_S3_LINK") + o.Logo.URL
-}
-
-// GetOrganiztionLogoLink return link to organization logo
-func (s SearchNeed) GetOrganiztionLogoLink() string {
-	return os.Getenv("STORAGE_S3_LINK") + s.OrganizationLogo
 }
 
 func (s needStatus) Value() (driver.Value, error) {

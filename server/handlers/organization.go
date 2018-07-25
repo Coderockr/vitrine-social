@@ -52,7 +52,7 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 			baseOrganizationJSON: baseOrganizationJSON{
 				ID:    o.ID,
 				Name:  o.Name,
-				Logo:  o.GetLogoLink(),
+				Logo:  o.Logo.URL,
 				Slug:  o.Slug,
 				Phone: o.Phone,
 			},

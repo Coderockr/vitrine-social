@@ -108,7 +108,7 @@ func convertDBToNeed(count int, currentPage int, searchNeed []model.SearchNeed) 
 			Organization: baseOrganizationJSON{
 				ID:    s.OrganizationID,
 				Name:  s.OrganizationName,
-				Logo:  s.GetOrganiztionLogoLink(),
+				Logo:  s.OrganizationLogo,
 				Slug:  s.OrganizationSlug,
 				Phone: s.OrganizationPhone,
 			},

@@ -80,7 +80,7 @@ func GetNeedHandler(repo NeedRepository, oRepo needOrganizationRepository) func(
 			Organization: baseOrganizationJSON{
 				ID:   o.ID,
 				Name: o.Name,
-				Logo: o.GetLogoLink(),
+				Logo: o.Logo.URL,
 				Slug: o.Slug,
 			},
 			Images:    needImagesToImageJSON(n.Images),

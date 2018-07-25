@@ -80,7 +80,7 @@ func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 		Organization: baseOrganizationJSON{
 			ID:   organization.ID,
 			Name: organization.Name,
-			Logo: organization.GetLogoLink(),
+			Logo: organization.Logo.URL,
 			Slug: organization.Slug,
 		},
 	}
