@@ -49,6 +49,7 @@ type (
 	imageStorage interface {
 		CreateNeedImage(*model.Token, int64, *multipart.FileHeader) (*model.NeedImage, error)
 		CreateOrganizationImage(*model.Token, *multipart.FileHeader) (*model.OrganizationImage, error)
+		DeleteNeedImage(t *model.Token, needID, imageID int64) error
 	}
 )
 
@@ -86,6 +87,7 @@ func NewHandler(
 					"organizationImageCreate": newOrganizationImageCreateMutation(iS.CreateOrganizationImage),
 					"needCreate":              newNeedCreateMutation(nR.Create),
 					"needImageCreate":         newNeedImageCreateMutation(iS.CreateNeedImage),
+					"needImageDelete":         newNeedImageDeleteMutation(iS.DeleteNeedImage, nR.Get),
 					"needUpdate":              newNeedUpdateMutation(nR.Get, nR.Update),
 					"resetPassword":           newResetPasswordMutation(oR.Get, oR.ResetPasswordTo),
 				},
