@@ -386,6 +386,11 @@ require('./colors.js');
     margin-bottom: 90px;
   }
 
+  .ant-btn:hover,
+  .ant-btn:focus {
+    color: $white;
+  }
+
   @media (max-width: 800px) {
     .ant-modal {
       top: 0;

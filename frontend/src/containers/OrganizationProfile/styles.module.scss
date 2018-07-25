@@ -77,7 +77,32 @@ require('../../utils/styles/colors.js');
       width: 85%;
 
       img {
-        width: 100%;
+        height: 350px;
+        object-fit: contain;
+      }
+    }
+  }
+}
+
+@media (max-width: 1110px) {
+  .profileWrapper {
+    .arrowWrapper {
+      .carouselWrapper {
+        img {
+          height: 320px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 920px) {
+  .profileWrapper {
+    .arrowWrapper {
+      .carouselWrapper {
+        img {
+          height: 270px;
+        }
       }
     }
   }
@@ -91,6 +116,26 @@ require('../../utils/styles/colors.js');
 
     .buttonWrapper {
       text-align: center;
+    }
+
+    .arrowWrapper {
+      .carouselWrapper {
+        img {
+          height: 200px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 575px) {
+  .profileWrapper {
+    .arrowWrapper {
+      .carouselWrapper {
+        img {
+          height: 220px;
+        }
+      }
     }
   }
 }
