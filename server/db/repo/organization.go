@@ -114,7 +114,6 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 func validateOrg(o model.Organization) (model.Organization, error) {
 
 	o.Name = strings.TrimSpace(o.Name)
-	o.Logo = strings.TrimSpace(o.Logo)
 	o.Phone = strings.TrimSpace(o.Phone)
 	o.About = strings.TrimSpace(o.About)
 	o.Video = strings.TrimSpace(o.Video)
@@ -131,10 +130,6 @@ func validateOrg(o model.Organization) (model.Organization, error) {
 
 	if len(o.Name) == 0 {
 		return o, errors.New("organization name should not be empty")
-	}
-
-	if len(o.Logo) == 0 {
-		return o, errors.New("organization logo should not be empty")
 	}
 
 	if len(o.Phone) == 0 {

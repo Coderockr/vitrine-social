@@ -26,7 +26,6 @@ var organizationUpdateInput = graphql.NewInputObject(graphql.InputObjectConfig{
 	Name: "OrganizationUpdateInput",
 	Fields: graphql.InputObjectConfigFieldMap{
 		"name":  stringInput,
-		"logo":  stringInput,
 		"phone": stringInput,
 		"about": stringInput,
 		"video": stringInput,
@@ -66,10 +65,6 @@ func newOrganizationUpdateMutation(update updateOrgFn) *graphql.Field {
 
 			if name, ok := input["name"].(string); ok {
 				o.Name = name
-			}
-
-			if logo, ok := input["logo"].(string); ok {
-				o.Logo = logo
 			}
 
 			if about, ok := input["about"].(string); ok {
