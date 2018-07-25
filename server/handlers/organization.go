@@ -50,13 +50,9 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 
 		oJSON := &organizationJSON{
 			baseOrganizationJSON: baseOrganizationJSON{
-				ID:   o.ID,
-				Name: o.Name,
-				Logo: imageJSON{
-					ID:   o.Logo.ID,
-					Name: o.Logo.Name,
-					URL:  o.Logo.URL,
-				},
+				ID:    o.ID,
+				Name:  o.Name,
+				Logo:  o.GetLogoLink(),
 				Slug:  o.Slug,
 				Phone: o.Phone,
 			},

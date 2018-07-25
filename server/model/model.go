@@ -3,6 +3,7 @@ package model
 import (
 	"database/sql/driver"
 	"errors"
+	"os"
 	"strings"
 	"time"
 
@@ -128,7 +129,7 @@ type Address struct {
 type SearchNeed struct {
 	Need
 	OrganizationName  string `db:"organization_name"`
-	OrganizationLogo  Image  `db:"organization_logo"`
+	OrganizationLogo  string `db:"organization_logo"`
 	OrganizationSlug  string `db:"organization_slug"`
 	OrganizationPhone string `db:"organization_phone"`
 	CategoryName      string `db:"category_name"`
@@ -157,6 +158,16 @@ func (s *needStatus) Scan(src interface{}) error {
 	}
 
 	return nil
+}
+
+// GetLogoLink return link to logo image
+func (o Organization) GetLogoLink() string {
+	return os.Getenv("STORAGE_S3_LINK") + o.Logo.URL
+}
+
+// GetOrganiztionLogoLink return link to organization logo
+func (s SearchNeed) GetOrganiztionLogoLink() string {
+	return os.Getenv("STORAGE_S3_LINK") + s.OrganizationLogo
 }
 
 func (s needStatus) Value() (driver.Value, error) {

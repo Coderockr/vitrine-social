@@ -99,11 +99,7 @@ func TestAuthHandler_Login(t *testing.T) {
 						"organization": {
 							"id": 1554,
 							"name": "Jhon Doe",
-							"logo": {
-								"id": 1,
-								"name": "Logo",
-								"url": "logo"
-							},
+							"logo": "logo",
 							"slug": "jhon_doe",
 							"phone": ""
 						},
