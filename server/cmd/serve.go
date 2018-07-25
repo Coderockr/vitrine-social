@@ -156,6 +156,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 			tm,
 			cR,
 			sR,
+			iS,
 		)),
 	))
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/graphql-go/graphql"
+	graphqlmultipart "github.com/lucassabreu/graphql-multipart-middleware"
 )
 
 var (
@@ -34,6 +35,10 @@ var (
 
 	nonNullIntInput = &graphql.InputObjectFieldConfig{
 		Type: graphql.NewNonNull(graphql.Int),
+	}
+
+	nonNullUploadInput = &graphql.InputObjectFieldConfig{
+		Type: graphql.NewNonNull(graphqlmultipart.Upload),
 	}
 
 	intInput = &graphql.InputObjectFieldConfig{

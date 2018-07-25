@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"mime/multipart"
 	"net/http"
 
 	"github.com/Coderockr/vitrine-social/server/handlers"
@@ -44,6 +45,10 @@ type (
 	tokenManager interface {
 		CreateToken(u model.User, ps *[]string) (string, error)
 	}
+
+	imageStorage interface {
+		CreateNeedImage(*model.Token, int64, *multipart.FileHeader) (*model.NeedImage, error)
+	}
 )
 
 // NewHandler returns a handler for the GraphQL implementation of the API
@@ -53,6 +58,7 @@ func NewHandler(
 	tm tokenManager,
 	cR catRepo,
 	sR searchRepo,
+	iS imageStorage,
 ) http.Handler {
 
 	rootQuery := graphql.ObjectConfig{
@@ -77,6 +83,7 @@ func NewHandler(
 					"updatePassword":     newUpdatePasswordMutation(oR.ChangePassword),
 					"organizationUpdate": newOrganizationUpdateMutation(oR.Update),
 					"needCreate":         newNeedCreateMutation(nR.Create),
+					"needImageCreate":    newNeedImageCreateMutation(iS.CreateNeedImage),
 					"needUpdate":         newNeedUpdateMutation(nR.Get, nR.Update),
 					"resetPassword":      newResetPasswordMutation(oR.Get, oR.ResetPasswordTo),
 				},
