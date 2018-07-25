@@ -25,6 +25,8 @@ import (
 	"github.com/Coderockr/vitrine-social/server/mail"
 	"github.com/Coderockr/vitrine-social/server/middlewares"
 	"github.com/Coderockr/vitrine-social/server/storage"
+	"github.com/Coderockr/vitrine-social/server/trace"
+	"github.com/bugsnag/bugsnag-go/negroni"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -43,10 +45,12 @@ func init() {
 }
 
 func serveCmdFunc(cmd *cobra.Command, args []string) {
+	bugsnagNotifier := trace.NewBugsnag()
 
 	conn, err := db.GetFromEnv()
 	if err != nil {
 		log.Fatalf("Error initializing database: %v\n", err)
+		bugsnagNotifier.Notify(err)
 	}
 
 	oR := repo.NewOrganizationRepository(conn)
@@ -56,10 +60,12 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	storageContainer, err := storage.Connect()
 	if err != nil {
+		bugsnagNotifier.Notify(err)
 		panic(err)
 	}
 
 	iS := &storage.ImageStorage{
+		BasePublicURL:          os.Getenv("IMAGE_STORAGE_BASE_URL"),
 		Container:              storageContainer,
 		NeedRepository:         nR,
 		OrganizationRepository: oR,
@@ -69,6 +75,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	mailer, err := mail.Connect()
 	if err != nil {
+		bugsnagNotifier.Notify(err)
 		panic(err)
 	}
 
@@ -142,6 +149,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	n := negroni.Classic()
 	n.Use(negroni.HandlerFunc(middlewares.Cors))
+	n.Use(bugsnagnegroni.AutoNotify(bugsnagNotifier.Config))
 
 	// router goes last
 	n.UseHandler(mux)

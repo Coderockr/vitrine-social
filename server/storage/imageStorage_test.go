@@ -25,7 +25,7 @@ func TestDeleteOrganizationImage(t *testing.T) {
 		OrganizationID: 888,
 		Image: model.Image{
 			ID:  405,
-			URL: "http://localhost/405.png",
+			URL: "http://images/405.png",
 		},
 	}
 
@@ -42,11 +42,12 @@ func TestDeleteOrganizationImage(t *testing.T) {
 		Once().
 		Return(nil)
 
-	c.On("RemoveItem", oi.URL).
+	c.On("RemoveItem", "405.png").
 		Once().
 		Return(nil)
 
 	iS := storage.ImageStorage{
+		BasePublicURL:          "http://images/",
 		OrganizationRepository: repo,
 		Container:              c,
 	}
@@ -109,7 +110,10 @@ func TestDeleteOrganizationImageShouldFail(t *testing.T) {
 	for n, params := range tests {
 		t.Run(n, func(t *testing.T) {
 
-			iS := storage.ImageStorage{OrganizationRepository: params.repo}
+			iS := storage.ImageStorage{
+				BasePublicURL:          "http://images/",
+				OrganizationRepository: params.repo,
+			}
 
 			err := iS.DeleteOrganizationImage(
 				params.token,
@@ -297,6 +301,7 @@ func TestCreateOrganizationImage(t *testing.T) {
 	})
 
 	iS := storage.ImageStorage{
+		BasePublicURL:          "http://images/",
 		Container:              c,
 		OrganizationRepository: repo,
 	}
@@ -320,7 +325,7 @@ func TestCreateOrganizationImage(t *testing.T) {
 	require.Equal(t, int64(333), nI.ID)
 	require.Equal(t, "imageStorage_test", nI.Name)
 	require.Equal(t, int64(888), nI.OrganizationID)
-	require.Regexp(t, "^organization-888/.*\\.go$", nI.URL)
+	require.Regexp(t, "^http://images/organization-888/.*\\.go$", nI.URL)
 
 	c.AssertExpectations(t)
 	repo.AssertExpectations(t)
@@ -397,6 +402,7 @@ func TestCreateOrganizationImageShouldFail(t *testing.T) {
 	for n, p := range tests {
 		t.Run(n, func(t *testing.T) {
 			iS := storage.ImageStorage{
+				BasePublicURL:          "http://images/",
 				Container:              p.container,
 				OrganizationRepository: p.repo,
 			}
