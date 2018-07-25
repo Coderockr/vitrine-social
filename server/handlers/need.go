@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/gobuffalo/pop/nulls"
 	"github.com/gorilla/mux"
 )
 
@@ -80,7 +81,7 @@ func GetNeedHandler(repo NeedRepository, oRepo needOrganizationRepository) func(
 			Organization: baseOrganizationJSON{
 				ID:   o.ID,
 				Name: o.Name,
-				Logo: o.Logo.URL,
+				Logo: nulls.NewString(o.Logo.URL),
 				Slug: o.Slug,
 			},
 			Images:    needImagesToImageJSON(n.Images),

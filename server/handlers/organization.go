@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/gobuffalo/pop/nulls"
 	"github.com/gorilla/mux"
 )
 
@@ -52,7 +53,7 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 			baseOrganizationJSON: baseOrganizationJSON{
 				ID:    o.ID,
 				Name:  o.Name,
-				Logo:  o.Logo.URL,
+				Logo:  nulls.NewString(o.Logo.URL),
 				Slug:  o.Slug,
 				Phone: o.Phone,
 			},

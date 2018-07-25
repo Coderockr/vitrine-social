@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gobuffalo/pop/nulls"
+
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/Coderockr/vitrine-social/server/security"
 	"github.com/gorilla/context"
@@ -80,7 +82,7 @@ func (a *AuthHandler) Login(w http.ResponseWriter, req *http.Request) {
 		Organization: baseOrganizationJSON{
 			ID:   organization.ID,
 			Name: organization.Name,
-			Logo: organization.Logo.URL,
+			Logo: nulls.NewString(organization.Logo.URL),
 			Slug: organization.Slug,
 		},
 	}
