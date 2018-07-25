@@ -116,6 +116,9 @@ require('../../utils/styles/colors.js');
 
     .buttonWrapper {
       text-align: center;
+      .editButton {
+        margin-left: 15px;
+      }
     }
 
     .arrowWrapper {

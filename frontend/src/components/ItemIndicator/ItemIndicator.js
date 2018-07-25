@@ -23,14 +23,14 @@ const ItemIndicator = ({ request, size, className }) => (
         size={size === 'lg' ? 85 : 60}
         color={colors.ambar_400}
       />
-      <div className={cx(styles.progressCircleContainer, styles[size])}>
-        <ProgressCircle
-          progress={calculateProgress(request.reachedQuantity, request.requiredQuantity)}
-          size={size}
-        />
-        <div className={cx(styles.lasteQtd, styles[size])}>
-          <p>Faltam {request.requiredQuantity - request.reachedQuantity} {request.unit}</p>
-        </div>
+    </div>
+    <div className={cx(styles.progressCircleContainer, styles[size])}>
+      <ProgressCircle
+        progress={calculateProgress(request.reachedQuantity, request.requiredQuantity)}
+        size={size}
+      />
+      <div className={cx(styles.lasteQtd, styles[size])}>
+        <p>Faltam {request.requiredQuantity - request.reachedQuantity} {request.unit}</p>
       </div>
     </div>
   </div>

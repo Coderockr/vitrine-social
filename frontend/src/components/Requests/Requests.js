@@ -111,7 +111,7 @@ class Requests extends React.Component {
             lg={{ span: 14, offset: 5 }}
             md={{ span: 20, offset: 2 }}
             sm={{ span: 20, offset: 2 }}
-            xs={{ span: 22, offset: 1 }}
+            xs={{ span: 24, offset: 0 }}
             className={styles.row}
           >
             {this.props.isOrganization &&
