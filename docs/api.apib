@@ -269,7 +269,7 @@ Realizar busca das necessidades
             Accept: application/json
             Content-Type: application/json
             Authorization: JWT
-    + Attributes (UploadFile)
+    + Attributes (UploadFileOrganization)
 
 + Response 201 (application/json)
     + Attributes (Created)
@@ -278,7 +278,7 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Remover imagem [/v1/organization/{id}/image/{image_id}]
+## Remover imagem [/v1/organization/{id}/images/{image_id}]
 
 ### Remover imagem [DELETE]
 
@@ -356,14 +356,14 @@ Realizar busca das necessidades
     + Attributes (Error)
 
 
-## Upload [/v1/need/{id}/upload]
+## Upload de Imagem [/v1/need/{id}/images]
 
-### Fazer upload [POST]
+### Fazer upload de imagem [POST]
 
 + Parameters
     + id (number) - Id da necessidade
 
-+ Request Upload de um arquivo
++ Request Upload de uma imagem
 
     + Headers
 
@@ -378,7 +378,7 @@ Realizar busca das necessidades
 + Response 400 (application/json)
     + Attributes (Error)
 
-## Remover imagem [/v1/need/{id}/image/{image_id}]
+## Remover imagem [/v1/need/{id}/images/{image_id}]
 
 ### Remover imagem [DELETE]
 
@@ -534,8 +534,10 @@ Realizar busca das necessidades
 + url (string) - URL da imagem
 
 ## UploadFile (object)
-+ name: `File.png` (string) - Nome do arquivo
-+ content: `file content` (string) - Conteúdo do arquivo formatado como Base64
++ file: (string) - Arquivo a ser enviado (form-data)
+
+## UploadFileOrganization (UploadFile)
++ logo: `true` (boolean) - True se imagem é o logo da organização
 
 ## AllCategories (Category)
 + needs_count (number) - Número de necessidades ativas da categoria

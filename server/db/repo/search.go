@@ -94,11 +94,12 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 	args = append(args, (page-1)*ResultsPerPage)
 
 	sql := fmt.Sprintf(`
-		SELECT n.*, o.name as organization_name, o.logo as organization_logo, o.slug as organization_slug, o.phone as organization_phone,
-					 c.name as category_name, c.slug as category_slug
+		SELECT n.*, o.name as organization_name, o.slug as organization_slug, o.phone as organization_phone,
+					 c.name as category_name, c.slug as category_slug, oi.url as organization_logo
 		FROM needs n
 			INNER JOIN organizations o on (o.id = n.organization_id)
 			INNER JOIN categories c on (c.id = n.category_id)
+			LEFT JOIN organizations_images oi on (o.logo_image_id = oi.id)
 		WHERE n.id > 0
 			%s
 		LIMIT %d OFFSET $%d

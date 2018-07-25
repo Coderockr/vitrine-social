@@ -31,8 +31,15 @@ func TestAuthHandler_Login(t *testing.T) {
 					ID:       1554,
 					Password: string(password),
 				},
-				Name:  "Jhon Doe",
-				Logo:  "Logo",
+				Name: "Jhon Doe",
+				Logo: &model.OrganizationImage{
+					OrganizationID: 1,
+					Image: model.Image{
+						ID:   1,
+						Name: "Logo",
+						URL:  "logo",
+					},
+				},
 				Slug:  "jhon_doe",
 				Phone: "123",
 			},
@@ -92,7 +99,7 @@ func TestAuthHandler_Login(t *testing.T) {
 						"organization": {
 							"id": 1554,
 							"name": "Jhon Doe",
-							"logo": "Logo",
+							"logo": "logo",
 							"slug": "jhon_doe",
 							"phone": ""
 						},

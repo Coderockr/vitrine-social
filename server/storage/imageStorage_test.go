@@ -562,7 +562,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 		"when_fails_to_save_to_database": test{
 			token:  &model.Token{UserID: 888},
 			needID: 405,
-			fh:     r.MultipartForm.File["not_to_fail"][0],
+			fh:     r.MultipartForm.File["to_fail"][0],
 			err:    "it have failed to save",
 			container: func() *containerMock {
 				c := &containerMock{}

@@ -169,5 +169,6 @@ func (s *ImageStorage) createImage(fh *multipart.FileHeader, folder string) (*mo
 		Name: fileName[0],
 		URL:  s.BasePublicURL + item.ID(),
 	}
+
 	return &i, nil
 }

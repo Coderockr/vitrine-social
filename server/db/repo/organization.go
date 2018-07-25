@@ -26,7 +26,7 @@ func NewOrganizationRepository(db *sqlx.DB) *OrganizationRepository {
 }
 
 const allFields string = `
-	id, name, logo, phone, about, video, email, password, slug,
+	id, name, logo_image_id, phone, about, video, email, password, slug,
 	street as "address.street", number as "address.number",
 	complement as "address.complement", neighborhood as "address.neighborhood",
 	city as "address.city", state as "address.state", zipcode as "address.zipcode"
@@ -36,6 +36,9 @@ const allFields string = `
 func (r *OrganizationRepository) GetBaseOrganization(id int64) (*model.Organization, error) {
 	o := &model.Organization{}
 	err := r.db.Get(o, "SELECT "+allFields+" FROM organizations WHERE id = $1", id)
+
+	o.Logo, err = r.GetLogo(*o)
+
 	return o, err
 }
 
@@ -76,7 +79,7 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 func (r *OrganizationRepository) Create(o model.Organization) (model.Organization, error) {
 	row := r.db.QueryRow(
 		`INSERT INTO organizations (
-			name, logo, phone, about, video, email, slug, password,
+			name, phone, about, video, email, slug, password,
 			street, number, complement, neighborhood, city, state, zipcode
 		) VALUES (
 			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
@@ -84,7 +87,6 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 		RETURNING id
 		`,
 		o.Name,
-		o.Logo,
 		o.Phone,
 		o.About,
 		o.Video,
@@ -114,22 +116,20 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 	_, err := r.db.Exec(
 		`UPDATE organizations SET
 			name = $1,
-			logo = $2,
-			phone = $3,
-			about = $4,
-			video = $5,
-			email = $6,
-			street = $7,
-			number = $8,
-			complement = $9,
-			neighborhood = $10,
-			city = $11,
-			state = $12,
-			zipcode = $13
-		WHERE id = $14
+			phone = $2,
+			about = $3,
+			video = $4,
+			email = $5,
+			street = $6,
+			number = $7,
+			complement = $8,
+			neighborhood = $9,
+			city = $10,
+			state = $11,
+			zipcode = $12
+		WHERE id = $13
 		`,
 		o.Name,
-		o.Logo,
 		o.Phone,
 		o.About,
 		o.Video,
@@ -161,6 +161,9 @@ func (r *OrganizationRepository) DeleteImage(imageID int64, organizationID int64
 func (r *OrganizationRepository) GetByEmail(email string) (*model.Organization, error) {
 	o := model.Organization{}
 	err := r.db.Get(&o, `SELECT `+allFields+` FROM organizations WHERE email = $1`, email)
+
+	o.Logo, err = r.GetLogo(o)
+
 	return &o, err
 }
 
@@ -218,4 +221,17 @@ func (r *OrganizationRepository) ChangePassword(o model.Organization, currentPas
 
 	r.ResetPasswordTo(&o, newPassword)
 	return o, nil
+}
+
+// UpdateLogo will change the logo image
+func (r *OrganizationRepository) UpdateLogo(imageID int64, organizationID int64) error {
+	_, err := r.db.Exec(`UPDATE organizations SET logo_image_id = $1 WHERE id = $2`, imageID, organizationID)
+	return err
+}
+
+// GetLogo returns organization logo image
+func (r *OrganizationRepository) GetLogo(o model.Organization) (*model.OrganizationImage, error) {
+	logo := &model.OrganizationImage{}
+	err := r.db.Get(logo, "SELECT * FROM organizations_images WHERE id = $1", o.LogoImageID)
+	return logo, err
 }

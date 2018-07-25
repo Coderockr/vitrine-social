@@ -16,6 +16,7 @@ type (
 	OrganizationRepository interface {
 		Get(id int64) (*model.Organization, error)
 		Update(o model.Organization) (model.Organization, error)
+		UpdateLogo(imageID int64, organizationID int64) error
 		DeleteImage(imageID int64, organizationID int64) error
 	}
 
@@ -51,7 +52,7 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 			baseOrganizationJSON: baseOrganizationJSON{
 				ID:    o.ID,
 				Name:  o.Name,
-				Logo:  o.Logo,
+				Logo:  o.Logo.URL,
 				Slug:  o.Slug,
 				Phone: o.Phone,
 			},
@@ -154,12 +155,17 @@ func UpdateOrganizationHandler(repo OrganizationRepository) func(w http.Response
 }
 
 // UploadOrganizationImageHandler upload file to storage and save new image
-func UploadOrganizationImageHandler(container organizationStorage) func(w http.ResponseWriter, r *http.Request) {
+func UploadOrganizationImageHandler(container organizationStorage, orgRepo OrganizationRepository) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		organizationID, err := strconv.ParseInt(vars["id"], 10, 64)
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+			return
+		}
+
+		if err := r.ParseMultipartForm(defaultMaxMemory); err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, err)
 			return
 		}
 
@@ -169,12 +175,14 @@ func UploadOrganizationImageHandler(container organizationStorage) func(w http.R
 			return
 		}
 
-		if err := r.ParseMultipartForm(defaultMaxMemory); err != nil {
-			HandleHTTPError(w, http.StatusBadRequest, err)
+		logo := r.MultipartForm.Value["logo"]
+		isLogo, err := strconv.ParseBool(logo[0])
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Valor do parâmetro logo é inválido"))
 			return
 		}
 
-		files := r.MultipartForm.File["images"]
+		files := r.MultipartForm.File["file"]
 		if len(files) == 0 {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível ler o arquivo"))
 			return
@@ -184,6 +192,14 @@ func UploadOrganizationImageHandler(container organizationStorage) func(w http.R
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao salvar imagem: %s", err))
 			return
+		}
+
+		if isLogo == true {
+			err = orgRepo.UpdateLogo(i.ID, t.UserID)
+			if err != nil {
+				HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao atualizar logo: %s", err))
+				return
+			}
 		}
 
 		HandleHTTPSuccess(w, map[string]int64{"id": i.ID})

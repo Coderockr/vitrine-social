@@ -114,10 +114,10 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	)).Methods("PUT")
 
 	v1.Path("/organization/{id:[0-9]+}/images").Handler(authMiddleware.With(
-		negroni.WrapFunc(handlers.UploadOrganizationImageHandler(iS)),
+		negroni.WrapFunc(handlers.UploadOrganizationImageHandler(iS, oR)),
 	)).Methods("POST")
 
-	v1.Path("/organization/{id:[0-9]+}/image/{image_id:[0-9]+}").Handler(authMiddleware.With(
+	v1.Path("/organization/{id:[0-9]+}/images/{image_id:[0-9]+}").Handler(authMiddleware.With(
 		negroni.WrapFunc(handlers.DeleteOrganizationImageHandler(iS)),
 	)).Methods("DELETE")
 
@@ -137,7 +137,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		negroni.WrapFunc(handlers.UploadNeedImagesHandler(iS)),
 	)).Methods("POST")
 
-	v1.Path("/need/{id:[0-9]+}/image/{image_id:[0-9]+}").Handler(authMiddleware.With(
+	v1.Path("/need/{id:[0-9]+}/images/{image_id:[0-9]+}").Handler(authMiddleware.With(
 		negroni.WrapFunc(handlers.DeleteNeedImagesHandler(iS)),
 	)).Methods("DELETE")
 

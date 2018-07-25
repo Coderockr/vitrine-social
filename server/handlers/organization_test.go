@@ -21,6 +21,7 @@ type (
 	organizationRepositoryMock struct {
 		GetFN         func(id int64) (*model.Organization, error)
 		UpdateFN      func(o model.Organization) (model.Organization, error)
+		UpdateLogoFN  func(imageID int64, organizationID int64) error
 		DeleteImageFN func(imageID int64, organizationID int64) error
 	}
 
@@ -64,7 +65,6 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 		"should success because the right values were sent": {
 			body: `{
 				"name": "Novo Nome",
-				"logo": "Novo Logo",
 				"phone": "123123",
 				"about": "Nova Descrição detalhada da ONG",
 				"video": "Novo Link do video",
@@ -90,7 +90,6 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 								ID:       1,
 							},
 							Name:  "",
-							Logo:  "",
 							Phone: "",
 							About: "",
 							Video: "",
@@ -206,6 +205,10 @@ func (r *organizationRepositoryMock) Get(id int64) (*model.Organization, error) 
 
 func (r *organizationRepositoryMock) Update(o model.Organization) (model.Organization, error) {
 	return r.UpdateFN(o)
+}
+
+func (r *organizationRepositoryMock) UpdateLogo(imageID int64, organizationID int64) error {
+	return r.UpdateLogoFN(imageID, organizationID)
 }
 
 func (r *organizationRepositoryMock) DeleteImage(imageID int64, organizationID int64) error {

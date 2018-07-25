@@ -80,7 +80,7 @@ func GetNeedHandler(repo NeedRepository, oRepo needOrganizationRepository) func(
 			Organization: baseOrganizationJSON{
 				ID:   o.ID,
 				Name: o.Name,
-				Logo: o.Logo,
+				Logo: o.Logo.URL,
 				Slug: o.Slug,
 			},
 			Images:    needImagesToImageJSON(n.Images),
@@ -179,7 +179,7 @@ func UploadNeedImagesHandler(container needStorageContainer) func(w http.Respons
 			return
 		}
 
-		files := r.MultipartForm.File["images"]
+		files := r.MultipartForm.File["file"]
 		if len(files) == 0 {
 			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível ler o arquivo"))
 			return
