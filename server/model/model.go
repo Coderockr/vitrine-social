@@ -40,7 +40,7 @@ type Organization struct {
 	User
 	Name        string `valid:"required" db:"name"`
 	Logo        *OrganizationImage
-	LogoImageID string `valid:"optional" db:"logo_image_id"`
+	LogoImageID int    `valid:"optional" db:"logo_image_id"`
 	Phone       string `valid:"required" db:"phone"`
 	About       string `db:"about"`
 	Video       string `valid:"required" db:"video"`

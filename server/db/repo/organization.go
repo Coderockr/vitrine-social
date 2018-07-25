@@ -232,6 +232,9 @@ func (r *OrganizationRepository) UpdateLogo(imageID int64, organizationID int64)
 // GetLogo returns organization logo image
 func (r *OrganizationRepository) GetLogo(o model.Organization) (*model.OrganizationImage, error) {
 	logo := &model.OrganizationImage{}
+	if o.LogoImageID == 0 {
+		return logo, nil
+	}
 	err := r.db.Get(logo, "SELECT * FROM organizations_images WHERE id = $1", o.LogoImageID)
 	return logo, err
 }
