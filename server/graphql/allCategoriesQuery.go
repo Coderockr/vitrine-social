@@ -13,7 +13,11 @@ func newAllCategoriesQuery(getAllCat getAllCatsFn) *graphql.Field {
 		Description: "Return all Categories",
 		Type:        graphql.NewList(categoryType),
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-			return getAllCat()
+			cats, err := getAllCat()
+			if err != nil {
+				return nil, err
+			}
+			return cats, nil
 		},
 	}
 }
