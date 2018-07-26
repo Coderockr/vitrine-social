@@ -156,6 +156,7 @@ class OrganizationProfileForm extends React.Component {
         const params = {
           name: values.name,
           email: values.email,
+          website: values.website,
           phone: values.phone,
           address,
           about: values.about,
@@ -299,6 +300,13 @@ class OrganizationProfileForm extends React.Component {
                   initialValue: organization.email,
                 })(
                   <Input size="large" placeholder="E-mail" />,
+                )}
+              </FormItem>
+              <FormItem {...formItemLayout}>
+                {getFieldDecorator('website', {
+                  initialValue: organization.website,
+                })(
+                  <Input size="large" placeholder="Website" />,
                 )}
               </FormItem>
               <FormItem {...formItemLayout}>
