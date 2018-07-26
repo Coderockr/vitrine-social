@@ -22,6 +22,7 @@ type orgImageRepo interface {
 	Get(int64) (*model.Organization, error)
 	CreateImage(model.OrganizationImage) (model.OrganizationImage, error)
 	DeleteImage(imageID int64, organizationID int64) error
+	SetLogoNull(organizationID int64) error
 }
 
 // ImageStorage will save files into the storage and reference then into the database
@@ -111,6 +112,12 @@ func (s *ImageStorage) DeleteOrganizationImage(t *model.Token, imageID int64) er
 
 		s.removeItem(i.URL)
 		s.OrganizationRepository.DeleteImage(i.ID, i.OrganizationID)
+
+		logoID, _ := o.LogoImageID.Value()
+		if logoID == i.ID {
+			s.OrganizationRepository.SetLogoNull(o.ID)
+		}
+
 		return nil
 	}
 

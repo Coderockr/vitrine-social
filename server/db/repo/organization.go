@@ -243,6 +243,12 @@ func (r *OrganizationRepository) UpdateLogo(imageID int64, organizationID int64)
 	return err
 }
 
+// SetLogoNull will set null to logo image id
+func (r *OrganizationRepository) SetLogoNull(organizationID int64) error {
+	_, err := r.db.Exec(`UPDATE organizations SET logo_image_id = NULL WHERE id = $1`, organizationID)
+	return err
+}
+
 // GetLogo returns organization logo image
 func (r *OrganizationRepository) GetLogo(o model.Organization) (*model.OrganizationImage, error) {
 	logo := &model.OrganizationImage{}

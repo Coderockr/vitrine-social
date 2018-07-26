@@ -668,6 +668,11 @@ func (m *orgRepositoryMock) DeleteImage(imageID, orgID int64) error {
 	return args.Error(0)
 }
 
+func (m *orgRepositoryMock) SetLogoNull(orgID int64) error {
+	args := m.Called(orgID)
+	return args.Error(0)
+}
+
 type containerMock struct {
 	mock.Mock
 }
