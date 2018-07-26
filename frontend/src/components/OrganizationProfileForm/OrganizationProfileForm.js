@@ -86,6 +86,12 @@ class OrganizationProfileForm extends React.Component {
       });
   }
 
+  getBase64(img, callback) {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
+  }
+
   stateSort(a, b) {
     if (a.sigla < b.sigla) {
       return -1;
@@ -136,6 +142,7 @@ class OrganizationProfileForm extends React.Component {
       this.setState({
         responseFeedback: '',
         responseFeedbackMessage: '',
+        profileImageUrl: null,
       });
     }, 100);
   }
@@ -184,33 +191,36 @@ class OrganizationProfileForm extends React.Component {
   }
 
   saveImageChanges() {
-    return this.state.imagesChanges.map((image) => {
-      const { file, uid, action } = image;
-      let imageId = uid;
-      if (!imageId) {
-        imageId = file.uid;
+    const { profileImageUrl, profileFormData, imagesChanges } = this.state;
+    const promisses = [];
+    if (profileImageUrl) {
+      promisses.push(api.post(`organization/${getUser().id}/images`, profileFormData));
+    }
+    imagesChanges.map((image) => {
+      const { file, action } = image;
+      if (action === 'add') {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('logo', false);
+        return promisses.push(api.post(`organization/${getUser().id}/images`, formData));
       }
       if (action === 'delete') {
-        return api.delete(`organization/${getUser().id}/image/${imageId}`);
+        return promisses.push(api.delete(`organization/${getUser().id}/images/${file.uid}`));
       }
       return null;
     });
+    return promisses;
   }
 
-  cancelImageChanges() {
-    return this.state.imagesChanges.map((image) => {
-      const { uid, action } = image;
-      if (action === 'add') {
-        return api.delete(`organization/${getUser().id}/image/${uid}`);
-      }
-      return null;
-    });
-  }
-
-  cancelForm() {
-    Promise.all([
-      ...this.cancelImageChanges(),
-    ]).then(() => this.closeModal());
+  uploadProfileImage({ file }) {
+    const profileFormData = new FormData();
+    profileFormData.append('file', file);
+    profileFormData.append('logo', true);
+    this.getBase64(file, profileImageUrl => this.setState({
+      profileImageUrl,
+      profileFormData,
+    }));
+    this.props.enableSave(true);
   }
 
   renderStates() {
@@ -240,6 +250,12 @@ class OrganizationProfileForm extends React.Component {
       },
     };
 
+    const {
+      profileImageUrl,
+      responseFeedback,
+      responseFeedbackMessage,
+      validatingZipCode,
+    } = this.state;
     const { organization } = this.props;
     const { address } = organization;
 
@@ -252,9 +268,9 @@ class OrganizationProfileForm extends React.Component {
         destroyOnClose
         closable={false}
         maskClosable={false}
-        wrapClassName={this.state.responseFeedback && styles.modalFixed}
+        wrapClassName={responseFeedback && styles.modalFixed}
       >
-        <Row className={this.state.responseFeedback && styles.blurRow}>
+        <Row className={responseFeedback && styles.blurRow}>
           <Col span={20} offset={2}>
             <h1 className={styles.title}>Editar Perfil da Organização</h1>
             <div className={styles.uploadWrapper}>
@@ -262,7 +278,7 @@ class OrganizationProfileForm extends React.Component {
                 name="avatar"
                 listType="picture"
                 showUploadList={false}
-                onChange={this.handleChange}
+                customRequest={({ file }) => this.uploadProfileImage({ file })}
               >
                 <div className={styles.avatarWrapper}>
                   <Avatar
@@ -273,7 +289,7 @@ class OrganizationProfileForm extends React.Component {
                       backgroundColor: colors.ambar_200,
                       textShadow: '4px 1px 3px #FF974A',
                     }}
-                    src={organization.logo}
+                    src={profileImageUrl || organization.logo}
                   />
                   <div className={styles.avatarEdit}>
                     <p>Editar</p>
@@ -324,7 +340,7 @@ class OrganizationProfileForm extends React.Component {
               </FormItem>
               <FormItem
                 {...formItemLayout}
-                validateStatus={this.state.validatingZipCode}
+                validateStatus={validatingZipCode}
               >
                 {getFieldDecorator('zipcode', {
                   getValueFromEvent: e => maskCep(e.target.value),
@@ -457,7 +473,7 @@ class OrganizationProfileForm extends React.Component {
                   </button>
                   <button
                     className={cx(styles.button, styles.cancelButton)}
-                    onClick={() => this.cancelForm()}
+                    onClick={() => this.closeModal()}
                   >
                     CANCELAR
                   </button>
@@ -467,9 +483,9 @@ class OrganizationProfileForm extends React.Component {
           </Col>
         </Row>
         <ResponseFeedback
-          type={this.state.responseFeedback}
-          message={this.state.responseFeedbackMessage}
-          onClick={this.state.responseFeedback === 'error' ?
+          type={responseFeedback}
+          message={responseFeedbackMessage}
+          onClick={responseFeedback === 'error' ?
             () => this.setState({ responseFeedback: '', responseFeedbackMessage: '' }) :
             () => this.closeModal()
           }
