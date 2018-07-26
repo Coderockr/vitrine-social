@@ -48,7 +48,8 @@ type Organization struct {
 	Address     Address
 	Needs       []Need
 	Images      []OrganizationImage
-	CreatedAt   *time.Time `db:"created_at"`
+	CreatedAt   *time.Time   `db:"created_at"`
+	Website     nulls.String `valid:"optional" db:"website"`
 }
 
 // OrganizationImage de uma organização
