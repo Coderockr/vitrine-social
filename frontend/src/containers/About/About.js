@@ -18,7 +18,7 @@ const itemSections = [
   },
   {
     number: 3,
-    text: 'Ao  clicar em “quero ajudar” o doador pode optar por entar em contato diretamente com a entidade beneficente por telefone ou então deixar uma mensagem através da plataforma, para posteriormente tratarem sobre os detalhes logisticos da doação.',
+    text: 'Ao  clicar em “quero ajudar” o doador pode optar por entrar em contato diretamente com a entidade beneficente por telefone ou então deixar uma mensagem através da plataforma, para posteriormente tratarem sobre os detalhes logísticos da doação.',
     style: styles.itemPurple,
   },
 ];

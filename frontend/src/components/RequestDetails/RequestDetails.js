@@ -105,9 +105,21 @@ class RequestDetails extends React.Component {
       );
     }
 
-    let dateText = `Criado em: ${moment(request.createdAt).format('LLL')}`;
-    if (request.updatedAt) {
-      dateText = `Atualizado em: ${moment(request.updatedAt).format('LLL')}`;
+    const {
+      createdAt,
+      updatedAt,
+      title,
+      description,
+      organization,
+      requiredQuantity,
+      reachedQuantity,
+      unit,
+      images,
+    } = request;
+
+    let dateText = `Criado em: ${moment(createdAt).format('LLL')}`;
+    if (updatedAt) {
+      dateText = `Atualizado em: ${moment(updatedAt).format('LLL')}`;
     }
 
     return (
@@ -115,14 +127,15 @@ class RequestDetails extends React.Component {
         <div className={styles.itemDetails}>
           <ItemIndicator className={styles.itemIndicator} request={request} size="lg" />
           <div>
-            <h1>{request.title}</h1>
+            <h1>{title}</h1>
+            <p className={styles.received}>{`Recebidos: ${reachedQuantity} de ${requiredQuantity} ${unit}`}</p>
             <p className={styles.updatedAt}>{dateText}</p>
           </div>
         </div>
         <div className={styles.organizationBox}>
           <div className={styles.organizationBorder}>
-            <p className={styles.organization}>{request.organization.name}</p>
-            <p className={styles.description}>{request.description}</p>
+            <p className={styles.organization}>{organization.name}</p>
+            <p className={styles.description}>{description}</p>
           </div>
         </div>
         {this.state.imagesEnabled &&
@@ -134,7 +147,7 @@ class RequestDetails extends React.Component {
                 infinite={false}
                 {...carouselSettings}
               >
-                {this.renderImages(request.images)}
+                {this.renderImages(images)}
               </Carousel>
             </div>
             <Arrow size={32} color={colors.purple_400} onClick={() => this.carousel.next()} />
