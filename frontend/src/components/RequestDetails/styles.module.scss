@@ -27,17 +27,17 @@ require('../../utils/styles/colors.js');
       text-transform: uppercase;
     }
 
-    .updatedAt {
+    .received {
       display: inline-block;
       background-color: $purple_400;
-      font-size: 12px;
-      font-weight: lighter;
       color: white;
       padding: 3px;
       padding-right: 8px;
       padding-left: 8px;
       border-radius: 10px;
-      margin-left: 20px;
+      font-size: 12px;
+      font-weight: normal;
+      margin: 5px 20px;
     }
   }
 
@@ -91,6 +91,18 @@ require('../../utils/styles/colors.js');
     }
   }
 
+  .updatedAt {
+    font-size: 12px;
+    font-weight: normal;
+    color: $textDark;
+    padding: 3px;
+    padding-right: 8px;
+    padding-left: 8px;
+    border-radius: 10px;
+    margin-left: 20px;
+    margin-top: 10px;
+  }
+
   .buttonWrapper {
     display: flex;
     justify-content: center;
@@ -115,15 +127,12 @@ require('../../utils/styles/colors.js');
     display: inline !important;
     margin: 0 !important;
     text-align: center;
-
-    .updatedAt {
-      margin-top: 0;
-    }
   }
 
   .itemIndicator {
     display: flex;
     justify-content: center;
+    margin-bottom: 0 !important;
   }
 
   .organizationBox {
