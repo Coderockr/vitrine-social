@@ -165,10 +165,12 @@ func TestOpenQueries(t *testing.T) {
 
 func TestMutations(t *testing.T) {
 	type testCase struct {
-		tmMock      *tokenManagerMock
-		orgRepoMock *orgRepoMock
-		mutation    string
-		response    string
+		tmMock       *tokenManagerMock
+		orgRepoMock  *orgRepoMock
+		needRepoMock *needRepoMock
+		token        *model.Token
+		mutation     string
+		response     string
 	}
 
 	tests := map[string]testCase{
@@ -261,12 +263,89 @@ func TestMutations(t *testing.T) {
 				return m
 			}(),
 		},
+		"needCreate/when_success": testCase{
+			token: &model.Token{UserID: 1},
+			mutation: `mutation {
+				viewer {
+					needCreate(input: {
+						title: "new need",
+						description: "a need",
+						unit: "box",
+						categoryId: 1,
+						dueDate: "2018-07-01"
+					}) {
+						need { id, title, requiredQuantity }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needCreate": { "need" : {
+				"id": 333, "title": "new need", "requiredQuantity": 0
+			}}}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{User: model.User{ID: 1}},
+						nil,
+					)
+
+				return m
+			}(),
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				call := m.On("Create", mock.AnythingOfType("Need"))
+				call.Once().
+					Run(func(args mock.Arguments) {
+						n := args.Get(0).(model.Need)
+						n.ID = 333
+						call.Return(n, nil)
+					})
+				return m
+			}(),
+		},
+		"needCreate/when_fail": testCase{
+			token: &model.Token{UserID: 1},
+			mutation: `mutation {
+				viewer {
+					needCreate(input: {
+						title: "new need",
+						description: "a need",
+						unit: "box",
+						categoryId: 1,
+					}) {
+						need { id, title, requiredQuantity }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needCreate": null }}, "errors": [
+				{"message": "fail to save", "locations":[] }
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{User: model.User{ID: 1}},
+						nil,
+					)
+
+				return m
+			}(),
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				call := m.On("Create", mock.AnythingOfType("Need"))
+				call.Once().
+					Run(func(args mock.Arguments) {
+						call.Return(args.Get(0).(model.Need), errors.New("fail to save"))
+					})
+				return m
+			}(),
+		},
 	}
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			h := graphql.NewHandler(
-				&needRepoMock{},
+				test.needRepoMock,
 				test.orgRepoMock,
 				test.tmMock,
 				&catRepoMock{},
@@ -276,7 +355,7 @@ func TestMutations(t *testing.T) {
 
 			w := httptest.NewRecorder()
 
-			h.ServeHTTP(w, getGraphqlRequest(nil, test.mutation, nil))
+			h.ServeHTTP(w, getGraphqlRequest(test.token, test.mutation, nil))
 
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			require.JSONEq(t, test.response, string(body))
@@ -284,8 +363,13 @@ func TestMutations(t *testing.T) {
 			if test.orgRepoMock != nil {
 				test.orgRepoMock.AssertExpectations(t)
 			}
+
 			if test.tmMock != nil {
 				test.tmMock.AssertExpectations(t)
+			}
+
+			if test.needRepoMock != nil {
+				test.needRepoMock.AssertExpectations(t)
 			}
 		})
 	}

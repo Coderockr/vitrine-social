@@ -1,7 +1,6 @@
 package graphql
 
 import (
-	"errors"
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -49,11 +48,7 @@ func newNeedCreateMutation(create needCreateFn) *graphql.Field {
 		},
 		Type: needCreatePayload,
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-			o, ok := p.Source.(*model.Organization)
-			if !ok {
-				return nil, errors.New("no organization found")
-			}
-
+			o := p.Source.(*model.Organization)
 			input := p.Args["input"].(map[string]interface{})
 
 			n := model.Need{
@@ -75,7 +70,7 @@ func newNeedCreateMutation(create needCreateFn) *graphql.Field {
 				return nil, err
 			}
 
-			return map[string]interface{}{"need": n}, nil
+			return map[string]interface{}{"need": &n}, nil
 		},
 	}
 }
