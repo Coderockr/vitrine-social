@@ -115,8 +115,7 @@ func (s *ImageStorage) DeleteOrganizationImage(t *model.Token, imageID int64) er
 		s.removeItem(i.URL)
 		s.OrganizationRepository.DeleteImage(i.ID, i.OrganizationID)
 
-		logoID, _ := o.LogoImageID.Value()
-		if logoID == i.ID {
+		if o.LogoImageID.Int64 == i.ID {
 			s.OrganizationRepository.UpdateLogo(nulls.Int64{Valid: false}, o.ID)
 		}
 
