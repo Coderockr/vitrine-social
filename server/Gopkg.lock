@@ -231,12 +231,12 @@
   revision = "90697d60dd844d5ef6ff15135d0203f65d2f53b8"
 
 [[projects]]
-  branch = "master"
-  digest = "1:cdb8afaf3839033fbbd15b9dd5612f4ae739a148f873fe63344c57681ff5e069"
+  digest = "1:b0aeb8e186061509f22661edffbff9af43f186f7b4ba0db71900678b229568ac"
   name = "github.com/lucassabreu/graphql-multipart-middleware"
   packages = ["."]
   pruneopts = ""
-  revision = "7b0992a3dfb69b2d848bc4b4669cc79318a0010b"
+  revision = "5a6fd5cea81424deb40aaf3b74f1a08af3b3ee9d"
+  version = "v0.1"
 
 [[projects]]
   branch = "master"
