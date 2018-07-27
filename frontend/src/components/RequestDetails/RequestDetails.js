@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
-import { Modal, Carousel } from 'antd';
+import { Modal, Carousel, Icon } from 'antd';
+import Img from 'react-image';
 import cx from 'classnames';
 import ReactGA from 'react-ga';
 import styles from './styles.module.scss';
@@ -11,6 +12,8 @@ import colors from '../../utils/styles/colors';
 import Loading from '../Loading/Loading';
 
 const mediaQuery = window.matchMedia('(min-width: 700px)');
+const mediaQueryOneImage = window.matchMedia('(max-width: 801px)');
+const mediaQueryTwoImages = window.matchMedia('(max-width: 696px)');
 
 const carouselSettings = {
   slidesToShow: 3,
@@ -36,11 +39,18 @@ class RequestDetails extends React.Component {
     previewVisible: false,
     previewImage: '',
     responseFeedback: false,
-    imagesEnabled: false,
+    hideArrowCount: 4,
   }
 
   componentWillMount() {
     ReactGA.modalview('/request-details', null, 'Detalhes da Solicitação');
+    mediaQueryOneImage.addListener(this.hideArrowCount.bind(this));
+    mediaQueryTwoImages.addListener(this.hideArrowCount.bind(this));
+  }
+
+  componentWillUnmount() {
+    mediaQueryOneImage.removeListener(this.hideArrowCount);
+    mediaQueryTwoImages.removeListener(this.hideArrowCount);
   }
 
   showContactForm() {
@@ -62,6 +72,16 @@ class RequestDetails extends React.Component {
     });
   }
 
+  hideArrowCount() {
+    let hideArrowCount = 4;
+    if (mediaQueryTwoImages.matches) {
+      hideArrowCount = 3;
+    } else if (mediaQueryOneImage.matches) {
+      hideArrowCount = 2;
+    }
+    this.setState({ hideArrowCount });
+  }
+
   closeModal() {
     this.props.onCancel();
     this.setState({ contactFormVisible: false });
@@ -77,9 +97,10 @@ class RequestDetails extends React.Component {
           role="link"
           tabIndex={0}
         >
-          <img
+          <Img
             src={imageObj.url}
             alt={imageObj.name}
+            loader={<Icon type="loading" style={{ fontSize: 40, color: colors.cian_400 }} />}
           />
         </a>
       ))
@@ -135,12 +156,18 @@ class RequestDetails extends React.Component {
         <div className={styles.organizationBox}>
           <div className={styles.organizationBorder}>
             <p className={styles.organization}>{organization.name}</p>
-            <p className={styles.description}>{description}</p>
+            <p style={{ 'white-space': 'pre-line' }} className={styles.description}>{description}</p>
           </div>
         </div>
-        {this.state.imagesEnabled &&
+        {images.length > 0 &&
           <div className={styles.arrowWrapper}>
-            <Arrow size={32} color={colors.purple_400} onClick={() => this.carousel.prev()} left />
+            <Arrow
+              size={32}
+              color={colors.purple_400}
+              onClick={() => this.carousel.prev()}
+              left
+              hidden={images.length < this.state.hideArrowCount}
+            />
             <div className={styles.carouselWrapper}>
               <Carousel
                 ref={(ref) => { this.carousel = ref; }}
@@ -150,7 +177,12 @@ class RequestDetails extends React.Component {
                 {this.renderImages(images)}
               </Carousel>
             </div>
-            <Arrow size={32} color={colors.purple_400} onClick={() => this.carousel.next()} />
+            <Arrow
+              size={32}
+              color={colors.purple_400}
+              onClick={() => this.carousel.next()}
+              hidden={images.length < this.state.hideArrowCount}
+            />
           </div>
         }
         <div className={styles.buttonWrapper}>

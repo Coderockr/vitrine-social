@@ -53,6 +53,7 @@ class Arrow extends React.PureComponent {
         onClick={this.props.onClick}
         onKeyPress={this.props.onClick}
         className={styles.arrowButton}
+        hidden={this.props.hidden}
       >
         {this.renderIcon()}
       </div>

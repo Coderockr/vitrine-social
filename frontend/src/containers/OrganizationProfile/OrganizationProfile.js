@@ -1,6 +1,7 @@
 import React from 'react';
 import cx from 'classnames';
-import { Row, Col, Carousel, Avatar } from 'antd';
+import { Row, Col, Carousel, Avatar, Icon } from 'antd';
+import Img from 'react-image';
 import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
 import Arrow from '../../components/Arrow';
@@ -91,7 +92,15 @@ class OrganizationProfile extends React.Component {
 
   renderImages(images) {
     return (
-      images.map(image => <img key={image.id} src={image.url} alt={image.name} />)
+      images.map(image => (
+        <Img
+          key={image.id}
+          src={image.url}
+          alt={image.name}
+          loader={<Icon type="loading" style={{ fontSize: 60, color: colors.teal_400 }} />}
+        />
+      ),
+      )
     );
   }
 
@@ -192,6 +201,7 @@ class OrganizationProfile extends React.Component {
                   onClick={() => this.carousel.prev()}
                   left
                   over
+                  hidden={organization.images.length < 2}
                 />
                 <div className={styles.carouselWrapper}>
                   <Carousel
@@ -207,6 +217,7 @@ class OrganizationProfile extends React.Component {
                   color={colors.teal_400}
                   onClick={() => this.carousel.next()}
                   over
+                  hidden={organization.images.length < 2}
                 />
               </div>
             </div>
