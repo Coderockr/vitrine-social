@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/gobuffalo/pop/nulls"
 )
 
 // CreateNeedHandler creates a new need based on the payload
@@ -15,7 +16,7 @@ func CreateNeedHandler(create func(model.Need) (model.Need, error)) func(http.Re
 			Organization     int64
 			Category         int64
 			Title            string
-			Description      string
+			Description      nulls.String
 			RequiredQuantity int
 			ReachedQuantity  int
 			Unit             string
