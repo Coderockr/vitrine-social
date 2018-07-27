@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Coderockr/vitrine-social/server/security"
+	"github.com/gobuffalo/pop/nulls"
 
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/jmoiron/sqlx"
@@ -238,7 +239,7 @@ func (r *OrganizationRepository) ChangePassword(o model.Organization, currentPas
 }
 
 // UpdateLogo will change the logo image
-func (r *OrganizationRepository) UpdateLogo(imageID int64, organizationID int64) error {
+func (r *OrganizationRepository) UpdateLogo(imageID nulls.Int64, organizationID int64) error {
 	_, err := r.db.Exec(`UPDATE organizations SET logo_image_id = $1 WHERE id = $2`, imageID, organizationID)
 	return err
 }
