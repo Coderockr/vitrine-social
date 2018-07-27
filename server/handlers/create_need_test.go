@@ -11,6 +11,7 @@ import (
 
 	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/gobuffalo/pop/nulls"
 	"github.com/gorilla/context"
 
 	"github.com/stretchr/testify/require"
@@ -59,7 +60,7 @@ func TestCreateNeedHandler(t *testing.T) {
 				if n.OrganizationID != 1 ||
 					n.CategoryID != 99 ||
 					n.Title != "test 1" ||
-					n.Description != "test 2" ||
+					n.Description != nulls.NewString("test 2") ||
 					n.RequiredQuantity != 3 ||
 					n.ReachedQuantity != 0 ||
 					n.DueDate == nil ||
@@ -81,7 +82,7 @@ func TestCreateNeedHandler(t *testing.T) {
 				if n.OrganizationID != 1 ||
 					n.CategoryID != 99 ||
 					n.Title != "test 1" ||
-					n.Description != "test 2" ||
+					n.Description != nulls.NewString("test 2") ||
 					n.RequiredQuantity != 3 ||
 					n.ReachedQuantity != 0 ||
 					n.DueDate != nil {
