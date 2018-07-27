@@ -7,7 +7,6 @@ import {
   Input,
   InputNumber,
   Select,
-  Radio,
   AutoComplete,
 } from 'antd';
 import cx from 'classnames';
@@ -20,16 +19,23 @@ import styles from './styles.module.scss';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 
 const mediaQuery = window.matchMedia('(max-width: 385px)');
+
+const units = [
+  'Unidades',
+  'Kg',
+  'Pessoas',
+  'Litros',
+];
 
 class RequestForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       collapsed: mediaQuery.matches,
+      units,
+      categories: [],
       responseFeedback: '',
       responseFeedbackMessage: '',
     };
@@ -38,7 +44,8 @@ class RequestForm extends React.Component {
   }
 
   componentWillMount() {
-    ReactGA.modalview('/request-form', null, 'Formulário de Solicitação');
+    ReactGA.modalview('/request-form', null, 'Formulário de Nova Solicitação');
+    this.fetchCategories();
   }
 
   componentWillUnmount() {
@@ -51,14 +58,28 @@ class RequestForm extends React.Component {
     });
   }
 
+  fetchCategories() {
+    api.get('categories').then(
+      (response) => {
+        this.setState({
+          categories: response.data,
+        });
+      },
+    );
+  }
+
+  resetForm() {
+    this.props.form.resetFields();
+    this.setState({
+      responseFeedback: '',
+      responseFeedbackMessage: '',
+    });
+  }
+
   closeModal() {
     this.props.onCancel();
     setTimeout(() => {
-      this.props.form.resetFields();
-      this.setState({
-        responseFeedback: '',
-        responseFeedbackMessage: '',
-      });
+      this.resetForm();
     }, 100);
   }
 
@@ -66,15 +87,8 @@ class RequestForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const params = {
-          ...values,
-          organization: getUser().id,
-          category: this.props.request.category.id,
-        };
-        if (params.requiredQuantity === params.reachedQuantity) {
-          params.status = 'INACTIVE';
-        }
-        api.put(`need/${this.props.request.id}`, params).then(
+        const params = { ...values, organization: getUser().id };
+        api.post('need', params).then(
           () => {
             this.setState({
               responseFeedback: 'success',
@@ -93,14 +107,40 @@ class RequestForm extends React.Component {
     });
   }
 
+  renderCategories() {
+    return (
+      this.state.categories.map(category => (
+        <Select.Option key={category.id} value={category.id}>{category.name}</Select.Option>
+      ))
+    );
+  }
+
+  renderUnit() {
+    return (
+      this.state.units.map(unit => (
+        <AutoComplete.Option key={unit} value={unit}>{unit}</AutoComplete.Option>
+      ))
+    );
+  }
+
+  renderAdditionalButtons() {
+    return (
+      <button
+        className={cx(styles.button, styles.additionalButton)}
+        onClick={() => this.resetForm()}
+      >
+        ADICIONAR OUTRA
+      </button>
+    );
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { request } = this.props;
 
     const formItemLayout = {
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 20, offset: 2 },
+        sm: { span: 22, offset: 1 },
         md: { span: 16, offset: 4 },
       },
     };
@@ -119,105 +159,72 @@ class RequestForm extends React.Component {
       >
         <Row className={this.state.responseFeedback && styles.blurRow}>
           <Col span={20} offset={2}>
-            <h1 className={styles.title}>
-              Editar Solicitação
-            </h1>
+            <h1 className={styles.title}>Nova Solicitação</h1>
             <Form hideRequiredMark>
               <FormItem
                 {...formItemLayout}
               >
-                {getFieldDecorator('status', {
-                  initialValue: request.status,
-                })(
-                  <div className={styles.statusWrapper}>
-                    <p className={styles.statusLabel}>Status:</p>
-                    <RadioGroup
-                      defaultValue={request.status}
-                      className="purpleRadio"
-                    >
-                      <RadioButton className={styles.radioButton} value="ACTIVE">ATIVA</RadioButton>
-                      <RadioButton value="INACTIVE">INATIVA</RadioButton>
-                    </RadioGroup>
-                  </div>,
-                )}
-              </FormItem>
-              <FormItem
-                {...formItemLayout}
-              >
-                {getFieldDecorator('title', {
-                  initialValue: request.title,
-                })(
-                  <Input size="large" placeholder="Título" disabled={request !== null} />,
-                )}
-              </FormItem>
-              <FormItem
-                {...formItemLayout}
-              >
                 {getFieldDecorator('category', {
-                  initialValue: request.category.name,
+                  rules: [{ required: true, message: 'Escolha uma categoria' }],
                 })(
                   <Select
                     placeholder="Categoria"
                     size="large"
-                    disabled
-                  />,
+                  >
+                    {this.renderCategories()}
+                  </Select>,
                 )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
               >
-                {getFieldDecorator('description', {
-                  initialValue: request.description,
-                })(
-                  <TextArea rows={5} placeholder="Descrição da Solicitação" />,
-                )}
-              </FormItem>
-              <FormItem
-                {...formItemLayout}
-              >
-                <Col span={this.state.collapsed ? 10 : 6} className={styles.col}>
-                  <FormItem label="Solicitado">
+                <Col span={this.state.collapsed ? 8 : 6} className={styles.col}>
+                  <FormItem label="Quantidade">
                     {getFieldDecorator('requiredQuantity', {
-                      initialValue: request.requiredQuantity,
+                      rules: [{ required: true, message: 'Obrigatório' }],
                     })(
-                      <InputNumber size="large" min={1} disabled />,
+                      <InputNumber size="large" min={1} />,
                     )}
                   </FormItem>
                 </Col>
                 <Col
-                  sm={{ span: 6, offset: 0 }}
-                  xs={this.state.collapsed ? { span: 10, offset: 4 } : { span: 6, offset: 2 }}
-                  className={styles.col}
-                >
-                  <FormItem label="Recebido">
-                    {getFieldDecorator('reachedQuantity', {
-                      initialValue: request.reachedQuantity,
-                    })(
-                      <InputNumber
-                        size="large"
-                        min={0}
-                        max={Number(this.props.form.getFieldValue('requiredQuantity'))}
-                      />,
-                    )}
-                  </FormItem>
-                </Col>
-                <Col
-                  sm={{ span: 12, offset: 0 }}
-                  xs={this.state.collapsed ? { span: 24, offset: 0 } : { span: 8, offset: 2 }}
+                  sm={{ span: 7, offset: 0 }}
+                  xs={this.state.collapsed ? { span: 14, offset: 2 } : { span: 16, offset: 2 }}
                   className={styles.col}
                 >
                   <FormItem label="Tipo">
                     {getFieldDecorator('unit', {
-                      initialValue: request.unit,
+                      rules: [{ required: true, message: 'Ex: kg, litros' }],
                     })(
                       <AutoComplete
                         size="large"
                         filterOption
-                        disabled
-                      />,
+                      >
+                        {this.renderUnit()}
+                      </AutoComplete>,
                     )}
                   </FormItem>
                 </Col>
+                <Col
+                  sm={{ span: 10, offset: 1 }}
+                  xs={{ span: 24, offset: 0 }}
+                  className={styles.col}
+                >
+                  <FormItem label="Item">
+                    {getFieldDecorator('title', {
+                      rules: [{ required: true, message: 'O que você precisa?' }],
+                    })(
+                      <Input size="large" />,
+                    )}
+                  </FormItem>
+                </Col>
+              </FormItem>
+              <FormItem
+                {...formItemLayout}
+              >
+                {getFieldDecorator('description')(
+                  <TextArea rows={5} placeholder="Descrição da Solicitação" />,
+                )}
               </FormItem>
               <FormItem>
                 <Col
@@ -226,14 +233,13 @@ class RequestForm extends React.Component {
                   xs={{ span: 24, offset: 0 }}
                 >
                   <h2 className={styles.galleryHeader}>Galeria de Imagens</h2>
-                  <UploadImages images={request.images} />
+                  <UploadImages />
                 </Col>
               </FormItem>
               <FormItem>
                 <div className={styles.buttonWrapper}>
                   <button
                     className={cx(styles.button, styles.saveButton)}
-                    disabled={!this.props.saveEnabled}
                     onClick={this.handleSubmit}
                   >
                     SALVAR
@@ -256,22 +262,13 @@ class RequestForm extends React.Component {
             () => this.setState({ responseFeedback: '', responseFeedbackMessage: '' }) :
             () => this.closeModal()
           }
+          additionalButtons={() => this.renderAdditionalButtons()}
         />
       </Modal>
     );
   }
 }
 
-const WrappedRequestForm = Form.create({
-  onValuesChange(props, allValues) {
-    let enable = false;
-    Object.keys(allValues).forEach((key) => {
-      if (key !== 'category' && props.request[key] !== allValues[key]) {
-        enable = true;
-      }
-    });
-    return props.enableSave(enable);
-  },
-})(RequestForm);
+const WrappedRequestForm = Form.create()(RequestForm);
 
 export default WrappedRequestForm;
