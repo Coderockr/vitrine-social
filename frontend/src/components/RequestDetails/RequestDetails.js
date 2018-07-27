@@ -12,8 +12,8 @@ import colors from '../../utils/styles/colors';
 import Loading from '../Loading/Loading';
 
 const mediaQuery = window.matchMedia('(min-width: 700px)');
-const mediaQueryOneImage = window.matchMedia('(max-width: 801px)');
-const mediaQueryTwoImages = window.matchMedia('(max-width: 696px)');
+const mediaQueryTwoImages = window.matchMedia('(max-width: 801px)');
+const mediaQueryOneImage = window.matchMedia('(max-width: 696px)');
 
 const carouselSettings = {
   slidesToShow: 3,
@@ -33,19 +33,33 @@ const carouselSettings = {
   ],
 };
 
+const mediaQueryImagesCount = () => {
+  if (mediaQueryOneImage.matches) {
+    return 2;
+  }
+  if (mediaQueryTwoImages.matches) {
+    return 3;
+  }
+  return 4;
+};
+
 class RequestDetails extends React.Component {
-  state = {
-    contactFormVisible: false,
-    previewVisible: false,
-    previewImage: '',
-    responseFeedback: false,
-    hideArrowCount: 4,
+  constructor(props) {
+    super(props);
+    this.state = {
+      contactFormVisible: false,
+      previewVisible: false,
+      previewImage: '',
+      responseFeedback: false,
+      hideArrowCount: mediaQueryImagesCount(),
+    };
+
+    mediaQueryOneImage.addListener(this.hideArrowCount.bind(this));
+    mediaQueryTwoImages.addListener(this.hideArrowCount.bind(this));
   }
 
   componentWillMount() {
     ReactGA.modalview('/request-details', null, 'Detalhes da Solicitação');
-    mediaQueryOneImage.addListener(this.hideArrowCount.bind(this));
-    mediaQueryTwoImages.addListener(this.hideArrowCount.bind(this));
   }
 
   componentWillUnmount() {
@@ -73,13 +87,7 @@ class RequestDetails extends React.Component {
   }
 
   hideArrowCount() {
-    let hideArrowCount = 4;
-    if (mediaQueryTwoImages.matches) {
-      hideArrowCount = 3;
-    } else if (mediaQueryOneImage.matches) {
-      hideArrowCount = 2;
-    }
-    this.setState({ hideArrowCount });
+    this.setState({ hideArrowCount: mediaQueryImagesCount() });
   }
 
   closeModal() {
