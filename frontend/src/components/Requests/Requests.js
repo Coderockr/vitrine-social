@@ -4,6 +4,7 @@ import cx from 'classnames';
 import ReactGA from 'react-ga';
 import RequestCard from '../../components/RequestCard';
 import RequestForm from '../../components/RequestForm';
+import RequestFormCreate from '../../components/RequestFormCreate';
 import RequestDetails from '../../components/RequestDetails';
 import styles from './styles.module.scss';
 import Loading from '../Loading/Loading';
@@ -122,21 +123,28 @@ class Requests extends React.Component {
                 </RadioGroup>
                 <button
                   className={styles.newButton}
-                  onClick={() => this.showModal(null, 'editForm')}
+                  onClick={() => this.showModal(null, 'newForm')}
                 >
                   NOVA SOLICITAÇÃO
                 </button>
               </div>
             }
             {this.renderRequests()}
-            {this.props.isOrganization &&
+            {this.props.isOrganization && this.state.showModal === 'editForm' &&
               <RequestForm
-                visible={this.state.showModal === 'editForm'}
+                visible
                 onCancel={() => this.onCancel()}
                 onSave={this.props.onSave}
                 saveEnabled={this.state.saveEnabled}
                 enableSave={enable => this.setState({ saveEnabled: enable })}
                 request={this.state.request}
+              />
+            }
+            {this.props.isOrganization && this.state.showModal === 'newForm' &&
+              <RequestFormCreate
+                visible
+                onCancel={() => this.onCancel()}
+                onSave={this.props.onSave}
               />
             }
             {!this.props.isOrganization &&
