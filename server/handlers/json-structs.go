@@ -63,7 +63,7 @@ type needJSON struct {
 	Organization     baseOrganizationJSON `json:"organization"`
 	Images           []imageJSON          `json:"images"`
 	Title            string               `json:"title"`
-	Description      string               `json:"description"`
+	Description      nulls.String         `json:"description"`
 	RequiredQuantity int                  `json:"requiredQuantity"`
 	ReachedQuantity  int                  `json:"reachedQuantity"`
 	Unit             string               `json:"unit"`

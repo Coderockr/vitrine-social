@@ -71,16 +71,16 @@ var (
 
 // Need uma necessidade da organização
 type Need struct {
-	ID               int64      `valid:"required" db:"id"`
-	Title            string     `valid:"required" db:"title"`
-	Description      string     `valid:"required" db:"description"`
-	RequiredQuantity int        `db:"required_qtd"`
-	ReachedQuantity  int        `db:"reached_qtd"`
-	Unit             string     `valid:"required" db:"unit"`
-	DueDate          *time.Time `db:"due_date"`
-	Status           needStatus `valid:"required" db:"status"`
-	CategoryID       int64      `valid:"required" db:"category_id"`
-	OrganizationID   int64      `valid:"required" db:"organization_id"`
+	ID               int64        `valid:"required" db:"id"`
+	Title            string       `valid:"required" db:"title"`
+	Description      nulls.String `db:"description"`
+	RequiredQuantity int          `db:"required_qtd"`
+	ReachedQuantity  int          `db:"reached_qtd"`
+	Unit             string       `valid:"required" db:"unit"`
+	DueDate          *time.Time   `db:"due_date"`
+	Status           needStatus   `valid:"required" db:"status"`
+	CategoryID       int64        `valid:"required" db:"category_id"`
+	OrganizationID   int64        `valid:"required" db:"organization_id"`
 	Category         Category
 	Organization     Organization
 	Images           []NeedImage
