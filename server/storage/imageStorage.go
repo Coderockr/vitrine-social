@@ -6,6 +6,8 @@ import (
 	"mime/multipart"
 	"strings"
 
+	"github.com/gobuffalo/pop/nulls"
+
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/gobuffalo/uuid"
 	"github.com/graymeta/stow"
@@ -22,6 +24,7 @@ type orgImageRepo interface {
 	Get(int64) (*model.Organization, error)
 	CreateImage(model.OrganizationImage) (model.OrganizationImage, error)
 	DeleteImage(imageID int64, organizationID int64) error
+	UpdateLogo(imageID nulls.Int64, organizationID int64) error
 }
 
 // ImageStorage will save files into the storage and reference then into the database
@@ -111,6 +114,11 @@ func (s *ImageStorage) DeleteOrganizationImage(t *model.Token, imageID int64) er
 
 		s.removeItem(i.URL)
 		s.OrganizationRepository.DeleteImage(i.ID, i.OrganizationID)
+
+		if o.LogoImageID.Int64 == i.ID {
+			s.OrganizationRepository.UpdateLogo(nulls.Int64{Valid: false}, o.ID)
+		}
+
 		return nil
 	}
 

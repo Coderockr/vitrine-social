@@ -1,7 +1,5 @@
 import React from 'react';
 import { Upload, Icon, Modal } from 'antd';
-import api from '../../utils/api';
-import { getUser } from '../../utils/auth';
 import styles from './styles.module.scss';
 
 class UploadImages extends React.Component {
@@ -25,6 +23,12 @@ class UploadImages extends React.Component {
     }
   }
 
+  getBase64(img, callback) {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
+  }
+
   handleCancel = () => this.setState({ previewVisible: false })
 
   handlePreview = (file) => {
@@ -42,32 +46,26 @@ class UploadImages extends React.Component {
 
   removeImage(item) {
     const find = this.state.updateList.find(image => image.file.uid === item.uid);
-    let updateFile = { file: item, action: 'delete' };
     let updateList = [...this.state.updateList];
     if (find) {
-      updateFile = { ...find };
-      updateFile.action = 'delete';
       const index = updateList.indexOf(find);
       updateList.splice(index, 1);
+    } else {
+      const updateFile = { file: item, action: 'delete' };
+      updateList = [...updateList, updateFile];
     }
-
-    updateList = [...updateList, updateFile];
     this.setState({ updateList });
     this.props.onChange(updateList);
   }
 
-  uploadImage({ onSuccess, onError, file }) {
-    const formData = new FormData();
-    formData.append('images', file);
-    api.post(`organization/${getUser().id}/images`, formData).then((result) => {
-      const updateFile = { file, action: 'add', uid: result.data.id };
+  uploadImage({ onSuccess, file }) {
+    this.getBase64(file, (imageUrl) => {
+      const updateFile = { file, action: 'add', imageUrl };
       const updateList = [...this.state.updateList, updateFile];
       this.setState({ updateList });
       this.props.onChange(updateList);
       onSuccess(null, updateFile);
-    }).catch(() => (
-      onError()
-    ));
+    });
   }
 
   render() {

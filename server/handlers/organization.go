@@ -17,7 +17,7 @@ type (
 	OrganizationRepository interface {
 		Get(id int64) (*model.Organization, error)
 		Update(o model.Organization) (model.Organization, error)
-		UpdateLogo(imageID int64, organizationID int64) error
+		UpdateLogo(imageID nulls.Int64, organizationID int64) error
 		DeleteImage(imageID int64, organizationID int64) error
 	}
 
@@ -197,7 +197,7 @@ func UploadOrganizationImageHandler(container organizationStorage, orgRepo Organ
 		}
 
 		if isLogo == true {
-			err = orgRepo.UpdateLogo(i.ID, t.UserID)
+			err = orgRepo.UpdateLogo(nulls.NewInt64(i.ID), t.UserID)
 			if err != nil {
 				HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao atualizar logo: %s", err))
 				return
