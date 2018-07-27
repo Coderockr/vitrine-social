@@ -12,7 +12,6 @@ type (
 )
 
 func newCategoryQuery(get getCatFn, count getCatNeedsCountFn) *graphql.Field {
-
 	categoryType.AddFieldConfig("needsCount", &graphql.Field{
 		Type: graphql.NewNonNull(graphql.Int),
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
@@ -29,10 +28,8 @@ func newCategoryQuery(get getCatFn, count getCatNeedsCountFn) *graphql.Field {
 	})
 
 	f := newCategoryField(func(p graphql.ResolveParams) (*model.Category, error) {
-		if id, ok := p.Args["id"].(int); ok {
-			return get(int64(id))
-		}
-		return nil, nil
+		id, _ := p.Args["id"].(int)
+		return get(int64(id))
 	})
 
 	f.Name = "CategoryQuery"

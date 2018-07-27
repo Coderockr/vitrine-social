@@ -31,27 +31,25 @@ func getGraphqlRequest(t *model.Token, query string, vars *map[string]interface{
 	return r
 }
 
-func TestAllCategoriesQuery(t *testing.T) {
-
+func TestOpenQueries(t *testing.T) {
 	type testCase struct {
-		repo     *catRepoMock
+		catRepo  *catRepoMock
 		query    string
 		response string
 	}
 
 	tests := map[string]testCase{
-		"when_success": testCase{
+		"allCategories/when_success": testCase{
 			query: `query {
 				allCategories{
 					name, slug
 				}
 			}`,
 			response: `{"data": { "allCategories": [
-					{"name":"Category1", "slug": "c1"},
-					{"name":"Category2", "slug": "c2"}
-				]
-			}}`,
-			repo: func() *catRepoMock {
+				{"name":"Category1", "slug": "c1"},
+				{"name":"Category2", "slug": "c2"}
+			]}}`,
+			catRepo: func() *catRepoMock {
 				cMock := &catRepoMock{}
 				cMock.On("GetAll").Once().
 					Return(
@@ -70,15 +68,72 @@ func TestAllCategoriesQuery(t *testing.T) {
 				return cMock
 			}(),
 		},
-		"when_fail": testCase{
+		"allCategories/when_fail": testCase{
 			query: `query { allCategories{ name, slug } }`,
 			response: `{"data": { "allCategories": null }, "errors":[
-			{"message": "fail to query", "locations":[]}
+				{"message": "fail to query", "locations":[]}
 			] }`,
-			repo: func() *catRepoMock {
+			catRepo: func() *catRepoMock {
 				cMock := &catRepoMock{}
 				cMock.On("GetAll").Once().
 					Return([]model.Category{}, errors.New("fail to query"))
+				return cMock
+			}(),
+		},
+		"category/with_simple_query": testCase{
+			query: `query {
+				category(id: 1){
+					name, slug
+				}
+			}`,
+			response: `{"data": {
+				"category": {"name":"Category1", "slug": "c1"}
+			}}`,
+			catRepo: func() *catRepoMock {
+				cMock := &catRepoMock{}
+				cMock.On("Get", int64(1)).Once().
+					Return(
+						&model.Category{
+							Name: "Category1",
+							Slug: "c1",
+						},
+						nil,
+					)
+				return cMock
+			}(),
+		},
+		"category/with_needsCount": testCase{
+			query: `query {
+				category(id: 1){
+					name, slug, needsCount
+				}
+			}`,
+			response: `{"data": {
+				"category": {"name":"Category1", "slug": "c1", "needsCount": 3}
+			}}`,
+			catRepo: func() *catRepoMock {
+				cMock := &catRepoMock{}
+				c := &model.Category{
+					Name: "Category1",
+					Slug: "c1",
+				}
+				cMock.On("Get", int64(1)).Once().
+					Return(c, nil)
+
+				cMock.On("GetNeedsCount", c).Once().
+					Return(int64(3), nil)
+				return cMock
+			}(),
+		},
+		"category/when_fail": testCase{
+			query: `query { category(id: 1){ name, slug } }`,
+			response: `{"data": { "category": null }, "errors":[
+				{"message": "fail to query", "locations":[]}
+			] }`,
+			catRepo: func() *catRepoMock {
+				cMock := &catRepoMock{}
+				cMock.On("Get", int64(1)).Once().
+					Return(nil, errors.New("fail to query"))
 				return cMock
 			}(),
 		},
@@ -90,7 +145,7 @@ func TestAllCategoriesQuery(t *testing.T) {
 				&needRepoMock{},
 				&orgRepoMock{},
 				&tokenManagerMock{},
-				test.repo,
+				test.catRepo,
 				&searchRepoMock{},
 				&imageStorageMock{},
 			)
@@ -102,7 +157,7 @@ func TestAllCategoriesQuery(t *testing.T) {
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			require.JSONEq(t, test.response, string(body))
 
-			test.repo.AssertExpectations(t)
+			test.catRepo.AssertExpectations(t)
 		})
 	}
 }
