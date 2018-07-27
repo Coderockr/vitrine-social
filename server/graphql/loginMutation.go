@@ -1,6 +1,7 @@
 package graphql
 
 import (
+	"errors"
 	"log"
 
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -30,10 +31,8 @@ func newLoginMutation(get getUserByEmail, cT createToken, getOrg getOrgFn) *grap
 	loginType.AddFieldConfig(
 		"organization",
 		newOrganizationField(func(p graphql.ResolveParams) (*model.Organization, error) {
-			if l, ok := p.Source.(loginJSON); ok {
-				return getOrg(l.OrganizationID)
-			}
-			return nil, nil
+			l, _ := p.Source.(loginJSON)
+			return getOrg(l.OrganizationID)
 		}),
 	)
 
@@ -57,7 +56,8 @@ func newLoginMutation(get getUserByEmail, cT createToken, getOrg getOrgFn) *grap
 			}
 			err = security.CompareHashAndPassword(user.Password, pass)
 			if err != nil {
-				return nil, err
+				log.Printf("[INFO][Login Mutation] %s", err.Error())
+				return nil, errors.New("password does not match")
 			}
 
 			token, err := cT(user, nil)

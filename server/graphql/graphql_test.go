@@ -13,6 +13,7 @@ import (
 	"github.com/Coderockr/vitrine-social/server/graphql"
 	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/Coderockr/vitrine-social/server/security"
 	"github.com/gorilla/context"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -158,6 +159,134 @@ func TestOpenQueries(t *testing.T) {
 			require.JSONEq(t, test.response, string(body))
 
 			test.catRepo.AssertExpectations(t)
+		})
+	}
+}
+
+func TestMutations(t *testing.T) {
+	type testCase struct {
+		tmMock      *tokenManagerMock
+		orgRepoMock *orgRepoMock
+		mutation    string
+		response    string
+	}
+
+	tests := map[string]testCase{
+		"login/when_success": testCase{
+			mutation: `mutation {
+				login(email:"admin@coderockr.com", password: "1234567"){
+					token
+					organization{id, name}
+				}
+			}`,
+			response: `{"data": { "login": {
+				"token": "tokengeradovalido",
+				"organization": { "id": 1, "name": "Coderockr" }
+			}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				p, _ := security.GenerateHash("1234567")
+				m.On("GetUserByEmail", "admin@coderockr.com").Once().
+					Return(
+						model.User{
+							Email:    "admin@coderockr.com",
+							ID:       1,
+							Password: p,
+						},
+						nil,
+					)
+
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{ID: 1},
+							Name: "Coderockr",
+						},
+						nil,
+					)
+				return m
+			}(),
+			tmMock: func() *tokenManagerMock {
+				tm := &tokenManagerMock{}
+				var pms *[]string
+				tm.On("CreateToken", mock.Anything, pms).Once().
+					Return(
+						"tokengeradovalido",
+						nil,
+					)
+				return tm
+			}(),
+		},
+		"login/when_email_does_not_exists": testCase{
+			mutation: `mutation {
+				login(email:"admin@coderockr.com", password: "1234567"){
+					token
+					organization{id, name}
+				}
+			}`,
+			response: `{"data": { "login": null }, "errors": [
+				{"message": "email does not exist", "locations":[]}
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("GetUserByEmail", "admin@coderockr.com").Once().
+					Return(model.User{}, errors.New("email does not exist"))
+
+				return m
+			}(),
+		},
+		"login/when_password_is_invalid": testCase{
+			mutation: `mutation {
+				login(email:"admin@coderockr.com", password: "1234"){
+					token
+					organization{id, name}
+				}
+			}`,
+			response: `{"data": { "login": null }, "errors": [
+				{"message": "password does not match", "locations":[]}
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				p, _ := security.GenerateHash("1234567")
+				m.On("GetUserByEmail", "admin@coderockr.com").Once().
+					Return(
+						model.User{
+							Email:    "admin@coderockr.com",
+							ID:       1,
+							Password: p,
+						},
+						nil,
+					)
+
+				return m
+			}(),
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			h := graphql.NewHandler(
+				&needRepoMock{},
+				test.orgRepoMock,
+				test.tmMock,
+				&catRepoMock{},
+				&searchRepoMock{},
+				&imageStorageMock{},
+			)
+
+			w := httptest.NewRecorder()
+
+			h.ServeHTTP(w, getGraphqlRequest(nil, test.mutation, nil))
+
+			body, _ := ioutil.ReadAll(w.Result().Body)
+			require.JSONEq(t, test.response, string(body))
+
+			if test.orgRepoMock != nil {
+				test.orgRepoMock.AssertExpectations(t)
+			}
+			if test.tmMock != nil {
+				test.tmMock.AssertExpectations(t)
+			}
 		})
 	}
 }
