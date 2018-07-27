@@ -8,6 +8,7 @@ import {
   InputNumber,
   Select,
   AutoComplete,
+  Button,
 } from 'antd';
 import cx from 'classnames';
 import ReactGA from 'react-ga';
@@ -61,9 +62,7 @@ class RequestForm extends React.Component {
   fetchCategories() {
     api.get('categories').then(
       (response) => {
-        this.setState({
-          categories: response.data,
-        });
+        this.setState({ categories: response.data });
       },
     );
   }
@@ -87,24 +86,42 @@ class RequestForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        this.setState({ loading: true });
         const params = { ...values, organization: getUser().id };
-        api.post('need', params).then(
-          () => {
-            this.setState({
-              responseFeedback: 'success',
-              responseFeedbackMessage: 'Nova solicitação adicionada!',
-            });
-            this.props.onSave();
-          },
-          () => {
-            this.setState({
-              responseFeedback: 'error',
-              responseFeedbackMessage: 'Não foi possível criar a solicitação!',
-            });
-          },
+        api.post('need', params).then(result => this.saveImageChanges(result)
+          .then(
+            () => {
+              this.setState({
+                loading: false,
+                responseFeedback: 'success',
+                responseFeedbackMessage: 'Nova solicitação adicionada!',
+              });
+              this.props.onSave();
+            },
+            () => {
+              this.setState({
+                loading: false,
+                responseFeedback: 'error',
+                responseFeedbackMessage: 'Não foi possível criar a solicitação!',
+              });
+            },
+          ),
         );
       }
     });
+  }
+
+  saveImageChanges(result) {
+    const { imagesChanges } = this.state;
+    const promisses = [];
+    imagesChanges.map((image) => {
+      const { file } = image;
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('logo', false);
+      return promisses.push(api.post(`need/${result.data.id}/images`, formData));
+    });
+    return Promise.all(promisses);
   }
 
   renderCategories() {
@@ -233,17 +250,18 @@ class RequestForm extends React.Component {
                   xs={{ span: 24, offset: 0 }}
                 >
                   <h2 className={styles.galleryHeader}>Galeria de Imagens</h2>
-                  <UploadImages />
+                  <UploadImages onChange={imagesChanges => this.setState({ imagesChanges })} />
                 </Col>
               </FormItem>
               <FormItem>
                 <div className={styles.buttonWrapper}>
-                  <button
+                  <Button
                     className={cx(styles.button, styles.saveButton)}
                     onClick={this.handleSubmit}
+                    loading={this.state.loading}
                   >
                     SALVAR
-                  </button>
+                  </Button>
                   <button
                     className={cx(styles.button, styles.cancelButton)}
                     onClick={() => this.closeModal()}
@@ -262,7 +280,7 @@ class RequestForm extends React.Component {
             () => this.setState({ responseFeedback: '', responseFeedbackMessage: '' }) :
             () => this.closeModal()
           }
-          additionalButtons={() => this.renderAdditionalButtons()}
+          additionalButtons={this.state.responseFeedback === 'error' ? null : () => this.renderAdditionalButtons()}
         />
       </Modal>
     );

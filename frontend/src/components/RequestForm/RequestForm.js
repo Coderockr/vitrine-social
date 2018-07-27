@@ -9,6 +9,7 @@ import {
   Select,
   Radio,
   AutoComplete,
+  Button,
 } from 'antd';
 import cx from 'classnames';
 import ReactGA from 'react-ga';
@@ -32,6 +33,7 @@ class RequestForm extends React.Component {
       collapsed: mediaQuery.matches,
       responseFeedback: '',
       responseFeedbackMessage: '',
+      imagesChanges: [],
     };
 
     mediaQuery.addListener(this.widthChange.bind(this));
@@ -44,6 +46,12 @@ class RequestForm extends React.Component {
   componentWillUnmount() {
     mediaQuery.removeListener(this.widthChange);
   }
+
+  onChangeImages(imagesChanges) {
+    this.setState({ imagesChanges });
+    this.props.enableSave(true);
+  }
+
 
   widthChange() {
     this.setState({
@@ -74,9 +82,14 @@ class RequestForm extends React.Component {
         if (params.requiredQuantity === params.reachedQuantity) {
           params.status = 'INACTIVE';
         }
-        api.put(`need/${this.props.request.id}`, params).then(
+        this.setState({ loading: true });
+        Promise.all([
+          api.put(`need/${this.props.request.id}`, params),
+          ...this.saveImageChanges(),
+        ]).then(
           () => {
             this.setState({
+              loading: false,
               responseFeedback: 'success',
               responseFeedbackMessage: 'Nova solicitação adicionada!',
             });
@@ -84,6 +97,7 @@ class RequestForm extends React.Component {
           },
           () => {
             this.setState({
+              loading: false,
               responseFeedback: 'error',
               responseFeedbackMessage: 'Não foi possível criar a solicitação!',
             });
@@ -91,6 +105,25 @@ class RequestForm extends React.Component {
         );
       }
     });
+  }
+
+  saveImageChanges() {
+    const { imagesChanges } = this.state;
+    const promisses = [];
+    imagesChanges.map((image) => {
+      const { file, action } = image;
+      if (action === 'add') {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('logo', false);
+        return promisses.push(api.post(`need/${this.props.request.id}/images`, formData));
+      }
+      if (action === 'delete') {
+        return promisses.push(api.delete(`need/${this.props.request.id}/images/${file.uid}`));
+      }
+      return null;
+    });
+    return promisses;
   }
 
   render() {
@@ -226,18 +259,22 @@ class RequestForm extends React.Component {
                   xs={{ span: 24, offset: 0 }}
                 >
                   <h2 className={styles.galleryHeader}>Galeria de Imagens</h2>
-                  <UploadImages images={request.images} />
+                  <UploadImages
+                    images={request.images}
+                    onChange={imagesChanges => this.onChangeImages(imagesChanges)}
+                  />
                 </Col>
               </FormItem>
               <FormItem>
                 <div className={styles.buttonWrapper}>
-                  <button
+                  <Button
                     className={cx(styles.button, styles.saveButton)}
                     disabled={!this.props.saveEnabled}
                     onClick={this.handleSubmit}
+                    loading={this.state.loading}
                   >
                     SALVAR
-                  </button>
+                  </Button>
                   <button
                     className={cx(styles.button, styles.cancelButton)}
                     onClick={() => this.closeModal()}

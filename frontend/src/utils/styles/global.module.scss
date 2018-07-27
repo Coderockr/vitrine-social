@@ -387,7 +387,8 @@ require('./colors.js');
   }
 
   .ant-btn:hover,
-  .ant-btn:focus {
+  .ant-btn:focus,
+  .ant-btn:disabled,{
     color: $white;
   }
 
