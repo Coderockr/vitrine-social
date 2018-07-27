@@ -18,15 +18,25 @@ class RequestCard extends React.PureComponent {
       dateText = `Atualizado em: ${moment(request.updatedAt).format('LLL')}`;
     }
 
+    const {
+      organization,
+      requiredQuantity,
+      reachedQuantity,
+      unit,
+    } = request;
     return (
       <Row>
         <Col>
           <div className={styles.requestCard}>
             <ItemIndicator request={request} />
             <div className={styles.organizationContent}>
-              <h2>{request.title}</h2>
-              <Link to={`/organization/${request.organization.id}`}>{request.organization.name}</Link>
-              <p>{dateText}</p>
+              <div>
+                <p className={styles.receivedTop}>Recebidos: 50 de 100 itens</p>
+                <h2>{request.title}</h2>
+                <Link to={`/organization/${organization.id}`}>{organization.name}</Link>
+              </div>
+              <p className={styles.date}>{dateText}</p>
+              <p className={styles.receivedBottom}>{`Recebidos: ${reachedQuantity} de ${requiredQuantity} ${unit}`}</p>
             </div>
             <div className={styles.interestedContent}>
               <button

@@ -46,3 +46,9 @@ require('../../utils/styles/colors.js');
     border: none;
   }
 }
+
+@media (max-width: 440px) {
+  .wrapper {
+    margin: 15px auto;
+  }
+}

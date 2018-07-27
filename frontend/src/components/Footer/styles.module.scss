@@ -20,14 +20,32 @@ require('../../utils/styles/colors.js');
   margin: auto 0;
 }
 
-@media (max-width: 540px) {
+.icon {
+  font-size: 30px;
+  color: $white;
+  margin: 10px;
+}
+
+@media (max-width: 576px) {
   .appFooter {
-    padding: 15px 20px;
+    padding: 15px 24px;
   }
 }
 
-@media (max-width: 460px) {
+@media (max-width: 478px) {
+  .appFooter {
+    padding: 15px 20px;
+  }
+  .icon {
+    margin: 10px 5px;
+  }
   .copyright {
-    font-size: 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 390px) {
+  .copyright {
+    font-size: 8px;
   }
 }

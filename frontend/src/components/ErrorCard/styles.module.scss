@@ -5,7 +5,7 @@ require('../../utils/styles/colors.js');
   border: 2px solid $red_100;
   border-radius: 6px;
   padding: 50px 100px;
-  margin: 50px 0;
+  margin: 50px 10px;
   display: flex;
   justify-content: center;
 
@@ -21,5 +21,9 @@ require('../../utils/styles/colors.js');
 @media (max-width: 460px) {
   .errorWrapper {
     padding: 50px 50px;
+
+    .errorText {
+      font-size: 18px;
+    }
   }
 }

@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
+
+	"github.com/gobuffalo/pop/nulls"
 )
 
 type jsonTime struct {
@@ -20,21 +22,22 @@ func (t *jsonTime) UnmarshalJSON(b []byte) (err error) {
 }
 
 type baseOrganizationJSON struct {
-	ID    int64  `json:"id"`
-	Name  string `json:"name"`
-	Logo  string `json:"logo"`
-	Slug  string `json:"slug"`
-	Phone string `json:"phone"`
+	ID    int64        `json:"id"`
+	Name  string       `json:"name"`
+	Logo  nulls.String `json:"logo"`
+	Slug  string       `json:"slug"`
+	Phone string       `json:"phone"`
 }
 
 type organizationJSON struct {
 	baseOrganizationJSON
-	About   string      `json:"about"`
-	Video   string      `json:"video"`
-	Email   string      `json:"email"`
-	Address addressJSON `json:"address"`
-	Needs   []needJSON  `json:"needs"`
-	Images  []imageJSON `json:"images"`
+	About   string       `json:"about"`
+	Video   string       `json:"video"`
+	Email   string       `json:"email"`
+	Address addressJSON  `json:"address"`
+	Needs   []needJSON   `json:"needs"`
+	Images  []imageJSON  `json:"images"`
+	Website nulls.String `json:"website"`
 }
 
 type categoryJSON struct {

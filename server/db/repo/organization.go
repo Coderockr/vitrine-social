@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"database/sql"
 	"errors"
 	"strings"
 
@@ -28,13 +29,18 @@ const allFields string = `
 	id, name, logo_image_id, phone, about, video, email, password, slug,
 	street as "address.street", number as "address.number",
 	complement as "address.complement", neighborhood as "address.neighborhood",
-	city as "address.city", state as "address.state", zipcode as "address.zipcode"
+	city as "address.city", state as "address.state", zipcode as "address.zipcode",
+	website
 `
 
 // GetBaseOrganization returns only the data about a organization, not its relations
 func (r *OrganizationRepository) GetBaseOrganization(id int64) (*model.Organization, error) {
 	o := &model.Organization{}
 	err := r.db.Get(o, "SELECT "+allFields+" FROM organizations WHERE id = $1", id)
+
+	if err != nil {
+		return nil, err
+	}
 
 	o.Logo, err = r.GetLogo(*o)
 
@@ -81,7 +87,8 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 	row := r.db.QueryRow(
 		`INSERT INTO organizations (
 			name, phone, about, video, email, slug, password,
-			street, number, complement, neighborhood, city, state, zipcode
+			street, number, complement, neighborhood, city, state, zipcode,
+			website
 		) VALUES (
 			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
 		)
@@ -101,6 +108,7 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 		o.Address.City,
 		o.Address.State,
 		o.Address.Zipcode,
+		o.Website,
 	)
 
 	err = row.Scan(&o.ID)
@@ -191,8 +199,9 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 			neighborhood = $9,
 			city = $10,
 			state = $11,
-			zipcode = $12
-		WHERE id = $13
+			zipcode = $12,
+			website = $13
+		WHERE id = $14
 		`,
 		o.Name,
 		o.Phone,
@@ -206,6 +215,7 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 		o.Address.City,
 		o.Address.State,
 		o.Address.Zipcode,
+		o.Website,
 		o.ID,
 	)
 
@@ -226,6 +236,10 @@ func (r *OrganizationRepository) DeleteImage(imageID int64, organizationID int64
 func (r *OrganizationRepository) GetByEmail(email string) (*model.Organization, error) {
 	o := model.Organization{}
 	err := r.db.Get(&o, `SELECT `+allFields+` FROM organizations WHERE email = $1`, email)
+
+	if err != nil {
+		return nil, err
+	}
 
 	o.Logo, err = r.GetLogo(o)
 
@@ -297,6 +311,16 @@ func (r *OrganizationRepository) UpdateLogo(imageID int64, organizationID int64)
 // GetLogo returns organization logo image
 func (r *OrganizationRepository) GetLogo(o model.Organization) (*model.OrganizationImage, error) {
 	logo := &model.OrganizationImage{}
-	err := r.db.Get(logo, "SELECT * FROM organizations_images WHERE id = $1", o.LogoImageID)
+
+	logoID, err := o.LogoImageID.Value()
+	if logoID == nil || err != nil {
+		return logo, nil
+	}
+
+	err = r.db.Get(logo, "SELECT * FROM organizations_images WHERE id = $1", o.LogoImageID)
+	if err == sql.ErrNoRows {
+		return logo, nil
+	}
+
 	return logo, err
 }

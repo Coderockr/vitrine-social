@@ -5,6 +5,8 @@ import (
 	"errors"
 	"strings"
 	"time"
+
+	"github.com/gobuffalo/pop/nulls"
 )
 
 const (
@@ -38,7 +40,7 @@ type Organization struct {
 	User
 	Name        string `valid:"required" db:"name" json:"name"`
 	Logo        *OrganizationImage
-	LogoImageID string              `valid:"optional" db:"logo_image_id"`
+	LogoImageID nulls.Int           `valid:"optional" db:"logo_image_id"`
 	Phone       string              `valid:"required" db:"phone" json:"phone"`
 	About       string              `db:"about" json:"about"`
 	Video       string              `valid:"required" db:"video" json:"video"`
@@ -47,6 +49,7 @@ type Organization struct {
 	Needs       []Need              `json:"needs"`
 	Images      []OrganizationImage `json:"images"`
 	CreatedAt   *time.Time          `db:"created_at" json:"created_at"`
+	Website     nulls.String        `valid:"optional" db:"website" json:"website"`
 }
 
 // OrganizationImage de uma organização
@@ -125,12 +128,12 @@ type Address struct {
 // SearchNeed estrutura de busca de necessidade
 type SearchNeed struct {
 	Need
-	OrganizationName  string `db:"organization_name"`
-	OrganizationLogo  string `db:"organization_logo"`
-	OrganizationSlug  string `db:"organization_slug"`
-	OrganizationPhone string `db:"organization_phone"`
-	CategoryName      string `db:"category_name"`
-	CategorySlug      string `db:"category_slug"`
+	OrganizationName  string       `db:"organization_name"`
+	OrganizationLogo  nulls.String `db:"organization_logo"`
+	OrganizationSlug  string       `db:"organization_slug"`
+	OrganizationPhone string       `db:"organization_phone"`
+	CategoryName      string       `db:"category_name"`
+	CategorySlug      string       `db:"category_slug"`
 }
 
 func (s *needStatus) Scan(src interface{}) error {

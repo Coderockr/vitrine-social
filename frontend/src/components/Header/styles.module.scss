@@ -56,3 +56,15 @@ require('../../utils/styles/colors.js');
     background: $ambar_400;
   }
 }
+
+@media (max-width: 576px) {
+  .appHeader {
+    padding: 15px 24px;
+  }
+}
+
+@media (max-width: 491px) {
+  .appHeader {
+    padding: 15px 20px;
+  }
+}

@@ -30,7 +30,6 @@ class OrganizationProfile extends React.Component {
       editProfileVisible: false,
       changePasswordVisible: false,
       saveEnabled: false,
-      imagesEnabled: false,
     };
 
     mediaQuery.addListener(this.widthChange.bind(this));
@@ -97,19 +96,30 @@ class OrganizationProfile extends React.Component {
   }
 
   renderOrganizationInfo() {
-    if (this.state.loading) {
+    const {
+      loading,
+      error,
+      isOrganization,
+      organization,
+      editProfileVisible,
+      saveEnabled,
+      changePasswordVisible,
+      arrowSize,
+    } = this.state;
+
+    if (loading) {
       return <Loading />;
     }
-    if (this.state.error) {
+    if (error) {
       return <ErrorCard text="Não foi possível carregar os dados da Organização!" />;
     }
 
-    const { organization } = this.state;
     const { address } = organization;
+    const addressString = `${address.street} ${address.number}, ${address.complement ? `${address.complement},` : ''} Bairro ${address.neighborhood}, ${address.city} - ${address.state}`;
 
     return (
       <div>
-        {this.state.isOrganization &&
+        {isOrganization &&
           <div className={styles.buttonWrapper}>
             <button
               className={styles.editButton}
@@ -118,10 +128,10 @@ class OrganizationProfile extends React.Component {
               EDITAR
             </button>
             <OrganizationProfileForm
-              visible={this.state.editProfileVisible}
+              visible={editProfileVisible}
               onCancel={() => this.setState({ editProfileVisible: false, saveEnabled: false })}
               onSave={() => this.fetchData()}
-              saveEnabled={this.state.saveEnabled}
+              saveEnabled={saveEnabled}
               enableSave={enable => this.setState({ saveEnabled: enable })}
               organization={organization}
             />
@@ -134,7 +144,7 @@ class OrganizationProfile extends React.Component {
             <ChangePassword
               modal
               user
-              visible={this.state.changePasswordVisible}
+              visible={changePasswordVisible}
               onCancel={() => this.setState({ changePasswordVisible: false })}
             />
           </div>
@@ -151,26 +161,33 @@ class OrganizationProfile extends React.Component {
           sm={{ span: 18, offset: 3 }}
           xs={{ span: 24, offset: 0 }}
         >
-          <div className={cx(styles.border, styles.aboutBorder)}>
-            <h1>Sobre</h1>
-            <p>{organization.about}</p>
-          </div>
+          {(organization.about || organization.website) &&
+            <div className={cx(styles.border, styles.aboutBorder)}>
+              <h1>Sobre</h1>
+              {organization.about &&
+                <p>{organization.about}</p>
+              }
+              {organization.website &&
+              <a target="_blank" rel="me" href={`//${organization.website}`}>{organization.website}</a>
+              }
+            </div>
+          }
           <div className={cx(styles.border, styles.phoneBorder)}>
             <h1>Telefone</h1>
-            <a>{maskPhone(organization.phone)}</a>
+            <a href={`tel:${organization.phone}`}>{maskPhone(organization.phone)}</a>
           </div>
           <div className={cx(styles.border, styles.addressBorder)}>
             <h1>Endereço</h1>
-            <a>{`${address.street} ${address.number}, ${address.complement ? `${address.complement},` : ''} Bairro ${address.neighborhood}, ${address.city} - ${address.state} `}</a>
+            <a target="_blank" rel="me" href={`https://maps.google.com/?q=${addressString}`}>{addressString}</a>
           </div>
-          {this.state.imagesEnabled &&
+          {organization.images.length > 0 &&
             <div>
               <div className={cx(styles.border, styles.imagesBorder)}>
                 <h1>Imagens da Organização</h1>
               </div>
               <div className={styles.arrowWrapper}>
                 <Arrow
-                  size={this.state.arrowSize}
+                  size={arrowSize}
                   color={colors.teal_400}
                   onClick={() => this.carousel.prev()}
                   left
@@ -186,7 +203,7 @@ class OrganizationProfile extends React.Component {
                   </Carousel>
                 </div>
                 <Arrow
-                  size={this.state.arrowSize}
+                  size={arrowSize}
                   color={colors.teal_400}
                   onClick={() => this.carousel.next()}
                   over

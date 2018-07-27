@@ -2,7 +2,7 @@ import { notification } from 'antd';
 import cx from 'classnames';
 import styles from './styles.module.scss';
 
-const BottomNotification = ({ message, success }) => {
+const BottomNotification = ({ message, success, onClose }) => {
   notification.config({
     placement: 'bottomRight',
     bottom: 0,
@@ -10,7 +10,8 @@ const BottomNotification = ({ message, success }) => {
   notification.open({
     message,
     className: cx(styles.notification, { [styles.success]: success }),
-    duration: 3,
+    duration: onClose ? 0 : 3,
+    onClose,
   });
 };
 

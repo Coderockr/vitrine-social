@@ -30,12 +30,17 @@ class OrganizationProfileForm extends React.Component {
     responseFeedbackMessage: '',
     states: [{ id: -1, sigla: 'Indisponíveis' }],
     cities: [{ id: -1, nome: 'Indisponíveis' }],
-    imagesEnabled: false,
+    imagesChanges: [],
   }
 
   componentDidMount() {
     ReactGA.modalview('/organization-form', null, 'Editar Perfil Organização');
     this.getStates();
+  }
+
+  onChangeImages(imagesChanges) {
+    this.setState({ imagesChanges });
+    this.props.enableSave(true);
   }
 
   getStateId(initials) {
@@ -151,11 +156,15 @@ class OrganizationProfileForm extends React.Component {
         const params = {
           name: values.name,
           email: values.email,
+          website: values.website,
           phone: values.phone,
           address,
           about: values.about,
         };
-        api.put(`organization/${getUser().id}`, params).then(
+        Promise.all([
+          api.put(`organization/${getUser().id}`, params),
+          ...this.saveImageChanges(),
+        ]).then(
           () => {
             this.setState({
               responseFeedback: 'success',
@@ -172,6 +181,36 @@ class OrganizationProfileForm extends React.Component {
         );
       }
     });
+  }
+
+  saveImageChanges() {
+    return this.state.imagesChanges.map((image) => {
+      const { file, uid, action } = image;
+      let imageId = uid;
+      if (!imageId) {
+        imageId = file.uid;
+      }
+      if (action === 'delete') {
+        return api.delete(`organization/${getUser().id}/image/${imageId}`);
+      }
+      return null;
+    });
+  }
+
+  cancelImageChanges() {
+    return this.state.imagesChanges.map((image) => {
+      const { uid, action } = image;
+      if (action === 'add') {
+        return api.delete(`organization/${getUser().id}/image/${uid}`);
+      }
+      return null;
+    });
+  }
+
+  cancelForm() {
+    Promise.all([
+      ...this.cancelImageChanges(),
+    ]).then(() => this.closeModal());
   }
 
   renderStates() {
@@ -223,7 +262,6 @@ class OrganizationProfileForm extends React.Component {
                 name="avatar"
                 listType="picture"
                 showUploadList={false}
-                action="//jsonplaceholder.typicode.com/posts/"
                 onChange={this.handleChange}
               >
                 <div className={styles.avatarWrapper}>
@@ -262,6 +300,13 @@ class OrganizationProfileForm extends React.Component {
                   initialValue: organization.email,
                 })(
                   <Input size="large" placeholder="E-mail" />,
+                )}
+              </FormItem>
+              <FormItem {...formItemLayout}>
+                {getFieldDecorator('website', {
+                  initialValue: organization.website,
+                })(
+                  <Input size="large" placeholder="Website" />,
                 )}
               </FormItem>
               <FormItem {...formItemLayout}>
@@ -388,18 +433,19 @@ class OrganizationProfileForm extends React.Component {
                   <TextArea rows={5} placeholder="Sobre a Organização" />,
                 )}
               </FormItem>
-              {this.state.imagesEnabled &&
-                <FormItem>
-                  <Col
-                    md={{ span: 18, offset: 3 }}
-                    sm={{ span: 22, offset: 1 }}
-                    xs={{ span: 24, offset: 0 }}
-                  >
-                    <h2 className={styles.galleryHeader}>Galeria de Imagens</h2>
-                    <UploadImages images={organization.images} />
-                  </Col>
-                </FormItem>
-              }
+              <FormItem>
+                <Col
+                  md={{ span: 18, offset: 3 }}
+                  sm={{ span: 22, offset: 1 }}
+                  xs={{ span: 24, offset: 0 }}
+                >
+                  <h2 className={styles.galleryHeader}>Galeria de Imagens</h2>
+                  <UploadImages
+                    images={organization.images}
+                    onChange={imagesChanges => this.onChangeImages(imagesChanges)}
+                  />
+                </Col>
+              </FormItem>
               <FormItem>
                 <div className={styles.buttonWrapper}>
                   <button
@@ -411,7 +457,7 @@ class OrganizationProfileForm extends React.Component {
                   </button>
                   <button
                     className={cx(styles.button, styles.cancelButton)}
-                    onClick={() => this.closeModal()}
+                    onClick={() => this.cancelForm()}
                   >
                     CANCELAR
                   </button>

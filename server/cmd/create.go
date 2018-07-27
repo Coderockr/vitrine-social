@@ -20,6 +20,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/gobuffalo/pop/nulls"
+
 	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/model"
 
@@ -48,6 +50,7 @@ var (
 	city         string
 	state        string
 	zipcode      string
+	website      string
 )
 
 func init() {
@@ -65,6 +68,7 @@ func init() {
 	createCmd.Flags().StringVarP(&city, "city", "", "", "organization's city")
 	createCmd.Flags().StringVarP(&state, "state", "", "", "organization's state")
 	createCmd.Flags().StringVarP(&zipcode, "zipcode", "", "", "organization's zipcode")
+	createCmd.Flags().StringVarP(&website, "website", "", "", "organization's website")
 
 	createCmd.MarkFlagRequired("email")
 	createCmd.MarkFlagRequired("name")
@@ -76,6 +80,7 @@ func init() {
 	createCmd.MarkFlagRequired("city")
 	createCmd.MarkFlagRequired("state")
 	createCmd.MarkFlagRequired("zipcode")
+	createCmd.MarkFlagRequired("website")
 }
 
 func createCmdFunc(cmd *cobra.Command, args []string) {
@@ -104,6 +109,7 @@ func createCmdFunc(cmd *cobra.Command, args []string) {
 			State:        state,
 			Zipcode:      zipcode,
 		},
+		Website: nulls.NewString(website),
 	})
 
 	if err != nil {

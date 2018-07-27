@@ -70,6 +70,9 @@ class RequestForm extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const params = { ...values, organization: getUser().id };
+        if (params.requiredQuantity === params.reachedQuantity) {
+          params.status = 'INACTIVE';
+        }
         if (!this.props.request) {
           return api.post('need', params).then(
             () => {
