@@ -8,6 +8,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gobuffalo/pop/nulls"
+
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/Coderockr/vitrine-social/server/storage"
 	"github.com/Coderockr/vitrine-social/server/testutils"
@@ -17,7 +19,6 @@ import (
 )
 
 func TestDeleteOrganizationImage(t *testing.T) {
-
 	repo := &orgRepositoryMock{}
 	c := &containerMock{}
 
@@ -668,8 +669,8 @@ func (m *orgRepositoryMock) DeleteImage(imageID, orgID int64) error {
 	return args.Error(0)
 }
 
-func (m *orgRepositoryMock) SetLogoNull(orgID int64) error {
-	args := m.Called(orgID)
+func (m *orgRepositoryMock) UpdateLogo(imageID nulls.Int64, orgID int64) error {
+	args := m.Called(imageID, orgID)
 	return args.Error(0)
 }
 

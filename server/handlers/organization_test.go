@@ -21,7 +21,7 @@ type (
 	organizationRepositoryMock struct {
 		GetFN         func(id int64) (*model.Organization, error)
 		UpdateFN      func(o model.Organization) (model.Organization, error)
-		UpdateLogoFN  func(imageID int64, organizationID int64) error
+		UpdateLogoFN  func(imageID nulls.Int64, organizationID int64) error
 		DeleteImageFN func(imageID int64, organizationID int64) error
 	}
 
@@ -209,7 +209,7 @@ func (r *organizationRepositoryMock) Update(o model.Organization) (model.Organiz
 	return r.UpdateFN(o)
 }
 
-func (r *organizationRepositoryMock) UpdateLogo(imageID int64, organizationID int64) error {
+func (r *organizationRepositoryMock) UpdateLogo(imageID nulls.Int64, organizationID int64) error {
 	return r.UpdateLogoFN(imageID, organizationID)
 }
 
