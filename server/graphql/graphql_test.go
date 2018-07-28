@@ -36,6 +36,8 @@ func getGraphqlRequest(t *model.Token, query string, vars *map[string]interface{
 func TestOpenQueries(t *testing.T) {
 	type testCase struct {
 		catRepo  *catRepoMock
+		needRepo *needRepoMock
+		orgRepo  *orgRepoMock
 		query    string
 		response string
 	}
@@ -139,13 +141,69 @@ func TestOpenQueries(t *testing.T) {
 				return cMock
 			}(),
 		},
+		"need/with_simple_query": testCase{
+			query: `query { need(id: 444) { id, title } }`,
+			response: `{"data": { "need": {
+				"id": 444, "title": "a need"
+			}}}`,
+			needRepo: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(&model.Need{ID: 444, Title: "a need"}, nil)
+				return m
+			}(),
+		},
+		"need/with_full_query": testCase{
+			query: `query { need(id: 444) { id, title, images { name, url }, category{slug}, organization{id, name} } }`,
+			response: `{"data": { "need": {
+				"id": 444, "title": "a need",
+				"images": [ { "name": "a image", "url": "http://localhost/a-image.jpg" } ],
+				"category": { "slug": "higiene" },
+				"organization": {"id": 5, "name": "some org"}
+			}}}`,
+			needRepo: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID: 444, Title: "a need",
+							Images: []model.NeedImage{
+								model.NeedImage{
+									Image: model.Image{
+										Name: "a image",
+										URL:  "http://localhost/a-image.jpg",
+									},
+								},
+							},
+							Category: model.Category{
+								Slug: "higiene",
+							},
+							OrganizationID: 5,
+						},
+						nil,
+					)
+				return m
+			}(),
+			orgRepo: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(5)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{ID: 5},
+							Name: "some org",
+						},
+						nil,
+					)
+				return m
+			}(),
+		},
 	}
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			h := graphql.NewHandler(
-				&needRepoMock{},
-				&orgRepoMock{},
+				test.needRepo,
+				test.orgRepo,
 				&tokenManagerMock{},
 				test.catRepo,
 				&searchRepoMock{},
@@ -159,7 +217,17 @@ func TestOpenQueries(t *testing.T) {
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			require.JSONEq(t, test.response, string(body))
 
-			test.catRepo.AssertExpectations(t)
+			if test.catRepo != nil {
+				test.catRepo.AssertExpectations(t)
+			}
+
+			if test.needRepo != nil {
+				test.needRepo.AssertExpectations(t)
+			}
+
+			if test.orgRepo != nil {
+				test.orgRepo.AssertExpectations(t)
+			}
 		})
 	}
 }

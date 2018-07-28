@@ -25,7 +25,7 @@ func newNeedQuery(get getNeedFn, getOrg getOrgFn, getImages getNeedsImagesFn) *g
 				return getOrg(n.OrganizationID)
 			}
 
-			return nil, nil
+			return nil, errors.New("needType not recognized")
 		}),
 	)
 
@@ -45,7 +45,7 @@ func newNeedQuery(get getNeedFn, getOrg getOrgFn, getImages getNeedsImagesFn) *g
 				return c, nil
 			}
 
-			return nil, nil
+			return nil, errors.New("needType not recognized")
 		}),
 	)
 
@@ -72,10 +72,8 @@ func newNeedQuery(get getNeedFn, getOrg getOrgFn, getImages getNeedsImagesFn) *g
 		},
 		Type: needType,
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-			if id, ok := p.Args["id"].(int); ok {
-				return get(int64(id))
-			}
-			return nil, nil
+			id := p.Args["id"].(int)
+			return get(int64(id))
 		},
 	}
 }
