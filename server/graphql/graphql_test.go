@@ -520,7 +520,8 @@ func TestMutations(t *testing.T) {
 				viewer {
 					needUpdate(input: { id: 444, patch: {
 						description: "new description",
-						dueDate: "2018-10-09"
+						dueDate: "2018-10-09",
+						status: INACTIVE
 					}}) {
 						need {description, dueDate}
 					}
@@ -607,6 +608,61 @@ func TestMutations(t *testing.T) {
 						},
 						nil,
 					)
+
+				return m
+			}(),
+		},
+		"needUpdate/when_need_does_not_exist": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						dueDate: "2018-10-09",
+						withoutDueDate: true
+					}}) {
+						need {dueDate}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": null}}, "errors": [
+				{"message": "need does not exist", "locations": []}
+			]}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(nil, errors.New("need does not exist"))
+
+				return m
+			}(),
+		},
+		"needUpdate/when_fail_to_update": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						dueDate: "2018-10-09"
+					}}) {
+						need {dueDate}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": null}}, "errors": [
+				{"message": "fail to update", "locations": []}
+			]}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID:             444,
+							OrganizationID: 1,
+							Description:    "old description",
+							DueDate:        nil,
+						},
+						nil,
+					)
+				m.On("Update", mock.Anything).Once().
+					Return(model.Need{}, errors.New("fail to update"))
 
 				return m
 			}(),
