@@ -169,10 +169,17 @@ func TestMutations(t *testing.T) {
 		tmMock       *tokenManagerMock
 		orgRepoMock  *orgRepoMock
 		needRepoMock *needRepoMock
+		imageStorage *imageStorageMock
 		token        *model.Token
 		mutation     string
 		response     string
 	}
+
+	dOrg := &model.Organization{
+		User: model.User{ID: 1},
+		Name: "Coderockr",
+	}
+	dToken := &model.Token{UserID: 1}
 
 	tests := map[string]testCase{
 		"login/when_success": testCase{
@@ -265,7 +272,7 @@ func TestMutations(t *testing.T) {
 			}(),
 		},
 		"needCreate/when_success": testCase{
-			token: &model.Token{UserID: 1},
+			token: dToken,
 			mutation: `mutation {
 				viewer {
 					needCreate(input: {
@@ -282,16 +289,6 @@ func TestMutations(t *testing.T) {
 			response: `{"data":{  "viewer": { "needCreate": { "need" : {
 				"id": 333, "title": "new need", "requiredQuantity": 0
 			}}}}}`,
-			orgRepoMock: func() *orgRepoMock {
-				m := &orgRepoMock{}
-				m.On("Get", int64(1)).Once().
-					Return(
-						&model.Organization{User: model.User{ID: 1}},
-						nil,
-					)
-
-				return m
-			}(),
 			needRepoMock: func() *needRepoMock {
 				m := &needRepoMock{}
 				call := m.On("Create", mock.AnythingOfType("Need"))
@@ -305,7 +302,7 @@ func TestMutations(t *testing.T) {
 			}(),
 		},
 		"needCreate/when_fail": testCase{
-			token: &model.Token{UserID: 1},
+			token: dToken,
 			mutation: `mutation {
 				viewer {
 					needCreate(input: {
@@ -321,16 +318,6 @@ func TestMutations(t *testing.T) {
 			response: `{"data":{  "viewer": { "needCreate": null }}, "errors": [
 				{"message": "fail to save", "locations":[] }
 			]}`,
-			orgRepoMock: func() *orgRepoMock {
-				m := &orgRepoMock{}
-				m.On("Get", int64(1)).Once().
-					Return(
-						&model.Organization{User: model.User{ID: 1}},
-						nil,
-					)
-
-				return m
-			}(),
 			needRepoMock: func() *needRepoMock {
 				m := &needRepoMock{}
 				call := m.On("Create", mock.AnythingOfType("Need"))
@@ -341,17 +328,73 @@ func TestMutations(t *testing.T) {
 				return m
 			}(),
 		},
+		"needImageDelete/when_sucess": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needImageDelete(input: {
+						needId: 1,
+						needImageId: 333,
+					}) {
+						need { id, title }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needImageDelete": { "need": {
+				"title": "old need", "id": 1
+			}}}}}`,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("DeleteNeedImage", dToken, int64(1), int64(333)).Once().
+					Return(nil)
+				return m
+			}(),
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(&model.Need{ID: 1, Title: "old need"}, nil)
+				return m
+			}(),
+		},
+		"needImageDelete/when_fail": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needImageDelete(input: {
+						needId: 1,
+						needImageId: 333,
+					}) {
+						need { id, title }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needImageDelete": null}}, "errors": [
+				{"message": "it is not your image", "locations": []}
+			]}`,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("DeleteNeedImage", dToken, int64(1), int64(333)).Once().
+					Return(errors.New("it is not your image"))
+				return m
+			}(),
+		},
 	}
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
+			if test.orgRepoMock == nil {
+				test.orgRepoMock = &orgRepoMock{}
+				test.orgRepoMock.On("Get", dToken.UserID).
+					Return(dOrg, nil)
+			}
+
 			h := graphql.NewHandler(
 				test.needRepoMock,
 				test.orgRepoMock,
 				test.tmMock,
 				&catRepoMock{},
 				&searchRepoMock{},
-				&imageStorageMock{},
+				test.imageStorage,
 			)
 
 			w := httptest.NewRecorder()
@@ -371,6 +414,10 @@ func TestMutations(t *testing.T) {
 
 			if test.needRepoMock != nil {
 				test.needRepoMock.AssertExpectations(t)
+			}
+
+			if test.imageStorage != nil {
+				test.imageStorage.AssertExpectations(t)
 			}
 		})
 	}
