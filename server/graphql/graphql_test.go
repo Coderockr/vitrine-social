@@ -15,6 +15,7 @@ import (
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/Coderockr/vitrine-social/server/security"
 	"github.com/gorilla/context"
+	"github.com/lucassabreu/graphql-multipart-middleware/testutil"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -370,6 +371,155 @@ func TestMutations(t *testing.T) {
 
 			if test.needRepoMock != nil {
 				test.needRepoMock.AssertExpectations(t)
+			}
+		})
+	}
+}
+
+func createUploadRequest(
+	t *model.Token,
+	mutation string,
+	vars map[string]interface{},
+	fileMap map[string][]string,
+	files map[string]string,
+) *http.Request {
+	jsonFileMap, _ := json.Marshal(fileMap)
+
+	if vars == nil {
+		vars = make(map[string]interface{}, 0)
+	}
+
+	operation, _ := json.Marshal(map[string]interface{}{
+		"query":     mutation,
+		"variables": vars,
+	})
+
+	r := testutil.NewGraphQLFileUploadRequest(
+		"/graphql",
+		map[string]string{
+			"operations": string(operation),
+			"map":        string(jsonFileMap),
+		},
+		files,
+	)
+	context.Set(r, handlers.TokenKey, t)
+
+	return r
+}
+
+func TestMutationsWithUpload(t *testing.T) {
+	type testCase struct {
+		orgRepoMock  *orgRepoMock
+		imageStorage *imageStorageMock
+		token        *model.Token
+		mutation     string
+		vars         map[string]interface{}
+		fileMap      map[string][]string
+		files        map[string]string
+		response     string
+	}
+
+	dOrg := &model.Organization{
+		User: model.User{ID: 1},
+		Name: "Coderockr",
+	}
+	dToken := &model.Token{UserID: 1}
+
+	tests := map[string]testCase{
+		"needCreate/when_success": testCase{
+			mutation: `mutation ($file: Upload!) {
+				viewer {
+					needImageCreate(input: { needId: 1, file: $file }){
+						needImage { name, url }
+					}
+				}
+			}`,
+			vars:    map[string]interface{}{"file": nil},
+			fileMap: map[string][]string{"graphql": []string{"variables.file"}},
+			files:   map[string]string{"graphql": "graphql.go"},
+			response: `{"data": { "viewer": { "needImageCreate": { "needImage": {
+				"name": "graphql", "url": "http://localhost/need-1/aaaa.go"
+			}}}}}`,
+			token: dToken,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("CreateNeedImage", dToken, int64(1), mock.AnythingOfType("*multipart.FileHeader")).Once().
+					Return(
+						&model.NeedImage{
+							Image: model.Image{
+								ID:   1,
+								Name: "graphql",
+								URL:  "http://localhost/need-1/aaaa.go",
+							},
+						},
+						nil,
+					)
+				return m
+			}(),
+		},
+		"needCreate/when_fail": testCase{
+			mutation: `mutation ($file: Upload!) {
+				viewer {
+					needImageCreate(input: { needId: 1, file: $file }){
+						needImage { name, url }
+					}
+				}
+			}`,
+			vars:    map[string]interface{}{"file": nil},
+			fileMap: map[string][]string{"graphql": []string{"variables.file"}},
+			files:   map[string]string{"graphql": "graphql.go"},
+			response: `{"data": { "viewer": { "needImageCreate": null }}, "errors": [
+				{"message": "no more space", "locations":[]}
+			]}`,
+			token: dToken,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("CreateNeedImage", dToken, int64(1), mock.AnythingOfType("*multipart.FileHeader")).Once().
+					Return(nil, errors.New("no more space"))
+				return m
+			}(),
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			if test.orgRepoMock == nil {
+				test.orgRepoMock = &orgRepoMock{}
+				test.orgRepoMock.On("Get", int64(1)).
+					Return(dOrg, nil)
+			}
+
+			h := graphql.NewHandler(
+				&needRepoMock{},
+				test.orgRepoMock,
+				&tokenManagerMock{},
+				&catRepoMock{},
+				&searchRepoMock{},
+				test.imageStorage,
+			)
+
+			w := httptest.NewRecorder()
+
+			h.ServeHTTP(
+				w,
+				createUploadRequest(
+					test.token,
+					test.mutation,
+					test.vars,
+					test.fileMap,
+					test.files,
+				),
+			)
+
+			body, _ := ioutil.ReadAll(w.Result().Body)
+			require.JSONEq(t, test.response, string(body))
+
+			if test.orgRepoMock != nil {
+				test.orgRepoMock.AssertExpectations(t)
+			}
+
+			if test.imageStorage != nil {
+				test.imageStorage.AssertExpectations(t)
 			}
 		})
 	}
