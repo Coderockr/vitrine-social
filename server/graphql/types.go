@@ -1,6 +1,7 @@
 package graphql
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -145,7 +146,7 @@ var (
 					if i, ok := p.Source.(model.OrganizationImage); ok {
 						return i.ID, nil
 					}
-					return nil, nil
+					return nil, errors.New("invalid organizationImageType")
 				},
 			},
 			"name": &graphql.Field{
@@ -154,7 +155,7 @@ var (
 					if i, ok := p.Source.(model.OrganizationImage); ok {
 						return i.Name, nil
 					}
-					return nil, nil
+					return nil, errors.New("invalid organizationImageType")
 				},
 			},
 			"url": &graphql.Field{
@@ -163,7 +164,7 @@ var (
 					if i, ok := p.Source.(model.OrganizationImage); ok {
 						return i.URL, nil
 					}
-					return nil, nil
+					return nil, errors.New("invalid organizationImageType")
 				},
 			},
 		},
@@ -197,7 +198,7 @@ var (
 					if i, ok := p.Source.(model.NeedImage); ok {
 						return i.ID, nil
 					}
-					return nil, nil
+					return nil, errors.New("invalid needImageType")
 				},
 			},
 			"name": &graphql.Field{
@@ -206,7 +207,7 @@ var (
 					if i, ok := p.Source.(model.NeedImage); ok {
 						return i.Name, nil
 					}
-					return nil, nil
+					return nil, errors.New("invalid needImageType")
 				},
 			},
 			"url": &graphql.Field{
@@ -215,7 +216,7 @@ var (
 					if i, ok := p.Source.(model.NeedImage); ok {
 						return i.URL, nil
 					}
-					return nil, nil
+					return nil, errors.New("invalid needImageType")
 				},
 			},
 		},
@@ -235,7 +236,7 @@ var (
 						return s.ID, nil
 					}
 
-					return nil, fmt.Errorf("invalid source")
+					return nil, fmt.Errorf("invalid needType")
 				},
 			},
 			"title": &graphql.Field{
@@ -249,7 +250,7 @@ var (
 						return s.Title, nil
 					}
 
-					return nil, fmt.Errorf("invalid source")
+					return nil, fmt.Errorf("invalid needType")
 				},
 			},
 			"description": &graphql.Field{
@@ -263,7 +264,7 @@ var (
 						return s.Description, nil
 					}
 
-					return nil, fmt.Errorf("invalid source")
+					return nil, fmt.Errorf("invalid needType")
 				},
 			},
 			"requiredQuantity": &graphql.Field{
@@ -277,7 +278,7 @@ var (
 						return s.RequiredQuantity, nil
 					}
 
-					return nil, fmt.Errorf("invalid source")
+					return nil, fmt.Errorf("invalid needType")
 				},
 			},
 
@@ -292,7 +293,7 @@ var (
 						return s.ReachedQuantity, nil
 					}
 
-					return nil, fmt.Errorf("invalid source")
+					return nil, fmt.Errorf("invalid needType")
 				},
 			},
 			"unit": &graphql.Field{
@@ -306,7 +307,7 @@ var (
 						return s.Unit, nil
 					}
 
-					return nil, fmt.Errorf("invalid source")
+					return nil, fmt.Errorf("invalid needType")
 				},
 			},
 			"dueDate": &graphql.Field{
@@ -320,7 +321,7 @@ var (
 						return s.DueDate, nil
 					}
 
-					return nil, fmt.Errorf("invalid source")
+					return nil, fmt.Errorf("invalid needType")
 				},
 			},
 			"status": &graphql.Field{
@@ -334,7 +335,7 @@ var (
 						return s.Status, nil
 					}
 
-					return nil, fmt.Errorf("invalid source")
+					return nil, fmt.Errorf("invalid needType")
 				},
 			},
 			"createdAt": &graphql.Field{
@@ -348,7 +349,7 @@ var (
 						return s.CreatedAt, nil
 					}
 
-					return nil, fmt.Errorf("invalid source")
+					return nil, fmt.Errorf("invalid needType")
 				},
 			},
 			"updatedAt": &graphql.Field{
@@ -362,11 +363,8 @@ var (
 						return s.UpdatedAt, nil
 					}
 
-					return nil, fmt.Errorf("invalid source")
+					return nil, fmt.Errorf("invalid needType")
 				},
-			},
-			"images": &graphql.Field{
-				Type: graphql.NewList(needImageType),
 			},
 		},
 	})
