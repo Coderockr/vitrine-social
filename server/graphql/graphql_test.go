@@ -667,6 +667,60 @@ func TestMutations(t *testing.T) {
 				return m
 			}(),
 		},
+		"organizationImageDelete/when_sucess": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					organizationImageDelete(input: {
+						organizationImageId: 333,
+					}) {
+						organization { id, name }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "organizationImageDelete": { "organization": {
+				"name": "old organization", "id": 1
+			}}}}}`,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("DeleteOrganizationImage", dToken, int64(333)).Once().
+					Return(nil)
+				return m
+			}(),
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Twice().
+					Return(&model.Organization{User: model.User{ID: 1}, Name: "old organization"}, nil)
+				return m
+			}(),
+		},
+		"organizationImageDelete/when_fail": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					organizationImageDelete(input: {
+						organizationImageId: 333,
+					}) {
+						organization { id, name }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "organizationImageDelete": null}}, "errors": [
+				{"message": "it is not your image", "locations": []}
+			]}`,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("DeleteOrganizationImage", dToken, int64(333)).Once().
+					Return(errors.New("it is not your image"))
+				return m
+			}(),
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(&model.Organization{User: model.User{ID: 1}, Name: "old organization"}, nil)
+				return m
+			}(),
+		},
 	}
 
 	for name, test := range tests {
