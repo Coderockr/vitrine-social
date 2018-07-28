@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/Coderockr/vitrine-social/server/graphql"
 	"github.com/Coderockr/vitrine-social/server/handlers"
@@ -443,6 +444,170 @@ func TestMutations(t *testing.T) {
 				m := &imageStorageMock{}
 				m.On("DeleteNeedImage", dToken, int64(1), int64(333)).Once().
 					Return(errors.New("it is not your image"))
+				return m
+			}(),
+		},
+		"needUpdate/when_success": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						title: "new title",
+						description: "new description",
+						requiredQuantity: 100,
+						reachedQuantity: 10,
+						unit: "box",
+						categoryId: 1
+						status: ACTIVE,
+						withoutDueDate: true
+					}}) {
+						need {
+							id, title, description,
+							requiredQuantity, reachedQuantity,
+							unit, dueDate, category{id}, status
+						}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": { "need": {
+				"title": "new title", "id": 444, "description": "new description",
+				"requiredQuantity": 100, "reachedQuantity": 10, "unit": "box",
+				"dueDate": null, "category": { "id": 1 }, "status": "ACTIVE"
+			}}}}}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				dueDate, _ := time.Parse("2006-01-02", "2018-10-09")
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID:               444,
+							Title:            "old title",
+							Description:      "old description",
+							CategoryID:       7,
+							RequiredQuantity: 99,
+							ReachedQuantity:  0,
+							DueDate:          &dueDate,
+							Status:           model.NeedStatusInactive,
+							Unit:             "bags",
+							OrganizationID:   1,
+						},
+						nil,
+					)
+
+				n := model.Need{
+					ID:               444,
+					Title:            "new title",
+					Description:      "new description",
+					CategoryID:       1,
+					RequiredQuantity: 100,
+					ReachedQuantity:  10,
+					DueDate:          nil,
+					Status:           model.NeedStatusActive,
+					Unit:             "box",
+					OrganizationID:   1,
+				}
+				call := m.On("Update", n).Once()
+				call.Run(func(args mock.Arguments) {
+					n.Category = model.Category{ID: 1}
+					call.Return(n, nil)
+				})
+				return m
+			}(),
+		},
+		"needUpdate/when_success_not_all_fields": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						description: "new description",
+						dueDate: "2018-10-09"
+					}}) {
+						need {description, dueDate}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": { "need": {
+				"description": "new description", "dueDate": "2018-10-09"
+			}}}}}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID:             444,
+							OrganizationID: 1,
+							Description:    "old description",
+							DueDate:        nil,
+						},
+						nil,
+					)
+
+				call := m.On("Update", mock.Anything).Once()
+				call.Run(func(args mock.Arguments) {
+					call.Return(args.Get(0).(model.Need), nil)
+				})
+				return m
+			}(),
+		},
+		"needUpdate/when_is_not_your_need": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						description: "new description",
+						dueDate: "2018-10-09"
+					}}) {
+						need {description, dueDate}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": null}}, "errors": [
+				{"message": "organization 1 does not own need 444", "locations": []}
+			]}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID:             444,
+							OrganizationID: 4,
+							Description:    "old description",
+							DueDate:        nil,
+						},
+						nil,
+					)
+
+				return m
+			}(),
+		},
+		"needUpdate/cant_has_due_date_and_without": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						dueDate: "2018-10-09",
+						withoutDueDate: true
+					}}) {
+						need {dueDate}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": null}}, "errors": [
+				{"message": "parameters withoutDueDate and dueDate can't be used together", "locations": []}
+			]}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID:             444,
+							OrganizationID: 1,
+							Description:    "old description",
+							DueDate:        nil,
+						},
+						nil,
+					)
+
 				return m
 			}(),
 		},

@@ -22,6 +22,11 @@ var needPatchInput = graphql.NewInputObject(graphql.InputObjectConfig{
 		"dueDate":          dateInput,
 		"categoryId":       intInput,
 		"status":           needStatusInput,
+		"withoutDueDate": &graphql.InputObjectFieldConfig{
+			Type:         graphql.Boolean,
+			Description:  "When set to true, will make the need without date limit",
+			DefaultValue: false,
+		},
 	},
 })
 
@@ -97,7 +102,14 @@ func newNeedUpdateMutation(get getNeedFn, update needUpdateFn) *graphql.Field {
 				n.ReachedQuantity = reachedQuantity
 			}
 
+			withoutDueDate := patch["withoutDueDate"].(bool)
+			if withoutDueDate {
+				n.DueDate = nil
+			}
 			if dueDate, ok := patch["dueDate"].(time.Time); ok {
+				if withoutDueDate {
+					return nil, errors.New("parameters withoutDueDate and dueDate can't be used together")
+				}
 				n.DueDate = &dueDate
 			}
 
