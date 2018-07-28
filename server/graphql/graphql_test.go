@@ -815,6 +815,59 @@ func TestMutationsWithUpload(t *testing.T) {
 				return m
 			}(),
 		},
+		"organizationCreate/when_success": testCase{
+			mutation: `mutation ($file: Upload!) {
+				viewer {
+					organizationImageCreate(input: { file: $file }){
+						organizationImage { name, url }
+					}
+				}
+			}`,
+			vars:    map[string]interface{}{"file": nil},
+			fileMap: map[string][]string{"graphql": []string{"variables.file"}},
+			files:   map[string]string{"graphql": "graphql.go"},
+			response: `{"data": { "viewer": { "organizationImageCreate": { "organizationImage": {
+				"name": "graphql", "url": "http://localhost/organization-1/aaaa.go"
+			}}}}}`,
+			token: dToken,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("CreateOrganizationImage", dToken, mock.AnythingOfType("*multipart.FileHeader")).Once().
+					Return(
+						&model.OrganizationImage{
+							Image: model.Image{
+								ID:   1,
+								Name: "graphql",
+								URL:  "http://localhost/organization-1/aaaa.go",
+							},
+						},
+						nil,
+					)
+				return m
+			}(),
+		},
+		"organizationCreate/when_fail": testCase{
+			mutation: `mutation ($file: Upload!) {
+				viewer {
+					organizationImageCreate(input: { file: $file }){
+						organizationImage { name, url }
+					}
+				}
+			}`,
+			vars:    map[string]interface{}{"file": nil},
+			fileMap: map[string][]string{"graphql": []string{"variables.file"}},
+			files:   map[string]string{"graphql": "graphql.go"},
+			response: `{"data": { "viewer": { "organizationImageCreate": null }}, "errors": [
+				{"message": "no more space", "locations":[]}
+			]}`,
+			token: dToken,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("CreateOrganizationImage", dToken, mock.AnythingOfType("*multipart.FileHeader")).Once().
+					Return(nil, errors.New("no more space"))
+				return m
+			}(),
+		},
 	}
 
 	for name, test := range tests {
