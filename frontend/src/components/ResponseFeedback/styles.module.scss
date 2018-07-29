@@ -40,6 +40,20 @@ require('../../utils/styles/colors.js');
   }
 }
 
+  .buttonsWrapper {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .greyButton {
+    background-color: $grey_100;
+
+    &:hover,
+    &:focus {
+      background-color: $grey_150;
+    }
+  }
+
   .successButton {
     background-color: $green_300;
     

@@ -9,6 +9,7 @@ import {
   Select,
   Radio,
   AutoComplete,
+  Button,
 } from 'antd';
 import cx from 'classnames';
 import ReactGA from 'react-ga';
@@ -23,35 +24,39 @@ const { TextArea } = Input;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-const units = [
-  'Itens',
-  'Kg',
-  'Pessoas',
-  'Litros',
-];
+const mediaQuery = window.matchMedia('(max-width: 385px)');
 
 class RequestForm extends React.Component {
-  state = {
-    units,
-    categories: [],
-    responseFeedback: '',
-    responseFeedbackMessage: '',
-    imagesEnabled: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      collapsed: mediaQuery.matches,
+      responseFeedback: '',
+      responseFeedbackMessage: '',
+      imagesChanges: [],
+    };
+
+    mediaQuery.addListener(this.widthChange.bind(this));
   }
 
   componentWillMount() {
     ReactGA.modalview('/request-form', null, 'Formulário de Solicitação');
-    this.fetchCategories();
   }
 
-  fetchCategories() {
-    api.get('categories').then(
-      (response) => {
-        this.setState({
-          categories: response.data,
-        });
-      },
-    );
+  componentWillUnmount() {
+    mediaQuery.removeListener(this.widthChange);
+  }
+
+  onChangeImages(imagesChanges) {
+    this.setState({ imagesChanges });
+    this.props.enableSave(true);
+  }
+
+
+  widthChange() {
+    this.setState({
+      collapsed: mediaQuery.matches,
+    });
   }
 
   closeModal() {
@@ -69,30 +74,22 @@ class RequestForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const params = { ...values, organization: getUser().id };
+        const params = {
+          ...values,
+          organization: getUser().id,
+          category: this.props.request.category.id,
+        };
         if (params.requiredQuantity === params.reachedQuantity) {
           params.status = 'INACTIVE';
         }
-        if (!this.props.request) {
-          return api.post('need', params).then(
-            () => {
-              this.setState({
-                responseFeedback: 'success',
-                responseFeedbackMessage: 'Nova solicitação adicionada!',
-              });
-              this.props.onSave();
-            },
-            () => {
-              this.setState({
-                responseFeedback: 'error',
-                responseFeedbackMessage: 'Não foi possível criar a solicitação!',
-              });
-            },
-          );
-        }
-        return api.put(`need/${this.props.request.id}`, params).then(
+        this.setState({ loading: true });
+        Promise.all([
+          api.put(`need/${this.props.request.id}`, params),
+          ...this.saveImageChanges(),
+        ]).then(
           () => {
             this.setState({
+              loading: false,
               responseFeedback: 'success',
               responseFeedbackMessage: 'Nova solicitação adicionada!',
             });
@@ -100,30 +97,33 @@ class RequestForm extends React.Component {
           },
           () => {
             this.setState({
+              loading: false,
               responseFeedback: 'error',
               responseFeedbackMessage: 'Não foi possível criar a solicitação!',
             });
           },
         );
       }
-      return null;
     });
   }
 
-  renderCategories() {
-    return (
-      this.state.categories.map(category => (
-        <Select.Option key={category.id} value={category.id}>{category.name}</Select.Option>
-      ))
-    );
-  }
-
-  renderUnit() {
-    return (
-      this.state.units.map(unit => (
-        <AutoComplete.Option key={unit} value={unit}>{unit}</AutoComplete.Option>
-      ))
-    );
+  saveImageChanges() {
+    const { imagesChanges } = this.state;
+    const promisses = [];
+    imagesChanges.map((image) => {
+      const { file, action } = image;
+      if (action === 'add') {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('logo', false);
+        return promisses.push(api.post(`need/${this.props.request.id}/images`, formData));
+      }
+      if (action === 'delete') {
+        return promisses.push(api.delete(`need/${this.props.request.id}/images/${file.uid}`));
+      }
+      return null;
+    });
+    return promisses;
   }
 
   render() {
@@ -153,20 +153,19 @@ class RequestForm extends React.Component {
         <Row className={this.state.responseFeedback && styles.blurRow}>
           <Col span={20} offset={2}>
             <h1 className={styles.title}>
-              {request ? 'Editar Solicitação' : 'Nova Solicitação'}
+              Editar Solicitação
             </h1>
             <Form hideRequiredMark>
               <FormItem
-                className={request ? null : styles.statusFormItem}
                 {...formItemLayout}
               >
                 {getFieldDecorator('status', {
-                  initialValue: request ? request.status : 'ACTIVE',
+                  initialValue: request.status,
                 })(
                   <div className={styles.statusWrapper}>
                     <p className={styles.statusLabel}>Status:</p>
                     <RadioGroup
-                      defaultValue={request ? request.status : 'ACTIVE'}
+                      defaultValue={request.status}
                       className="purpleRadio"
                     >
                       <RadioButton className={styles.radioButton} value="ACTIVE">ATIVA</RadioButton>
@@ -179,8 +178,7 @@ class RequestForm extends React.Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('title', {
-                  rules: [{ required: true, message: 'Preencha o título da solicitação' }],
-                  initialValue: request ? request.title : '',
+                  initialValue: request.title,
                 })(
                   <Input size="large" placeholder="Título" disabled={request !== null} />,
                 )}
@@ -189,24 +187,20 @@ class RequestForm extends React.Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('category', {
-                  rules: [{ required: true, message: 'Escolha uma categoria' }],
-                  initialValue: request ? request.category.id : '',
+                  initialValue: request.category.name,
                 })(
                   <Select
                     placeholder="Categoria"
                     size="large"
-                    disabled={request !== null}
-                  >
-                    {this.renderCategories()}
-                  </Select>,
+                    disabled
+                  />,
                 )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
               >
                 {getFieldDecorator('description', {
-                  rules: [{ required: true, message: 'Descreva a solicitação' }],
-                  initialValue: request ? request.description : '',
+                  initialValue: request.description,
                 })(
                   <TextArea rows={5} placeholder="Descrição da Solicitação" />,
                 )}
@@ -214,24 +208,23 @@ class RequestForm extends React.Component {
               <FormItem
                 {...formItemLayout}
               >
-                <Col span={6}>
+                <Col span={this.state.collapsed ? 10 : 6} className={styles.col}>
                   <FormItem label="Solicitado">
                     {getFieldDecorator('requiredQuantity', {
-                      rules: [{ required: true, message: 'Preencha a quantidade' }],
-                      initialValue: request ? request.requiredQuantity : '',
+                      initialValue: request.requiredQuantity,
                     })(
-                      <InputNumber size="large" min={1} disabled={request !== null} />,
+                      <InputNumber size="large" min={1} disabled />,
                     )}
                   </FormItem>
                 </Col>
                 <Col
                   sm={{ span: 6, offset: 0 }}
-                  xs={{ span: 6, offset: 2 }}
+                  xs={this.state.collapsed ? { span: 10, offset: 4 } : { span: 6, offset: 2 }}
+                  className={styles.col}
                 >
                   <FormItem label="Recebido">
                     {getFieldDecorator('reachedQuantity', {
-                      rules: [{ required: true, message: 'Preencha a quantidade' }],
-                      initialValue: request ? request.reachedQuantity : '',
+                      initialValue: request.reachedQuantity,
                     })(
                       <InputNumber
                         size="large"
@@ -243,45 +236,45 @@ class RequestForm extends React.Component {
                 </Col>
                 <Col
                   sm={{ span: 12, offset: 0 }}
-                  xs={{ span: 8, offset: 2 }}
+                  xs={this.state.collapsed ? { span: 24, offset: 0 } : { span: 8, offset: 2 }}
+                  className={styles.col}
                 >
                   <FormItem label="Tipo">
                     {getFieldDecorator('unit', {
-                      rules: [{ required: true, message: 'Escolha um tipo' }],
-                      initialValue: request ? request.unit : '',
+                      initialValue: request.unit,
                     })(
                       <AutoComplete
                         size="large"
                         filterOption
-                        disabled={request !== null}
-                      >
-                        {this.renderUnit()}
-                      </AutoComplete>,
+                        disabled
+                      />,
                     )}
                   </FormItem>
                 </Col>
               </FormItem>
-              {this.state.imagesEnabled &&
-                <FormItem>
-                  <Col
-                    md={{ span: 18, offset: 3 }}
-                    sm={{ span: 22, offset: 1 }}
-                    xs={{ span: 24, offset: 0 }}
-                  >
-                    <h2 className={styles.galleryHeader}>Galeria de Imagens</h2>
-                    <UploadImages images={request ? request.images : null} />
-                  </Col>
-                </FormItem>
-              }
+              <FormItem>
+                <Col
+                  md={{ span: 18, offset: 3 }}
+                  sm={{ span: 22, offset: 1 }}
+                  xs={{ span: 24, offset: 0 }}
+                >
+                  <h2 className={styles.galleryHeader}>Galeria de Imagens</h2>
+                  <UploadImages
+                    images={request.images}
+                    onChange={imagesChanges => this.onChangeImages(imagesChanges)}
+                  />
+                </Col>
+              </FormItem>
               <FormItem>
                 <div className={styles.buttonWrapper}>
-                  <button
+                  <Button
                     className={cx(styles.button, styles.saveButton)}
                     disabled={!this.props.saveEnabled}
                     onClick={this.handleSubmit}
+                    loading={this.state.loading}
                   >
                     SALVAR
-                  </button>
+                  </Button>
                   <button
                     className={cx(styles.button, styles.cancelButton)}
                     onClick={() => this.closeModal()}
@@ -307,11 +300,7 @@ class RequestForm extends React.Component {
 }
 
 const WrappedRequestForm = Form.create({
-  onValuesChange(props, changedValues, allValues) {
-    if (!props.request) {
-      return props.enableSave(true);
-    }
-
+  onValuesChange(props, allValues) {
     let enable = false;
     Object.keys(allValues).forEach((key) => {
       if (key !== 'category' && props.request[key] !== allValues[key]) {

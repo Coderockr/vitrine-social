@@ -174,11 +174,6 @@ func validate(r *NeedRepository, n model.Need) (model.Need, error) {
 		return n, errors.New("Deve ser informado um título para a Necessidade")
 	}
 
-	n.Description = strings.TrimSpace(n.Description)
-	if len(n.Description) == 0 {
-		return n, errors.New("Deve ser informada uma descrição para a Necessidade")
-	}
-
 	_, err := r.catRepo.Get(n.CategoryID)
 	switch {
 	case err == sql.ErrNoRows:

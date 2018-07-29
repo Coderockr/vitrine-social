@@ -263,14 +263,14 @@ var (
 				},
 			},
 			"description": &graphql.Field{
-				Type: graphql.NewNonNull(graphql.String),
+				Type: graphql.String,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					if n, ok := p.Source.(*model.Need); ok {
-						return n.Description, nil
+						return n.Description.Value()
 					}
 
 					if s, ok := p.Source.(model.SearchNeed); ok {
-						return s.Description, nil
+						return s.Description.Value()
 					}
 
 					return nil, fmt.Errorf("invalid needType")

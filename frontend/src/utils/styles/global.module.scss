@@ -142,7 +142,6 @@ require('./colors.js');
 
   .ant-form-item-label label {
     color: $purple_400;
-    font-size: 16px;
   }
 
   .ant-input-number,
@@ -220,6 +219,7 @@ require('./colors.js');
       color: $red_400;
       text-align: end;
       padding-right: 15px;
+      font-size: 12px;
     }
 
     .ant-input:not([disabled]):hover,
@@ -387,7 +387,8 @@ require('./colors.js');
   }
 
   .ant-btn:hover,
-  .ant-btn:focus {
+  .ant-btn:focus,
+  .ant-btn:disabled,{
     color: $white;
   }
 
@@ -408,6 +409,17 @@ require('./colors.js');
     .ant-modal-content {
       border-radius: 0;
       min-height: 100vh;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .has-error {
+      .ant-form-explain {
+        color: $red_400;
+        text-align: end;
+        padding-right: 0px;
+        font-size: 11px;
+      }
     }
   }
 }

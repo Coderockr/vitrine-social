@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/gobuffalo/pop/nulls"
 	"github.com/graphql-go/graphql"
 )
 
@@ -22,6 +23,11 @@ var needPatchInput = graphql.NewInputObject(graphql.InputObjectConfig{
 		"dueDate":          dateInput,
 		"categoryId":       intInput,
 		"status":           needStatusInput,
+		"withoutDescription": &graphql.InputObjectFieldConfig{
+			Type:         graphql.Boolean,
+			Description:  "When set to true, will make the need without a description",
+			DefaultValue: false,
+		},
 		"withoutDueDate": &graphql.InputObjectFieldConfig{
 			Type:         graphql.Boolean,
 			Description:  "When set to true, will make the need without date limit",
@@ -86,8 +92,16 @@ func newNeedUpdateMutation(get getNeedFn, update needUpdateFn) *graphql.Field {
 				n.Title = title
 			}
 
+			withoutDescription := patch["withoutDescription"].(bool)
+			if withoutDescription {
+				n.Description = nulls.String{Valid: false}
+			}
+
 			if description, ok := patch["description"].(string); ok {
-				n.Description = description
+				if withoutDescription {
+					return nil, errors.New("parameters withoutDescription and description can't be used together")
+				}
+				n.Description = nulls.NewString(description)
 			}
 
 			if unit, ok := patch["unit"].(string); ok {
@@ -106,6 +120,7 @@ func newNeedUpdateMutation(get getNeedFn, update needUpdateFn) *graphql.Field {
 			if withoutDueDate {
 				n.DueDate = nil
 			}
+
 			if dueDate, ok := patch["dueDate"].(time.Time); ok {
 				if withoutDueDate {
 					return nil, errors.New("parameters withoutDueDate and dueDate can't be used together")

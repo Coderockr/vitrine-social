@@ -434,6 +434,35 @@ func TestMutations(t *testing.T) {
 				return m
 			}(),
 		},
+		"needCreate/with_no_description": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needCreate(input: {
+						title: "new need",
+						unit: "box",
+						categoryId: 1,
+						dueDate: "2018-07-01"
+					}) {
+						need { id, title, description }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needCreate": { "need" : {
+				"id": 333, "title": "new need", "description": null
+			}}}}}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				call := m.On("Create", mock.AnythingOfType("Need"))
+				call.Once().
+					Run(func(args mock.Arguments) {
+						n := args.Get(0).(model.Need)
+						n.ID = 333
+						call.Return(n, nil)
+					})
+				return m
+			}(),
+		},
 		"needCreate/when_fail": testCase{
 			token: dToken,
 			mutation: `mutation {
@@ -517,13 +546,13 @@ func TestMutations(t *testing.T) {
 				viewer {
 					needUpdate(input: { id: 444, patch: {
 						title: "new title",
-						description: "new description",
 						requiredQuantity: 100,
 						reachedQuantity: 10,
 						unit: "box",
 						categoryId: 1
 						status: ACTIVE,
-						withoutDueDate: true
+						withoutDueDate: true,
+						withoutDescription: true
 					}}) {
 						need {
 							id, title, description,
@@ -534,7 +563,7 @@ func TestMutations(t *testing.T) {
 				}
 			}`,
 			response: `{"data":{  "viewer": { "needUpdate": { "need": {
-				"title": "new title", "id": 444, "description": "new description",
+				"title": "new title", "id": 444, "description": null,
 				"requiredQuantity": 100, "reachedQuantity": 10, "unit": "box",
 				"dueDate": null, "category": { "id": 1 }, "status": "ACTIVE"
 			}}}}}`,
@@ -546,7 +575,7 @@ func TestMutations(t *testing.T) {
 						&model.Need{
 							ID:               444,
 							Title:            "old title",
-							Description:      "old description",
+							Description:      nulls.NewString("old description"),
 							CategoryID:       7,
 							RequiredQuantity: 99,
 							ReachedQuantity:  0,
@@ -561,7 +590,7 @@ func TestMutations(t *testing.T) {
 				n := model.Need{
 					ID:               444,
 					Title:            "new title",
-					Description:      "new description",
+					Description:      nulls.String{Valid: false},
 					CategoryID:       1,
 					RequiredQuantity: 100,
 					ReachedQuantity:  10,
@@ -601,7 +630,7 @@ func TestMutations(t *testing.T) {
 						&model.Need{
 							ID:             444,
 							OrganizationID: 1,
-							Description:    "old description",
+							Description:    nulls.NewString("old description"),
 							DueDate:        nil,
 						},
 						nil,
@@ -636,7 +665,7 @@ func TestMutations(t *testing.T) {
 						&model.Need{
 							ID:             444,
 							OrganizationID: 4,
-							Description:    "old description",
+							Description:    nulls.NewString("old description"),
 							DueDate:        nil,
 						},
 						nil,
@@ -667,7 +696,38 @@ func TestMutations(t *testing.T) {
 						&model.Need{
 							ID:             444,
 							OrganizationID: 1,
-							Description:    "old description",
+							Description:    nulls.NewString("old description"),
+							DueDate:        nil,
+						},
+						nil,
+					)
+
+				return m
+			}(),
+		},
+		"needUpdate/cant_has_description_and_without": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						description: "new description",
+						withoutDescription: true
+					}}) {
+						need {dueDate}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": null}}, "errors": [
+				{"message": "parameters withoutDescription and description can't be used together", "locations": []}
+			]}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID:             444,
+							OrganizationID: 1,
+							Description:    nulls.NewString("old description"),
 							DueDate:        nil,
 						},
 						nil,
@@ -720,7 +780,7 @@ func TestMutations(t *testing.T) {
 						&model.Need{
 							ID:             444,
 							OrganizationID: 1,
-							Description:    "old description",
+							Description:    nulls.NewString("old description"),
 							DueDate:        nil,
 						},
 						nil,

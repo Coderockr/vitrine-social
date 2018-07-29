@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/gobuffalo/pop/nulls"
 	"github.com/graphql-go/graphql"
 )
 
@@ -13,7 +14,7 @@ var needCreateInput = graphql.NewInputObject(graphql.InputObjectConfig{
 	Name: "NeedCreateInput",
 	Fields: graphql.InputObjectConfigFieldMap{
 		"title":       nonNullStringInput,
-		"description": nonNullStringInput,
+		"description": stringInput,
 		"requiredQuantity": &graphql.InputObjectFieldConfig{
 			Type:         graphql.Int,
 			DefaultValue: 0,
@@ -55,10 +56,14 @@ func newNeedCreateMutation(create needCreateFn) *graphql.Field {
 				OrganizationID:   o.ID,
 				CategoryID:       int64(input["categoryId"].(int)),
 				Title:            input["title"].(string),
-				Description:      input["description"].(string),
+				Description:      nulls.String{Valid: false},
 				Unit:             input["unit"].(string),
 				RequiredQuantity: input["requiredQuantity"].(int),
 				ReachedQuantity:  input["reachedQuantity"].(int),
+			}
+
+			if desc, ok := input["description"].(string); ok {
+				n.Description = nulls.NewString(desc)
 			}
 
 			if dueDate, ok := input["dueDate"].(time.Time); ok {

@@ -100,7 +100,7 @@ func UpdateNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.
 		var bodyVars struct {
 			Category         int64
 			Title            string
-			Description      string
+			Description      nulls.String
 			RequiredQuantity int
 			ReachedQuantity  int
 			DueDate          *jsonTime

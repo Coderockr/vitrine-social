@@ -30,17 +30,26 @@ class ResponseFeedback extends React.Component {
       };
     }
 
+    const { additionalButtons } = this.props;
+
     return (
       <div className={styles.contentWrapper}>
         <Icon type={feedback.icon.type} style={{ fontSize: 150, color: feedback.icon.color }} />
         <p className={styles.title}>{feedback.title}</p>
         <p className={styles.message}>{this.props.message}</p>
-        <button
-          className={cx(styles.button, feedback.buttonClassName)}
-          onClick={this.props.onClick}
-        >
-          {feedback.buttonTitle}
-        </button>
+        <div className={styles.buttonsWrapper}>
+          {additionalButtons ? additionalButtons() : null}
+          <button
+            className={cx(
+              styles.button,
+              { [feedback.buttonClassName]: !additionalButtons },
+              { [styles.greyButton]: additionalButtons },
+            )}
+            onClick={this.props.onClick}
+          >
+            {feedback.buttonTitle}
+          </button>
+        </div>
       </div>
     );
   }

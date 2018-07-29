@@ -10,19 +10,18 @@ require('../../utils/styles/colors.js');
   margin-bottom: -8px;
 }
 
-.statusWrapper {
-  display: flex;
-}
-
-.statusLabel {
-  font-size: 16px;
-  color: $purple_400;
-  margin-right: 10px;
-}
-
 .galleryHeader {
   margin-top: 20px;
   margin-left: 15px;
+}
+
+.additionalButton {
+  background-color: $green_300;
+      
+  &:hover,
+  &:focus {
+    background-color: $green_500;
+  }
 }
 
 .buttonWrapper {
