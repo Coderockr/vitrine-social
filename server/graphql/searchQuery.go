@@ -1,6 +1,7 @@
 package graphql
 
 import (
+	"log"
 	"math"
 
 	"github.com/Coderockr/vitrine-social/server/db/repo"
@@ -146,6 +147,8 @@ func newSearchNeedField(search searchNeedsFn, parseInput parseSearchInputFn, arg
 			if sp.Page == 0 {
 				sp.Page = 1
 			}
+
+			log.Printf("%#v", sp)
 
 			rs, c, err := search(
 				sp.Text,

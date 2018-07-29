@@ -121,6 +121,15 @@ var (
 					return nil, nil
 				},
 			},
+			"website": &graphql.Field{
+				Type: graphql.String,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if o, ok := p.Source.(*model.Organization); ok && o != nil && o.Website.Valid {
+						return o.Website.String, nil
+					}
+					return nil, nil
+				},
+			},
 		},
 	})
 

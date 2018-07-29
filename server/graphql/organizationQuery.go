@@ -7,6 +7,11 @@ import (
 
 type getOrgFn func(int64) (*model.Organization, error)
 
+const (
+	defaultOrderBySearch = "created_at"
+	defaultOrderSearch   = "desc"
+)
+
 var searchOrgNeedsInput = graphql.NewInputObject(graphql.InputObjectConfig{
 	Name: "SearchOrganizationNeedsInput",
 	Fields: graphql.InputObjectConfigFieldMap{
@@ -14,11 +19,11 @@ var searchOrgNeedsInput = graphql.NewInputObject(graphql.InputObjectConfig{
 		"categories": intListInput,
 		"orderBy": &graphql.InputObjectFieldConfig{
 			Type:         orderByEnum,
-			DefaultValue: "created_at",
+			DefaultValue: defaultOrderBySearch,
 		},
 		"order": &graphql.InputObjectFieldConfig{
 			Type:         orderEnum,
-			DefaultValue: "desc",
+			DefaultValue: defaultOrderSearch,
 		},
 		"page": &graphql.InputObjectFieldConfig{
 			Type:         graphql.Int,
@@ -39,7 +44,8 @@ func newOrganizationQuery(get getOrgFn, search searchNeedsFn) *graphql.Field {
 
 			input, ok := p.Args["input"].(map[string]interface{})
 			if !ok {
-
+				sp.OrderBy = defaultOrderBySearch
+				sp.Order = defaultOrderSearch
 				return sp, nil
 			}
 
@@ -59,10 +65,8 @@ func newOrganizationQuery(get getOrgFn, search searchNeedsFn) *graphql.Field {
 	))
 
 	f := newOrganizationField(func(p graphql.ResolveParams) (*model.Organization, error) {
-		if id, ok := p.Args["id"].(int); ok {
-			return get(int64(id))
-		}
-		return nil, nil
+		id := p.Args["id"].(int)
+		return get(int64(id))
 	})
 
 	f.Args = graphql.FieldConfigArgument{

@@ -15,6 +15,7 @@ import (
 	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/Coderockr/vitrine-social/server/security"
+	"github.com/gobuffalo/pop/nulls"
 	"github.com/gorilla/context"
 	"github.com/lucassabreu/graphql-multipart-middleware/testutil"
 	"github.com/stretchr/testify/mock"
@@ -36,11 +37,12 @@ func getGraphqlRequest(t *model.Token, query string, vars *map[string]interface{
 
 func TestOpenQueries(t *testing.T) {
 	type testCase struct {
-		catRepo  *catRepoMock
-		needRepo *needRepoMock
-		orgRepo  *orgRepoMock
-		query    string
-		response string
+		catRepo    *catRepoMock
+		needRepo   *needRepoMock
+		orgRepo    *orgRepoMock
+		searchRepo *searchRepoMock
+		query      string
+		response   string
 	}
 
 	tests := map[string]testCase{
@@ -198,6 +200,64 @@ func TestOpenQueries(t *testing.T) {
 				return m
 			}(),
 		},
+		"organization/with_simple_query": testCase{
+			query: `query { organization(id: 333) { id, name, images { name, url }, website, email } }`,
+			response: `{"data": { "organization": {
+				"id": 333, "name": "old org", "email": "org@org.org", "website": "http://org.org",
+				"images": [ { "name": "a image", "url": "http://localhost/a-image.jpg" } ]
+			}}}`,
+			orgRepo: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(333)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{
+								ID:    333,
+								Email: "org@org.org",
+							},
+							Name:    "old org",
+							Website: nulls.NewString("http://org.org"),
+							Images: []model.OrganizationImage{
+								model.OrganizationImage{
+									Image: model.Image{
+										Name: "a image",
+										URL:  "http://localhost/a-image.jpg",
+									},
+								},
+							},
+						},
+						nil,
+					)
+				return m
+			}(),
+		},
+		"organization/with_search_needs": testCase{
+			query: `query { organization(id: 333) { needs { results { title } } } }`,
+			response: `{"data": { "organization": { "needs": {
+				"results" : [{"title":"a need"}]
+			}}}}`,
+			orgRepo: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(333)).Once().
+					Return(
+						&model.Organization{User: model.User{ID: 333}},
+						nil,
+					)
+				return m
+			}(),
+			searchRepo: func() *searchRepoMock {
+				m := &searchRepoMock{}
+				m.On("Search", "", []int(nil), int64(333), "", "created_at", "desc", 1).Once().
+					Return(
+						[]model.SearchNeed{
+							model.SearchNeed{Need: model.Need{Title: "a need"}},
+						},
+						1,
+						nil,
+					)
+				return m
+			}(),
+		},
 	}
 
 	for name, test := range tests {
@@ -207,7 +267,7 @@ func TestOpenQueries(t *testing.T) {
 				test.orgRepo,
 				&tokenManagerMock{},
 				test.catRepo,
-				&searchRepoMock{},
+				test.searchRepo,
 				&imageStorageMock{},
 			)
 
@@ -228,6 +288,10 @@ func TestOpenQueries(t *testing.T) {
 
 			if test.orgRepo != nil {
 				test.orgRepo.AssertExpectations(t)
+			}
+
+			if test.searchRepo != nil {
+				test.searchRepo.AssertExpectations(t)
 			}
 		})
 	}
