@@ -58,17 +58,6 @@ type OrganizationImage struct {
 	OrganizationID int64 `valid:"required" db:"organization_id"`
 }
 
-type needStatus string
-
-var (
-	// NeedStatusActive a active need
-	NeedStatusActive = needStatus("ACTIVE")
-	// NeedStatusInactive a inactive need
-	NeedStatusInactive = needStatus("INACTIVE")
-	// NeedStatusEmpty was not informed
-	NeedStatusEmpty = needStatus("")
-)
-
 // Need uma necessidade da organização
 type Need struct {
 	ID               int64        `valid:"required" db:"id" json:"id"`
@@ -78,7 +67,7 @@ type Need struct {
 	ReachedQuantity  int          `db:"reached_qtd" json:"reachedQuantity"`
 	Unit             string       `valid:"required" db:"unit" json:"unit"`
 	DueDate          *time.Time   `db:"due_date" json:"dueDate"`
-	Status           needStatus   `valid:"required" db:"status" json:"status"`
+	Status           NeedStatus   `valid:"required" db:"status" json:"status"`
 	CategoryID       int64        `valid:"required" db:"category_id" json:"categoryId"`
 	OrganizationID   int64        `valid:"required" db:"organization_id" json:"organizationId"`
 	Category         Category
@@ -136,7 +125,18 @@ type SearchNeed struct {
 	CategorySlug      string       `db:"category_slug"`
 }
 
-func (s *needStatus) Scan(src interface{}) error {
+type NeedStatus string
+
+var (
+	// NeedStatusActive a active need
+	NeedStatusActive = NeedStatus("ACTIVE")
+	// NeedStatusInactive a inactive need
+	NeedStatusInactive = NeedStatus("INACTIVE")
+	// NeedStatusEmpty was not informed
+	NeedStatusEmpty = NeedStatus("")
+)
+
+func (s *NeedStatus) Scan(src interface{}) error {
 	var str string
 
 	switch src.(type) {
@@ -145,7 +145,7 @@ func (s *needStatus) Scan(src interface{}) error {
 	case []byte:
 		str = string(src.([]byte))
 	default:
-		return errors.New("Incompatible type for needStatus")
+		return errors.New("Incompatible type for NeedStatus")
 	}
 
 	switch strings.ToUpper(strings.TrimSpace(str)) {
@@ -160,6 +160,6 @@ func (s *needStatus) Scan(src interface{}) error {
 	return nil
 }
 
-func (s needStatus) Value() (driver.Value, error) {
+func (s NeedStatus) Value() (driver.Value, error) {
 	return string(s), nil
 }
