@@ -258,6 +258,44 @@ func TestOpenQueries(t *testing.T) {
 				return m
 			}(),
 		},
+		"organization/when_has_search_params": testCase{
+			query: `query { organization(id: 333) {
+				needs(input: {
+					text: "need",
+					categories: [1],
+					orderBy: UPDATED_AT,
+					status: ACTIVE,
+					order: ASC,
+					page: 2
+				}) {
+					results { title }
+				}
+			}}`,
+			response: `{"data": { "organization": { "needs": {
+				"results" : [{"title":"a need"}]
+			}}}}`,
+			orgRepo: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(333)).Once().
+					Return(
+						&model.Organization{User: model.User{ID: 333}},
+						nil,
+					)
+				return m
+			}(),
+			searchRepo: func() *searchRepoMock {
+				m := &searchRepoMock{}
+				m.On("Search", "need", []int{1}, int64(333), string(model.NeedStatusActive), "updated_at", "asc", 2).Once().
+					Return(
+						[]model.SearchNeed{
+							model.SearchNeed{Need: model.Need{Title: "a need"}},
+						},
+						1,
+						nil,
+					)
+				return m
+			}(),
+		},
 	}
 
 	for name, test := range tests {

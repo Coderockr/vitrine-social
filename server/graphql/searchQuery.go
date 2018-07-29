@@ -1,7 +1,6 @@
 package graphql
 
 import (
-	"log"
 	"math"
 
 	"github.com/Coderockr/vitrine-social/server/db/repo"
@@ -48,6 +47,10 @@ var (
 			"text":           stringInput,
 			"categories":     intListInput,
 			"organizationId": intInput,
+			"status": &graphql.InputObjectFieldConfig{
+				Type:         needStatusEnum,
+				DefaultValue: model.NeedStatusEmpty,
+			},
 			"orderBy": &graphql.InputObjectFieldConfig{
 				Type:         orderByEnum,
 				DefaultValue: "created_at",
@@ -64,6 +67,19 @@ var (
 	})
 )
 
+func getIntList(input map[string]interface{}, key string) []int {
+	list, ok := input[key].([]interface{})
+	if !ok {
+		return []int(nil)
+	}
+	intList := make([]int, len(list))
+
+	for i, v := range list {
+		intList[i] = v.(int)
+	}
+	return intList
+}
+
 func newSearchQuery(search searchNeedsFn) *graphql.Field {
 	f := newSearchNeedField(
 		search,
@@ -76,7 +92,7 @@ func newSearchQuery(search searchNeedsFn) *graphql.Field {
 			}
 
 			sp.Text, _ = input["text"].(string)
-			sp.Categories, _ = input["categories"].([]int)
+			sp.Categories = getIntList(input, "categories")
 			id, _ := input["organizationId"].(int)
 			sp.OrganizationID = int64(id)
 			sp.OrderBy, _ = input["orderBy"].(string)
@@ -105,7 +121,7 @@ type (
 		Text           string
 		Categories     []int
 		OrganizationID int64
-		Status         string
+		Status         model.NeedStatus
 		OrderBy        string
 		Order          string
 		Page           int
@@ -148,13 +164,11 @@ func newSearchNeedField(search searchNeedsFn, parseInput parseSearchInputFn, arg
 				sp.Page = 1
 			}
 
-			log.Printf("%#v", sp)
-
 			rs, c, err := search(
 				sp.Text,
 				sp.Categories,
 				sp.OrganizationID,
-				sp.Status,
+				string(sp.Status),
 				sp.OrderBy,
 				sp.Order,
 				sp.Page,

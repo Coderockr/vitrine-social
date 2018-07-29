@@ -21,6 +21,10 @@ var searchOrgNeedsInput = graphql.NewInputObject(graphql.InputObjectConfig{
 			Type:         orderByEnum,
 			DefaultValue: defaultOrderBySearch,
 		},
+		"status": &graphql.InputObjectFieldConfig{
+			Type:         needStatusEnum,
+			DefaultValue: model.NeedStatusEmpty,
+		},
 		"order": &graphql.InputObjectFieldConfig{
 			Type:         orderEnum,
 			DefaultValue: defaultOrderSearch,
@@ -50,7 +54,8 @@ func newOrganizationQuery(get getOrgFn, search searchNeedsFn) *graphql.Field {
 			}
 
 			sp.Text, _ = input["text"].(string)
-			sp.Categories, _ = input["categories"].([]int)
+			sp.Status, _ = input["status"].(model.NeedStatus)
+			sp.Categories = getIntList(input, "categories")
 			sp.OrderBy, _ = input["orderBy"].(string)
 			sp.Order, _ = input["order"].(string)
 			sp.Page, _ = input["page"].(int)
