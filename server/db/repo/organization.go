@@ -56,7 +56,7 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 		return nil, err
 	}
 
-	err = r.db.Select(&o.Images, "SELECT * FROM organizations_images WHERE organization_id = $1", id)
+	err = r.db.Select(&o.Images, "SELECT * FROM organizations_images WHERE organization_id = $1 AND id != $2", id, o.LogoImageID)
 	if err != nil {
 		return nil, err
 	}
