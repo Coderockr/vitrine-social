@@ -8,6 +8,7 @@ import {
   Input,
   Upload,
   Select,
+  Button,
 } from 'antd';
 import cx from 'classnames';
 import ReactGA from 'react-ga';
@@ -151,6 +152,7 @@ class OrganizationProfileForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        this.setState({ loading: true });
         const address = {
           zipcode: values.zipcode,
           street: values.street,
@@ -174,6 +176,7 @@ class OrganizationProfileForm extends React.Component {
         ]).then(
           () => {
             this.setState({
+              loading: false,
               responseFeedback: 'success',
               responseFeedbackMessage: 'Dados da organização salvos!',
             });
@@ -181,6 +184,7 @@ class OrganizationProfileForm extends React.Component {
           },
           () => {
             this.setState({
+              loading: false,
               responseFeedback: 'error',
               responseFeedbackMessage: 'Não foi possível salvar os dados da organização!',
             });
@@ -464,13 +468,14 @@ class OrganizationProfileForm extends React.Component {
               </FormItem>
               <FormItem>
                 <div className={styles.buttonWrapper}>
-                  <button
+                  <Button
                     className={cx(styles.button, styles.saveButton)}
                     disabled={!this.props.saveEnabled}
                     onClick={this.handleSubmit}
+                    loading={this.state.loading}
                   >
                     SALVAR
-                  </button>
+                  </Button>
                   <button
                     className={cx(styles.button, styles.cancelButton)}
                     onClick={() => this.closeModal()}

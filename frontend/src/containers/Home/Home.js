@@ -13,6 +13,7 @@ class Home extends React.Component {
     categories: [],
     requests: [],
     page: 1,
+    order: 'desc',
   }
 
   componentWillMount() {
@@ -33,6 +34,14 @@ class Home extends React.Component {
     });
   }
 
+  orderChanged(value) {
+    let order = 'desc';
+    if (value === 'OLDEST') {
+      order = 'asc';
+    }
+    this.setState({ order }, () => this.fetchRequests());
+  }
+
   fetchCategories() {
     api.get('categories').then(
       (response) => {
@@ -50,7 +59,8 @@ class Home extends React.Component {
   }
 
   fetchRequests() {
-    api.get(`search?page=${this.state.page}&status=ACTIVE`).then(
+    const { page, order } = this.state;
+    api.get(`search?page=${page}&status=ACTIVE&orderBy=createdAt&order=${order}`).then(
       (response) => {
         this.setState({
           requests: response.data.results,
@@ -68,12 +78,12 @@ class Home extends React.Component {
 
   searchRequests(text) {
     const { history } = this.props;
-    history.push(`/search/text=${text}&page=1&status=ACTIVE`);
+    history.push(`/search/text=${text}&page=1&status=ACTIVE&orderBy=createdAt&order=desc`);
   }
 
   searchByCategory(categoryId) {
     const { history } = this.props;
-    history.push(`/search/categories=${categoryId}&page=1&status=ACTIVE`);
+    history.push(`/search/categories=${categoryId}&page=1&status=ACTIVE&orderBy=createdAt&order=desc`);
   }
 
   render() {
@@ -91,6 +101,7 @@ class Home extends React.Component {
           loading={this.state.loadingRequests}
           activeRequests={this.state.loadingRequests ? null : this.state.requests}
           error={this.state.errorRequests}
+          orderChanged={order => this.orderChanged(order.target.value)}
         />
         {this.state.pagination &&
           <Pagination
