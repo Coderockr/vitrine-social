@@ -10,7 +10,7 @@ import OrganizationProfileForm from '../../components/OrganizationProfileForm';
 import { maskPhone } from '../../utils/mask';
 import colors from '../../utils/styles/colors';
 import api from '../../utils/api';
-import { getUser } from '../../utils/auth';
+import { getUser, updateUser } from '../../utils/auth';
 import styles from './styles.module.scss';
 import Loading from '../../components/Loading';
 import ErrorCard from '../../components/ErrorCard';
@@ -69,7 +69,7 @@ class OrganizationProfile extends React.Component {
     return requests.filter(this.inactiveStatusFilter);
   }
 
-  fetchData() {
+  fetchData(onSaveOrganization) {
     const user = getUser();
     const { match: { params } } = this.props;
     api.get(`organization/${params.organizationId}`).then(
@@ -81,6 +81,9 @@ class OrganizationProfile extends React.Component {
           isOrganization: user ? user.id === response.data.id : false,
           loading: false,
         });
+        if (onSaveOrganization) {
+          updateUser(response.data);
+        }
       }, (error) => {
         this.setState({
           loading: false,
@@ -139,7 +142,7 @@ class OrganizationProfile extends React.Component {
             <OrganizationProfileForm
               visible={editProfileVisible}
               onCancel={() => this.setState({ editProfileVisible: false, saveEnabled: false })}
-              onSave={() => this.fetchData()}
+              onSave={() => this.fetchData(true)}
               saveEnabled={saveEnabled}
               enableSave={enable => this.setState({ saveEnabled: enable })}
               organization={organization}
