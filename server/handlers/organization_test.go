@@ -96,7 +96,7 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 							Address: model.Address{
 								Street:       "",
 								Number:       "",
-								Complement:   nil,
+								Complement:   nulls.String{Valid: false},
 								Neighborhood: "",
 								City:         "",
 								State:        "",

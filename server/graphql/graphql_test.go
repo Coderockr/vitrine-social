@@ -883,6 +883,97 @@ func TestMutations(t *testing.T) {
 				return m
 			}(),
 		},
+		"organizationUpdate/when_success": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					organizationUpdate(input: {
+						name: "new name",
+						about: "new about",
+						phone: "47 99856-8512",
+						video: "http://video.com/v",
+						email: "org@neworg.org",
+						address: {
+							street: "Rua Algum Lugar",
+							number: "404",
+							neighbordhood: "Algum Bairro",
+							city: "Joinville",
+							state: "SC",
+							zipcode: "89230000",
+							complement: ""
+						}
+					}) {
+						organization {
+							id, name, about, phone, video, email,
+							address {
+								street, number, neighbordhood,
+								city, state, zipcode, complement
+							}
+						}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"organizationUpdate":{"organization":{
+				"id" : 1,"name": "new name", "about": "new about", "phone": "47 99856-8512",
+				"video": "http://video.com/v", "email": "org@neworg.org",
+				"address" : {
+					"street": "Rua Algum Lugar", "number": "404",
+					"neighbordhood": "Algum Bairro", "city": "Joinville",
+					"state": "SC", "zipcode": "89230000", "complement": ""
+				}
+			}}}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{
+								ID:    1,
+								Email: "org@neworg.org",
+							},
+							Name:  "new name",
+							About: "new about",
+							Phone: "47 99856-8512",
+							Video: "http://video.com/v",
+							Address: model.Address{
+								Street:       "Rua Algum Lugar",
+								Number:       "404",
+								Neighborhood: "Algum Bairro",
+								City:         "Joinville",
+								State:        "SC",
+								Zipcode:      "89230000",
+								Complement:   nulls.NewString(""),
+							},
+						},
+						nil,
+					)
+
+				oUpdated := model.Organization{
+					User: model.User{
+						ID:    1,
+						Email: "org@neworg.org",
+					},
+					Name:  "new name",
+					About: "new about",
+					Phone: "47 99856-8512",
+					Video: "http://video.com/v",
+					Address: model.Address{
+						Street:       "Rua Algum Lugar",
+						Number:       "404",
+						Neighborhood: "Algum Bairro",
+						City:         "Joinville",
+						State:        "SC",
+						Zipcode:      "89230000",
+						Complement:   nulls.NewString(""),
+					},
+				}
+
+				m.On("Update", oUpdated).Once().
+					Return(oUpdated, nil)
+
+				return m
+			}(),
+		},
 	}
 
 	for name, test := range tests {

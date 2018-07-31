@@ -136,9 +136,17 @@ var (
 	addressType = graphql.NewObject(graphql.ObjectConfig{
 		Name: "Address",
 		Fields: graphql.Fields{
-			"street":        stringField,
-			"number":        stringField,
-			"complement":    stringField,
+			"street": stringField,
+			"number": stringField,
+			"complement": &graphql.Field{
+				Type: graphql.String,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if a, ok := p.Source.(model.Address); ok {
+						return a.Complement.Value()
+					}
+					return nil, nil
+				},
+			},
 			"neighbordhood": stringField,
 			"city":          stringField,
 			"state":         stringField,

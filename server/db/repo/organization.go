@@ -133,8 +133,8 @@ func validateOrg(o model.Organization) (model.Organization, error) {
 	o.Address.City = strings.TrimSpace(o.Address.City)
 	o.Address.State = strings.TrimSpace(o.Address.State)
 	o.Address.Zipcode = strings.TrimSpace(o.Address.Zipcode)
-	if o.Address.Complement != nil {
-		*o.Address.Complement = strings.TrimSpace(*o.Address.Complement)
+	if o.Address.Complement.Valid {
+		o.Address.Complement = nulls.NewString(strings.TrimSpace(o.Address.Complement.String))
 	}
 
 	if len(o.Name) == 0 {

@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/gobuffalo/pop/nulls"
 	"github.com/graphql-go/graphql"
 )
 
@@ -109,7 +110,7 @@ func newOrganizationUpdateMutation(update updateOrgFn) *graphql.Field {
 				}
 
 				if complement, ok := address["complement"].(string); ok {
-					o.Address.Complement = &complement
+					o.Address.Complement = nulls.NewString(complement)
 				}
 
 			}

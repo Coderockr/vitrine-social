@@ -233,7 +233,10 @@
 [[projects]]
   digest = "1:b0aeb8e186061509f22661edffbff9af43f186f7b4ba0db71900678b229568ac"
   name = "github.com/lucassabreu/graphql-multipart-middleware"
-  packages = ["."]
+  packages = [
+    ".",
+    "testutil",
+  ]
   pruneopts = ""
   revision = "5a6fd5cea81424deb40aaf3b74f1a08af3b3ee9d"
   version = "v0.1"
@@ -431,6 +434,7 @@
     "github.com/joho/godotenv",
     "github.com/lib/pq",
     "github.com/lucassabreu/graphql-multipart-middleware",
+    "github.com/lucassabreu/graphql-multipart-middleware/testutil",
     "github.com/lucassabreu/stow/s3",
     "github.com/sendgrid/sendgrid-go",
     "github.com/sendgrid/sendgrid-go/helpers/mail",
