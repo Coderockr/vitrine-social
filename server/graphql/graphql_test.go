@@ -894,7 +894,7 @@ func TestMutations(t *testing.T) {
 						video: "http://video.com/v",
 						email: "org@neworg.org",
 						address: {
-							street: "Rua Algum Lugar",
+							street: "Rua Algum Lugar (Nova)",
 							number: "404",
 							neighbordhood: "Algum Bairro",
 							city: "Joinville",
@@ -917,7 +917,7 @@ func TestMutations(t *testing.T) {
 				"id" : 1,"name": "new name", "about": "new about", "phone": "47 99856-8512",
 				"video": "http://video.com/v", "email": "org@neworg.org",
 				"address" : {
-					"street": "Rua Algum Lugar", "number": "404",
+					"street": "Rua Algum Lugar (Nova)", "number": "404",
 					"neighbordhood": "Algum Bairro", "city": "Joinville",
 					"state": "SC", "zipcode": "89230000", "complement": ""
 				}
@@ -929,20 +929,20 @@ func TestMutations(t *testing.T) {
 						&model.Organization{
 							User: model.User{
 								ID:    1,
-								Email: "org@neworg.org",
+								Email: "org@org.org",
 							},
-							Name:  "new name",
-							About: "new about",
-							Phone: "47 99856-8512",
-							Video: "http://video.com/v",
+							Name:  "old name",
+							About: "old about",
+							Phone: "",
+							Video: "http://video.com/wv",
 							Address: model.Address{
 								Street:       "Rua Algum Lugar",
-								Number:       "404",
-								Neighborhood: "Algum Bairro",
-								City:         "Joinville",
-								State:        "SC",
-								Zipcode:      "89230000",
-								Complement:   nulls.NewString(""),
+								Number:       "500",
+								Neighborhood: "Algum Bairro Antigo",
+								City:         "Curitiba",
+								State:        "PR",
+								Zipcode:      "90230000",
+								Complement:   nulls.NewString("Perto do Obelisco"),
 							},
 						},
 						nil,
@@ -958,13 +958,94 @@ func TestMutations(t *testing.T) {
 					Phone: "47 99856-8512",
 					Video: "http://video.com/v",
 					Address: model.Address{
-						Street:       "Rua Algum Lugar",
+						Street:       "Rua Algum Lugar (Nova)",
 						Number:       "404",
 						Neighborhood: "Algum Bairro",
 						City:         "Joinville",
 						State:        "SC",
 						Zipcode:      "89230000",
 						Complement:   nulls.NewString(""),
+					},
+				}
+
+				m.On("Update", oUpdated).Once().
+					Return(oUpdated, nil)
+
+				return m
+			}(),
+		},
+		"organizationUpdate/with_some_fields": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					organizationUpdate(input: {
+						name: "new name",
+						address: {
+							street: "Rua Algum Lugar (Nova)",
+						}
+					}) {
+						organization {
+							id, name, about, phone, video, email,
+							address {
+								street, number, neighbordhood,
+								city, state, zipcode, complement
+							}
+						}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"organizationUpdate":{"organization":{
+				"id" : 1,"name": "new name", "about": "old about", "phone": "",
+				"video": "http://video.com/wv", "email": "org@org.org",
+				"address" : {
+					"street": "Rua Algum Lugar (Nova)", "number": "500",
+					"neighbordhood": "Algum Bairro Antigo", "city": "Curitiba",
+					"state": "PR", "zipcode": "90230000", "complement": "Perto do Obelisco"
+				}
+			}}}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{
+								ID:    1,
+								Email: "org@org.org",
+							},
+							Name:  "old name",
+							About: "old about",
+							Phone: "",
+							Video: "http://video.com/wv",
+							Address: model.Address{
+								Street:       "Rua Algum Lugar",
+								Number:       "500",
+								Neighborhood: "Algum Bairro Antigo",
+								City:         "Curitiba",
+								State:        "PR",
+								Zipcode:      "90230000",
+								Complement:   nulls.NewString("Perto do Obelisco"),
+							},
+						},
+						nil,
+					)
+
+				oUpdated := model.Organization{
+					User: model.User{
+						ID:    1,
+						Email: "org@org.org",
+					},
+					Name:  "new name",
+					About: "old about",
+					Phone: "",
+					Video: "http://video.com/wv",
+					Address: model.Address{
+						Street:       "Rua Algum Lugar (Nova)",
+						Number:       "500",
+						Neighborhood: "Algum Bairro Antigo",
+						City:         "Curitiba",
+						State:        "PR",
+						Zipcode:      "90230000",
+						Complement:   nulls.NewString("Perto do Obelisco"),
 					},
 				}
 
