@@ -30,7 +30,7 @@ func (r *SearchRepository) Search(text string, categoriesID []int, organizations
 
 	if len(text) > 0 {
 		filter += fmt.Sprintf(" and (LOWER(n.title) LIKE $%[1]d OR LOWER(n.description) LIKE $%[1]d OR LOWER(o.name) LIKE $%[1]d)", len(args)+1)
-		args = append(args, "%"+text+"%")
+		args = append(args, "%"+strings.ToLower(text)+"%")
 	}
 
 	if len(status) > 0 {

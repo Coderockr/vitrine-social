@@ -116,7 +116,7 @@ class Requests extends React.Component {
             className={styles.row}
           >
             {this.props.isOrganization &&
-              <div className={styles.actionWrapper}>
+              <div className={styles.organizationActionWrapper}>
                 <RadioGroup defaultValue="ACTIVE" onChange={() => this.statusChanged()}>
                   <RadioButton value="ACTIVE">ATIVAS</RadioButton>
                   <RadioButton value="INACTIVE">INATIVAS</RadioButton>
@@ -127,6 +127,14 @@ class Requests extends React.Component {
                 >
                   NOVA SOLICITAÇÃO
                 </button>
+              </div>
+            }
+            {!this.props.isOrganization &&
+              <div className={styles.actionWrapper}>
+                <RadioGroup className="purpleRadio" defaultValue="NEWEST" onChange={this.props.orderChanged}>
+                  <RadioButton value="NEWEST">MAIS RECENTES</RadioButton>
+                  <RadioButton value="OLDEST">MAIS ANTIGAS</RadioButton>
+                </RadioGroup>
               </div>
             }
             {this.renderRequests()}
