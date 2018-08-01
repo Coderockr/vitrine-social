@@ -1161,6 +1161,95 @@ func TestMutations(t *testing.T) {
 				return m
 			}(),
 		},
+		"resetPassword/when_token_dont_have_permission": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					resetPassword(newPassword: "123456") {
+						organization {name}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"resetPassword": null }}, "errors": [
+				{ "message": "token does not have permission to reset the password", "locations":[] }
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{
+								ID:    1,
+								Email: "org@org.org",
+							},
+						},
+						nil,
+					)
+				return m
+			}(),
+		},
+		"resetPassword/when_fails_to_reset": testCase{
+			token: &model.Token{
+				UserID:      1,
+				Permissions: map[string]bool{model.PasswordResetPermission: true},
+			},
+			mutation: `mutation {
+				viewer {
+					resetPassword(newPassword: "123456") {
+						organization {name}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"resetPassword": null }}, "errors": [
+				{ "message": "fails to reset", "locations":[] }
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				o := &model.Organization{
+					Name: "org rp",
+					User: model.User{
+						ID:    1,
+						Email: "org@org.org",
+					},
+				}
+				m.On("Get", int64(1)).Once().
+					Return(o, nil)
+
+				m.On("ResetPasswordTo", o, "123456").Once().
+					Return(nil, errors.New("fails to reset"))
+				return m
+			}(),
+		},
+		"resetPassword/when_success": testCase{
+			token: &model.Token{
+				UserID:      1,
+				Permissions: map[string]bool{model.PasswordResetPermission: true},
+			},
+			mutation: `mutation {
+				viewer {
+					resetPassword(newPassword: "123456") {
+						organization {name}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"resetPassword":{"organization":{"name":"org rp"}}}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				o := &model.Organization{
+					Name: "org rp",
+					User: model.User{
+						ID:    1,
+						Email: "org@org.org",
+					},
+				}
+				m.On("Get", int64(1)).Once().
+					Return(o, nil)
+
+				m.On("ResetPasswordTo", o, "123456").Once().
+					Return(o, nil)
+				return m
+			}(),
+		},
 	}
 
 	for name, test := range tests {
