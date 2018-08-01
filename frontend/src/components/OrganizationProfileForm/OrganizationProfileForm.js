@@ -392,7 +392,6 @@ class OrganizationProfileForm extends React.Component {
                 <Col span={9}>
                   <FormItem>
                     {getFieldDecorator('complement', {
-                      rules: [{ required: true, message: 'Preencha o complemento' }],
                       initialValue: address.complement,
                     })(
                       <Input size="large" placeholder="Complemento" />,
