@@ -1055,6 +1055,112 @@ func TestMutations(t *testing.T) {
 				return m
 			}(),
 		},
+		"organizationUpdate/without_complement": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					organizationUpdate(input: {
+						name: "new name",
+						address: {
+							withoutComplement: true
+						}
+					}) {
+						organization {
+							name, address {complement}
+						}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"organizationUpdate":{"organization":{
+				"name": "new name", "address" : {"complement": null}
+			}}}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{
+								ID:    1,
+								Email: "org@org.org",
+							},
+							Name:  "old name",
+							About: "old about",
+							Phone: "",
+							Video: "http://video.com/wv",
+							Address: model.Address{
+								Street:       "Rua Algum Lugar",
+								Number:       "500",
+								Neighborhood: "Algum Bairro Antigo",
+								City:         "Curitiba",
+								State:        "PR",
+								Zipcode:      "90230000",
+								Complement:   nulls.NewString("Perto do Obelisco"),
+							},
+						},
+						nil,
+					)
+
+				oUpdated := model.Organization{
+					User: model.User{
+						ID:    1,
+						Email: "org@org.org",
+					},
+					Name:  "new name",
+					About: "old about",
+					Phone: "",
+					Video: "http://video.com/wv",
+					Address: model.Address{
+						Street:       "Rua Algum Lugar",
+						Number:       "500",
+						Neighborhood: "Algum Bairro Antigo",
+						City:         "Curitiba",
+						State:        "PR",
+						Zipcode:      "90230000",
+						Complement:   nulls.String{Valid: false},
+					},
+				}
+
+				m.On("Update", oUpdated).Once().
+					Return(oUpdated, nil)
+
+				return m
+			}(),
+		},
+		"organizationUpdate/fails_when_withoutComplement_and_complement": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					organizationUpdate(input: {
+						name: "new name",
+						address: {
+							withoutComplement: true,
+							complement: "Olhe para cima"
+						}
+					}) {
+						organization {
+							name, address {complement}
+						}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"organizationUpdate": null }}, "errors": [
+			{ "message": "parameters withoutComplement and complement can't be used together", "locations":[] }
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{
+								ID:    1,
+								Email: "org@org.org",
+							},
+						},
+						nil,
+					)
+				return m
+			}(),
+		},
 	}
 
 	for name, test := range tests {

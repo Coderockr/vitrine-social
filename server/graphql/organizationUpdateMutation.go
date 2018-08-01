@@ -20,6 +20,11 @@ var addressInput = graphql.NewInputObject(graphql.InputObjectConfig{
 		"city":          stringInput,
 		"state":         stringInput,
 		"zipcode":       stringInput,
+		"withoutComplement": &graphql.InputObjectFieldConfig{
+			Type:         graphql.Boolean,
+			Description:  "When set to true, will make the address without a complement",
+			DefaultValue: false,
+		},
 	},
 })
 
@@ -109,10 +114,17 @@ func newOrganizationUpdateMutation(update updateOrgFn) *graphql.Field {
 					o.Address.Zipcode = zipcode
 				}
 
-				if complement, ok := address["complement"].(string); ok {
-					o.Address.Complement = nulls.NewString(complement)
+				withoutComplement := address["withoutComplement"].(bool)
+				if withoutComplement {
+					o.Address.Complement = nulls.String{Valid: false}
 				}
 
+				if complement, ok := address["complement"].(string); ok {
+					if withoutComplement {
+						return nil, errors.New("parameters withoutComplement and complement can't be used together")
+					}
+					o.Address.Complement = nulls.NewString(complement)
+				}
 			}
 
 			var err error
