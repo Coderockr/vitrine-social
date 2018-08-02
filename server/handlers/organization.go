@@ -197,6 +197,15 @@ func UploadOrganizationImageHandler(container organizationStorage, orgRepo Organ
 		}
 
 		if isLogo == true {
+			o, err := orgRepo.Get(t.UserID)
+			logoImageID := o.LogoImageID.Int64
+			if logoImageID > 0 {
+				if err = container.DeleteOrganizationImage(t, logoImageID); err != nil {
+					HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao remover logo anterior: %s", err))
+					return
+				}
+			}
+
 			err = orgRepo.UpdateLogo(nulls.NewInt64(i.ID), t.UserID)
 			if err != nil {
 				HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Erro ao atualizar logo: %s", err))
