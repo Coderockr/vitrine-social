@@ -7,11 +7,6 @@ import (
 
 type getOrgFn func(int64) (*model.Organization, error)
 
-const (
-	defaultOrderBySearch = "created_at"
-	defaultOrderSearch   = "desc"
-)
-
 var searchOrgNeedsInput = graphql.NewInputObject(graphql.InputObjectConfig{
 	Name: "SearchOrganizationNeedsInput",
 	Fields: graphql.InputObjectConfigFieldMap{
@@ -48,8 +43,6 @@ func newOrganizationQuery(get getOrgFn, search searchNeedsFn) *graphql.Field {
 
 			input, ok := p.Args["input"].(map[string]interface{})
 			if !ok {
-				sp.OrderBy = defaultOrderBySearch
-				sp.Order = defaultOrderSearch
 				return sp, nil
 			}
 

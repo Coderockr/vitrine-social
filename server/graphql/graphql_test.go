@@ -296,6 +296,85 @@ func TestOpenQueries(t *testing.T) {
 				return m
 			}(),
 		},
+		"search/without_query": testCase{
+			query: `query { search {
+				results { title }
+				pageInfo { totalResults, totalPages, currentPage }
+			} }`,
+			response: `{"data": { "search": {
+				"results" : [{"title":"a need"}],
+				"pageInfo": {
+					"totalPages": 1,
+					"totalResults": 1,
+					"currentPage": 1
+				}
+			}}}`,
+			searchRepo: func() *searchRepoMock {
+				m := &searchRepoMock{}
+				m.On("Search", "", []int(nil), int64(0), "", "created_at", "desc", 1).Once().
+					Return(
+						[]model.SearchNeed{
+							model.SearchNeed{Need: model.Need{Title: "a need"}},
+						},
+						1,
+						nil,
+					)
+				return m
+			}(),
+		},
+		"search/with_query": testCase{
+			query: `query {
+				search(input: {
+					text: "need",
+					categories: [1,2,3],
+					organizationId: 3,
+					status: ACTIVE,
+					orderBy: UPDATED_AT,
+					order: ASC,
+					page: 2
+				}) {
+					results { title }
+					pageInfo { totalResults, totalPages, currentPage }
+				}
+			}`,
+			response: `{"data": { "search": {
+				"results" : [{"title":"a need"}],
+				"pageInfo": {
+					"totalPages": 2,
+					"totalResults": 11,
+					"currentPage": 2
+				}
+			}}}`,
+			searchRepo: func() *searchRepoMock {
+				m := &searchRepoMock{}
+				m.On("Search", "need", []int{1, 2, 3}, int64(3), "ACTIVE", "updated_at", "asc", 2).Once().
+					Return(
+						[]model.SearchNeed{
+							model.SearchNeed{Need: model.Need{Title: "a need"}},
+						},
+						11,
+						nil,
+					)
+				return m
+			}(),
+		},
+		"search/when_search_fails": testCase{
+			query: `query {
+				search {
+					results { title }
+					pageInfo { totalResults, totalPages, currentPage }
+				}
+			}`,
+			response: `{"data": { "search": null }, "errors": [
+				{ "message": "search has failed", "locations":[] }
+			]}`,
+			searchRepo: func() *searchRepoMock {
+				m := &searchRepoMock{}
+				m.On("Search", "", []int(nil), int64(0), "", "created_at", "desc", 1).Once().
+					Return([]model.SearchNeed{}, 0, errors.New("search has failed"))
+				return m
+			}(),
+		},
 	}
 
 	for name, test := range tests {

@@ -94,6 +94,7 @@ func newSearchQuery(search searchNeedsFn) *graphql.Field {
 			sp.Text, _ = input["text"].(string)
 			sp.Categories = getIntList(input, "categories")
 			id, _ := input["organizationId"].(int)
+			sp.Status, _ = input["status"].(model.NeedStatus)
 			sp.OrganizationID = int64(id)
 			sp.OrderBy, _ = input["orderBy"].(string)
 			sp.Order, _ = input["order"].(string)
@@ -151,6 +152,11 @@ var (
 	})
 )
 
+const (
+	defaultOrderBySearch = "created_at"
+	defaultOrderSearch   = "desc"
+)
+
 func newSearchNeedField(search searchNeedsFn, parseInput parseSearchInputFn, args graphql.FieldConfigArgument) *graphql.Field {
 	return &graphql.Field{
 		Args: args,
@@ -162,6 +168,14 @@ func newSearchNeedField(search searchNeedsFn, parseInput parseSearchInputFn, arg
 			}
 			if sp.Page == 0 {
 				sp.Page = 1
+			}
+
+			if len(sp.OrderBy) == 0 {
+				sp.OrderBy = defaultOrderBySearch
+			}
+
+			if len(sp.Order) == 0 {
+				sp.Order = defaultOrderSearch
 			}
 
 			rs, c, err := search(
