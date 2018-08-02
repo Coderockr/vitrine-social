@@ -201,10 +201,10 @@ func TestOpenQueries(t *testing.T) {
 			}(),
 		},
 		"organization/with_simple_query": testCase{
-			query: `query { organization(id: 333) { id, name, images { name, url }, website, email } }`,
+			query: `query { organization(id: 333) { id, logo, name, images { id, name, url }, website, email } }`,
 			response: `{"data": { "organization": {
-				"id": 333, "name": "old org", "email": "org@org.org", "website": "http://org.org",
-				"images": [ { "name": "a image", "url": "http://localhost/a-image.jpg" } ]
+				"id": 333, "name": "old org", "email": "org@org.org", "website": "http://org.org", "logo": "http://images.com/logo.png",
+				"images": [ { "id": 1, "name": "a image", "url": "http://localhost/a-image.jpg" } ]
 			}}}`,
 			orgRepo: func() *orgRepoMock {
 				m := &orgRepoMock{}
@@ -215,11 +215,15 @@ func TestOpenQueries(t *testing.T) {
 								ID:    333,
 								Email: "org@org.org",
 							},
+							Logo: &model.OrganizationImage{
+								Image: model.Image{URL: "http://images.com/logo.png"},
+							},
 							Name:    "old org",
 							Website: nulls.NewString("http://org.org"),
 							Images: []model.OrganizationImage{
 								model.OrganizationImage{
 									Image: model.Image{
+										ID:   1,
 										Name: "a image",
 										URL:  "http://localhost/a-image.jpg",
 									},
@@ -333,12 +337,37 @@ func TestOpenQueries(t *testing.T) {
 					order: ASC,
 					page: 2
 				}) {
-					results { title }
+					results {
+						title
+						description
+						reachedQuantity
+						requiredQuantity
+						status
+						unit
+						createdAt
+						dueDate
+						updatedAt
+						# images {url}
+						organization{name}
+						category{name}
+					}
 					pageInfo { totalResults, totalPages, currentPage }
 				}
 			}`,
 			response: `{"data": { "search": {
-				"results" : [{"title":"a need"}],
+				"results" : [{
+					"title":"a need",
+					"description": "a need description",
+					"reachedQuantity": 1,
+					"requiredQuantity": 12,
+					"status": "ACTIVE",
+					"unit": "boxes",
+					"createdAt": "2018-10-18 15:30:00",
+					"dueDate": null,
+					"updatedAt": "2018-10-18",
+					"organization": { "name": "a organization" },
+					"category": { "name": "a category" }
+				}],
 				"pageInfo": {
 					"totalPages": 2,
 					"totalResults": 11,
@@ -347,12 +376,42 @@ func TestOpenQueries(t *testing.T) {
 			}}}`,
 			searchRepo: func() *searchRepoMock {
 				m := &searchRepoMock{}
+
+				cT, _ := time.Parse(time.RFC3339, "2018-10-02T15:30:00Z")
+
 				m.On("Search", "need", []int{1, 2, 3}, int64(3), "ACTIVE", "updated_at", "asc", 2).Once().
 					Return(
 						[]model.SearchNeed{
-							model.SearchNeed{Need: model.Need{Title: "a need"}},
+							model.SearchNeed{
+								Need: model.Need{
+									Title:            "a need",
+									Description:      nulls.NewString("a need description"),
+									ReachedQuantity:  1,
+									RequiredQuantity: 12,
+									Status:           model.NeedStatusActive,
+									Unit:             "boxes",
+									CreatedAt:        cT,
+									DueDate:          nil,
+									UpdatedAt:        cT,
+									OrganizationID:   1,
+									CategoryID:       333,
+								},
+								CategoryName: "A Category",
+								CategorySlug: "cat",
+							},
 						},
 						11,
+						nil,
+					)
+				return m
+			}(),
+			orgRepo: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							Name: "a organization",
+						},
 						nil,
 					)
 				return m
