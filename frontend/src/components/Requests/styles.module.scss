@@ -66,6 +66,7 @@ require('../../utils/styles/colors.js');
 
 @media (max-width: 500px) {
   .requests {
+    .organizationActionWrapper,
     .actionWrapper {
       flex-direction: column-reverse;
       padding: 0;

@@ -12,6 +12,7 @@ require('../../utils/styles/colors.js');
   a {
     font-size: 40px;
     color: $grey_350;
+    word-wrap: break-word;
   }
 
   .buttonWrapper {

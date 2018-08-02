@@ -41,6 +41,7 @@ class RequestForm extends React.Component {
       categories: [],
       responseFeedback: '',
       responseFeedbackMessage: '',
+      imagesChanges: [],
     };
 
     mediaQuery.addListener(this.widthChange.bind(this));

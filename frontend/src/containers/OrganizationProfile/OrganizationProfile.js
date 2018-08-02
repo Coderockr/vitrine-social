@@ -177,7 +177,7 @@ class OrganizationProfile extends React.Component {
             <div className={cx(styles.border, styles.aboutBorder)}>
               <h1>Sobre</h1>
               {organization.about &&
-                <p>{organization.about}</p>
+                <p style={{ 'white-space': 'pre-line' }}>{organization.about}</p>
               }
               {organization.website &&
               <a target="_blank" rel="me" href={`//${organization.website}`}>{organization.website}</a>
