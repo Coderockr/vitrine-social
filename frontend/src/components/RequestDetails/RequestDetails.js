@@ -156,7 +156,7 @@ class RequestDetails extends React.Component {
         <div className={styles.itemDetails}>
           <ItemIndicator className={styles.itemIndicator} request={request} size="lg" />
           <div>
-            <h1>{title}</h1>
+            <h1>{`${title} (${requiredQuantity} ${unit})`}</h1>
             <p className={styles.received}>{`Recebidos: ${reachedQuantity} de ${requiredQuantity} ${unit}`}</p>
             <p className={styles.updatedAt}>{dateText}</p>
           </div>

@@ -22,6 +22,7 @@ class RequestCard extends React.PureComponent {
       organization,
       requiredQuantity,
       reachedQuantity,
+      title,
       unit,
     } = request;
     return (
@@ -31,8 +32,8 @@ class RequestCard extends React.PureComponent {
             <ItemIndicator request={request} />
             <div className={styles.organizationContent}>
               <div>
-                <p className={styles.receivedTop}>Recebidos: 50 de 100 itens</p>
-                <h2>{request.title}</h2>
+                <p className={styles.receivedTop}>{`Recebidos: ${reachedQuantity} de ${requiredQuantity} ${unit}`}</p>
+                <h2>{`${title} (${requiredQuantity} ${unit})`}</h2>
                 <Link to={`/organization/${organization.id}`}>{organization.name}</Link>
               </div>
               <p className={styles.date}>{dateText}</p>
