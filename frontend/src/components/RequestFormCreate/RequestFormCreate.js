@@ -24,10 +24,12 @@ const { TextArea } = Input;
 const mediaQuery = window.matchMedia('(max-width: 385px)');
 
 const units = [
-  'Unidades',
   'Kg',
-  'Pessoas',
-  'Litros',
+  'litros',
+  'caixas',
+  'peças',
+  'pessoas',
+  'unidades',
 ];
 
 class RequestForm extends React.Component {
