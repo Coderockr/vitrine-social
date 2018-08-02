@@ -24,7 +24,7 @@ const { TextArea } = Input;
 const mediaQuery = window.matchMedia('(max-width: 385px)');
 
 const units = [
-  'Kg',
+  'kg',
   'litros',
   'caixas',
   'peças',
