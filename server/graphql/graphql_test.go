@@ -347,7 +347,7 @@ func TestOpenQueries(t *testing.T) {
 						createdAt
 						dueDate
 						updatedAt
-						# images {url}
+						images {url,id,name}
 						organization{name}
 						category{name}
 					}
@@ -362,11 +362,15 @@ func TestOpenQueries(t *testing.T) {
 					"requiredQuantity": 12,
 					"status": "ACTIVE",
 					"unit": "boxes",
-					"createdAt": "2018-10-18 15:30:00",
+					"createdAt": "2018-10-18T15:30:00Z",
 					"dueDate": null,
-					"updatedAt": "2018-10-18",
+					"updatedAt": "2018-10-18T15:30:00Z",
 					"organization": { "name": "a organization" },
-					"category": { "name": "a category" }
+					"category": { "name": "A Category" },
+					"images": [
+						{"id": 1, "name": "a image", "url": "http://localhost/image1.png"},
+						{"id": 2, "name": "a second image", "url": "http://localhost/image2.png"}
+					]
 				}],
 				"pageInfo": {
 					"totalPages": 2,
@@ -377,13 +381,14 @@ func TestOpenQueries(t *testing.T) {
 			searchRepo: func() *searchRepoMock {
 				m := &searchRepoMock{}
 
-				cT, _ := time.Parse(time.RFC3339, "2018-10-02T15:30:00Z")
+				cT, _ := time.Parse(time.RFC3339, "2018-10-18T15:30:00Z")
 
 				m.On("Search", "need", []int{1, 2, 3}, int64(3), "ACTIVE", "updated_at", "asc", 2).Once().
 					Return(
 						[]model.SearchNeed{
 							model.SearchNeed{
 								Need: model.Need{
+									ID:               333,
 									Title:            "a need",
 									Description:      nulls.NewString("a need description"),
 									ReachedQuantity:  1,
@@ -414,6 +419,38 @@ func TestOpenQueries(t *testing.T) {
 						},
 						nil,
 					)
+				return m
+			}(),
+			needRepo: func() *needRepoMock {
+				m := &needRepoMock{}
+				call := m.On("GetNeedsImages", mock.Anything).Once()
+				call.Run(func(args mock.Arguments) {
+					n := args.Get(0).(model.Need)
+					if n.ID != 333 {
+						call.Return([]model.NeedImage{}, errors.New("failed"))
+						return
+					}
+
+					call.Return(
+						[]model.NeedImage{
+							model.NeedImage{
+								Image: model.Image{
+									ID:   1,
+									Name: "a image",
+									URL:  "http://localhost/image1.png",
+								},
+							},
+							model.NeedImage{
+								Image: model.Image{
+									ID:   2,
+									Name: "a second image",
+									URL:  "http://localhost/image2.png",
+								},
+							},
+						},
+						nil,
+					)
+				})
 				return m
 			}(),
 		},
