@@ -1,6 +1,8 @@
 package repo
 
 import (
+	"errors"
+
 	"github.com/golang/sync/syncmap"
 
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -22,19 +24,37 @@ func NewCategoryRepository(db *sqlx.DB) *CategoryRepository {
 }
 
 // Get a category from database using its id
-func (r *CategoryRepository) Get(id int64) (model.Category, error) {
+func (r *CategoryRepository) Get(id int64) (*model.Category, error) {
 	if c, ok := categoryCache.Load(id); ok {
-		return c.(model.Category), nil
+		c := c.(*model.Category)
+		return c, nil
 	}
 
-	c := model.Category{}
-	err := r.db.Get(&c, "SELECT * FROM categories WHERE id = $1", id)
+	c := &model.Category{}
+	err := r.db.Get(c, "SELECT * FROM categories WHERE id = $1", id)
 	if err != nil {
-		return model.Category{}, err
+		return nil, err
 	}
 
 	categoryCache.Store(id, c)
 	return c, nil
+}
+
+// GetNeedsCount returns needs count for a Category
+func (r *CategoryRepository) GetNeedsCount(c *model.Category) (int64, error) {
+	if c == nil {
+		return 0, errors.New("no category informed")
+	}
+
+	count := int64(0)
+
+	err := r.db.Get(
+		&count,
+		"SELECT COUNT(n.id) FROM needs n WHERE n.category_id = $1",
+		c.ID,
+	)
+
+	return count, err
 }
 
 // GetAll return all categories

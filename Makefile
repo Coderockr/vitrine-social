@@ -64,7 +64,7 @@ serve-on-docker: ## start the server inside docker
 serve-watch: ## start server with hot reload
 	docker-compose up -d postgres
 	go get -u github.com/codegangsta/gin
-	cd server; API_PORT=8001 gin --port 8000 --appPort 8001 --bin $(bin) run serve
+	cd server; API_PORT=8001 gin --port 8000 --appPort 8001 --bin $(bin) -i run serve
 
 postgres-cmd: ## open the postgresql command line
 	docker-compose exec postgres psql -h $$DATABASE_HOST -U postgres vitrine
@@ -89,7 +89,7 @@ help: ## show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 lint: ## show source lint
-	golint `find server -type d -maxdepth 1`
+	golint `find server -maxdepth 1 -type d`
 
 tests: ## run go tests
 	cd server && go test -v -race ./...

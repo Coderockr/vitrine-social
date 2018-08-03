@@ -21,6 +21,7 @@ import (
 
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/repo"
+	"github.com/Coderockr/vitrine-social/server/graphql"
 	"github.com/Coderockr/vitrine-social/server/handlers"
 	"github.com/Coderockr/vitrine-social/server/mail"
 	"github.com/Coderockr/vitrine-social/server/middlewares"
@@ -90,16 +91,17 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		TokenManager:       tm,
 	}
 
-	authMiddleware := negroni.New()
-	authMiddleware.UseFunc(AuthHandler.AuthMiddleware)
+	privateMiddleware := negroni.New()
+	privateMiddleware.UseFunc(AuthHandler.AuthenticationMiddleware)
+	privateMiddleware.UseFunc(AuthHandler.OnlyAuthenticatedMiddleware)
 
 	v1.HandleFunc("/auth/login", AuthHandler.Login)
 
-	v1.Path("/auth/update-password").Handler(authMiddleware.With(
+	v1.Path("/auth/update-password").Handler(privateMiddleware.With(
 		negroni.WrapFunc(handlers.UpdatePasswordHandler(oR)),
 	)).Methods("POST")
 
-	v1.Path("/auth/reset-password").Handler(authMiddleware.With(
+	v1.Path("/auth/reset-password").Handler(privateMiddleware.With(
 		negroni.WrapFunc(handlers.ResetPasswordHandler(oR)),
 	)).Methods("POST")
 
@@ -109,43 +111,54 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	v1.HandleFunc("/organization/{id:[0-9]+}", handlers.GetOrganizationHandler(oR.Get)).Methods("GET")
 
-	v1.Path("/organization/{id:[0-9]+}").Handler(authMiddleware.With(
+	v1.Path("/organization/{id:[0-9]+}").Handler(privateMiddleware.With(
 		negroni.WrapFunc(handlers.UpdateOrganizationHandler(oR)),
 	)).Methods("PUT")
 
-	v1.Path("/organization/{id:[0-9]+}/images").Handler(authMiddleware.With(
+	v1.Path("/organization/{id:[0-9]+}/images").Handler(privateMiddleware.With(
 		negroni.WrapFunc(handlers.UploadOrganizationImageHandler(iS, oR)),
 	)).Methods("POST")
 
-	v1.Path("/organization/{id:[0-9]+}/images/{image_id:[0-9]+}").Handler(authMiddleware.With(
+	v1.Path("/organization/{id:[0-9]+}/images/{image_id:[0-9]+}").Handler(privateMiddleware.With(
 		negroni.WrapFunc(handlers.DeleteOrganizationImageHandler(iS)),
 	)).Methods("DELETE")
 
 	v1.HandleFunc("/need/{id}", handlers.GetNeedHandler(nR, oR)).Methods("GET")
 
-	v1.Path("/need/{id:[0-9]+}").Handler(authMiddleware.With(
+	v1.Path("/need/{id:[0-9]+}").Handler(privateMiddleware.With(
 		negroni.WrapFunc(handlers.UpdateNeedHandler(nR)),
 	)).Methods("PUT")
 
-	v1.Path("/need").Handler(authMiddleware.With(
+	v1.Path("/need").Handler(privateMiddleware.With(
 		negroni.WrapFunc(handlers.CreateNeedHandler(nR.Create)),
 	)).Methods("POST")
 
 	v1.HandleFunc("/need/{id}/response", handlers.NeedResponse(nR, needResponseRepo, mailer)).Methods("POST")
 
-	v1.Path("/need/{id:[0-9]+}/images").Handler(authMiddleware.With(
+	v1.Path("/need/{id:[0-9]+}/images").Handler(privateMiddleware.With(
 		negroni.WrapFunc(handlers.UploadNeedImagesHandler(iS)),
 	)).Methods("POST")
 
-	v1.Path("/need/{id:[0-9]+}/images/{image_id:[0-9]+}").Handler(authMiddleware.With(
+	v1.Path("/need/{id:[0-9]+}/images/{image_id:[0-9]+}").Handler(privateMiddleware.With(
 		negroni.WrapFunc(handlers.DeleteNeedImagesHandler(iS)),
 	)).Methods("DELETE")
 
-	// Category Routes
 	v1.HandleFunc("/categories", handlers.GetAllCategoriesHandler(cR, nR)).Methods("GET")
 
-	// Contact Routes
 	v1.HandleFunc("/contact", handlers.ContactHandler(mailer)).Methods("POST")
+
+	authenticationMiddleware := negroni.New()
+	authenticationMiddleware.UseFunc(AuthHandler.AuthenticationMiddleware)
+	mux.Handle("/graphql", authenticationMiddleware.With(
+		negroni.Wrap(graphql.NewHandler(
+			nR,
+			oR,
+			tm,
+			cR,
+			sR,
+			iS,
+		)),
+	))
 
 	n := negroni.Classic()
 	n.Use(negroni.HandlerFunc(middlewares.Cors))

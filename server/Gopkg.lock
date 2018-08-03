@@ -138,6 +138,34 @@
   version = "v1.6.2"
 
 [[projects]]
+  digest = "1:85b95abaeffaebfbcba8a44d4e2007b442a2a765e44c10258753999c823f8cc3"
+  name = "github.com/graphql-go/graphql"
+  packages = [
+    ".",
+    "gqlerrors",
+    "language/ast",
+    "language/kinds",
+    "language/lexer",
+    "language/location",
+    "language/parser",
+    "language/printer",
+    "language/source",
+    "language/typeInfo",
+    "language/visitor",
+  ]
+  pruneopts = ""
+  revision = "1e23489041ba90a66f317fe0deccb236a2fff3cb"
+  version = "v0.7.5"
+
+[[projects]]
+  digest = "1:daff313c07347e0a14d715209811cf7e3b53a38735994c2ca9ccefd02eab2b61"
+  name = "github.com/graphql-go/handler"
+  packages = ["."]
+  pruneopts = ""
+  revision = "f0393b2c10daeebea900292b8e092e73475399d9"
+  version = "v0.2.1"
+
+[[projects]]
   branch = "master"
   digest = "1:ad8c954d34fdfddf93bfb588d01e91519f8b8893c2d1c91240aa68c96aee967d"
   name = "github.com/graymeta/stow"
@@ -201,6 +229,17 @@
   ]
   pruneopts = ""
   revision = "90697d60dd844d5ef6ff15135d0203f65d2f53b8"
+
+[[projects]]
+  digest = "1:b0aeb8e186061509f22661edffbff9af43f186f7b4ba0db71900678b229568ac"
+  name = "github.com/lucassabreu/graphql-multipart-middleware"
+  packages = [
+    ".",
+    "testutil",
+  ]
+  pruneopts = ""
+  revision = "5a6fd5cea81424deb40aaf3b74f1a08af3b3ee9d"
+  version = "v0.1"
 
 [[projects]]
   branch = "master"
@@ -385,12 +424,17 @@
     "github.com/golang/sync/syncmap",
     "github.com/gorilla/context",
     "github.com/gorilla/mux",
+    "github.com/graphql-go/graphql",
+    "github.com/graphql-go/graphql/language/ast",
+    "github.com/graphql-go/handler",
     "github.com/graymeta/stow",
     "github.com/graymeta/stow/google",
     "github.com/graymeta/stow/local",
     "github.com/jmoiron/sqlx",
     "github.com/joho/godotenv",
     "github.com/lib/pq",
+    "github.com/lucassabreu/graphql-multipart-middleware",
+    "github.com/lucassabreu/graphql-multipart-middleware/testutil",
     "github.com/lucassabreu/stow/s3",
     "github.com/sendgrid/sendgrid-go",
     "github.com/sendgrid/sendgrid-go/helpers/mail",
