@@ -18,6 +18,7 @@ require('../../utils/styles/colors.js');
       font-size: 20px;
       font-weight: normal;
       margin: 0;
+      text-transform: capitalize;
     }
 
     a {
@@ -33,7 +34,7 @@ require('../../utils/styles/colors.js');
 
     .receivedBottom {
       display: inline-block;
-      background-color: $grey_150;
+      background-color: $purple_400;
       color: white;
       padding: 3px;
       padding-right: 8px;
@@ -86,7 +87,7 @@ require('../../utils/styles/colors.js');
 
       .receivedTop {
         display: inline-block;
-        background-color: $grey_150;
+        background-color: $purple_400;
         color: white;
         padding: 3px;
         padding-right: 8px;

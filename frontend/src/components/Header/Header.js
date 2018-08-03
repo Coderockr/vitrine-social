@@ -113,6 +113,9 @@ class Header extends React.Component {
         theme={collapsed ? 'light' : 'dark'}
         selectedKeys={[window.location.pathname]}
       >
+        <Menu.Item key="/">
+          <Link to="/">Início</Link>
+        </Menu.Item>
         <Menu.Item key="/about">
           <Link to="/about">Sobre o Projeto</Link>
         </Menu.Item>
