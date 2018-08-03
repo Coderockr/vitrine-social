@@ -471,6 +471,12 @@ func TestOpenQueries(t *testing.T) {
 				return m
 			}(),
 		},
+		"viewer/should_fail_without_token": testCase{
+			query: `query { viewer { id, name } }`,
+			response: `{"data": { "viewer": null }, "errors": [
+				{ "message": "no token was provided, you must send a token through Authorization header", "locations":[] }
+			]}`,
+		},
 	}
 
 	for name, test := range tests {
@@ -1422,6 +1428,48 @@ func TestMutations(t *testing.T) {
 
 				m.On("ResetPasswordTo", o, "123456").Once().
 					Return(o, nil)
+				return m
+			}(),
+		},
+		"updatePassword/when_success": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					updatePassword(input: {currentPassword: "1234567", newPassword: "123456"}) {
+						organization {name}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"updatePassword":{"organization":{"name":"Coderockr"}}}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(dOrg, nil)
+
+				m.On("ChangePassword", *dOrg, "1234567", "123456").Once().
+					Return(*dOrg, nil)
+				return m
+			}(),
+		},
+		"updatePassword/when_fail": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					updatePassword(input: {currentPassword: "1234567", newPassword: "123456"}) {
+						organization {name}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"updatePassword":null}}, "errors": [
+				{"message": "fail to update password", "locations":[]}
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(dOrg, nil)
+
+				m.On("ChangePassword", *dOrg, "1234567", "123456").Once().
+					Return(*dOrg, errors.New("fail to update password"))
 				return m
 			}(),
 		},
