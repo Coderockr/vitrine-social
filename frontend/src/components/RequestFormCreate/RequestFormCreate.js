@@ -173,7 +173,6 @@ class RequestForm extends React.Component {
         className={styles.modal}
         destroyOnClose
         onCancel={this.props.onCancel}
-        closable={false}
         maskClosable={false}
         wrapClassName={this.state.responseFeedback && styles.modalFixed}
       >
