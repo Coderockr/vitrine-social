@@ -4,6 +4,7 @@ import Categories from '../../components/Categories';
 import Pagination from '../../components/Pagination';
 import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
+import RequestDetails from '../../components/RequestDetails';
 import api from '../../utils/api';
 
 class Home extends React.Component {
@@ -23,6 +24,22 @@ class Home extends React.Component {
 
   componentDidMount() {
     document.title = 'Vitrine Social';
+    const { match: { params } } = this.props;
+    if (params.requestId) {
+      api.get(`need/${params.requestId}`).then(
+        (response) => {
+          this.setState({
+            request: response.data,
+          });
+        },
+      );
+    }
+  }
+
+  onCancel() {
+    const { history } = this.props;
+    history.push('/');
+    this.setState({ request: null });
   }
 
   onChangePage(page) {
@@ -78,12 +95,12 @@ class Home extends React.Component {
 
   searchRequests(text) {
     const { history } = this.props;
-    history.push(`/search/text=${text}&page=1&status=ACTIVE&orderBy=createdAt&order=desc`);
+    history.push(`/busca/text=${text}&page=1&status=ACTIVE&orderBy=createdAt&order=desc`);
   }
 
   searchByCategory(categoryId) {
     const { history } = this.props;
-    history.push(`/search/categories=${categoryId}&page=1&status=ACTIVE&orderBy=createdAt&order=desc`);
+    history.push(`/busca/categories=${categoryId}&page=1&status=ACTIVE&orderBy=createdAt&order=desc`);
   }
 
   render() {
@@ -108,6 +125,13 @@ class Home extends React.Component {
             current={this.state.page}
             total={this.state.pagination.totalResults}
             onChange={page => this.onChangePage(page)}
+          />
+        }
+        {this.state.request &&
+          <RequestDetails
+            visible={this.state.request}
+            onCancel={() => this.onCancel()}
+            request={this.state.request}
           />
         }
       </Layout>

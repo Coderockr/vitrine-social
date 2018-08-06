@@ -122,6 +122,26 @@ require('../../utils/styles/colors.js');
   margin-top: 30px;
 }
 
+.shareWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .shareButtons {
+    display: flex;
+    flex-direction: row;
+
+    .shareButton {
+      cursor: pointer;
+      padding: 5px;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
+
 @media (max-width: 696px) {
   .itemDetails {
     display: inline !important;
