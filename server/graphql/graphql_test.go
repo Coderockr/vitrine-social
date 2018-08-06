@@ -201,10 +201,11 @@ func TestOpenQueries(t *testing.T) {
 			}(),
 		},
 		"organization/with_simple_query": testCase{
-			query: `query { organization(id: 333) { id, logo, name, images { id, name, url }, website, email } }`,
+			query: `query { organization(id: 333) { id, logo, name, images { id, name, url }, website, email, facebook, whatsapp, instagram } }`,
 			response: `{"data": { "organization": {
 				"id": 333, "name": "old org", "email": "org@org.org", "website": "http://org.org", "logo": "http://images.com/logo.png",
-				"images": [ { "id": 1, "name": "a image", "url": "http://localhost/a-image.jpg" } ]
+				"images": [ { "id": 1, "name": "a image", "url": "http://localhost/a-image.jpg" } ],
+				"facebook": "orgface", "instagram": null, "whatsapp": "(47) 998981711"
 			}}}`,
 			orgRepo: func() *orgRepoMock {
 				m := &orgRepoMock{}
@@ -218,8 +219,10 @@ func TestOpenQueries(t *testing.T) {
 							Logo: &model.OrganizationImage{
 								Image: model.Image{URL: "http://images.com/logo.png"},
 							},
-							Name:    "old org",
-							Website: nulls.NewString("http://org.org"),
+							Name:     "old org",
+							Website:  nulls.NewString("http://org.org"),
+							Facebook: nulls.NewString("orgface"),
+							Whatsapp: nulls.NewString("(47) 998981711"),
 							Images: []model.OrganizationImage{
 								model.OrganizationImage{
 									Image: model.Image{

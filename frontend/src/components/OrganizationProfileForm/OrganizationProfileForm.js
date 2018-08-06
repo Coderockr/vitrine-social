@@ -270,8 +270,8 @@ class OrganizationProfileForm extends React.Component {
         width={800}
         className={styles.modal}
         destroyOnClose
-        closable={false}
         maskClosable={false}
+        onCancel={() => this.closeModal()}
         wrapClassName={responseFeedback && styles.modalFixed}
       >
         <Row className={responseFeedback && styles.blurRow}>

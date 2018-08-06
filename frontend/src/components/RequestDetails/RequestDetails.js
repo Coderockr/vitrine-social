@@ -4,6 +4,7 @@ import { Modal, Carousel, Icon } from 'antd';
 import Img from 'react-image';
 import cx from 'classnames';
 import ReactGA from 'react-ga';
+import { FacebookShareButton, FacebookIcon, WhatsappShareButton, WhatsappIcon, EmailShareButton, EmailIcon } from 'react-share';
 import styles from './styles.module.scss';
 import ItemIndicator from '../../components/ItemIndicator';
 import Arrow from '../../components/Arrow';
@@ -135,6 +136,7 @@ class RequestDetails extends React.Component {
     }
 
     const {
+      id,
       createdAt,
       updatedAt,
       title,
@@ -150,6 +152,9 @@ class RequestDetails extends React.Component {
     if (updatedAt) {
       dateText = `Atualizado em: ${moment(updatedAt).format('LLL')}`;
     }
+
+    const shareMsg = `${organization.name} está precisando de ${title} (${requiredQuantity - reachedQuantity} ${unit}).`;
+    const shareURL = `www.vitrinesocial.org/detalhes/${id}`;
 
     return (
       <div className={styles.contentWrapper}>
@@ -193,6 +198,33 @@ class RequestDetails extends React.Component {
             />
           </div>
         }
+        <div className={styles.shareWrapper}>
+          <h3>Compartilhe:</h3>
+          <div className={styles.shareButtons}>
+            <FacebookShareButton
+              url={shareURL}
+              quote={shareMsg}
+              className={styles.shareButton}
+            >
+              <FacebookIcon size={40} round />
+            </FacebookShareButton>
+            <WhatsappShareButton
+              url={shareURL}
+              title={shareMsg}
+              className={styles.shareButton}
+            >
+              <WhatsappIcon size={40} round />
+            </WhatsappShareButton>
+            <EmailShareButton
+              url={shareURL}
+              subject="Vitrine Social | Vamos ajudar as entidades de Joinville!"
+              body={shareMsg}
+              className={styles.shareButton}
+            >
+              <EmailIcon size={40} round />
+            </EmailShareButton>
+          </div>
+        </div>
         <div className={styles.buttonWrapper}>
           <button
             className={cx(styles.button, styles.helpButton)}
@@ -221,7 +253,6 @@ class RequestDetails extends React.Component {
         className={styles.modal}
         destroyOnClose
         onCancel={() => this.closeModal()}
-        closable={!this.state.contactFormVisible}
         wrapClassName={this.state.responseFeedback && styles.modalFixed}
       >
         {this.renderContent()}

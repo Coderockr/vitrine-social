@@ -16,7 +16,7 @@ const userMenu = user => (
     </Menu.Item>
     <Menu.Divider />
     <Menu.Item key="1" className={styles.userMenuItem}>
-      <Link to={`/organization/${user.id}`}>Meu Perfil</Link>
+      <Link to={`/entidade/${user.id}`}>Meu Perfil</Link>
     </Menu.Item>
     <Menu.Item key="2" className={styles.userMenuItem}>
       <Link onClick={() => deauthorizeUser()} to="/login">Log Out</Link>
@@ -113,15 +113,18 @@ class Header extends React.Component {
         theme={collapsed ? 'light' : 'dark'}
         selectedKeys={[window.location.pathname]}
       >
-        <Menu.Item key="/about">
-          <Link to="/about">Sobre o Projeto</Link>
+        <Menu.Item key="/">
+          <Link to="/">Início</Link>
         </Menu.Item>
-        <Menu.Item key="/contact">
-          <Link to="/contact">Contato</Link>
+        <Menu.Item key="/sobre">
+          <Link to="/sobre">Sobre o Projeto</Link>
+        </Menu.Item>
+        <Menu.Item key="/contato">
+          <Link to="/contato">Contato</Link>
         </Menu.Item>
         {collapsed && user &&
           <Menu.Item>
-            <Link to={`/organization/${user.id}`}>Meu Perfil</Link>
+            <Link to={`/entidade/${user.id}`}>Meu Perfil</Link>
           </Menu.Item>
         }
         {collapsed && user &&

@@ -74,7 +74,10 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 				"city": "Joinville",
 				"state": "SC",
 				"zipcode": "09530-210",
-				"website": "https://www.coderockr.com"
+				"website": "https://www.coderockr.com",
+				"facebook": "coderocker",
+				"instagram": "coderockr",
+				"whatsapp": "123123"
 			}`,
 			status:   http.StatusNoContent,
 			response: ``,
@@ -102,7 +105,10 @@ func TestUpdateOrganizationHandler(t *testing.T) {
 								State:        "",
 								Zipcode:      "",
 							},
-							Website: nulls.NewString(""),
+							Website:   nulls.NewString(""),
+							Facebook:  nulls.NewString(""),
+							Instagram: nulls.NewString(""),
+							Whatsapp:  nulls.NewString(""),
 						}
 						return &organization, nil
 					},

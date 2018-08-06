@@ -91,7 +91,7 @@ class Login extends React.Component {
                 <FormItem>
                   <Link
                     className={styles.forgotPassword}
-                    to="/forgot-password"
+                    to="/esqueci-senha"
                   >
                     Esqueci a senha
                   </Link>

@@ -95,7 +95,7 @@ class Results extends React.Component {
 
   searchRequests(text) {
     const { history } = this.props;
-    history.push(`/search/text=${text}&page=1&status=ACTIVE&orderBy=createdAt&order=${this.state.order}`);
+    history.push(`/busca/text=${text}&page=1&status=ACTIVE&orderBy=createdAt&order=${this.state.order}`);
   }
 
   render() {

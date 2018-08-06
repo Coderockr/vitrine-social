@@ -51,6 +51,9 @@ var (
 	state        string
 	zipcode      string
 	website      string
+	facebook     string
+	instagram    string
+	whatsapp     string
 )
 
 func init() {
@@ -69,6 +72,9 @@ func init() {
 	createCmd.Flags().StringVarP(&state, "state", "", "", "organization's state")
 	createCmd.Flags().StringVarP(&zipcode, "zipcode", "", "", "organization's zipcode")
 	createCmd.Flags().StringVarP(&website, "website", "", "", "organization's website")
+	createCmd.Flags().StringVarP(&facebook, "facebook", "", "", "organization's facebook")
+	createCmd.Flags().StringVarP(&instagram, "instagram", "", "", "organization's instagram")
+	createCmd.Flags().StringVarP(&whatsapp, "whatsapp", "", "", "organization's whatsapp")
 
 	createCmd.MarkFlagRequired("email")
 	createCmd.MarkFlagRequired("name")
@@ -80,7 +86,6 @@ func init() {
 	createCmd.MarkFlagRequired("city")
 	createCmd.MarkFlagRequired("state")
 	createCmd.MarkFlagRequired("zipcode")
-	createCmd.MarkFlagRequired("website")
 }
 
 func createCmdFunc(cmd *cobra.Command, args []string) {
@@ -109,7 +114,10 @@ func createCmdFunc(cmd *cobra.Command, args []string) {
 			State:        state,
 			Zipcode:      zipcode,
 		},
-		Website: nulls.NewString(website),
+		Website:   nulls.NewString(website),
+		Facebook:  nulls.NewString(facebook),
+		Instagram: nulls.NewString(instagram),
+		Whatsapp:  nulls.NewString(whatsapp),
 	})
 
 	if err != nil {

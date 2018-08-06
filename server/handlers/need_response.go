@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/Coderockr/vitrine-social/server/mail"
@@ -81,6 +82,7 @@ func NeedResponse(needRepo NeedRepository, needResponseRepo needResponseReposito
 
 		emailParams := mail.EmailParams{
 			To:       n.Organization.User.Email,
+			CC:       os.Getenv("MAIL_CONTACT"),
 			Subject:  "Vitrine Social - Resposta de Solicitação",
 			Template: mail.NeedResponseTemplate,
 			Variables: map[string]string{

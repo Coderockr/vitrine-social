@@ -124,8 +124,35 @@ var (
 			"website": &graphql.Field{
 				Type: graphql.String,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if o, ok := p.Source.(*model.Organization); ok && o != nil && o.Website.Valid {
-						return o.Website.String, nil
+					if o, ok := p.Source.(*model.Organization); ok && o != nil {
+						return o.Website.Value()
+					}
+					return nil, nil
+				},
+			},
+			"facebook": &graphql.Field{
+				Type: graphql.String,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if o, ok := p.Source.(*model.Organization); ok && o != nil {
+						return o.Facebook.Value()
+					}
+					return nil, nil
+				},
+			},
+			"instagram": &graphql.Field{
+				Type: graphql.String,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if o, ok := p.Source.(*model.Organization); ok && o != nil {
+						return o.Instagram.Value()
+					}
+					return nil, nil
+				},
+			},
+			"whatsapp": &graphql.Field{
+				Type: graphql.String,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if o, ok := p.Source.(*model.Organization); ok && o != nil {
+						return o.Whatsapp.Value()
 					}
 					return nil, nil
 				},
