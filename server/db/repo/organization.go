@@ -32,7 +32,7 @@ const allFields string = `
 	street as "address.street", number as "address.number",
 	complement as "address.complement", neighborhood as "address.neighborhood",
 	city as "address.city", state as "address.state", zipcode as "address.zipcode",
-	website
+	website, facebook, instagram, whatsapp
 `
 
 // GetBaseOrganization returns only the data about a organization, not its relations
@@ -88,9 +88,9 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 		`INSERT INTO organizations (
 			name, phone, about, video, email, slug, password,
 			street, number, complement, neighborhood, city, state, zipcode,
-			website
+			website, facebook, instagram, whatsapp
 		) VALUES (
-			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
 		)
 		RETURNING id
 		`,
@@ -109,6 +109,9 @@ func (r *OrganizationRepository) Create(o model.Organization) (model.Organizatio
 		o.Address.State,
 		o.Address.Zipcode,
 		o.Website,
+		o.Facebook,
+		o.Instagram,
+		o.Whatsapp,
 	)
 
 	err := row.Scan(&o.ID)
@@ -136,8 +139,11 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 			city = $10,
 			state = $11,
 			zipcode = $12,
-			website = $13
-		WHERE id = $14
+			website = $13,
+			facebook = $14,
+			instagram = $15,
+			whatsapp = $16
+		WHERE id = $17
 		`,
 		o.Name,
 		o.Phone,
@@ -152,6 +158,9 @@ func (r *OrganizationRepository) Update(o model.Organization) (model.Organizatio
 		o.Address.State,
 		o.Address.Zipcode,
 		o.Website,
+		o.Facebook,
+		o.Instagram,
+		o.Whatsapp,
 		o.ID,
 	)
 

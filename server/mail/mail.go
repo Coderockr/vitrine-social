@@ -24,6 +24,7 @@ type Mailer interface {
 // EmailParams struct with emails infos
 type EmailParams struct {
 	To        string
+	CC        string
 	Subject   string
 	Template  emailTemplate
 	Variables map[string]string

@@ -30,5 +30,9 @@ func (mailer SMTPMailer) SendEmail(params EmailParams) error {
 	message.SetHeader("Subject", params.Subject)
 	message.SetBody("text/html", "")
 
+	if params.CC != "" {
+		message.SetAddressHeader("Cc", params.CC, "")
+	}
+
 	return gomail.Send(*mailer.Dial, message)
 }
