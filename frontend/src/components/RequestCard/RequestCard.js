@@ -34,7 +34,7 @@ class RequestCard extends React.PureComponent {
               <div>
                 <p className={styles.receivedTop}>{`Recebidos: ${reachedQuantity} de ${requiredQuantity} ${unit}`}</p>
                 <h2>{`${title} (${requiredQuantity} ${unit})`}</h2>
-                <Link to={`/organization/${organization.id}`}>{organization.name}</Link>
+                <Link to={`/entidade/${organization.id}`}>{organization.name}</Link>
               </div>
               <p className={styles.date}>{dateText}</p>
               <p className={styles.receivedBottom}>{`Recebidos: ${reachedQuantity} de ${requiredQuantity} ${unit}`}</p>

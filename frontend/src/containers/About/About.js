@@ -111,7 +111,7 @@ class About extends React.Component {
               </p>
               <p>
               Pretendemos dar continuidade ao projeto e criar novas funcionalidades de acordo com as
-              sugestões das entidades e dos doadores. Se você tiver alguma sugestão <Link to="/contact">entre em contato!</Link>
+              sugestões das entidades e dos doadores. Se você tiver alguma sugestão <Link to="/contato">entre em contato!</Link>
               </p>
             </div>
           </Col>
