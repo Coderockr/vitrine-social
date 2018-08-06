@@ -221,7 +221,6 @@ class RequestDetails extends React.Component {
         className={styles.modal}
         destroyOnClose
         onCancel={() => this.closeModal()}
-        closable={!this.state.contactFormVisible}
         wrapClassName={this.state.responseFeedback && styles.modalFixed}
       >
         {this.renderContent()}
