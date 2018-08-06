@@ -50,6 +50,9 @@ type Organization struct {
 	Images      []OrganizationImage
 	CreatedAt   *time.Time   `db:"created_at"`
 	Website     nulls.String `valid:"optional" db:"website"`
+	Facebook    nulls.String `valid:"optional" db:"facebook"`
+	Instagram   nulls.String `valid:"optional" db:"instagram"`
+	Whatsapp    nulls.String `valid:"optional" db:"whatsapp"`
 }
 
 // OrganizationImage de uma organização

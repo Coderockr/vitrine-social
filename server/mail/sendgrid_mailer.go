@@ -34,6 +34,11 @@ func (mailer SendGridMailer) SendEmail(params EmailParams) error {
 	to := mail.NewEmail("", params.To)
 	message := mail.NewV3MailInit(from, params.Subject, to)
 
+	if params.CC != "" {
+		cc := mail.NewEmail("", params.CC)
+		message.Personalizations[0].AddCCs(cc)
+	}
+
 	if params.Template != "" {
 		switch params.Template {
 		case ForgotPasswordTemplate:
