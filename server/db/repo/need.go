@@ -81,9 +81,9 @@ func (r *NeedRepository) Create(n model.Need) (model.Need, error) {
 	n.Status = model.NeedStatusActive
 
 	err = r.db.QueryRow(
-		`INSERT INTO needs (category_id, organization_id, title, description, required_qtd, reached_qtd, due_date, status, unit, updated_at)
-			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-			RETURNING id
+		`INSERT INTO needs (category_id, organization_id, title, description, required_qtd, reached_qtd, due_date, status, unit)
+			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
+			RETURNING id, updated_at, created_at
 		`,
 		n.CategoryID,
 		n.OrganizationID,
@@ -94,8 +94,7 @@ func (r *NeedRepository) Create(n model.Need) (model.Need, error) {
 		n.DueDate,
 		n.Status,
 		n.Unit,
-		n.UpdatedAt,
-	).Scan(&n.ID)
+	).Scan(&n.ID, &n.UpdatedAt, &n.CreatedAt)
 
 	if err != nil {
 		return n, err
