@@ -1,5 +1,6 @@
 import React from 'react';
 import { Upload, Icon, Modal } from 'antd';
+import BottomNotification from '../BottomNotification';
 import styles from './styles.module.scss';
 
 class UploadImages extends React.Component {
@@ -27,6 +28,20 @@ class UploadImages extends React.Component {
     const reader = new FileReader();
     reader.addEventListener('load', () => callback(reader.result));
     reader.readAsDataURL(img);
+  }
+
+  beforeUpload(file) {
+    const isValidSize = file.size / 1024 / 1024 < 2;
+    if (!isValidSize) {
+      BottomNotification({ message: 'Imagem é muito grande. Deve ter menos de 2MB.', success: false });
+      return false;
+    }
+    const isValidFormat = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isValidFormat) {
+      BottomNotification({ message: 'Imagem com formato inválido. Deve ser JPEG ou PNG.', success: false });
+      return false;
+    }
+    return true;
   }
 
   handleCancel = () => this.setState({ previewVisible: false })
@@ -86,6 +101,7 @@ class UploadImages extends React.Component {
             onError,
             file,
           })}
+          beforeUpload={this.beforeUpload}
           onPreview={this.handlePreview}
           onChange={this.handleChange}
           onRemove={item => this.removeImage(item)}

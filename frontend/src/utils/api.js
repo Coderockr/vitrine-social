@@ -21,7 +21,14 @@ const ax = () => axios.create({
   headers: setHeaders(),
 });
 
+const imageax = () => axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+  timeout: 50000,
+  headers: setHeaders(),
+});
+
 const api = ax();
+const apiImage = imageax();
 
 api.interceptors.response.use(response => response,
   (error) => {
@@ -41,4 +48,4 @@ api.interceptors.response.use(response => response,
     return Promise.reject(error);
   });
 
-export default api;
+export { api, apiImage };

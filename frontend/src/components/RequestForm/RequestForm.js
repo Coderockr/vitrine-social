@@ -13,7 +13,7 @@ import {
 } from 'antd';
 import cx from 'classnames';
 import ReactGA from 'react-ga';
-import api from '../../utils/api';
+import { api, apiImage } from '../../utils/api';
 import ResponseFeedback from '../ResponseFeedback';
 import UploadImages from '../UploadImages';
 import { getUser } from '../../utils/auth';
@@ -116,10 +116,10 @@ class RequestForm extends React.Component {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('logo', false);
-        return promisses.push(api.post(`need/${this.props.request.id}/images`, formData));
+        return promisses.push(apiImage.post(`need/${this.props.request.id}/images`, formData));
       }
       if (action === 'delete') {
-        return promisses.push(api.delete(`need/${this.props.request.id}/images/${file.uid}`));
+        return promisses.push(apiImage.delete(`need/${this.props.request.id}/images/${file.uid}`));
       }
       return null;
     });

@@ -9,7 +9,7 @@ import ChangePassword from '../../components/ChangePassword';
 import OrganizationProfileForm from '../../components/OrganizationProfileForm';
 import { maskPhone } from '../../utils/mask';
 import colors from '../../utils/styles/colors';
-import api from '../../utils/api';
+import { api } from '../../utils/api';
 import { getUser, updateUser } from '../../utils/auth';
 import styles from './styles.module.scss';
 import Loading from '../../components/Loading';

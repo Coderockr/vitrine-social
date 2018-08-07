@@ -4,7 +4,7 @@ import cx from 'classnames';
 import ReactGA from 'react-ga';
 import BottomNotification from '../../components/BottomNotification';
 import ResponseFeedback from '../ResponseFeedback';
-import api, { headers } from '../../utils/api';
+import { api, headers } from '../../utils/api';
 import styles from './styles.module.scss';
 
 const FormItem = Form.Item;
