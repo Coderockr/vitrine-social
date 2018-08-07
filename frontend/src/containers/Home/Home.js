@@ -5,7 +5,7 @@ import Pagination from '../../components/Pagination';
 import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
 import RequestDetails from '../../components/RequestDetails';
-import api from '../../utils/api';
+import { api } from '../../utils/api';
 
 class Home extends React.Component {
   state = {

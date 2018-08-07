@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Row, Col, Form, Input, Icon, Button } from 'antd';
 import cx from 'classnames';
-import api from '../../utils/api';
+import { api } from '../../utils/api';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import BottomNotification from '../../components/BottomNotification';

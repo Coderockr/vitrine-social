@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import BottomNotification from '../../components/BottomNotification';
-import api from '../../utils/api';
+import { api } from '../../utils/api';
 import { authorizeUser } from '../../utils/auth';
 import styles from './styles.module.scss';
 

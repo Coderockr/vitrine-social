@@ -3,7 +3,7 @@ import Search from '../../components/Search';
 import Pagination from '../../components/Pagination';
 import Layout from '../../components/Layout';
 import Requests from '../../components/Requests';
-import api from '../../utils/api';
+import { api } from '../../utils/api';
 
 class Results extends React.Component {
   state = {

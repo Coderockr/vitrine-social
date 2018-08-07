@@ -1,4 +1,4 @@
-import api, { headers } from './api';
+import { api, headers } from './api';
 
 const storage = window.localStorage;
 

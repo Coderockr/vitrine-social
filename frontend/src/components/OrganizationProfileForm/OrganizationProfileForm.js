@@ -15,7 +15,7 @@ import ReactGA from 'react-ga';
 import UploadImages from '../UploadImages';
 import ResponseFeedback from '../ResponseFeedback';
 import { maskPhone, maskCep } from '../../utils/mask';
-import api from '../../utils/api';
+import { api, apiImage } from '../../utils/api';
 import { getUser } from '../../utils/auth';
 import colors from '../../utils/styles/colors';
 import styles from './styles.module.scss';
@@ -198,7 +198,7 @@ class OrganizationProfileForm extends React.Component {
     const { profileImageUrl, profileFormData, imagesChanges } = this.state;
     const promisses = [];
     if (profileImageUrl) {
-      promisses.push(api.post(`organization/${getUser().id}/images`, profileFormData));
+      promisses.push(apiImage.post(`organization/${getUser().id}/images`, profileFormData));
     }
     imagesChanges.map((image) => {
       const { file, action } = image;
@@ -206,10 +206,10 @@ class OrganizationProfileForm extends React.Component {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('logo', false);
-        return promisses.push(api.post(`organization/${getUser().id}/images`, formData));
+        return promisses.push(apiImage.post(`organization/${getUser().id}/images`, formData));
       }
       if (action === 'delete') {
-        return promisses.push(api.delete(`organization/${getUser().id}/images/${file.uid}`));
+        return promisses.push(apiImage.delete(`organization/${getUser().id}/images/${file.uid}`));
       }
       return null;
     });

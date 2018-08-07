@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import cx from 'classnames';
 import ReactGA from 'react-ga';
-import api from '../../utils/api';
+import { api, apiImage } from '../../utils/api';
 import ResponseFeedback from '../ResponseFeedback';
 import UploadImages from '../UploadImages';
 import { getUser } from '../../utils/auth';
@@ -122,7 +122,7 @@ class RequestForm extends React.Component {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('logo', false);
-      return promisses.push(api.post(`need/${result.data.id}/images`, formData));
+      return promisses.push(apiImage.post(`need/${result.data.id}/images`, formData));
     });
     return Promise.all(promisses);
   }
