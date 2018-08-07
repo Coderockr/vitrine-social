@@ -38,7 +38,7 @@ class Login extends React.Component {
       (response) => {
         if (response.data) {
           authorizeUser(response.data);
-          history.push(`/organization/${response.data.organization.id}`);
+          history.push(`/entidade/${response.data.organization.id}`);
           return BottomNotification({ message: 'Login realizado com sucesso!', success: true });
         }
         this.setState({ loading: false });
