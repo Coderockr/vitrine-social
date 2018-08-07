@@ -180,7 +180,7 @@ class OrganizationProfile extends React.Component {
                 <p style={{ 'white-space': 'pre-line' }}>{organization.about}</p>
               }
               {organization.website &&
-              <a target="_blank" rel="me" href={`//${organization.website}`}>{organization.website}</a>
+              <a target="_blank" rel="me" href={organization.website.includes('http') ? organization.website : `//${organization.website}`}>{organization.website}</a>
               }
             </div>
           }
