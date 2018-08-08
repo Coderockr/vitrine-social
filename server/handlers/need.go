@@ -3,9 +3,12 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -220,5 +223,40 @@ func DeleteNeedImagesHandler(storage needStorageContainer) func(w http.ResponseW
 		}
 
 		HandleHTTPSuccessNoContent(w)
+	}
+}
+
+// ShareNeedHandler return html with metatags for share
+func ShareNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		id, err := strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
+			return
+		}
+
+		need, _ := repo.Get(id)
+		if need == nil {
+			HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Necessidade não encontrada"))
+			return
+		}
+
+		url := os.Getenv("FRONTEND_URL")
+		imageURL := os.Getenv("IMAGE_STORAGE_BASE_URL")
+
+		file, _ := ioutil.ReadFile("./share.html")
+		html := string(file)
+		html = strings.Replace(html, "__REDIRECT_URL__", url+"/detalhes/"+vars["id"], 2)
+		html = strings.Replace(html, "__META_URL__", r.URL.String(), 1)
+		html = strings.Replace(html, "__META_TITLE__", need.Title, 1)
+		html = strings.Replace(html, "__META_DESCRIPTION__", need.Description.String, 1)
+		html = strings.Replace(html, "__META_IMAGE__", imageURL+"general/share.jpg", 1)
+
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "text/html")
+		fmt.Fprint(w, html)
+
+		return
 	}
 }

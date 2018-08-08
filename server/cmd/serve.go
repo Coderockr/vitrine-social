@@ -141,6 +141,8 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		negroni.WrapFunc(handlers.DeleteNeedImagesHandler(iS)),
 	)).Methods("DELETE")
 
+	v1.HandleFunc("/need/{id:[0-9]+}/share", handlers.ShareNeedHandler(nR)).Methods("GET")
+
 	// Category Routes
 	v1.HandleFunc("/categories", handlers.GetAllCategoriesHandler(cR, nR)).Methods("GET")
 
@@ -149,10 +151,6 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	n := negroni.Classic()
 	n.Use(negroni.HandlerFunc(middlewares.Cors))
-
-	crawlerMiddleware := middlewares.NewCheckCrawler(nR)
-	n.Use(negroni.HandlerFunc(crawlerMiddleware.CheckCrawler))
-
 	n.Use(bugsnagnegroni.AutoNotify(bugsnagNotifier.Config))
 
 	// router goes last
