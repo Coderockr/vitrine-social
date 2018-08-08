@@ -3,11 +3,8 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
-	"html/template"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
@@ -223,53 +220,5 @@ func DeleteNeedImagesHandler(storage needStorageContainer) func(w http.ResponseW
 		}
 
 		HandleHTTPSuccessNoContent(w)
-	}
-}
-
-// ShareNeedHandler return html with metatags for share
-func ShareNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-		id, err := strconv.ParseInt(vars["id"], 10, 64)
-		if err != nil {
-			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível entender o número: %s", vars["id"]))
-			return
-		}
-
-		need, _ := repo.Get(id)
-		if need == nil {
-			HandleHTTPError(w, http.StatusNotFound, fmt.Errorf("Necessidade não encontrada"))
-			return
-		}
-
-		apiURL := os.Getenv("API_URL")
-		frontendURL := os.Getenv("FRONTEND_URL")
-		imageURL := os.Getenv("IMAGE_STORAGE_BASE_URL")
-
-		file, _ := ioutil.ReadFile("./share.html")
-		html := string(file)
-
-		t, err := template.New("share").Parse(html)
-
-		data := struct {
-			RedirectURL     string
-			MetaURL         string
-			MetaTitle       string
-			MetaDescription string
-			MetaImage       string
-		}{
-			RedirectURL:     frontendURL + "/detalhes/" + vars["id"],
-			MetaURL:         apiURL + r.URL.String(),
-			MetaTitle:       need.Title,
-			MetaDescription: need.Description.String,
-			MetaImage:       imageURL + "general/share.jpg",
-		}
-
-		_ = t.Execute(w, data)
-
-		w.WriteHeader(http.StatusOK)
-		w.Header().Set("Content-Type", "text/html")
-
-		return
 	}
 }
