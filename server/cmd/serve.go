@@ -149,7 +149,10 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	n := negroni.Classic()
 	n.Use(negroni.HandlerFunc(middlewares.Cors))
-	n.Use(negroni.HandlerFunc(middlewares.Crawlers))
+
+	crawlerMiddleware := middlewares.NewCheckCrawler(nR)
+	n.Use(negroni.HandlerFunc(crawlerMiddleware.CheckCrawler))
+
 	n.Use(bugsnagnegroni.AutoNotify(bugsnagNotifier.Config))
 
 	// router goes last
