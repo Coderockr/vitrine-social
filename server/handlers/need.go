@@ -3,12 +3,12 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/Coderockr/vitrine-social/server/model"
@@ -242,20 +242,33 @@ func ShareNeedHandler(repo NeedRepository) func(w http.ResponseWriter, r *http.R
 			return
 		}
 
-		url := os.Getenv("FRONTEND_URL")
+		apiURL := os.Getenv("API_URL")
+		frontendURL := os.Getenv("FRONTEND_URL")
 		imageURL := os.Getenv("IMAGE_STORAGE_BASE_URL")
 
 		file, _ := ioutil.ReadFile("./share.html")
 		html := string(file)
-		html = strings.Replace(html, "__REDIRECT_URL__", url+"/detalhes/"+vars["id"], 2)
-		html = strings.Replace(html, "__META_URL__", r.URL.String(), 1)
-		html = strings.Replace(html, "__META_TITLE__", need.Title, 1)
-		html = strings.Replace(html, "__META_DESCRIPTION__", need.Description.String, 1)
-		html = strings.Replace(html, "__META_IMAGE__", imageURL+"general/share.jpg", 1)
+
+		t, err := template.New("share").Parse(html)
+
+		data := struct {
+			RedirectURL     string
+			MetaURL         string
+			MetaTitle       string
+			MetaDescription string
+			MetaImage       string
+		}{
+			RedirectURL:     frontendURL + "/detalhes/" + vars["id"],
+			MetaURL:         apiURL + r.URL.String(),
+			MetaTitle:       need.Title,
+			MetaDescription: need.Description.String,
+			MetaImage:       imageURL + "general/share.jpg",
+		}
+
+		_ = t.Execute(w, data)
 
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "text/html")
-		fmt.Fprint(w, html)
 
 		return
 	}
