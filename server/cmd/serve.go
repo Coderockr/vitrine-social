@@ -141,6 +141,8 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		negroni.WrapFunc(handlers.DeleteNeedImagesHandler(iS)),
 	)).Methods("DELETE")
 
+	v1.HandleFunc("/need/{id:[0-9]+}/share", handlers.ShareNeedHandler(nR)).Methods("GET")
+
 	// Category Routes
 	v1.HandleFunc("/categories", handlers.GetAllCategoriesHandler(cR, nR)).Methods("GET")
 
