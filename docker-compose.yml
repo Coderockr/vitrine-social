@@ -14,7 +14,7 @@ services:
     environment:
       - POSTGRES_DB=vitrine
   golang:
-    image: golang:1.10.2
+    image: golang:1.10.3
     volumes:
       - ./:/go/src/github.com/Coderockr/vitrine-social
       - ${GOPATH:-gopath}:/go
