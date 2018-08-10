@@ -16,6 +16,14 @@ setup: ## initial project setup
 	go get github.com/rubenv/sql-migrate/...
 	make install
 
+org-reset-password: ## reset a organization's password by email
+	docker-compose up -d postgres
+	cd server && go run main.go org reset-password $(email) $(password)
+
+org-reset-password-on-docker: ## reset a organization's password by email on docker
+	docker-compose up -d
+	docker-compose exec golang sh -c "cd server && go run main.go org reset-password $(email) $(password)"
+
 update-dev-dependences: # update dev dependences to the most recent
 	go get -u github.com/golang/dep/cmd/dep
 	go get -u github.com/haya14busa/goverage
