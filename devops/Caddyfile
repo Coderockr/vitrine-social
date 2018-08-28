@@ -2,3 +2,8 @@ api.vitrinesocial.org {
   # API load balancer
   proxy /v1 localhost:8000
 }
+
+metabase.vitrinesocial.org {
+  # API load balancer
+  proxy / localhost:3000
+}
