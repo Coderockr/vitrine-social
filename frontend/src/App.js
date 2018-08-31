@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import ReactGA from 'react-ga';
 import createHistory from 'history/createBrowserHistory';
+import { hotjar } from 'react-hotjar';
 
 import Home from './containers/Home';
 import About from './containers/About';
@@ -20,6 +21,8 @@ import OrganizationProfile from './containers/OrganizationProfile';
 import './utils/styles/global.module.scss';
 
 updateLocale('pt-br', ptBr);
+
+hotjar.initialize(998516, 6);
 
 const titleObject = {
   '/': 'Home',
