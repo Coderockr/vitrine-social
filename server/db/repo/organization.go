@@ -3,7 +3,6 @@ package repo
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/Coderockr/vitrine-social/server/security"
@@ -59,24 +58,6 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 	err = r.db.Select(&o.Images, "SELECT * FROM organizations_images WHERE organization_id = $1 AND id != $2", id, o.LogoImageID)
 	if err != nil {
 		return nil, err
-	}
-
-	err = r.db.Select(&o.Needs, "SELECT * FROM needs WHERE organization_id = $1", id)
-	if err != nil {
-		return nil, err
-	}
-
-	for i := range o.Needs {
-		o.Needs[i].Category, err = r.catRepo.Get(o.Needs[i].CategoryID)
-		if err != nil {
-			fmt.Println("test?")
-			return nil, err
-		}
-
-		o.Needs[i].Images, err = getNeedImages(r.db, &o.Needs[i])
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	return o, nil
