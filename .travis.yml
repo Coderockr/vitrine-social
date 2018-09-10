@@ -22,6 +22,9 @@ cache:
   directories:
     - "node_modules"
 
+before_script:
+  - 'echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config'
+
 script:
   - make tests
   - make tests-frontend
