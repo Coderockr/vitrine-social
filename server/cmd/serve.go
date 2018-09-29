@@ -149,6 +149,8 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 	// Contact Routes
 	v1.HandleFunc("/contact", handlers.ContactHandler(mailer)).Methods("POST")
 
+	v1.HandleFunc("/newsletter", handlers.NewsletterHandler()).Methods("POST")
+
 	n := negroni.Classic()
 	n.Use(negroni.HandlerFunc(middlewares.Cors))
 	n.Use(bugsnagnegroni.AutoNotify(bugsnagNotifier.Config))
