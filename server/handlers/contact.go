@@ -45,7 +45,7 @@ func ContactHandler(mailer mail.Mailer) func(w http.ResponseWriter, r *http.Requ
 		}
 
 		if bodyVars.Newsletter {
-			newsletterParams := newsletter.NewsletterParams{
+			newsletterParams := newsletter.Params{
 				Name:  bodyVars.Name,
 				Email: bodyVars.Email,
 				Phone: bodyVars.Phone,

@@ -6,15 +6,15 @@ import (
 	sendgrid "github.com/sendgrid/sendgrid-go"
 )
 
-// NewsletterParams newsletter contact params
-type NewsletterParams struct {
+// Params newsletter contact
+type Params struct {
 	Name  string
 	Email string
 	Phone string
 }
 
 // SaveNewsletter send request to save new contact to sendgrid
-func SaveNewsletter(params NewsletterParams) error {
+func SaveNewsletter(params Params) error {
 	request := sendgrid.GetRequest(os.Getenv("SENDGRID_API_KEY"), "/v3/contactdb/recipients", "")
 	request.Method = "POST"
 	request.Body = []byte(`[

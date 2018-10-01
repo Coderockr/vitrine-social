@@ -10,7 +10,7 @@ import (
 // NewsletterHandler add new email to newsletter list
 func NewsletterHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var bodyVars newsletter.NewsletterParams
+		var bodyVars newsletter.Params
 		err := requestToJSONObject(r, &bodyVars)
 		if err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, err)
