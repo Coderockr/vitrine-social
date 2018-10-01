@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/Coderockr/vitrine-social/server/mail"
+	"github.com/Coderockr/vitrine-social/server/newsletter"
 )
 
 // ContactHandler send an email to coderockr
@@ -44,12 +45,12 @@ func ContactHandler(mailer mail.Mailer) func(w http.ResponseWriter, r *http.Requ
 		}
 
 		if bodyVars.Newsletter {
-			newsletterParams := NewsletterParams{
+			newsletterParams := newsletter.NewsletterParams{
 				Name:  bodyVars.Name,
 				Email: bodyVars.Email,
 				Phone: bodyVars.Phone,
 			}
-			err = SaveNewsletter(newsletterParams)
+			err = newsletter.SaveNewsletter(newsletterParams)
 			if err != nil {
 				HandleHTTPError(w, http.StatusBadRequest, errors.New("Falha ao salvar novo contato na newsletter"))
 				return
