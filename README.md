@@ -1,5 +1,11 @@
 Vitrine Social [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5d73b7a4fb1b4118a8cb900e1ea91c49)](https://www.codacy.com/app/lucassabreu/vitrine-social?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Coderockr/vitrine-social&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/Coderockr/vitrine-social.svg?branch=master)](https://travis-ci.org/Coderockr/vitrine-social) [![codecov](https://codecov.io/gh/Coderockr/vitrine-social/branch/master/graph/badge.svg)](https://codecov.io/gh/Coderockr/vitrine-social)
 ===============
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/Coderockr/vitrine-social.svg?columns=all)](https://waffle.io/Coderockr/vitrine-social)
+
+## Issues e Progresso
+
+O controle das tarefas e do progresso das mesmas estão sendo feitas no Waffle. Clique aqui para acompanhar: https://waffle.io/Coderockr/vitrine-social
+
 
 ## Instalação Backend
 
