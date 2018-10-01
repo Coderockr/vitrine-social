@@ -1,0 +1,41 @@
+module github.com/Coderockr/vitrine-social/server
+
+require (
+	cloud.google.com/go v0.23.0
+	github.com/aws/aws-sdk-go v1.13.57
+	github.com/bugsnag/bugsnag-go v1.3.1
+	github.com/bugsnag/panicwrap v1.2.0
+	github.com/davecgh/go-spew v1.1.0
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/go-ini/ini v1.37.0
+	github.com/gobuffalo/pop v4.5.9+incompatible
+	github.com/gobuffalo/uuid v2.0.0+incompatible
+	github.com/golang/protobuf v1.1.0
+	github.com/golang/sync v0.0.0-20180314180146-1d60e4601c6f
+	github.com/gorilla/context v1.1.1
+	github.com/gorilla/mux v1.6.2
+	github.com/graymeta/stow v0.0.0-20180719215413-7b5498c561bb
+	github.com/inconshreveable/mousetrap v1.0.0
+	github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8
+	github.com/jmoiron/sqlx v0.0.0-20180406164412-2aeb6a910c2b
+	github.com/joho/godotenv v1.2.0
+	github.com/kardianos/osext v0.0.0-20170510131534-ae77be60afb1
+	github.com/lib/pq v0.0.0-20180523175426-90697d60dd84
+	github.com/lucassabreu/stow v0.0.0-20180720164008-16de368348a3
+	github.com/pkg/errors v0.8.0
+	github.com/pmezard/go-difflib v1.0.0
+	github.com/sendgrid/rest v2.4.1+incompatible
+	github.com/sendgrid/sendgrid-go v3.4.1+incompatible
+	github.com/spf13/cobra v0.0.3
+	github.com/spf13/pflag v1.0.1
+	github.com/stretchr/objx v0.1.1
+	github.com/stretchr/testify v1.2.1
+	github.com/urfave/negroni v0.3.0
+	golang.org/x/crypto v0.0.0-20180527072434-ab813273cd59
+	golang.org/x/net v0.0.0-20170523201210-186fd3fc8194
+	golang.org/x/oauth2 v0.0.0-20180529203656-ec22f46f877b
+	google.golang.org/api v0.0.0-20180530150455-de943baf05a0
+	google.golang.org/appengine v1.0.0
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc
+	gopkg.in/gomail.v2 v2.0.0-20150902115704-41f357289737
+)
