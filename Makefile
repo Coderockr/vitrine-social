@@ -97,7 +97,7 @@ help: ## show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 lint: ## show source lint
-	golint `find server -type d -maxdepth 1`
+	golint `find server -maxdepth 1 -type d`
 
 tests: ## run go tests
 	cd server && go test -v -race ./...
