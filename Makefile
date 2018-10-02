@@ -8,6 +8,7 @@ export m ?= default
 export commit ?= HEAD
 export bin ?= vitrine-social
 export testWatchPort=8091
+export GO111MODULE=on
 
 .PHONY: build
 
