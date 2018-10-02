@@ -35,7 +35,7 @@ Esse fluxo fica mais claro olhando nosso [Waffle](https://waffle.io/Coderockr/vi
 
 Também classificamos as issues por `Category`, sendo que uma issue pode estar em mais de uma categoria:
  
- * `Category: Frontend`: para issues que precisão ser feitas no frontend, normalmente exigindo alterações nos arquivos da pasta [`frontend`](https://github.com/Coderockr/vitrine-social/tree/master/frontend) e exigindo conhecimento de JavaScript e React.
+ * `Category: Frontend`: para issues que devem ser feitas no frontend, normalmente exigindo alterações nos arquivos da pasta [`frontend`](https://github.com/Coderockr/vitrine-social/tree/master/frontend) e exigindo conhecimento de JavaScript e React.
  * `Category: Backend`: quando a issue precisa que algo no backend seja feito, alterando os arquivos da pasta [`server`](https://github.com/Coderockr/vitrine-social/tree/master/server), aqui é necessário ter conhecimento de Go e provavelmente de PostgreSQL.
  
 Além disso tentamos informar qual a dificuldade da tarefa (`Level: Easy`, `Level: Medium` e `Level: Hard`), o tipo (`Type: Bug`, `Type: Improvement` e `Type: New Feature`) e a prioridade (`Priority: Lowest`, `Priority: Low`, `Priority: Medium`, `Priority: High` e `Priority: Highest`).
@@ -62,6 +62,6 @@ Sempre que forem feitas alterações nas APIs, a documentação em [`api.apib`](
 
 Após terminar de documentar execute o comando `make docs-build` para atualizar a documentação e faça um commit com o `api.apib` e `index.html` com eles.
 
-## Referencias
+## Referências 
 
 Este documento foi adaptado do seguinte exemplo: [briandk/CONTRIBUTING.md](https://gist.github.com/briandk/3d2e8b3ec8daf5a27a62)
