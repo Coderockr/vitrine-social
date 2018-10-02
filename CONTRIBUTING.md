@@ -1,5 +1,4 @@
-Contribuindo para a Vitrine Social
-==================================
+# Contribuindo para a Vitrine Social
 
 Obrigado por se interessar em contribuir com o Vitrine Social, você pode contribuir em uma das seguintes formas:
 
@@ -22,6 +21,24 @@ Pull requests são a melhor forma de sugerir mudanças no fonte (usamos o [Githu
 4. Garanta que os testes estão passando.
 5. Tenha certeza que o seu código passa no [lint](#padrões-de-código).
 6. Crie o pull request !
+
+## Fluxo das Issues / Como Achar Issues para Atuar
+
+Hoje estamos usando as labels e processo do [Coderockr Way](https://github.com/Coderockr/coderockr-way-github-setup), elas são diferentes das labels padrões do GitHub, então para evitar confusão na hora de contribuir com uma tarefa, considere as seguintes labels:
+
+ * `Stage: Backlog`: são issues que acabaram de ser criadas, ou que ainda não foram assumidas por ninguêm, caso esteja querendo ajudar implementando uma issue, [basta pegar uma com essa label](https://github.com/Coderockr/vitrine-social/labels/Stage%3A%20Backlog)
+ * `Stage: Analysis` e `Stage: In progress`: são issues que já estão em execução, alguêm esta [analisando](https://github.com/Coderockr/vitrine-social/labels/Stage%3A%20Analysis) ou [codificando](https://github.com/Coderockr/vitrine-social/labels/Stage%3A%20In%20progress) ela.
+ * `Stage: Review`: quando é aberto um pull request e o mesmo está pronto para ser avaliado pelos outros membros, a issue estará com esa label. Caso queria ajudar na revisão dos códigos [aqui é o lugar](https://github.com/Coderockr/vitrine-social/labels/Stage%3A%20Review).
+ * `Stage: Testing`: depois do merge as issues são [movidas para essa etapa](https://github.com/Coderockr/vitrine-social/labels/Stage%3A%20Testing), um dos membros irá testar a alteração para identificar se ainda falta algo, ou se pode ser concluída.
+ 
+Esse fluxo fica mais claro se olhar em nosso [Waffle](https://waffle.io/Coderockr/vitrine-social).
+
+Também classificamos as issues por `Category`, sendo que uma issue pode estar em mais de uma categoria:
+ 
+ * `Category: Frontend`: para issues que precisão ser feitas no frontend, normalmente exigindo alterações nos arquivos da pasta [`frontend`](https://github.com/Coderockr/vitrine-social/tree/master/frontend) e exigindo conhecimento de JavaScript e React.
+ * `Category: Backend`: quando a issue precisa que algo no backend seja feito, alterando os arquivos da pasta [`server`](https://github.com/Coderockr/vitrine-social/tree/master/server), aqui é necessário ter conhecimento de Go e provavelmente de PostgreSQL.
+ 
+Além disso tentamos informar qual a dificuldade da tarefa (`Level: Easy`, `Level: Medium` e `Level: Hard`), o tipo (`Type: Bug`, `Type: Improvement` e `Type: New Feature`) e a prioridade (`Priority: Lowest`, `Priority: Low`, `Priority: Medium`, `Priority: High` e `Priority: Highest`).
 
 ## Reporte Bugs pelo [Github:Issues](https://github.com/Coderockr/vitrine-social/issues)
 
