@@ -4,6 +4,9 @@ go:
 python:
   - "3.5"
 
+env:
+  - GO111MODULE=on
+
 addons:
   ssh_known_hosts: ec2-13-59-124-240.us-east-2.compute.amazonaws.com
 
