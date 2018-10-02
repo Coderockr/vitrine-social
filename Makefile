@@ -25,15 +25,13 @@ org-reset-password-on-docker: ## reset a organization's password by email on doc
 	docker-compose exec golang sh -c "cd server && go run main.go org reset-password $(email) $(password)"
 
 update-dev-dependences: # update dev dependences to the most recent
-	go get -u github.com/golang/dep/cmd/dep
 	go get -u github.com/haya14busa/goverage
 	go get -u golang.org/x/lint/golint
 
 install: ## install project dependences
-	go get github.com/golang/dep/cmd/dep
 	go get github.com/haya14busa/goverage
 	go get golang.org/x/lint/golint
-	cd server; dep ensure -v
+	cd server; go mod tidy ; go mod download
 
 install-frontend: ## install frontend dependences
 	cd frontend && yarn install
