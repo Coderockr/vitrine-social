@@ -9,6 +9,7 @@ require (
 	github.com/bugsnag/bugsnag-go v1.3.1
 	github.com/bugsnag/panicwrap v1.2.0 // indirect
 	github.com/cheekybits/is v0.0.0-20150225183255-68e9c0620927 // indirect
+	github.com/clbanning/mxj v1.8.2 // indirect
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/structs v1.0.0 // indirect
@@ -55,4 +56,5 @@ require (
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/gomail.v2 v2.0.0-20150902115704-41f357289737
 	gopkg.in/ini.v1 v1.38.3 // indirect
+	gopkg.in/yaml.v2 v2.2.1 // indirect
 )

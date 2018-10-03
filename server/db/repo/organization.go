@@ -66,7 +66,7 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 // GetAll Organizations from database
 func (r *OrganizationRepository) GetAll() ([]*model.Organization, error) {
 	var o []*model.Organization
-	err := r.db.Select(&o, "SELECT * FROM organizations")
+	err := r.db.Select(&o, "SELECT "+allFields+" FROM organizations")
 	if err != nil {
 		return nil, err
 	}
