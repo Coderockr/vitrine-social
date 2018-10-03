@@ -3,6 +3,7 @@ module github.com/Coderockr/vitrine-social/server
 require (
 	cloud.google.com/go v0.23.0 // indirect
 	github.com/aws/aws-sdk-go v1.13.57 // indirect
+	github.com/beevik/etree v1.0.1 // indirect
 	github.com/bitly/go-simplejson v0.5.0 // indirect
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/bugsnag/bugsnag-go v1.3.1
@@ -10,6 +11,7 @@ require (
 	github.com/cheekybits/is v0.0.0-20150225183255-68e9c0620927 // indirect
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/fatih/structs v1.0.0 // indirect
 	github.com/go-ini/ini v1.37.0 // indirect
 	github.com/go-sql-driver/mysql v1.4.0 // indirect
 	github.com/gobuffalo/pop v4.5.9+incompatible
@@ -20,6 +22,7 @@ require (
 	github.com/gorilla/context v1.1.1
 	github.com/gorilla/mux v1.6.2
 	github.com/graymeta/stow v0.0.0-20180719215413-7b5498c561bb
+	github.com/imdario/mergo v0.3.6 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8 // indirect
 	github.com/jmoiron/sqlx v0.0.0-20180406164412-2aeb6a910c2b
@@ -40,6 +43,7 @@ require (
 	github.com/spf13/pflag v1.0.1 // indirect
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/stretchr/testify v1.2.1
+	github.com/thecodenation/go-sitemap-generator v0.0.0-20180806195508-d5c7662421b4
 	github.com/urfave/negroni v0.3.0
 	golang.org/x/crypto v0.0.0-20180527072434-ab813273cd59
 	golang.org/x/net v0.0.0-20170523201210-186fd3fc8194 // indirect

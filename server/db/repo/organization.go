@@ -63,6 +63,17 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 	return o, nil
 }
 
+// GetAll Organizations from database
+func (r *OrganizationRepository) GetAll() ([]*model.Organization, error) {
+	var o []*model.Organization
+	err := r.db.Select(&o, "SELECT * FROM organizations")
+	if err != nil {
+		return nil, err
+	}
+
+	return o, nil
+}
+
 // Create receives a Organization and creates it in the database, returning the updated Organization or error if failed
 func (r *OrganizationRepository) Create(o model.Organization) (model.Organization, error) {
 	row := r.db.QueryRow(
