@@ -10,9 +10,14 @@ h1 {
 }
 
 h2 {
-    font-size: 150%;
+    font-size: 130%;
     text-align: center;
     margin-top: 10px;
+    color: $grey_500;
+}
+
+h3 {
+    text-align: center;
     color: $grey_500;
 }
 
