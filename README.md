@@ -9,11 +9,11 @@ O controle das tarefas e do progresso das mesmas estão sendo feitas no Waffle. 
 
 ## Instalação Backend (Go)
 
-Estamos utilizando [Go Modules](https://github.com/golang/go/wiki/Modules) nesse projeto, para tanto a pasta do projeto precisa ficar fora do seu `GOPATH`, ou terá que adicionar a ENV `GO111MODULE` como `on` em seu ambiente para que o projeto funcione dentro do `GOPATH`.
+Estamos utilizando [Go Modules](https://github.com/golang/go/wiki/Modules) nesse projeto, por isso a pasta do projeto precisa ficar fora do seu `GOPATH`, ou terá que adicionar a ENV `GO111MODULE` como `on` em seu ambiente para que o projeto funcione dentro do `GOPATH`.
 
-Das opções recomendamos manter fora do seu `GOPATH` o `go` não vai gerar um módulo sem necessidade na raiz do projeto, ou afetar outros projetos `go` em seu ambiente que ainda não estejam utilizando `Go Modules`.
+Recomendamos manter o projeto fora do seu `GOPATH`, assim o `go` não vai gerar um módulo sem necessidade na raiz do projeto, ou afetar outros projetos `go` em seu ambiente que ainda não estejam utilizando `Go Modules`.
 
-Resumo da opera, para começar a trabalhar basta rodar os seguintes comandos:
+Resumo da ópera, para começar a trabalhar basta rodar os seguintes comandos:
 
 ```sh
 git clone git@github.com:Coderockr/vitrine-social.git /not/your/go/path/vitrine-social;
