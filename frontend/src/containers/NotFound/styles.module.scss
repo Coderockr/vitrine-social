@@ -1,0 +1,36 @@
+require('../../utils/styles/colors.js');
+@import 'src/utils/styles/common.scss';
+
+h1 {
+    display: flex;
+    margin-top: 20px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    color: $grey_500;
+}
+
+h2 {
+    font-size: 150%;
+    text-align: center;
+    margin-top: 10px;
+    color: $grey_500;
+}
+
+.sectionWrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 80px;
+}
+
+.title {
+    display: flex;
+    flex-direction: column;
+    font-size: 600%;
+    font-weight: bolder;
+    text-align: center
+}
+
+.link {
+    text-decoration: underline;
+    color: $pink_800;
+}
