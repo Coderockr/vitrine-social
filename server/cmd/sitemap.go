@@ -63,7 +63,7 @@ func sitemapFunc(cmd *cobra.Command, args []string) {
 			os.Exit(1)
 		}
 		for _, k := range n {
-			sm.Add(stm.URL{"loc": fmt.Sprintf("%s/detalhes/%d", os.Getenv("FRONTEND_URL"), k.ID), "changefreq": "hourly", "priority": 0.8})
+			sm.Add(stm.URL{"loc": fmt.Sprintf("%s/v1/need/%d/share", os.Getenv("API_URL"), k.ID), "changefreq": "hourly", "priority": 0.8})
 		}
 	}
 	err = saveSitemap(sm)
