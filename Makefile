@@ -16,11 +16,11 @@ setup: ## initial project setup
 	go get github.com/rubenv/sql-migrate/...
 	make install
 
-org-reset-password: ## reset a organization's password by email
+org-reset-password: ## reset a organization's password by email (email=email@email.net password=secret-password)
 	docker-compose up -d postgres
 	cd server && go run main.go org reset-password $(email) $(password)
 
-org-reset-password-on-docker: ## reset a organization's password by email on docker
+org-reset-password-on-docker: ## reset a organization's password by email on docker (email=email@email.net password=secret-password)
 	docker-compose up -d
 	docker-compose exec golang sh -c "cd server && go run main.go org reset-password $(email) $(password)"
 
@@ -36,7 +36,7 @@ install: ## install project dependences
 install-frontend: ## install frontend dependences
 	cd frontend && yarn install
 
-build: install ## builds the application to the paramters bin (bin=vitrine-social)
+build: install ## builds the application to the parameters bin (bin=vitrine-social)
 	cd server && go build -v -o $(bin) .
 
 build-frontend: ## builds frontend application
@@ -67,7 +67,7 @@ serve-on-docker: ## start the server inside docker
 	docker-compose up -d
 	docker-compose exec golang sh -c "cd server && go run main.go serve"
 
-serve-watch: ## start server with hot reload
+serve-watch: ## start server with hot reload (bin=vitrine-social)
 	docker-compose up -d postgres
 	go get -u github.com/codegangsta/gin
 	cd server; API_PORT=8001 gin --port 8000 --appPort 8001 --bin $(bin) run serve
