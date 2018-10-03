@@ -18,8 +18,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	// "strconv"
-	// "strings"
 
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/repo"
