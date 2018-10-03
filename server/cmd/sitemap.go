@@ -48,14 +48,23 @@ func sitemapFunc(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	r := repo.NewOrganizationRepository(conn)
-	o, err = r.GetAll()
+	rO := repo.NewOrganizationRepository(conn)
+	rN := repo.NewNeedRepository(conn)
+	o, err = rO.GetAll()
 	if err != nil {
 		log.Fatal(err.Error())
 		os.Exit(1)
 	}
 	for _, v := range o {
 		sm.Add(stm.URL{"loc": fmt.Sprintf("entidade/%d", v.ID), "changefreq": "hourly", "priority": 0.8})
+		n, err := rN.GetOrganizationNeeds(v.ID, "id", "asc")
+		if err != nil {
+			log.Fatal(err.Error())
+			os.Exit(1)
+		}
+		for _, k := range n {
+			sm.Add(stm.URL{"loc": fmt.Sprintf("%s/detalhes/%d", os.Getenv("FRONTEND_URL"), k.ID), "changefreq": "hourly", "priority": 0.8})
+		}
 	}
 	err = saveSitemap(sm)
 	if err != nil {
