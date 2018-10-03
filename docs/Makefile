@@ -1,21 +1,19 @@
 .PHONY: all
 all: build
 
-
-.PHONY: build
-build: 
-	aglio -i api.apib --theme-full-width --no-theme-condense -o index.html
-
-new:
-	mkdir blueprint/$(filter-out $@,$(MAKECMDGOALS))
-	> blueprint/$(filter-out $@,$(MAKECMDGOALS))/api.apib
-	> blueprint/$(filter-out $@,$(MAKECMDGOALS))/data-structures.apib
-
-%:      # ignora o segundo parâmetro do new
-	@:
+AGLIO := $(shell command -v aglio 2> /dev/null)
 
 install:
 	npm install -g aglio
 
-serve:
+.PHONY: build
+build: test-install
+	aglio -i api.apib --theme-full-width --no-theme-condense -o index.html
+
+test-install:
+ifndef AGLIO
+	make install
+endif
+
+serve: test-install
 	aglio -i api.apib --theme-full-width --no-theme-condense -s

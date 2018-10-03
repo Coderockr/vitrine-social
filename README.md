@@ -50,3 +50,7 @@ yarn reicons
 Para acessar a versão mais recente da definição acesse: 
 
 http://coderockr.com/vitrine-social/
+
+## [Contribuindo](./CONTRIBUTING.md)
+
+Leia o nosso [CONTRIBUTING.md](./CONTRIBUTING.md) para aprender sobre o nosso processo de desenvolvimento, como propor bugfixes e melhorias, e como encontrar issues para atuar.
