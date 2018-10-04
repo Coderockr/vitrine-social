@@ -16,29 +16,27 @@ setup: ## initial project setup
 	go get github.com/rubenv/sql-migrate/...
 	make install
 
-org-reset-password: ## reset a organization's password by email
+org-reset-password: ## reset a organization's password by email (email=email@email.net password=secret-password)
 	docker-compose up -d postgres
 	cd server && go run main.go org reset-password $(email) $(password)
 
-org-reset-password-on-docker: ## reset a organization's password by email on docker
+org-reset-password-on-docker: ## reset a organization's password by email on docker (email=email@email.net password=secret-password)
 	docker-compose up -d
 	docker-compose exec golang sh -c "cd server && go run main.go org reset-password $(email) $(password)"
 
 update-dev-dependences: # update dev dependences to the most recent
-	go get -u github.com/golang/dep/cmd/dep
 	go get -u github.com/haya14busa/goverage
 	go get -u golang.org/x/lint/golint
 
 install: ## install project dependences
-	go get github.com/golang/dep/cmd/dep
 	go get github.com/haya14busa/goverage
 	go get golang.org/x/lint/golint
-	cd server; dep ensure -v
+	cd server; go mod tidy ; go mod download
 
 install-frontend: ## install frontend dependences
 	cd frontend && yarn install
 
-build: install ## builds the application to the paramters bin (bin=vitrine-social)
+build: install ## builds the application to the parameters bin (bin=vitrine-social)
 	cd server && go build -v -o $(bin) .
 
 build-frontend: ## builds frontend application
@@ -69,7 +67,7 @@ serve-on-docker: ## start the server inside docker
 	docker-compose up -d
 	docker-compose exec golang sh -c "cd server && go run main.go serve"
 
-serve-watch: ## start server with hot reload
+serve-watch: ## start server with hot reload (bin=vitrine-social)
 	docker-compose up -d postgres
 	go get -u github.com/codegangsta/gin
 	cd server; API_PORT=8001 gin --port 8000 --appPort 8001 --bin $(bin) run serve
@@ -97,7 +95,7 @@ help: ## show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 lint: ## show source lint
-	golint `find server -type d -maxdepth 1`
+	golint `find server -maxdepth 1 -type d`
 
 tests: ## run go tests
 	cd server && go test -v -race ./...
