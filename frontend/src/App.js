@@ -4,6 +4,7 @@ import ptBr from 'moment/locale/pt-br';
 import {
   Router,
   Route,
+  Switch,
 } from 'react-router-dom';
 import ReactGA from 'react-ga';
 import createHistory from 'history/createBrowserHistory';
@@ -14,6 +15,7 @@ import About from './containers/About';
 import Contact from './containers/Contact';
 import Results from './containers/Results';
 import Login from './containers/Login';
+import NotFound from './containers/NotFound';
 import ForgotPassword from './containers/ForgotPassword';
 import ResetPassword from './containers/ResetPassword';
 import OrganizationProfile from './containers/OrganizationProfile';
@@ -65,16 +67,19 @@ initGA(history);
 const App = () => (
   <Router history={history}>
     <div className="App">
-      <Route exact path="/" component={Home} />
-      <Route exact path="/sobre" component={About} />
-      <Route exact path="/contato" component={Contact} />
-      <Route exact path="/busca/:searchParams" component={Results} />
-      <Route exact path="/entidade/:organizationId" component={OrganizationProfile} />
-      <Route exact path="/detalhes/:requestId" component={Home} />
-      <Route exact path="/login" component={Login} />
-      <Route exact path="/esqueci-senha" component={ForgotPassword} />
-      <Route exact path="/complete-registration/:token" component={ResetPassword} />
-      <Route exact path="/recover-password/:token" component={ResetPassword} />
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/sobre" component={About} />
+        <Route exact path="/contato" component={Contact} />
+        <Route exact path="/busca/:searchParams" component={Results} />
+        <Route exact path="/entidade/:organizationId" component={OrganizationProfile} />
+        <Route exact path="/detalhes/:requestId" component={Home} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/esqueci-senha" component={ForgotPassword} />
+        <Route exact path="/complete-registration/:token" component={ResetPassword} />
+        <Route exact path="/recover-password/:token" component={ResetPassword} />
+        <Route component={NotFound} />
+      </Switch>
     </div>
   </Router>
 );
