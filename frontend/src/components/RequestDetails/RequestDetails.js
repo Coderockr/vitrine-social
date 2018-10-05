@@ -4,7 +4,7 @@ import { Modal, Carousel, Icon } from 'antd';
 import Img from 'react-image';
 import cx from 'classnames';
 import ReactGA from 'react-ga';
-import { FacebookShareButton, FacebookIcon, WhatsappShareButton, WhatsappIcon, EmailShareButton, EmailIcon } from 'react-share';
+import { FacebookShareButton, FacebookIcon, WhatsappShareButton, WhatsappIcon, EmailShareButton, EmailIcon, TwitterShareButton, TwitterIcon } from 'react-share';
 import styles from './styles.module.scss';
 import ItemIndicator from '../../components/ItemIndicator';
 import Arrow from '../../components/Arrow';
@@ -223,6 +223,14 @@ class RequestDetails extends React.Component {
             >
               <EmailIcon size={40} round />
             </EmailShareButton>
+            <TwitterShareButton
+              className={styles.shareButton}
+              url={shareURL}
+              title={shareMsg}
+              via="avitrinesocial"
+            >
+              <TwitterIcon size={40} round />
+            </TwitterShareButton>
           </div>
         </div>
         <div className={styles.buttonWrapper}>
