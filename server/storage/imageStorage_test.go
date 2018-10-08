@@ -73,7 +73,7 @@ func TestDeleteOrganizationImageShouldFail(t *testing.T) {
 	}
 
 	tests := map[string]test{
-		"when_org_does_not_exists": test{
+		"when_org_does_not_exists": {
 			token: &model.Token{UserID: 888},
 			repo: func() *orgRepositoryMock {
 				r := &orgRepositoryMock{}
@@ -83,14 +83,14 @@ func TestDeleteOrganizationImageShouldFail(t *testing.T) {
 			}(),
 			err: "not found",
 		},
-		"when_image_need_does_not_exist": test{
+		"when_image_need_does_not_exist": {
 			token: &model.Token{UserID: 888},
 			repo: func() *orgRepositoryMock {
 				r := &orgRepositoryMock{}
 				o := &model.Organization{
 					User: model.User{ID: 888},
 					Images: []model.OrganizationImage{
-						model.OrganizationImage{
+						{
 							Image: model.Image{
 								ID:  405,
 								URL: "http://localhost/image.png",
@@ -191,7 +191,7 @@ func TestDeleteNeedImageShouldFail(t *testing.T) {
 	}
 
 	tests := map[string]test{
-		"when_need_does_not_exists": test{
+		"when_need_does_not_exists": {
 			token: &model.Token{UserID: 888},
 			repo: func() *needRepositoryMock {
 				r := &needRepositoryMock{}
@@ -202,7 +202,7 @@ func TestDeleteNeedImageShouldFail(t *testing.T) {
 			needID: 404,
 			err:    "there is no need with the id 404",
 		},
-		"when_org_does_not_own_need": test{
+		"when_org_does_not_own_need": {
 			token: &model.Token{UserID: 888},
 			repo: func() *needRepositoryMock {
 				r := &needRepositoryMock{}
@@ -219,7 +219,7 @@ func TestDeleteNeedImageShouldFail(t *testing.T) {
 			needID: 405,
 			err:    "need 405 does not belong to organization 888",
 		},
-		"when_fail_to_select_images": test{
+		"when_fail_to_select_images": {
 			token: &model.Token{UserID: 888},
 			repo: func() *needRepositoryMock {
 				r := &needRepositoryMock{}
@@ -239,7 +239,7 @@ func TestDeleteNeedImageShouldFail(t *testing.T) {
 			imageID: 404,
 			err:     "failed here",
 		},
-		"when_image_need_does_not_exist": test{
+		"when_image_need_does_not_exist": {
 			token: &model.Token{UserID: 888},
 			repo: func() *needRepositoryMock {
 				r := &needRepositoryMock{}
@@ -251,7 +251,7 @@ func TestDeleteNeedImageShouldFail(t *testing.T) {
 					Return(n, nil)
 
 				r.On("GetNeedsImages", *n).
-					Return([]model.NeedImage{model.NeedImage{}}, nil)
+					Return([]model.NeedImage{{}}, nil)
 
 				return r
 			}(),
@@ -354,12 +354,12 @@ func TestCreateOrganizationImageShouldFail(t *testing.T) {
 	r.ParseMultipartForm(32 << 20)
 
 	tests := map[string]test{
-		"when_fails_to_process_file": test{
+		"when_fails_to_process_file": {
 			token: &model.Token{UserID: 888},
 			fh:    &multipart.FileHeader{Filename: "upload.png"},
 			err:   "there was a problem with the file upload.png",
 		},
-		"when_fails_to_load_to_container": test{
+		"when_fails_to_load_to_container": {
 			token: &model.Token{UserID: 888},
 			fh:    r.MultipartForm.File["to_fail"][0],
 			err:   "there was a problem saving the file imageStorage_test.go",
@@ -370,7 +370,7 @@ func TestCreateOrganizationImageShouldFail(t *testing.T) {
 				return c
 			}(),
 		},
-		"when_fails_to_save_to_database": test{
+		"when_fails_to_save_to_database": {
 			token: &model.Token{UserID: 888},
 			fh:    r.MultipartForm.File["not_to_fail"][0],
 			err:   "it have failed to save",
@@ -521,7 +521,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 	}
 
 	tests := map[string]test{
-		"when_need_not_exists": test{
+		"when_need_not_exists": {
 			token:  &model.Token{},
 			needID: 404,
 			fh:     nil,
@@ -533,21 +533,21 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 				return repo
 			}(),
 		},
-		"when_org_does_not_own_need": test{
+		"when_org_does_not_own_need": {
 			token:    &model.Token{UserID: 403},
 			needID:   405,
 			fh:       nil,
 			err:      "need 405 does not belong to organization 403",
 			needRepo: genNeedRepoMock(405),
 		},
-		"when_fails_to_process_file": test{
+		"when_fails_to_process_file": {
 			token:    &model.Token{UserID: 888},
 			needID:   405,
 			fh:       &multipart.FileHeader{Filename: "upload.png"},
 			err:      "there was a problem with the file upload.png",
 			needRepo: genNeedRepoMock(405),
 		},
-		"when_fails_to_load_to_container": test{
+		"when_fails_to_load_to_container": {
 			token:  &model.Token{UserID: 888},
 			needID: 405,
 			fh:     r.MultipartForm.File["to_fail"][0],
@@ -560,7 +560,7 @@ func TestCreateNeedImageShouldFail(t *testing.T) {
 			}(),
 			needRepo: genNeedRepoMock(405),
 		},
-		"when_fails_to_save_to_database": test{
+		"when_fails_to_save_to_database": {
 			token:  &model.Token{UserID: 888},
 			needID: 405,
 			fh:     r.MultipartForm.File["to_fail"][0],
