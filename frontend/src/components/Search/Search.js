@@ -26,6 +26,11 @@ class Search extends React.Component {
     });
   }
 
+  handleSearch = (e) => {
+    e.preventDefault();
+    this.props.search(this.input.value);
+  }
+
   render() {
     return (
       <Row className={styles.search}>
@@ -35,17 +40,17 @@ class Search extends React.Component {
           sm={{ span: 16, offset: 4 }}
           xs={{ span: 22, offset: 1 }}
         >
-          <div className={styles.wrapper}>
+          <form className={styles.wrapper} onSubmit={this.handleSearch}>
             <input
               type="text"
               placeholder={this.state.placeholder}
               ref={(ref) => { this.input = ref; }}
               defaultValue={this.props.text}
             />
-            <button onClick={() => this.props.search(this.input.value)}>
+            <button>
               <Icon icon="lupa" size={32} color={colors.grey_400} />
             </button>
-          </div>
+          </form>
         </Col>
       </Row>
     );

@@ -73,7 +73,7 @@ class Login extends React.Component {
               xs={{ span: 20, offset: 2 }}
             >
               <h1>LOGIN DA ORGANIZAÇÃO</h1>
-              <Form>
+              <Form onSubmit={this.handleSubmit}>
                 <FormItem>
                   {getFieldDecorator('email', {
                     rules: [{ required: true, message: 'Informe seu usuário!' }],
@@ -101,7 +101,7 @@ class Login extends React.Component {
                     <Button
                       className={cx(styles.button, styles.loginButton)}
                       loading={this.state.loading}
-                      onClick={this.handleSubmit}
+                      htmlType="submit"
                     >
                       LOG IN
                     </Button>

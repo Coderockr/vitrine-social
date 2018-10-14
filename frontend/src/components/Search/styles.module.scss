@@ -18,7 +18,6 @@ require('../../utils/styles/colors.js');
 
   input {
     display:block;
-    float:left;
     outline: none;
     border-radius: 50px;
     border: none;
@@ -37,10 +36,9 @@ require('../../utils/styles/colors.js');
   }
 
   button {
+    display: flex;
     cursor: pointer;
     outline: none;
-    position: relative;
-    float: right;
     padding: 0 20px;
     background-color: transparent;
     border: none;
