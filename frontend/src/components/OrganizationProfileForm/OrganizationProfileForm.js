@@ -167,6 +167,9 @@ class OrganizationProfileForm extends React.Component {
           email: values.email,
           website: values.website,
           phone: values.phone,
+          whatsapp: values.whatsapp,
+          facebook: values.facebook,
+          instagram: values.instagram,
           address,
           about: values.about,
         };
@@ -340,6 +343,27 @@ class OrganizationProfileForm extends React.Component {
                   initialValue: maskPhone(organization.phone),
                 })(
                   <Input size="large" placeholder="Telefone" />,
+                )}
+              </FormItem>
+              <FormItem {...formItemLayout}>
+                {getFieldDecorator('whatsapp', {
+                  initialValue: organization.whatsapp,
+                })(
+                  <Input size="large" placeholder="Whatsapp" />,
+                )}
+              </FormItem>
+              <FormItem {...formItemLayout}>
+                {getFieldDecorator('facebook', {
+                  initialValue: organization.facebook,
+                })(
+                  <Input size="large" placeholder="Facebook" />,
+                )}
+              </FormItem>
+              <FormItem {...formItemLayout}>
+                {getFieldDecorator('instagram', {
+                  initialValue: organization.instagram,
+                })(
+                  <Input size="large" placeholder="Instagram" />,
                 )}
               </FormItem>
               <FormItem
