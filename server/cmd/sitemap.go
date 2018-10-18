@@ -22,6 +22,8 @@ import (
 	"github.com/Coderockr/vitrine-social/server/db"
 	"github.com/Coderockr/vitrine-social/server/db/repo"
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/Coderockr/vitrine-social/server/storage"
+	"github.com/graymeta/stow"
 	"github.com/spf13/cobra"
 	"github.com/thecodenation/go-sitemap-generator/stm"
 )
@@ -41,6 +43,12 @@ func init() {
 func sitemapFunc(cmd *cobra.Command, args []string) {
 	var o []*model.Organization
 	sm := generateSitemap()
+
+	storageContainer, err := storage.Connect()
+	if err != nil {
+		log.Fatal(err.Error())
+		os.Exit(1)
+	}
 
 	conn, err := db.GetFromEnv()
 	if err != nil {
@@ -66,7 +74,7 @@ func sitemapFunc(cmd *cobra.Command, args []string) {
 			sm.Add(stm.URL{"loc": fmt.Sprintf("%s/v1/need/%d/share", os.Getenv("API_URL"), k.ID), "changefreq": "hourly", "priority": 0.8})
 		}
 	}
-	err = saveSitemap(sm)
+	err = saveSitemap(sm, storageContainer)
 	if err != nil {
 		log.Fatal(err.Error())
 		os.Exit(1)
@@ -83,7 +91,7 @@ func generateSitemap() *stm.Sitemap {
 	return sm
 }
 
-func saveSitemap(sm *stm.Sitemap) error {
+func saveSitemap(sm *stm.Sitemap, c stow.Container) error {
 	f, err := os.Create("../frontend/public/sitemap.xml")
 	if err != nil {
 		return err
@@ -97,6 +105,18 @@ func saveSitemap(sm *stm.Sitemap) error {
 	if err != nil {
 		return err
 	}
+
+	// item, err := s.Container.Put(
+	// 	fmt.Sprintf(
+	// 		"%s/%s.%s",
+	// 		folder,
+	// 		uuid.Must(uuid.NewV4()).String(),
+	// 		fileName[1],
+	// 	),
+	// 	file,
+	// 	fh.Size,
+	// 	nil,
+	// )
 
 	log.Println("Generated sitemap")
 	return nil
