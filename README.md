@@ -20,6 +20,8 @@ git clone git@github.com:Coderockr/vitrine-social.git /not/your/go/path/vitrine-
 
 make setup # executar na primeira vez para instalar todas as dependencias e ferramentas
 
+# caso esteja utilizando Windows, edite o arquivo server/config/dev.env e altere o valor da variável STORAGE_LOCAL_PATH para um diretorio temporario de armazenamento local
+
 make migrations # isso pode falhar por causa do warmup do postgres
 
 make serve # agora esta rodando :)
