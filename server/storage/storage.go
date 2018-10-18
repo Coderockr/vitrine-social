@@ -3,12 +3,9 @@ package storage
 import (
 	"os"
 
-	"github.com/graymeta/stow"
-	// support Google storage
-	google "github.com/graymeta/stow/google"
-	// support local storage
-	local "github.com/graymeta/stow/local"
-	// support s3 storage
+	"github.com/graymeta/stow"               // support Google storage
+	google "github.com/graymeta/stow/google" // support local storage
+	local "github.com/graymeta/stow/local"   // support s3 storage
 	s3 "github.com/lucassabreu/stow/s3"
 )
 
@@ -33,6 +30,11 @@ func Connect() (stow.Container, error) {
 			s3.ConfigSecretKey:   os.Getenv("STORAGE_S3_CONFIG_SECRET_KEY"),
 			s3.ConfigRegion:      os.Getenv("STORAGE_S3_CONFIG_REGION"),
 		}
+
+		if endpoint := os.Getenv("STORAGE_S3_ENDPOINT"); len(endpoint) > 0 {
+			config[s3.ConfigEndpoint] = endpoint
+		}
+
 		containerName = os.Getenv("STORAGE_S3_BUCKET_NAME")
 	}
 
