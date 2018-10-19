@@ -39,7 +39,7 @@ services:
     ports:
       - "9000:9000"
     entrypoint: sh
-    command: -c 'mkdir -p /data/images.vitrinesocial.test && /usr/bin/minio server /data'
+    command: -c 'mkdir -p /data/images.vitrinesocial.test /data/vitrinesocial.test && /usr/bin/minio server /data'
   images-server:
     image: halverneus/static-file-server:latest
     volumes:

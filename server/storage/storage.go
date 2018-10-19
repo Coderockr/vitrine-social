@@ -3,24 +3,37 @@ package storage
 import (
 	"os"
 
-	"github.com/graymeta/stow"               // support Google storage
-	google "github.com/graymeta/stow/google" // support local storage
-	local "github.com/graymeta/stow/local"   // support s3 storage
-	s3 "github.com/lucassabreu/stow/s3"
+	"github.com/graymeta/stow"
+	google "github.com/graymeta/stow/google" // support Google storage
+	local "github.com/graymeta/stow/local"   // support local storage
+	s3 "github.com/lucassabreu/stow/s3"      // support s3 storage
 )
 
 // Connect to storage and return the container
 func Connect() (stow.Container, error) {
+	return connectTo("")
+}
+
+// ConnectFrontend will connect to the frontends file container
+func ConnectFrontend() (stow.Container, error) {
+	return connectTo("FRONTEND")
+}
+
+func connectTo(sufix string) (stow.Container, error) {
 	var kind string
 	var config stow.ConfigMap
 	var containerName string
+
+	if len(sufix) > 0 {
+		sufix = "_" + sufix
+	}
 
 	if os.Getenv("STORAGE") == "local" {
 		kind = "local"
 		config = stow.ConfigMap{
 			local.ConfigKeyPath: os.Getenv("STORAGE_LOCAL_PATH"),
 		}
-		containerName = os.Getenv("STORAGE_LOCAL_PATH")
+		containerName = os.Getenv("STORAGE_LOCAL_PATH" + sufix)
 	}
 
 	if os.Getenv("STORAGE") == "s3" {
@@ -35,7 +48,7 @@ func Connect() (stow.Container, error) {
 			config[s3.ConfigEndpoint] = endpoint
 		}
 
-		containerName = os.Getenv("STORAGE_S3_BUCKET_NAME")
+		containerName = os.Getenv("STORAGE_S3_BUCKET_NAME" + sufix)
 	}
 
 	if os.Getenv("STORAGE") == "google" {

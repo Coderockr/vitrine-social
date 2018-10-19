@@ -15,6 +15,7 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -44,7 +45,7 @@ func sitemapFunc(cmd *cobra.Command, args []string) {
 	var o []*model.Organization
 	sm := generateSitemap()
 
-	storageContainer, err := storage.Connect()
+	storageContainer, err := storage.ConnectFrontend()
 	if err != nil {
 		log.Fatal(err.Error())
 		os.Exit(1)
@@ -92,31 +93,18 @@ func generateSitemap() *stm.Sitemap {
 }
 
 func saveSitemap(sm *stm.Sitemap, c stow.Container) error {
-	f, err := os.Create("../frontend/public/sitemap.xml")
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	_, err = f.Write(sm.XMLContent())
-	if err != nil {
-		return err
-	}
-	err = f.Sync()
-	if err != nil {
-		return err
-	}
+	content := sm.XMLContent()
 
-	// item, err := s.Container.Put(
-	// 	fmt.Sprintf(
-	// 		"%s/%s.%s",
-	// 		folder,
-	// 		uuid.Must(uuid.NewV4()).String(),
-	// 		fileName[1],
-	// 	),
-	// 	file,
-	// 	fh.Size,
-	// 	nil,
-	// )
+	_, err := c.Put(
+		"sitemap.xml",
+		bytes.NewBuffer(content),
+		int64(len(content)),
+		nil,
+	)
+
+	if err != nil {
+		return err
+	}
 
 	log.Println("Generated sitemap")
 	return nil
