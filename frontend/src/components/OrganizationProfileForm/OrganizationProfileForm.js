@@ -14,7 +14,7 @@ import cx from 'classnames';
 import ReactGA from 'react-ga';
 import UploadImages from '../UploadImages';
 import ResponseFeedback from '../ResponseFeedback';
-import { maskPhone, maskCep } from '../../utils/mask';
+import { maskPhone, maskCep, maskWhatsapp } from '../../utils/mask';
 import { api, apiImage } from '../../utils/api';
 import { getUser } from '../../utils/auth';
 import colors from '../../utils/styles/colors';
@@ -305,6 +305,15 @@ class OrganizationProfileForm extends React.Component {
               </Upload>
             </div>
             <Form>
+              <FormItem>
+                <Col
+                  md={{ span: 18, offset: 3 }}
+                  sm={{ span: 22, offset: 1 }}
+                  xs={{ span: 24, offset: 0 }}
+                >
+                  <h2 className={styles.galleryHeader}>Dados Básicos</h2>
+                </Col>
+              </FormItem>
               <FormItem {...formItemLayout}>
                 {getFieldDecorator('name', {
                   rules: [{ required: true, message: 'Preencha o nome da organização' }],
@@ -326,13 +335,6 @@ class OrganizationProfileForm extends React.Component {
                 )}
               </FormItem>
               <FormItem {...formItemLayout}>
-                {getFieldDecorator('website', {
-                  initialValue: organization.website,
-                })(
-                  <Input size="large" placeholder="Website" />,
-                )}
-              </FormItem>
-              <FormItem {...formItemLayout}>
                 {getFieldDecorator('phone', {
                   getValueFromEvent: e => maskPhone(e.target.value),
                   rules: [{
@@ -345,26 +347,57 @@ class OrganizationProfileForm extends React.Component {
                   <Input size="large" placeholder="Telefone" />,
                 )}
               </FormItem>
+              <FormItem>
+                <Col
+                  md={{ span: 18, offset: 3 }}
+                  sm={{ span: 22, offset: 1 }}
+                  xs={{ span: 24, offset: 0 }}
+                >
+                  <h2 className={styles.galleryHeader}>Links / Redes Sociais</h2>
+                </Col>
+              </FormItem>
               <FormItem {...formItemLayout}>
-                {getFieldDecorator('whatsapp', {
-                  initialValue: organization.whatsapp,
+                {getFieldDecorator('website', {
+                  initialValue: organization.website,
                 })(
-                  <Input size="large" placeholder="Whatsapp" />,
+                  <Input size="large" placeholder="Website" />,
                 )}
               </FormItem>
               <FormItem {...formItemLayout}>
                 {getFieldDecorator('facebook', {
                   initialValue: organization.facebook,
                 })(
-                  <Input size="large" placeholder="Facebook" />,
+                  <Input addonBefore="https://www.facebook.com/" size="large" placeholder="" />,
                 )}
               </FormItem>
               <FormItem {...formItemLayout}>
                 {getFieldDecorator('instagram', {
                   initialValue: organization.instagram,
                 })(
-                  <Input size="large" placeholder="Instagram" />,
+                  <Input addonBefore="https://www.instagram.com/" size="large" placeholder="" />,
                 )}
+              </FormItem>
+              <FormItem {...formItemLayout}>
+                {getFieldDecorator('whatsapp', {
+                  getValueFromEvent: e => maskWhatsapp(e.target.value),
+                  rules: [{
+                    pattern: /^(\(0?([1-9a-zA-Z][0-9a-zA-Z])?[1-9]\d\) ?|0?([1-9a-zA-Z][0-9a-zA-Z])?[1-9]\d[ .-]?)?(9|9[ .-])?[2-9]\d{3}[ .-]?\d{4}$/gm, message: 'Whatsapp Inválido',
+                  }],
+                  initialValue: organization.whatsapp ?
+                    maskWhatsapp(organization.whatsapp) :
+                    null,
+                })(
+                  <Input size="large" placeholder="Whatsapp" />,
+                )}
+              </FormItem>
+              <FormItem>
+                <Col
+                  md={{ span: 18, offset: 3 }}
+                  sm={{ span: 22, offset: 1 }}
+                  xs={{ span: 24, offset: 0 }}
+                >
+                  <h2 className={styles.galleryHeader}>Endereço</h2>
+                </Col>
               </FormItem>
               <FormItem
                 {...formItemLayout}

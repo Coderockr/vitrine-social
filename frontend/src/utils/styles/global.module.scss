@@ -159,6 +159,14 @@ require('./colors.js');
     }
   }
 
+  .ant-input-group-addon {
+    color: $purple_400;
+    border: 2px solid $purple_400;
+    border-radius: 20px;
+    background-color: $grey_090;
+    font-size: 13px;
+  }
+
   .ant-input-number-input {
     border: none;
     background-color: transparent;
