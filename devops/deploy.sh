@@ -15,3 +15,6 @@ ssh -i ./devops/vitrinesocial.pem -t $DEPLOY_USER@$DEPLOY_HOST 'sudo systemctl s
 
 # Run Migrations
 sql-migrate up -config=devops/dbconfig.yml -env=production
+
+# Update sitemap
+ssh -i ./devops/vitrinesocial.pem -t $DEPLOY_USER@$DEPLOY_HOST './vitrine-social/vitrine-social sitemap-generate'
