@@ -48,6 +48,7 @@ const renderCategories = (categories, onClick) => (
         title={category.name}
         image={category.slug}
         active={category.active}
+        disabled={category.needs_count === 0}
         onClick={() => onClick(category.id)}
       />
     </div>

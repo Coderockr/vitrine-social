@@ -8,9 +8,14 @@ const CategoriesItem = ({
   title,
   active,
   onClick,
+  disabled,
 }) => (
-  <div className={cx(styles.categoriesItem, { [styles.active]: active })}>
-    <button className={styles.categoriesImage} onClick={onClick}>
+  <div className={cx(
+    styles.categoriesItem,
+    { [styles.active]: active, [styles.disabled]: disabled },
+  )}
+  >
+    <button className={styles.categoriesImage} onClick={onClick} disabled={disabled}>
       <Icon
         className={styles.categoriesIcon}
         icon={image}
