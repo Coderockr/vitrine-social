@@ -6,7 +6,6 @@ Vitrine Social [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5d73b
 
 O controle das tarefas e do progresso das mesmas estão sendo feitas no Waffle. Clique aqui para acompanhar: https://waffle.io/Coderockr/vitrine-social
 
-
 ## Instalação Backend (Go)
 
 Estamos utilizando [Go Modules](https://github.com/golang/go/wiki/Modules) nesse projeto, por isso a pasta do projeto precisa ficar fora do seu `GOPATH`, ou terá que adicionar a ENV `GO111MODULE` como `on` em seu ambiente para que o projeto funcione dentro do `GOPATH`.
@@ -23,6 +22,17 @@ make setup # executar na primeira vez para instalar todas as dependencias e ferr
 make migrations # isso pode falhar por causa do warmup do postgres
 
 make serve # agora esta rodando :)
+```
+
+### Domínios e Subdomínios locais
+
+Incluir os seguintes domínios no seu `/etc/hosts` deve agilizar o setup do seu projeto:
+
+```sh
+127.0.0.1 api.vitrinesocial.test # usar porta 8000 (golang)
+127.0.0.1 images.vitrinesocial.test # usar porta 7000 (images-server)
+127.0.0.1 minio.vitrinesocial.test # usar porta 9000 (minio)
+127.0.0.1 vitrinesocial.test # usar porta 3000 (frontend)
 ```
 
 ## Instalação Frontend (React)
