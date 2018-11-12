@@ -31,6 +31,7 @@ update-dev-dependences: # update dev dependences to the most recent
 install: ## install project dependences
 	go get github.com/haya14busa/goverage
 	go get golang.org/x/lint/golint
+	go get github.com/rubenv/sql-migrate
 	cd server; go mod tidy ; go mod download
 
 install-frontend: ## install frontend dependences
