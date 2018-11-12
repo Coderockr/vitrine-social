@@ -28,30 +28,30 @@ func connectTo(sufix string) (stow.Container, error) {
 		sufix = "_" + sufix
 	}
 
-	if os.Getenv("STORAGE") == "local" {
+	if os.Getenv("STORAGE"+sufix) == "local" {
 		kind = "local"
 		config = stow.ConfigMap{
-			local.ConfigKeyPath: os.Getenv("STORAGE_LOCAL_PATH"),
+			local.ConfigKeyPath: os.Getenv("STORAGE_LOCAL_PATH" + sufix),
 		}
 		containerName = os.Getenv("STORAGE_LOCAL_PATH" + sufix)
 	}
 
-	if os.Getenv("STORAGE") == "s3" {
+	if os.Getenv("STORAGE"+sufix) == "s3" {
 		kind = "s3"
 		config = stow.ConfigMap{
-			s3.ConfigAccessKeyID: os.Getenv("STORAGE_S3_CONFIG_ACCESS_KEY_ID"),
-			s3.ConfigSecretKey:   os.Getenv("STORAGE_S3_CONFIG_SECRET_KEY"),
-			s3.ConfigRegion:      os.Getenv("STORAGE_S3_CONFIG_REGION"),
+			s3.ConfigAccessKeyID: os.Getenv("STORAGE_S3_CONFIG_ACCESS_KEY_ID" + sufix),
+			s3.ConfigSecretKey:   os.Getenv("STORAGE_S3_CONFIG_SECRET_KEY" + sufix),
+			s3.ConfigRegion:      os.Getenv("STORAGE_S3_CONFIG_REGION" + sufix),
 		}
 
-		if endpoint := os.Getenv("STORAGE_S3_ENDPOINT"); len(endpoint) > 0 {
+		if endpoint := os.Getenv("STORAGE_S3_ENDPOINT" + sufix); len(endpoint) > 0 {
 			config[s3.ConfigEndpoint] = endpoint
 		}
 
 		containerName = os.Getenv("STORAGE_S3_BUCKET_NAME" + sufix)
 	}
 
-	if os.Getenv("STORAGE") == "google" {
+	if os.Getenv("STORAGE"+sufix) == "google" {
 		kind = "google"
 		config = stow.ConfigMap{
 			google.ConfigJSON:      "json",
