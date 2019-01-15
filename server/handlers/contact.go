@@ -6,17 +6,19 @@ import (
 	"os"
 
 	"github.com/Coderockr/vitrine-social/server/mail"
+	"github.com/Coderockr/vitrine-social/server/newsletter"
 )
 
 // ContactHandler send an email to coderockr
 func ContactHandler(mailer mail.Mailer) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var bodyVars struct {
-			Name    string
-			Email   string
-			Phone   string
-			Reason  string
-			Message string
+			Name       string
+			Email      string
+			Phone      string
+			Reason     string
+			Message    string
+			Newsletter bool
 		}
 		err := requestToJSONObject(r, &bodyVars)
 		if err != nil {
@@ -40,6 +42,19 @@ func ContactHandler(mailer mail.Mailer) func(w http.ResponseWriter, r *http.Requ
 		if err := mailer.SendEmail(emailParams); err != nil {
 			HandleHTTPError(w, http.StatusBadRequest, errors.New("Falha ao enviar o email"))
 			return
+		}
+
+		if bodyVars.Newsletter {
+			newsletterParams := newsletter.Params{
+				Name:  bodyVars.Name,
+				Email: bodyVars.Email,
+				Phone: bodyVars.Phone,
+			}
+			err = newsletter.SaveNewsletter(newsletterParams)
+			if err != nil {
+				HandleHTTPError(w, http.StatusBadRequest, errors.New("Falha ao salvar novo contato na newsletter"))
+				return
+			}
 		}
 
 		HandleHTTPSuccessNoContent(w)

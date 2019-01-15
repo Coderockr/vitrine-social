@@ -21,6 +21,10 @@ type (
 		DeleteImage(imageID int64, organizationID int64) error
 	}
 
+	organizationNeedsRepository interface {
+		GetOrganizationNeeds(oID int64, orderBy string, order string) ([]model.Need, error)
+	}
+
 	organizationStorage interface {
 		DeleteOrganizationImage(*model.Token, int64) error
 		CreateOrganizationImage(*model.Token, *multipart.FileHeader) (*model.OrganizationImage, error)
@@ -28,7 +32,7 @@ type (
 )
 
 // GetOrganizationHandler will retrive the data from a organization
-func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) func(http.ResponseWriter, *http.Request) {
+func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error), needRepo organizationNeedsRepository) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		vars := mux.Vars(req)
 
@@ -46,6 +50,16 @@ func GetOrganizationHandler(getOrg func(int64) (*model.Organization, error)) fun
 			return
 		case err != nil:
 			HandleHTTPError(w, http.StatusForbidden, err)
+			return
+		}
+
+		queryValues := req.URL.Query()
+		orderBy := queryValues.Get("orderBy")
+		order := queryValues.Get("order")
+
+		o.Needs, err = needRepo.GetOrganizationNeeds(o.ID, orderBy, order)
+		if err != nil {
+			HandleHTTPError(w, http.StatusBadRequest, fmt.Errorf("Não foi possível buscar as necessidades da organização: %s", vars["id"]))
 			return
 		}
 

@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  metabase:
+    image: metabase/metabase
+    ports:
+      - "3000:3000"
+    volumes:
+      - /metabase-data:/metabase-data
+    restart: always
+    environment:
+      - MB_DB_FILE=/metabase-data/metabase.db
+      - JAVA_OPTS="-Xmx512m"

@@ -9,7 +9,7 @@ import ChangePassword from '../../components/ChangePassword';
 import OrganizationProfileForm from '../../components/OrganizationProfileForm';
 import { maskPhone } from '../../utils/mask';
 import colors from '../../utils/styles/colors';
-import api from '../../utils/api';
+import { api } from '../../utils/api';
 import { getUser, updateUser } from '../../utils/auth';
 import styles from './styles.module.scss';
 import Loading from '../../components/Loading';
@@ -31,6 +31,7 @@ class OrganizationProfile extends React.Component {
       editProfileVisible: false,
       changePasswordVisible: false,
       saveEnabled: false,
+      order: 'desc',
     };
 
     mediaQuery.addListener(this.widthChange.bind(this));
@@ -69,10 +70,20 @@ class OrganizationProfile extends React.Component {
     return requests.filter(this.inactiveStatusFilter);
   }
 
+  orderChanged(value) {
+    let order = 'desc';
+    if (value === 'OLDEST') {
+      order = 'asc';
+    }
+    this.setState({ order }, () => this.fetchData());
+  }
+
   fetchData(onSaveOrganization) {
     const user = getUser();
+    const { order } = this.state;
     const { match: { params } } = this.props;
-    api.get(`organization/${params.organizationId}`).then(
+
+    api.get(`organization/${params.organizationId}?orderBy=createdAt&order=${order}`).then(
       (response) => {
         this.setState({
           organization: response.data,
@@ -180,7 +191,7 @@ class OrganizationProfile extends React.Component {
                 <p style={{ 'white-space': 'pre-line' }}>{organization.about}</p>
               }
               {organization.website &&
-              <a target="_blank" rel="me" href={`//${organization.website}`}>{organization.website}</a>
+              <a target="_blank" rel="me" href={organization.website.includes('http') ? organization.website : `//${organization.website}`}>{organization.website}</a>
               }
             </div>
           }
@@ -253,6 +264,7 @@ class OrganizationProfile extends React.Component {
           inactiveRequests={this.state.loading ? null : this.state.inactiveRequests}
           onSave={() => this.fetchData()}
           error={this.state.error}
+          orderChanged={order => this.orderChanged(order.target.value)}
         />
       </Layout>
     );

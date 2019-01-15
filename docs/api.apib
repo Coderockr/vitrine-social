@@ -189,12 +189,14 @@ Realizar busca das necessidades
 
 # Group Organization
 
-## Organização [/v1/organization/{id}]
+## Organização [/v1/organization/{id}?orderBy={orderBy}&order={order}]
 
 ### Perfil da ONG [GET]
 
 + Parameters
     + id (number) - Id da ONG
+    + orderBy: id (string, optional) - Campo de ordenação das necessidades da organização
+    + order: asc (string, optional) - Ordem das necessidades da organização
 
 + Response 200 (application/json)
     + Attributes (CompleteOrganization)
@@ -450,6 +452,23 @@ Realizar busca das necessidades
         + message (string) - Mensagem enviada para a Coderockr
 
 + Response 200 (application/json)
+
++ Response 404 (application/json)
+    + Attributes (Error)
+
+# Group Newsletter
+
+## Contato [/v1/newsletter]
+
+### Send [POST]
+
++ Request
+    + Attributes
+        + name (string) - Nome
+        + email (string) - E-mail
+        + phone (string) - Telefone
+
++ Response 204
 
 + Response 404 (application/json)
     + Attributes (Error)

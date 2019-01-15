@@ -6,7 +6,7 @@ import styles from './styles.module.scss';
 import Layout from '../../components/Layout';
 import BottomNotification from '../../components/BottomNotification';
 import { maskPhone } from '../../utils/mask';
-import api from '../../utils/api';
+import { api } from '../../utils/api';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;

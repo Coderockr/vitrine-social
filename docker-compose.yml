@@ -14,9 +14,9 @@ services:
     environment:
       - POSTGRES_DB=vitrine
   golang:
-    image: golang:1.10.2
+    image: golang:1.11
     volumes:
-      - ./:/go/src/github.com/Coderockr/vitrine-social
+      - ./:/vitrine-social
       - ${GOPATH:-gopath}:/go
     ports:
       - "8000:8000"
@@ -25,6 +25,26 @@ services:
       DATABASE_HOST: postgres
       VITRINESOCIAL_ENV: ${VITRINESOCIAL_ENV:-dev}
     command: sh -c "while true; do echo 'beep'; sleep 5; done"
-    working_dir: /go/src/github.com/Coderockr/vitrine-social
+    working_dir: /vitrine-social
     links:
       - postgres
+  minio:
+    image: minio/minio:RELEASE.2018-10-18T00-28-58Z
+    environment:
+      MINIO_ACCESS_KEY: configAccessKeyId
+      MINIO_SECRET_KEY: configSecretKey
+    volumes:
+      - "./.data/minio:/data"
+      - "./.data/minio-config:/root/.minio"
+    ports:
+      - "9000:9000"
+    entrypoint: sh
+    command: -c 'mkdir -p /data/images.vitrinesocial.test /data/vitrinesocial.test && /usr/bin/minio server /data'
+  images-server:
+    image: halverneus/static-file-server:latest
+    volumes:
+      - "./.data/minio/images.vitrinesocial.test:/web"
+    ports:
+      - 7000:8080
+    depends_on:
+      - minio

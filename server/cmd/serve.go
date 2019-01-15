@@ -109,7 +109,7 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 
 	v1.HandleFunc("/search", handlers.SearchHandler(sR)).Methods("GET")
 
-	v1.HandleFunc("/organization/{id:[0-9]+}", handlers.GetOrganizationHandler(oR.Get)).Methods("GET")
+	v1.HandleFunc("/organization/{id:[0-9]+}", handlers.GetOrganizationHandler(oR.Get, nR)).Methods("GET")
 
 	v1.Path("/organization/{id:[0-9]+}").Handler(privateMiddleware.With(
 		negroni.WrapFunc(handlers.UpdateOrganizationHandler(oR)),
@@ -143,9 +143,14 @@ func serveCmdFunc(cmd *cobra.Command, args []string) {
 		negroni.WrapFunc(handlers.DeleteNeedImagesHandler(iS)),
 	)).Methods("DELETE")
 
+	v1.HandleFunc("/need/{id:[0-9]+}/share", handlers.ShareNeedHandler(nR)).Methods("GET")
+
+	// Category Routes
 	v1.HandleFunc("/categories", handlers.GetAllCategoriesHandler(cR, nR)).Methods("GET")
 
 	v1.HandleFunc("/contact", handlers.ContactHandler(mailer)).Methods("POST")
+
+	v1.HandleFunc("/newsletter", handlers.NewsletterHandler()).Methods("POST")
 
 	authenticationMiddleware := negroni.New()
 	authenticationMiddleware.UseFunc(AuthHandler.AuthenticationMiddleware)

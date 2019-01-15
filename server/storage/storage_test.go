@@ -19,4 +19,10 @@ func TestConnect(t *testing.T) {
 	if err != nil {
 		t.Errorf("expected %v result %s", nil, err)
 	}
+
+	os.Setenv("STORAGE_LOCAL_PATH_FRONTEND", os.TempDir())
+	_, err = storage.ConnectFrontend()
+	if err != nil {
+		t.Errorf("expected %v result %s", nil, err)
+	}
 }

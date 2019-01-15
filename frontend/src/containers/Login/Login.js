@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import BottomNotification from '../../components/BottomNotification';
-import api from '../../utils/api';
+import { api } from '../../utils/api';
 import { authorizeUser } from '../../utils/auth';
 import styles from './styles.module.scss';
 
@@ -38,7 +38,7 @@ class Login extends React.Component {
       (response) => {
         if (response.data) {
           authorizeUser(response.data);
-          history.push(`/organization/${response.data.organization.id}`);
+          history.push(`/entidade/${response.data.organization.id}`);
           return BottomNotification({ message: 'Login realizado com sucesso!', success: true });
         }
         this.setState({ loading: false });

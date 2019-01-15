@@ -1,30 +1,44 @@
 Vitrine Social [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5d73b7a4fb1b4118a8cb900e1ea91c49)](https://www.codacy.com/app/lucassabreu/vitrine-social?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Coderockr/vitrine-social&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/Coderockr/vitrine-social.svg?branch=master)](https://travis-ci.org/Coderockr/vitrine-social) [![codecov](https://codecov.io/gh/Coderockr/vitrine-social/branch/master/graph/badge.svg)](https://codecov.io/gh/Coderockr/vitrine-social)
 ===============
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/Coderockr/vitrine-social.svg?columns=all)](https://waffle.io/Coderockr/vitrine-social)
 
-## Instalação Backend
+## Issues e Progresso
+
+O controle das tarefas e do progresso das mesmas estão sendo feitas no Waffle. Clique aqui para acompanhar: https://waffle.io/Coderockr/vitrine-social
+
+## Instalação Backend (Go)
+
+Estamos utilizando [Go Modules](https://github.com/golang/go/wiki/Modules) nesse projeto, por isso a pasta do projeto precisa ficar fora do seu `GOPATH`, ou terá que adicionar a ENV `GO111MODULE` como `on` em seu ambiente para que o projeto funcione dentro do `GOPATH`.
+
+Recomendamos manter o projeto fora do seu `GOPATH`, assim o `go` não vai gerar um módulo sem necessidade na raiz do projeto, ou afetar outros projetos `go` em seu ambiente que ainda não estejam utilizando `Go Modules`.
+
+Resumo da ópera, para começar a trabalhar basta rodar os seguintes comandos:
 
 ```sh
-git clone git@github.com:Coderockr/vitrine-social.git $GOPATH/src/Coderockr/vitrine-social;
+git clone git@github.com:Coderockr/vitrine-social.git /not/your/go/path/vitrine-social;
 
-cd $GOPATH/src/Coderockr/vitrine-social;
+make setup # executar na primeira vez para instalar todas as dependencias e ferramentas
 
-make install;
+make migrations # isso pode falhar por causa do warmup do postgres
 
-make serve;
+make serve # agora esta rodando :)
 ```
 
-### Migrations
+### Domínios e Subdomínios locais
 
-#### Criar uma migration
+Incluir os seguintes domínios no seu `/etc/hosts` deve agilizar o setup do seu projeto:
 
 ```sh
-sql-migrate new -config=./devops/dbconfig.yml -env=production default-categories
+127.0.0.1 api.vitrinesocial.test # usar porta 8000 (golang)
+127.0.0.1 images.vitrinesocial.test # usar porta 7000 (images-server)
+127.0.0.1 minio.vitrinesocial.test # usar porta 9000 (minio)
+127.0.0.1 vitrinesocial.test # usar porta 3000 (frontend)
 ```
 
-## Instalação Frontend
+## Instalação Frontend (React)
 
 ```sh
-cd Frontend
+cd frontend
 
 yarn
 
@@ -39,8 +53,20 @@ Mover ícones para assets/icons
 yarn reicons
 ```
 
+## Comandos Auxiliares (dia-a-dia)
+
+Estamos mantendo todos os comandos auxiliares (criar migration, rodar migrations, regerar docs, etc) dentro do `Makefile` na raiz do projeto.
+
+Para ver quais são os comandos disponívels execute: `make help` e todos serão listados.
+
 ## Documentação API
 
-Para acessar a versão mais recente da definição acesse: 
+Para acessar a versão mais recente da definição acesse:
 
 http://coderockr.com/vitrine-social/
+
+> [Como atualizar a documentação?](./CONTRIBUTING.md#atualize-a-documentação)
+
+## [Contribuindo](./CONTRIBUTING.md)
+
+Leia o nosso [CONTRIBUTING.md](./CONTRIBUTING.md) para aprender sobre o nosso processo de desenvolvimento, como propor bugfixes e melhorias, e como encontrar issues para atuar.

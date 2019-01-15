@@ -85,7 +85,7 @@ class Header extends React.Component {
     }
 
     return (
-      <Menu.Item key={`/organization/${user.id}`}>
+      <Menu.Item key={`/entidade/${user.id}`}>
         <Dropdown overlay={userMenu(user)} placement="bottomCenter">
           <Avatar
             icon="user"

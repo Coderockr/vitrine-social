@@ -5,10 +5,9 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/Coderockr/vitrine-social/server/security"
 	"github.com/gobuffalo/pop/nulls"
-
-	"github.com/Coderockr/vitrine-social/server/model"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -60,19 +59,15 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 		return nil, err
 	}
 
-	err = r.db.Select(&o.Needs, "SELECT * FROM needs WHERE organization_id = $1", id)
+	return o, nil
+}
+
+// GetAll Organizations from database
+func (r *OrganizationRepository) GetAll() ([]*model.Organization, error) {
+	var o []*model.Organization
+	err := r.db.Select(&o, "SELECT "+allFields+" FROM organizations")
 	if err != nil {
 		return nil, err
-	}
-
-	for i := range o.Needs {
-		c, _ := r.catRepo.Get(o.Needs[i].CategoryID)
-		o.Needs[i].Category = *c
-
-		o.Needs[i].Images, err = getNeedImages(r.db, &o.Needs[i])
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	return o, nil

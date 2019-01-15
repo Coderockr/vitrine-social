@@ -1,9 +1,10 @@
-import api, { headers } from './api';
+import { api, apiImage, headers } from './api';
 
 const storage = window.localStorage;
 
 const authorizeAPI = (token) => {
   api.defaults.headers = { ...headers, Authorization: token };
+  apiImage.defaults.headers = { ...headers, Authorization: token };
 };
 
 export const authorizeUser = (response) => {

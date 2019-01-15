@@ -154,7 +154,7 @@ class RequestDetails extends React.Component {
     }
 
     const shareMsg = `${organization.name} está precisando de ${title} (${requiredQuantity - reachedQuantity} ${unit}).`;
-    const shareURL = `www.vitrinesocial.org/detalhes/${id}`;
+    const shareURL = `api.vitrinesocial.org/v1/need/${id}/share`;
 
     return (
       <div className={styles.contentWrapper}>

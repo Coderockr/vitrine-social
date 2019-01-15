@@ -191,3 +191,51 @@ func validate(r *NeedRepository, n model.Need) (model.Need, error) {
 
 	return n, nil
 }
+
+// GetOrganizationNeeds return all needs from an organization
+func (r *NeedRepository) GetOrganizationNeeds(oID int64, orderBy string, order string) ([]model.Need, error) {
+	var filter string
+
+	if len(orderBy) > 0 {
+		switch orderBy {
+		case
+			"id",
+			"updated_at":
+			break
+		default:
+			orderBy = "created_at"
+		}
+
+		if len(order) > 0 {
+			if order != "asc" && order != "desc" {
+				return nil, fmt.Errorf("Método de ordenação não reconhecido")
+			}
+		} else {
+			order = "asc"
+		}
+
+		filter = fmt.Sprintf("ORDER BY %s %s ", orderBy, order)
+	}
+
+	sqlNeeds := fmt.Sprintf(`SELECT * FROM needs WHERE organization_id = $1 %s`, filter)
+
+	oNeeds := []model.Need{}
+	err := r.db.Select(&oNeeds, sqlNeeds, oID)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range oNeeds {
+		oNeeds[i].Category, err = r.catRepo.Get(oNeeds[i].CategoryID)
+		if err != nil {
+			return nil, err
+		}
+
+		oNeeds[i].Images, err = getNeedImages(r.db, &oNeeds[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return oNeeds, nil
+}
