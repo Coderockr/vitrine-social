@@ -226,10 +226,12 @@ func (r *NeedRepository) GetOrganizationNeeds(oID int64, orderBy string, order s
 	}
 
 	for i := range oNeeds {
-		oNeeds[i].Category, err = r.catRepo.Get(oNeeds[i].CategoryID)
+		cat, err := r.catRepo.Get(oNeeds[i].CategoryID)
 		if err != nil {
 			return nil, err
 		}
+
+		oNeeds[i].Category = *cat
 
 		oNeeds[i].Images, err = getNeedImages(r.db, &oNeeds[i])
 		if err != nil {

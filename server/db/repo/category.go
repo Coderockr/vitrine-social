@@ -3,9 +3,8 @@ package repo
 import (
 	"errors"
 
-	"github.com/golang/sync/syncmap"
-
 	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/golang/sync/syncmap"
 	"github.com/jmoiron/sqlx"
 )
 
