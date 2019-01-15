@@ -4,6 +4,7 @@ all: help
 # set default as dev if not set
 export VITRINESOCIAL_ENV ?= dev
 export DATABASE_HOST ?= 0.0.0.0
+export MINIO_PORT=9000
 export m ?= default
 export commit ?= HEAD
 export bin ?= vitrine-social
@@ -60,7 +61,7 @@ start-dependences: ## docker up all container dependencies
 	docker-compose up -d postgres minio images-server
 
 serve: start-dependences ## start server
-	cd server && go run main.go serve
+	cd server && STORAGE_S3_ENDPOINT_FRONTEND=http://127.0.0.1:$$MINIO_PORT STORAGE_S3_ENDPOINT=http://127.0.0.1:$$MINIO_PORT go run main.go serve
 
 install-on-docker: ## install dependences from docker
 	docker-compose up -d
@@ -93,7 +94,7 @@ docs-open: ## opens the docs on your browser
 	$$BROWSER docs/index.html
 
 open-minio: ## opens the docs on your browser
-	$$BROWSER localhost:9000
+	$$BROWSER localhost:$$MINIO_PORT
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help: ## show this help
