@@ -126,7 +126,7 @@ func TestAuthHandler_Login(t *testing.T) {
 
 func TestJWTManager_CanReadItsOwnTokens(t *testing.T) {
 	jwtOptions := map[string]JWTOptions{
-		"using HS256": JWTOptions{
+		"using HS256": {
 			SigningMethod: "HS256",
 			PrivateKey:    []byte("ThisIsASecretSalt"),
 			Expiration:    time.Hour,

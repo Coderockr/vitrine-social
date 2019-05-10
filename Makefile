@@ -31,6 +31,7 @@ update-dev-dependences: # update dev dependences to the most recent
 install: ## install project dependences
 	go get github.com/haya14busa/goverage
 	go get golang.org/x/lint/golint
+	go get github.com/rubenv/sql-migrate
 	cd server; go mod tidy ; go mod download
 
 install-frontend: ## install frontend dependences
@@ -55,8 +56,10 @@ migrations-on-docker: ## run migrations inside docker
 	docker-compose up -d
 	docker-compose exec golang sql-migrate up -config=devops/dbconfig.yml -env=docker
 
-serve: ## start server
-	docker-compose up -d postgres
+start-dependences: ## docker up all container dependencies
+	docker-compose up -d postgres minio images-server
+
+serve: start-dependences ## start server
 	cd server && go run main.go serve
 
 install-on-docker: ## install dependences from docker
@@ -67,8 +70,7 @@ serve-on-docker: ## start the server inside docker
 	docker-compose up -d
 	docker-compose exec golang sh -c "cd server && go run main.go serve"
 
-serve-watch: ## start server with hot reload (bin=vitrine-social)
-	docker-compose up -d postgres
+serve-watch: start-dependences ## start server with hot reload (bin=vitrine-social)
 	go get -u github.com/codegangsta/gin
 	cd server; API_PORT=8001 gin --port 8000 --appPort 8001 --bin $(bin) run serve
 
@@ -87,8 +89,11 @@ docs-serve: ## start a server with the docs
 docs-build: ## build the docs
 	cd docs && make build
 
-docs-open:
+docs-open: ## opens the docs on your browser
 	$$BROWSER docs/index.html
+
+open-minio: ## opens the docs on your browser
+	$$BROWSER localhost:9000
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help: ## show this help
