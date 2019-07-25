@@ -36,7 +36,7 @@ func connectTo(sufix string) (stow.Container, error) {
 		containerName = os.Getenv("STORAGE_LOCAL_PATH" + sufix)
 	}
 
-	if os.Getenv("STORAGE") == "s3" {
+	if os.Getenv("STORAGE"+sufix) == "s3" {
 		kind = "s3"
 		config = stow.ConfigMap{
 			s3.ConfigAccessKeyID: os.Getenv("STORAGE_S3_CONFIG_ACCESS_KEY_ID" + sufix),
@@ -51,7 +51,7 @@ func connectTo(sufix string) (stow.Container, error) {
 		containerName = os.Getenv("STORAGE_S3_BUCKET_NAME" + sufix)
 	}
 
-	if os.Getenv("STORAGE") == "google" {
+	if os.Getenv("STORAGE"+sufix) == "google" {
 		kind = "google"
 		config = stow.ConfigMap{
 			google.ConfigJSON:      "json",
