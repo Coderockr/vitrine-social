@@ -24,6 +24,7 @@ services:
       API_PORT: 8000
       DATABASE_HOST: postgres
       VITRINESOCIAL_ENV: ${VITRINESOCIAL_ENV:-dev}
+      STORAGE_S3_ENDPOINT: http://minio:9000
     command: sh -c "while true; do echo 'beep'; sleep 5; done"
     working_dir: /vitrine-social
     links:

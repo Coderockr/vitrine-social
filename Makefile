@@ -11,10 +11,13 @@ export testWatchPort=8091
 
 .PHONY: build
 
-setup: ## initial project setup
+go-get-sql-migrate:
+	cd server && GO111MODULE=off go get -v github.com/rubenv/sql-migrate/...
+
+./server/config/dev.env.dist:
 	cp ./server/config/dev.env.dist ./server/config/dev.env
-	go get github.com/rubenv/sql-migrate/...
-	make install
+
+setup: ./server/config/dev.env.dist install-hostnames go-get-sql-migrate install ## initial project setup
 
 org-reset-password: ## reset a organization's password by email (email=email@email.net password=secret-password)
 	docker-compose up -d postgres
@@ -25,14 +28,14 @@ org-reset-password-on-docker: ## reset a organization's password by email on doc
 	docker-compose exec golang sh -c "cd server && go run main.go org reset-password $(email) $(password)"
 
 update-dev-dependences: # update dev dependences to the most recent
-	go get -u github.com/haya14busa/goverage
-	go get -u golang.org/x/lint/golint
+	cd server && go get -u github.com/haya14busa/goverage
+	cd server && go get -u golang.org/x/lint/golint
 
 install: ## install project dependences
-	go get github.com/haya14busa/goverage
-	go get golang.org/x/lint/golint
-	go get github.com/rubenv/sql-migrate
-	cd server; go mod tidy ; go mod download
+	cd server && go get github.com/haya14busa/goverage
+	cd server && go get golang.org/x/lint/golint
+	make go-get-sql-migrate
+	cd server && go mod tidy && go mod download
 
 install-frontend: ## install frontend dependences
 	cd frontend && yarn install
@@ -49,7 +52,7 @@ new-migration: ## create a new migration, use make new-migration m=message to se
 
 migrations: ## run pending migrations
 	docker-compose up -d postgres
-	go get github.com/rubenv/sql-migrate/...
+	make go-get-sql-migrate
 	sql-migrate up -config=devops/dbconfig.yml -env=$$VITRINESOCIAL_ENV
 
 migrations-on-docker: ## run migrations inside docker
@@ -62,7 +65,15 @@ start-dependences: ## docker up all container dependencies
 serve: start-dependences ## start server
 	cd server && go run main.go serve
 
-install-on-docker: ## install dependences from docker
+install-hostnames:
+	echo -e '127.0.0.1 api.vitrinesocial.test # usar porta 8000 (golang)' | sudo tee -a /etc/hosts
+	echo -e '127.0.0.1 images.vitrinesocial.test # usar porta 7000 (images-server)' | sudo tee -a /etc/hosts
+	echo -e '127.0.0.1 minio.vitrinesocial.test # usar porta 9000 (minio)' | sudo tee -a /etc/hosts
+	echo -e '127.0.0.1 vitrinesocial.test # usar porta 3000 (frontend)' | sudo tee -a /etc/hosts
+
+setup-on-docker: install-hostnames install-on-docker ## setups the backend project
+
+install-on-docker: ./server/config/dev.env.dist ## install dependences from docker
 	docker-compose up -d
 	docker-compose exec golang make install
 
