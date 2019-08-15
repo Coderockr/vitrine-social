@@ -24,6 +24,21 @@ make migrations # isso pode falhar por causa do warmup do postgres
 make serve # agora esta rodando :)
 ```
 
+#### Instalando ambiente de desenvolvimento backend no Docker
+
+Na primeira vez que for utilizar o projeto execute o comando:
+```sh
+make setup-on-docker
+```
+
+Após o comando concluir e nas próximas vezes precisa apenas:
+```sh
+make migrate-on-docker
+make serve-on-docker
+```
+
+O terminal estará bloqueado durante a execução do backend
+
 ### Domínios e Subdomínios locais
 
 Incluir os seguintes domínios no seu `/etc/hosts` deve agilizar o setup do seu projeto:
@@ -44,6 +59,7 @@ yarn
 
 yarn start
 ```
+
 
 ### Reicons
 
