@@ -22,7 +22,9 @@ module.exports = {
   purple_400: '#948CF9',
   purple_500: '#7169DE',
 
-  ambar_200: '#FFE7D5',
+  ambar_100: '#FEEFE3',
+  ambar_200: '#F9DBC5',
+  ambar_300: '#FFBB8A',
   ambar_400: '#FF974B',
 
   pink_200: '#FBBED1',

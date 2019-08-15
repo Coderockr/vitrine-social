@@ -19,6 +19,7 @@ require('../../utils/styles/colors.js');
       font-weight: normal;
       margin: 0;
       text-transform: capitalize;
+      text-align: left;
     }
 
     a {
@@ -84,6 +85,10 @@ require('../../utils/styles/colors.js');
       text-align: center;
       padding: 0 10px;
       width: calc(100% - 30px);
+
+      h2 {
+        text-align: center;
+      }
 
       .receivedTop {
         display: inline-block;
