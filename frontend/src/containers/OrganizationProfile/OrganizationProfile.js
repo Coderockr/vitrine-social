@@ -178,7 +178,7 @@ class OrganizationProfile extends React.Component {
           style={{ marginTop: 20 }}
         />
         <h1 className={styles.organizationName}>
-          <span>{organization.name}</span>
+          {organization.name}
         </h1>
         <Col
           sm={{ span: 18, offset: 3 }}
