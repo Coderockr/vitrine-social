@@ -17,7 +17,7 @@ const Footer = ({ className }) => {
         >
           <div className={styles.footerWrapper}>
             <p className={styles.copyright}>
-              Vitrine Social ©{year.getFullYear()} Created by
+              {`Vitrine Social ©${year.getFullYear()} Created by `}
               <a target="_blank" rel="me" href="http://www.coderockr.com">
                 Coderockr
               </a>
