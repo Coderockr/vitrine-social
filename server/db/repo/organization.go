@@ -55,7 +55,13 @@ func (r *OrganizationRepository) Get(id int64) (*model.Organization, error) {
 		return nil, err
 	}
 
-	err = r.db.Select(&o.Images, "SELECT * FROM organizations_images WHERE organization_id = $1 AND id != $2", id, o.LogoImageID)
+	logoID, _ := o.LogoImageID.Value()
+	if logoID == nil {
+		logoID = 0
+	}
+
+	err = r.db.Select(&o.Images, "SELECT * FROM organizations_images WHERE organization_id = $1 AND id != $2", id, logoID)
+
 	if err != nil {
 		return nil, err
 	}
@@ -254,7 +260,7 @@ func (r *OrganizationRepository) GetLogo(o model.Organization) (*model.Organizat
 		return logo, nil
 	}
 
-	err = r.db.Get(logo, "SELECT * FROM organizations_images WHERE id = $1", o.LogoImageID)
+	err = r.db.Get(logo, "SELECT * FROM organizations_images WHERE id = $1", logoID)
 	if err == sql.ErrNoRows {
 		return logo, nil
 	}
