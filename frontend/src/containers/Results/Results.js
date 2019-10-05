@@ -11,14 +11,12 @@ class Results extends React.Component {
     requests: [],
     page: 1,
     order: 'desc',
-  }
-
-  componentWillMount() {
-    this.fetchRequests();
-  }
+  };
 
   componentDidMount() {
     document.title = 'Vitrine Social - Resultados da Busca';
+
+    this.fetchRequests();
   }
 
   componentDidUpdate(prevProps) {

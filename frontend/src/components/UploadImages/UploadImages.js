@@ -4,24 +4,22 @@ import BottomNotification from '../BottomNotification';
 import styles from './styles.module.scss';
 
 class UploadImages extends React.Component {
-  state = {
-    previewVisible: false,
-    previewImage: '',
-    updateList: [],
-  }
+  constructor(props) {
+    super(props);
 
-  componentWillMount() {
-    if (this.props.images) {
-      const fileList = this.props.images.map(image => (
-        {
-          uid: image.id,
-          name: image.name,
-          status: 'done',
-          url: image.url,
-        }
-      ));
-      this.setState({ fileList });
-    }
+    const fileList = props.images ? props.images.map(image => ({
+      uid: image.id,
+      name: image.name,
+      status: 'done',
+      url: image.url,
+    })) : [];
+
+    this.state = {
+      fileList,
+      previewVisible: false,
+      previewImage: '',
+      updateList: [],
+    };
   }
 
   getBase64(img, callback) {
@@ -109,7 +107,12 @@ class UploadImages extends React.Component {
           {uploadButton}
         </Upload>
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-          <img className={styles.modalImage} alt="example" style={{ width: '100%' }} src={previewImage} />
+          <img
+            className={styles.modalImage}
+            alt="example"
+            style={{ width: '100%' }}
+            src={previewImage}
+          />
         </Modal>
       </div>
     );

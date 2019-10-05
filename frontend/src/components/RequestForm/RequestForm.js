@@ -39,7 +39,7 @@ class RequestForm extends React.Component {
     mediaQuery.addListener(this.widthChange.bind(this));
   }
 
-  componentWillMount() {
+  componentDidMount() {
     ReactGA.modalview('/request-form', null, 'Formulário de Solicitação');
   }
 
@@ -51,7 +51,6 @@ class RequestForm extends React.Component {
     this.setState({ imagesChanges });
     this.props.enableSave(true);
   }
-
 
   widthChange() {
     this.setState({
@@ -105,7 +104,7 @@ class RequestForm extends React.Component {
         );
       }
     });
-  }
+  };
 
   saveImageChanges() {
     const { imagesChanges } = this.state;

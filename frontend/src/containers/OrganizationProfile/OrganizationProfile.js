@@ -37,12 +37,10 @@ class OrganizationProfile extends React.Component {
     mediaQuery.addListener(this.widthChange.bind(this));
   }
 
-  componentWillMount() {
-    this.fetchData();
-  }
-
   componentDidMount() {
     document.title = 'Vitrine Social - Perfil da Organização';
+
+    this.fetchData();
   }
 
   componentWillUnmount() {
@@ -95,7 +93,8 @@ class OrganizationProfile extends React.Component {
         if (onSaveOrganization) {
           updateUser(response.data);
         }
-      }, (error) => {
+      },
+      (error) => {
         this.setState({
           loading: false,
           error,
@@ -191,7 +190,7 @@ class OrganizationProfile extends React.Component {
                 <p style={{ 'white-space': 'pre-line' }}>{organization.about}</p>
               }
               {organization.website &&
-              <a target="_blank" rel="me" href={organization.website.includes('http') ? organization.website : `//${organization.website}`}>{organization.website}</a>
+                <a target="_blank" rel="me" href={organization.website.includes('http') ? organization.website : `//${organization.website}`}>{organization.website}</a>
               }
             </div>
           }

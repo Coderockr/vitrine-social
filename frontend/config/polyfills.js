@@ -1,5 +1,11 @@
 'use strict';
 
+// React 16 depends on Map, Set and requestAnimationFrame, this is a polyfill for older browsers
+// for more info check https://reactjs.org/docs/javascript-environment-requirements.html
+import 'raf/polyfill';
+import 'core-js/es/map';
+import 'core-js/es/set';
+
 if (typeof Promise === 'undefined') {
   // Rejection tracking prevents a common issue where React gets into an
   // inconsistent state due to an error, but it gets swallowed by a Promise,

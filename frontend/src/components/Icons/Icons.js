@@ -3,7 +3,7 @@ import map from './map.json';
 
 const defaultProps = {
   size: 25,
-  className: false,
+  className: undefined,
   style: {},
 };
 

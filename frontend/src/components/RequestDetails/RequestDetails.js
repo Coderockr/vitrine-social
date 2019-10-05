@@ -59,7 +59,7 @@ class RequestDetails extends React.Component {
     mediaQueryTwoImages.addListener(this.hideArrowCount.bind(this));
   }
 
-  componentWillMount() {
+  componentDidMount() {
     ReactGA.modalview('/request-details', null, 'Detalhes da Solicitação');
   }
 

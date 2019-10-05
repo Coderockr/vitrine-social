@@ -47,7 +47,7 @@ class RequestForm extends React.Component {
     mediaQuery.addListener(this.widthChange.bind(this));
   }
 
-  componentWillMount() {
+  componentDidMount() {
     ReactGA.modalview('/request-form', null, 'Formulário de Nova Solicitação');
     this.fetchCategories();
   }
@@ -112,7 +112,7 @@ class RequestForm extends React.Component {
         );
       }
     });
-  }
+  };
 
   saveImageChanges(result) {
     const { imagesChanges } = this.state;

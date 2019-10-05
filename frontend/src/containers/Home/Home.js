@@ -15,25 +15,23 @@ class Home extends React.Component {
     requests: [],
     page: 1,
     order: 'desc',
-  }
-
-  componentWillMount() {
-    this.fetchCategories();
-    this.fetchRequests();
-  }
+  };
 
   componentDidMount() {
     document.title = 'Vitrine Social';
-    const { match: { params } } = this.props;
+    const {
+      match: { params },
+    } = this.props;
     if (params.requestId) {
-      api.get(`need/${params.requestId}`).then(
-        (response) => {
-          this.setState({
-            request: response.data,
-          });
-        },
-      );
+      api.get(`need/${params.requestId}`).then((response) => {
+        this.setState({
+          request: response.data,
+        });
+      });
     }
+
+    this.fetchCategories();
+    this.fetchRequests();
   }
 
   onCancel() {
@@ -43,12 +41,15 @@ class Home extends React.Component {
   }
 
   onChangePage(page) {
-    this.setState({
-      page,
-      loadingRequests: true,
-    }, () => {
-      this.fetchRequests();
-    });
+    this.setState(
+      {
+        page,
+        loadingRequests: true,
+      },
+      () => {
+        this.fetchRequests();
+      },
+    );
   }
 
   orderChanged(value) {
@@ -66,7 +67,8 @@ class Home extends React.Component {
           categories: response.data,
           loadingCategories: false,
         });
-      }, (error) => {
+      },
+      (error) => {
         this.setState({
           loadingCategories: false,
           errorCategories: error,
@@ -84,7 +86,8 @@ class Home extends React.Component {
           pagination: response.data.pagination,
           loadingRequests: false,
         });
-      }, (error) => {
+      },
+      (error) => {
         this.setState({
           loadingRequests: false,
           errorRequests: error,
@@ -100,7 +103,9 @@ class Home extends React.Component {
 
   searchByCategory(categoryId) {
     const { history } = this.props;
-    history.push(`/busca/categories=${categoryId}&page=1&status=ACTIVE&orderBy=createdAt&order=desc`);
+    history.push(
+      `/busca/categories=${categoryId}&page=1&status=ACTIVE&orderBy=createdAt&order=desc`,
+    );
   }
 
   render() {
