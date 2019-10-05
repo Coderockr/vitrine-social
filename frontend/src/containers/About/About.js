@@ -28,16 +28,15 @@ class About extends React.Component {
     document.title = 'Vitrine Social - Sobre';
   }
 
-  renderItemSections = () => (
+  renderItemSections = () =>
     itemSections.map(item => (
-      <div className={styles.itemSection}>
+      <div key={item.number} className={styles.itemSection}>
         <div className={cx(styles.item, item.style)}>
           <span className={cx(styles.itemNumber, item.style)}>{item.number}</span>
         </div>
         <p>{item.text}</p>
       </div>
-    ))
-  );
+    ));
 
   renderLastSection = () => (
     <div className={styles.itemSection}>
