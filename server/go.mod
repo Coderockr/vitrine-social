@@ -49,10 +49,10 @@ require (
 	github.com/stretchr/testify v1.2.1
 	github.com/thecodenation/go-sitemap-generator v0.0.0-20180806195508-d5c7662421b4
 	github.com/urfave/negroni v0.3.0
-	golang.org/x/crypto v0.0.0-20180527072434-ab813273cd59
-	golang.org/x/net v0.0.0-20170523201210-186fd3fc8194 // indirect
+	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
+	golang.org/x/net v0.0.0-20190620200207-3b0461eec859 // indirect
 	golang.org/x/oauth2 v0.0.0-20180529203656-ec22f46f877b // indirect
-	golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f // indirect
+	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
 	google.golang.org/api v0.0.0-20180530150455-de943baf05a0 // indirect
 	google.golang.org/appengine v1.0.0 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
