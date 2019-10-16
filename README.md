@@ -33,7 +33,7 @@ make setup-on-docker
 
 Após o comando concluir e nas próximas vezes precisa apenas:
 ```sh
-make migrate-on-docker
+make migrations-on-docker
 make serve-on-docker
 ```
 
