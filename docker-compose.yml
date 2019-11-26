@@ -38,7 +38,7 @@ services:
       - "./.data/minio:/data"
       - "./.data/minio-config:/root/.minio"
     ports:
-      - "9000:9000"
+      - "${MINIO_PORT:-9000}:9000"
     entrypoint: sh
     command: -c 'mkdir -p /data/images.vitrinesocial.test /data/vitrinesocial.test && /usr/bin/minio server /data'
   images-server:

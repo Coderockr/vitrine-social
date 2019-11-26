@@ -1,0 +1,1859 @@
+package graphql_test
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"io/ioutil"
+	"mime/multipart"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+	"time"
+
+	"github.com/Coderockr/vitrine-social/server/graphql"
+	"github.com/Coderockr/vitrine-social/server/handlers"
+	"github.com/Coderockr/vitrine-social/server/model"
+	"github.com/Coderockr/vitrine-social/server/security"
+	"github.com/gobuffalo/pop/nulls"
+	"github.com/gorilla/context"
+	"github.com/lucassabreu/graphql-multipart-middleware/testutil"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
+)
+
+func getGraphqlRequest(t *model.Token, query string, vars *map[string]interface{}) *http.Request {
+	params := map[string]interface{}{"query": query}
+
+	if vars != nil {
+		params["variables"] = vars
+	}
+
+	b, _ := json.Marshal(params)
+	r := httptest.NewRequest("POST", "/graphql", bytes.NewBuffer(b))
+	context.Set(r, handlers.TokenKey, t)
+	return r
+}
+
+func TestOpenQueries(t *testing.T) {
+	type testCase struct {
+		catRepo    *catRepoMock
+		needRepo   *needRepoMock
+		orgRepo    *orgRepoMock
+		searchRepo *searchRepoMock
+		query      string
+		response   string
+	}
+
+	tests := map[string]testCase{
+		"allCategories/when_success": testCase{
+			query: `query {
+				allCategories{
+					name, slug
+				}
+			}`,
+			response: `{"data": { "allCategories": [
+				{"name":"Category1", "slug": "c1"},
+				{"name":"Category2", "slug": "c2"}
+			]}}`,
+			catRepo: func() *catRepoMock {
+				cMock := &catRepoMock{}
+				cMock.On("GetAll").Once().
+					Return(
+						[]model.Category{
+							model.Category{
+								Name: "Category1",
+								Slug: "c1",
+							},
+							model.Category{
+								Name: "Category2",
+								Slug: "c2",
+							},
+						},
+						nil,
+					)
+				return cMock
+			}(),
+		},
+		"allCategories/when_fail": testCase{
+			query: `query { allCategories{ name, slug } }`,
+			response: `{"data": { "allCategories": null }, "errors":[
+				{"message": "fail to query", "locations":[]}
+			] }`,
+			catRepo: func() *catRepoMock {
+				cMock := &catRepoMock{}
+				cMock.On("GetAll").Once().
+					Return([]model.Category{}, errors.New("fail to query"))
+				return cMock
+			}(),
+		},
+		"category/with_simple_query": testCase{
+			query: `query {
+				category(id: 1){
+					name, slug
+				}
+			}`,
+			response: `{"data": {
+				"category": {"name":"Category1", "slug": "c1"}
+			}}`,
+			catRepo: func() *catRepoMock {
+				cMock := &catRepoMock{}
+				cMock.On("Get", int64(1)).Once().
+					Return(
+						&model.Category{
+							Name: "Category1",
+							Slug: "c1",
+						},
+						nil,
+					)
+				return cMock
+			}(),
+		},
+		"category/with_needsCount": testCase{
+			query: `query {
+				category(id: 1){
+					name, slug, needsCount
+				}
+			}`,
+			response: `{"data": {
+				"category": {"name":"Category1", "slug": "c1", "needsCount": 3}
+			}}`,
+			catRepo: func() *catRepoMock {
+				cMock := &catRepoMock{}
+				c := &model.Category{
+					Name: "Category1",
+					Slug: "c1",
+				}
+				cMock.On("Get", int64(1)).Once().
+					Return(c, nil)
+
+				cMock.On("GetNeedsCount", c).Once().
+					Return(int64(3), nil)
+				return cMock
+			}(),
+		},
+		"category/when_fail": testCase{
+			query: `query { category(id: 1){ name, slug } }`,
+			response: `{"data": { "category": null }, "errors":[
+				{"message": "fail to query", "locations":[]}
+			] }`,
+			catRepo: func() *catRepoMock {
+				cMock := &catRepoMock{}
+				cMock.On("Get", int64(1)).Once().
+					Return(nil, errors.New("fail to query"))
+				return cMock
+			}(),
+		},
+		"need/with_simple_query": testCase{
+			query: `query { need(id: 444) { id, title } }`,
+			response: `{"data": { "need": {
+				"id": 444, "title": "a need"
+			}}}`,
+			needRepo: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(&model.Need{ID: 444, Title: "a need"}, nil)
+				return m
+			}(),
+		},
+		"need/with_full_query": testCase{
+			query: `query { need(id: 444) { id, title, images { name, url }, category{slug}, organization{id, name} } }`,
+			response: `{"data": { "need": {
+				"id": 444, "title": "a need",
+				"images": [ { "name": "a image", "url": "http://localhost/a-image.jpg" } ],
+				"category": { "slug": "higiene" },
+				"organization": {"id": 5, "name": "some org"}
+			}}}`,
+			needRepo: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID: 444, Title: "a need",
+							Images: []model.NeedImage{
+								model.NeedImage{
+									Image: model.Image{
+										Name: "a image",
+										URL:  "http://localhost/a-image.jpg",
+									},
+								},
+							},
+							Category: model.Category{
+								Slug: "higiene",
+							},
+							OrganizationID: 5,
+						},
+						nil,
+					)
+				return m
+			}(),
+			orgRepo: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(5)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{ID: 5},
+							Name: "some org",
+						},
+						nil,
+					)
+				return m
+			}(),
+		},
+		"organization/with_simple_query": testCase{
+			query: `query { organization(id: 333) { id, logo, name, images { id, name, url }, website, email, facebook, whatsapp, instagram } }`,
+			response: `{"data": { "organization": {
+				"id": 333, "name": "old org", "email": "org@org.org", "website": "http://org.org", "logo": "http://images.com/logo.png",
+				"images": [ { "id": 1, "name": "a image", "url": "http://localhost/a-image.jpg" } ],
+				"facebook": "orgface", "instagram": null, "whatsapp": "(47) 998981711"
+			}}}`,
+			orgRepo: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(333)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{
+								ID:    333,
+								Email: "org@org.org",
+							},
+							Logo: &model.OrganizationImage{
+								Image: model.Image{URL: "http://images.com/logo.png"},
+							},
+							Name:     "old org",
+							Website:  nulls.NewString("http://org.org"),
+							Facebook: nulls.NewString("orgface"),
+							Whatsapp: nulls.NewString("(47) 998981711"),
+							Images: []model.OrganizationImage{
+								model.OrganizationImage{
+									Image: model.Image{
+										ID:   1,
+										Name: "a image",
+										URL:  "http://localhost/a-image.jpg",
+									},
+								},
+							},
+						},
+						nil,
+					)
+				return m
+			}(),
+		},
+		"organization/with_search_needs": testCase{
+			query: `query { organization(id: 333) { needs { results { title } } } }`,
+			response: `{"data": { "organization": { "needs": {
+				"results" : [{"title":"a need"}]
+			}}}}`,
+			orgRepo: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(333)).Once().
+					Return(
+						&model.Organization{User: model.User{ID: 333}},
+						nil,
+					)
+				return m
+			}(),
+			searchRepo: func() *searchRepoMock {
+				m := &searchRepoMock{}
+				m.On("Search", "", []int(nil), int64(333), "", "created_at", "desc", 1).Once().
+					Return(
+						[]model.SearchNeed{
+							model.SearchNeed{Need: model.Need{Title: "a need"}},
+						},
+						1,
+						nil,
+					)
+				return m
+			}(),
+		},
+		"organization/when_has_search_params": testCase{
+			query: `query { organization(id: 333) {
+				needs(input: {
+					text: "need",
+					categories: [1],
+					orderBy: UPDATED_AT,
+					status: ACTIVE,
+					order: ASC,
+					page: 2
+				}) {
+					results { title }
+				}
+			}}`,
+			response: `{"data": { "organization": { "needs": {
+				"results" : [{"title":"a need"}]
+			}}}}`,
+			orgRepo: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(333)).Once().
+					Return(
+						&model.Organization{User: model.User{ID: 333}},
+						nil,
+					)
+				return m
+			}(),
+			searchRepo: func() *searchRepoMock {
+				m := &searchRepoMock{}
+				m.On("Search", "need", []int{1}, int64(333), string(model.NeedStatusActive), "updated_at", "asc", 2).Once().
+					Return(
+						[]model.SearchNeed{
+							model.SearchNeed{Need: model.Need{Title: "a need"}},
+						},
+						1,
+						nil,
+					)
+				return m
+			}(),
+		},
+		"search/without_query": testCase{
+			query: `query { search {
+				results { title }
+				pageInfo { totalResults, totalPages, currentPage }
+			} }`,
+			response: `{"data": { "search": {
+				"results" : [{"title":"a need"}],
+				"pageInfo": {
+					"totalPages": 1,
+					"totalResults": 1,
+					"currentPage": 1
+				}
+			}}}`,
+			searchRepo: func() *searchRepoMock {
+				m := &searchRepoMock{}
+				m.On("Search", "", []int(nil), int64(0), "", "created_at", "desc", 1).Once().
+					Return(
+						[]model.SearchNeed{
+							model.SearchNeed{Need: model.Need{Title: "a need"}},
+						},
+						1,
+						nil,
+					)
+				return m
+			}(),
+		},
+		"search/with_query": testCase{
+			query: `query {
+				search(input: {
+					text: "need",
+					categories: [1,2,3],
+					organizationId: 3,
+					status: ACTIVE,
+					orderBy: UPDATED_AT,
+					order: ASC,
+					page: 2
+				}) {
+					results {
+						title
+						description
+						reachedQuantity
+						requiredQuantity
+						status
+						unit
+						createdAt
+						dueDate
+						updatedAt
+						images {url,id,name}
+						organization{name}
+						category{name}
+					}
+					pageInfo { totalResults, totalPages, currentPage }
+				}
+			}`,
+			response: `{"data": { "search": {
+				"results" : [{
+					"title":"a need",
+					"description": "a need description",
+					"reachedQuantity": 1,
+					"requiredQuantity": 12,
+					"status": "ACTIVE",
+					"unit": "boxes",
+					"createdAt": "2018-10-18T15:30:00Z",
+					"dueDate": null,
+					"updatedAt": "2018-10-18T15:30:00Z",
+					"organization": { "name": "a organization" },
+					"category": { "name": "A Category" },
+					"images": [
+						{"id": 1, "name": "a image", "url": "http://localhost/image1.png"},
+						{"id": 2, "name": "a second image", "url": "http://localhost/image2.png"}
+					]
+				}],
+				"pageInfo": {
+					"totalPages": 2,
+					"totalResults": 11,
+					"currentPage": 2
+				}
+			}}}`,
+			searchRepo: func() *searchRepoMock {
+				m := &searchRepoMock{}
+
+				cT, _ := time.Parse(time.RFC3339, "2018-10-18T15:30:00Z")
+
+				m.On("Search", "need", []int{1, 2, 3}, int64(3), "ACTIVE", "updated_at", "asc", 2).Once().
+					Return(
+						[]model.SearchNeed{
+							model.SearchNeed{
+								Need: model.Need{
+									ID:               333,
+									Title:            "a need",
+									Description:      nulls.NewString("a need description"),
+									ReachedQuantity:  1,
+									RequiredQuantity: 12,
+									Status:           model.NeedStatusActive,
+									Unit:             "boxes",
+									CreatedAt:        cT,
+									DueDate:          nil,
+									UpdatedAt:        cT,
+									OrganizationID:   1,
+									CategoryID:       333,
+								},
+								CategoryName: "A Category",
+								CategorySlug: "cat",
+							},
+						},
+						11,
+						nil,
+					)
+				return m
+			}(),
+			orgRepo: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							Name: "a organization",
+						},
+						nil,
+					)
+				return m
+			}(),
+			needRepo: func() *needRepoMock {
+				m := &needRepoMock{}
+				call := m.On("GetNeedsImages", mock.Anything).Once()
+				call.Run(func(args mock.Arguments) {
+					n := args.Get(0).(model.Need)
+					if n.ID != 333 {
+						call.Return([]model.NeedImage{}, errors.New("failed"))
+						return
+					}
+
+					call.Return(
+						[]model.NeedImage{
+							model.NeedImage{
+								Image: model.Image{
+									ID:   1,
+									Name: "a image",
+									URL:  "http://localhost/image1.png",
+								},
+							},
+							model.NeedImage{
+								Image: model.Image{
+									ID:   2,
+									Name: "a second image",
+									URL:  "http://localhost/image2.png",
+								},
+							},
+						},
+						nil,
+					)
+				})
+				return m
+			}(),
+		},
+		"search/when_search_fails": testCase{
+			query: `query {
+				search {
+					results { title }
+					pageInfo { totalResults, totalPages, currentPage }
+				}
+			}`,
+			response: `{"data": { "search": null }, "errors": [
+				{ "message": "search has failed", "locations":[] }
+			]}`,
+			searchRepo: func() *searchRepoMock {
+				m := &searchRepoMock{}
+				m.On("Search", "", []int(nil), int64(0), "", "created_at", "desc", 1).Once().
+					Return([]model.SearchNeed{}, 0, errors.New("search has failed"))
+				return m
+			}(),
+		},
+		"viewer/should_fail_without_token": testCase{
+			query: `query { viewer { id, name } }`,
+			response: `{"data": { "viewer": null }, "errors": [
+				{ "message": "no token was provided, you must send a token through Authorization header", "locations":[] }
+			]}`,
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			h := graphql.NewHandler(
+				test.needRepo,
+				test.orgRepo,
+				&tokenManagerMock{},
+				test.catRepo,
+				test.searchRepo,
+				&imageStorageMock{},
+			)
+
+			w := httptest.NewRecorder()
+
+			h.ServeHTTP(w, getGraphqlRequest(nil, test.query, nil))
+
+			body, _ := ioutil.ReadAll(w.Result().Body)
+			require.JSONEq(t, test.response, string(body))
+
+			if test.catRepo != nil {
+				test.catRepo.AssertExpectations(t)
+			}
+
+			if test.needRepo != nil {
+				test.needRepo.AssertExpectations(t)
+			}
+
+			if test.orgRepo != nil {
+				test.orgRepo.AssertExpectations(t)
+			}
+
+			if test.searchRepo != nil {
+				test.searchRepo.AssertExpectations(t)
+			}
+		})
+	}
+}
+
+func TestMutations(t *testing.T) {
+	type testCase struct {
+		tmMock       *tokenManagerMock
+		orgRepoMock  *orgRepoMock
+		needRepoMock *needRepoMock
+		imageStorage *imageStorageMock
+		token        *model.Token
+		mutation     string
+		response     string
+	}
+
+	dOrg := &model.Organization{
+		User: model.User{ID: 1},
+		Name: "Coderockr",
+	}
+	dToken := &model.Token{UserID: 1}
+
+	tests := map[string]testCase{
+		"login/when_success": testCase{
+			mutation: `mutation {
+				login(email:"admin@coderockr.com", password: "1234567"){
+					token
+					organization{id, name}
+				}
+			}`,
+			response: `{"data": { "login": {
+				"token": "tokengeradovalido",
+				"organization": { "id": 1, "name": "Coderockr" }
+			}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				p, _ := security.GenerateHash("1234567")
+				m.On("GetUserByEmail", "admin@coderockr.com").Once().
+					Return(
+						model.User{
+							Email:    "admin@coderockr.com",
+							ID:       1,
+							Password: p,
+						},
+						nil,
+					)
+
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{ID: 1},
+							Name: "Coderockr",
+						},
+						nil,
+					)
+				return m
+			}(),
+			tmMock: func() *tokenManagerMock {
+				tm := &tokenManagerMock{}
+				var pms *[]string
+				tm.On("CreateToken", mock.Anything, pms).Once().
+					Return(
+						"tokengeradovalido",
+						nil,
+					)
+				return tm
+			}(),
+		},
+		"login/when_email_does_not_exists": testCase{
+			mutation: `mutation {
+				login(email:"admin@coderockr.com", password: "1234567"){
+					token
+					organization{id, name}
+				}
+			}`,
+			response: `{"data": { "login": null }, "errors": [
+				{"message": "email does not exist", "locations":[]}
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("GetUserByEmail", "admin@coderockr.com").Once().
+					Return(model.User{}, errors.New("email does not exist"))
+
+				return m
+			}(),
+		},
+		"login/when_password_is_invalid": testCase{
+			mutation: `mutation {
+				login(email:"admin@coderockr.com", password: "1234"){
+					token
+					organization{id, name}
+				}
+			}`,
+			response: `{"data": { "login": null }, "errors": [
+				{"message": "password does not match", "locations":[]}
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				p, _ := security.GenerateHash("1234567")
+				m.On("GetUserByEmail", "admin@coderockr.com").Once().
+					Return(
+						model.User{
+							Email:    "admin@coderockr.com",
+							ID:       1,
+							Password: p,
+						},
+						nil,
+					)
+
+				return m
+			}(),
+		},
+		"needCreate/when_success": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needCreate(input: {
+						title: "new need",
+						description: "a need",
+						unit: "box",
+						categoryId: 1,
+						dueDate: "2018-07-01"
+					}) {
+						need { id, title, requiredQuantity }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needCreate": { "need" : {
+				"id": 333, "title": "new need", "requiredQuantity": 0
+			}}}}}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				call := m.On("Create", mock.AnythingOfType("Need"))
+				call.Once().
+					Run(func(args mock.Arguments) {
+						n := args.Get(0).(model.Need)
+						n.ID = 333
+						call.Return(n, nil)
+					})
+				return m
+			}(),
+		},
+		"needCreate/with_no_description": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needCreate(input: {
+						title: "new need",
+						unit: "box",
+						categoryId: 1,
+						dueDate: "2018-07-01"
+					}) {
+						need { id, title, description }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needCreate": { "need" : {
+				"id": 333, "title": "new need", "description": null
+			}}}}}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				call := m.On("Create", mock.AnythingOfType("Need"))
+				call.Once().
+					Run(func(args mock.Arguments) {
+						n := args.Get(0).(model.Need)
+						n.ID = 333
+						call.Return(n, nil)
+					})
+				return m
+			}(),
+		},
+		"needCreate/when_fail": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needCreate(input: {
+						title: "new need",
+						description: "a need",
+						unit: "box",
+						categoryId: 1,
+					}) {
+						need { id, title, requiredQuantity }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needCreate": null }}, "errors": [
+				{"message": "fail to save", "locations":[] }
+			]}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				call := m.On("Create", mock.AnythingOfType("Need"))
+				call.Once().
+					Run(func(args mock.Arguments) {
+						call.Return(args.Get(0).(model.Need), errors.New("fail to save"))
+					})
+				return m
+			}(),
+		},
+		"needImageDelete/when_sucess": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needImageDelete(input: {
+						needId: 1,
+						needImageId: 333,
+					}) {
+						need { id, title }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needImageDelete": { "need": {
+				"title": "old need", "id": 1
+			}}}}}`,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("DeleteNeedImage", dToken, int64(1), int64(333)).Once().
+					Return(nil)
+				return m
+			}(),
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(&model.Need{ID: 1, Title: "old need"}, nil)
+				return m
+			}(),
+		},
+		"needImageDelete/when_fail": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needImageDelete(input: {
+						needId: 1,
+						needImageId: 333,
+					}) {
+						need { id, title }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needImageDelete": null}}, "errors": [
+				{"message": "it is not your image", "locations": []}
+			]}`,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("DeleteNeedImage", dToken, int64(1), int64(333)).Once().
+					Return(errors.New("it is not your image"))
+				return m
+			}(),
+		},
+		"needUpdate/when_success": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						title: "new title",
+						requiredQuantity: 100,
+						reachedQuantity: 10,
+						unit: "box",
+						categoryId: 1
+						status: ACTIVE,
+						withoutDueDate: true,
+						withoutDescription: true
+					}}) {
+						need {
+							id, title, description,
+							requiredQuantity, reachedQuantity,
+							unit, dueDate, category{id}, status
+						}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": { "need": {
+				"title": "new title", "id": 444, "description": null,
+				"requiredQuantity": 100, "reachedQuantity": 10, "unit": "box",
+				"dueDate": null, "category": { "id": 1 }, "status": "ACTIVE"
+			}}}}}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				dueDate, _ := time.Parse("2006-01-02", "2018-10-09")
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID:               444,
+							Title:            "old title",
+							Description:      nulls.NewString("old description"),
+							CategoryID:       7,
+							RequiredQuantity: 99,
+							ReachedQuantity:  0,
+							DueDate:          &dueDate,
+							Status:           model.NeedStatusInactive,
+							Unit:             "bags",
+							OrganizationID:   1,
+						},
+						nil,
+					)
+
+				n := model.Need{
+					ID:               444,
+					Title:            "new title",
+					Description:      nulls.String{Valid: false},
+					CategoryID:       1,
+					RequiredQuantity: 100,
+					ReachedQuantity:  10,
+					DueDate:          nil,
+					Status:           model.NeedStatusActive,
+					Unit:             "box",
+					OrganizationID:   1,
+				}
+				call := m.On("Update", n).Once()
+				call.Run(func(args mock.Arguments) {
+					n.Category = model.Category{ID: 1}
+					call.Return(n, nil)
+				})
+				return m
+			}(),
+		},
+		"needUpdate/when_success_not_all_fields": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						description: "new description",
+						dueDate: "2018-10-09",
+						status: INACTIVE
+					}}) {
+						need {description, dueDate}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": { "need": {
+				"description": "new description", "dueDate": "2018-10-09"
+			}}}}}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID:             444,
+							OrganizationID: 1,
+							Description:    nulls.NewString("old description"),
+							DueDate:        nil,
+						},
+						nil,
+					)
+
+				call := m.On("Update", mock.Anything).Once()
+				call.Run(func(args mock.Arguments) {
+					call.Return(args.Get(0).(model.Need), nil)
+				})
+				return m
+			}(),
+		},
+		"needUpdate/when_is_not_your_need": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						description: "new description",
+						dueDate: "2018-10-09"
+					}}) {
+						need {description, dueDate}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": null}}, "errors": [
+				{"message": "organization 1 does not own need 444", "locations": []}
+			]}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID:             444,
+							OrganizationID: 4,
+							Description:    nulls.NewString("old description"),
+							DueDate:        nil,
+						},
+						nil,
+					)
+
+				return m
+			}(),
+		},
+		"needUpdate/cant_has_due_date_and_without": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						dueDate: "2018-10-09",
+						withoutDueDate: true
+					}}) {
+						need {dueDate}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": null}}, "errors": [
+				{"message": "parameters withoutDueDate and dueDate can't be used together", "locations": []}
+			]}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID:             444,
+							OrganizationID: 1,
+							Description:    nulls.NewString("old description"),
+							DueDate:        nil,
+						},
+						nil,
+					)
+
+				return m
+			}(),
+		},
+		"needUpdate/cant_has_description_and_without": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						description: "new description",
+						withoutDescription: true
+					}}) {
+						need {dueDate}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": null}}, "errors": [
+				{"message": "parameters withoutDescription and description can't be used together", "locations": []}
+			]}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID:             444,
+							OrganizationID: 1,
+							Description:    nulls.NewString("old description"),
+							DueDate:        nil,
+						},
+						nil,
+					)
+
+				return m
+			}(),
+		},
+		"needUpdate/when_need_does_not_exist": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						dueDate: "2018-10-09",
+						withoutDueDate: true
+					}}) {
+						need {dueDate}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": null}}, "errors": [
+				{"message": "need does not exist", "locations": []}
+			]}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(nil, errors.New("need does not exist"))
+
+				return m
+			}(),
+		},
+		"needUpdate/when_fail_to_update": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					needUpdate(input: { id: 444, patch: {
+						dueDate: "2018-10-09"
+					}}) {
+						need {dueDate}
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "needUpdate": null}}, "errors": [
+				{"message": "fail to update", "locations": []}
+			]}`,
+			needRepoMock: func() *needRepoMock {
+				m := &needRepoMock{}
+				m.On("Get", int64(444)).Once().
+					Return(
+						&model.Need{
+							ID:             444,
+							OrganizationID: 1,
+							Description:    nulls.NewString("old description"),
+							DueDate:        nil,
+						},
+						nil,
+					)
+				m.On("Update", mock.Anything).Once().
+					Return(model.Need{}, errors.New("fail to update"))
+
+				return m
+			}(),
+		},
+		"organizationImageDelete/when_sucess": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					organizationImageDelete(input: {
+						organizationImageId: 333,
+					}) {
+						organization { id, name }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "organizationImageDelete": { "organization": {
+				"name": "old organization", "id": 1
+			}}}}}`,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("DeleteOrganizationImage", dToken, int64(333)).Once().
+					Return(nil)
+				return m
+			}(),
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Twice().
+					Return(&model.Organization{User: model.User{ID: 1}, Name: "old organization"}, nil)
+				return m
+			}(),
+		},
+		"organizationImageDelete/when_fail": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					organizationImageDelete(input: {
+						organizationImageId: 333,
+					}) {
+						organization { id, name }
+					}
+				}
+			}`,
+			response: `{"data":{  "viewer": { "organizationImageDelete": null}}, "errors": [
+				{"message": "it is not your image", "locations": []}
+			]}`,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("DeleteOrganizationImage", dToken, int64(333)).Once().
+					Return(errors.New("it is not your image"))
+				return m
+			}(),
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(&model.Organization{User: model.User{ID: 1}, Name: "old organization"}, nil)
+				return m
+			}(),
+		},
+		"organizationUpdate/when_success": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					organizationUpdate(input: {
+						name: "new name",
+						about: "new about",
+						phone: "47 99856-8512",
+						video: "http://video.com/v",
+						email: "org@neworg.org",
+						address: {
+							street: "Rua Algum Lugar (Nova)",
+							number: "404",
+							neighbordhood: "Algum Bairro",
+							city: "Joinville",
+							state: "SC",
+							zipcode: "89230000",
+							complement: ""
+						}
+					}) {
+						organization {
+							id, name, about, phone, video, email,
+							address {
+								street, number, neighbordhood,
+								city, state, zipcode, complement
+							}
+						}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"organizationUpdate":{"organization":{
+				"id" : 1,"name": "new name", "about": "new about", "phone": "47 99856-8512",
+				"video": "http://video.com/v", "email": "org@neworg.org",
+				"address" : {
+					"street": "Rua Algum Lugar (Nova)", "number": "404",
+					"neighbordhood": "Algum Bairro", "city": "Joinville",
+					"state": "SC", "zipcode": "89230000", "complement": ""
+				}
+			}}}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{
+								ID:    1,
+								Email: "org@org.org",
+							},
+							Name:  "old name",
+							About: "old about",
+							Phone: "",
+							Video: "http://video.com/wv",
+							Address: model.Address{
+								Street:       "Rua Algum Lugar",
+								Number:       "500",
+								Neighborhood: "Algum Bairro Antigo",
+								City:         "Curitiba",
+								State:        "PR",
+								Zipcode:      "90230000",
+								Complement:   nulls.NewString("Perto do Obelisco"),
+							},
+						},
+						nil,
+					)
+
+				oUpdated := model.Organization{
+					User: model.User{
+						ID:    1,
+						Email: "org@neworg.org",
+					},
+					Name:  "new name",
+					About: "new about",
+					Phone: "47 99856-8512",
+					Video: "http://video.com/v",
+					Address: model.Address{
+						Street:       "Rua Algum Lugar (Nova)",
+						Number:       "404",
+						Neighborhood: "Algum Bairro",
+						City:         "Joinville",
+						State:        "SC",
+						Zipcode:      "89230000",
+						Complement:   nulls.NewString(""),
+					},
+				}
+
+				m.On("Update", oUpdated).Once().
+					Return(oUpdated, nil)
+
+				return m
+			}(),
+		},
+		"organizationUpdate/with_some_fields": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					organizationUpdate(input: {
+						name: "new name",
+						address: {
+							street: "Rua Algum Lugar (Nova)",
+						}
+					}) {
+						organization {
+							id, name, about, phone, video, email,
+							address {
+								street, number, neighbordhood,
+								city, state, zipcode, complement
+							}
+						}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"organizationUpdate":{"organization":{
+				"id" : 1,"name": "new name", "about": "old about", "phone": "",
+				"video": "http://video.com/wv", "email": "org@org.org",
+				"address" : {
+					"street": "Rua Algum Lugar (Nova)", "number": "500",
+					"neighbordhood": "Algum Bairro Antigo", "city": "Curitiba",
+					"state": "PR", "zipcode": "90230000", "complement": "Perto do Obelisco"
+				}
+			}}}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{
+								ID:    1,
+								Email: "org@org.org",
+							},
+							Name:  "old name",
+							About: "old about",
+							Phone: "",
+							Video: "http://video.com/wv",
+							Address: model.Address{
+								Street:       "Rua Algum Lugar",
+								Number:       "500",
+								Neighborhood: "Algum Bairro Antigo",
+								City:         "Curitiba",
+								State:        "PR",
+								Zipcode:      "90230000",
+								Complement:   nulls.NewString("Perto do Obelisco"),
+							},
+						},
+						nil,
+					)
+
+				oUpdated := model.Organization{
+					User: model.User{
+						ID:    1,
+						Email: "org@org.org",
+					},
+					Name:  "new name",
+					About: "old about",
+					Phone: "",
+					Video: "http://video.com/wv",
+					Address: model.Address{
+						Street:       "Rua Algum Lugar (Nova)",
+						Number:       "500",
+						Neighborhood: "Algum Bairro Antigo",
+						City:         "Curitiba",
+						State:        "PR",
+						Zipcode:      "90230000",
+						Complement:   nulls.NewString("Perto do Obelisco"),
+					},
+				}
+
+				m.On("Update", oUpdated).Once().
+					Return(oUpdated, nil)
+
+				return m
+			}(),
+		},
+		"organizationUpdate/without_complement": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					organizationUpdate(input: {
+						name: "new name",
+						address: {
+							withoutComplement: true
+						}
+					}) {
+						organization {
+							name, address {complement}
+						}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"organizationUpdate":{"organization":{
+				"name": "new name", "address" : {"complement": null}
+			}}}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{
+								ID:    1,
+								Email: "org@org.org",
+							},
+							Name:  "old name",
+							About: "old about",
+							Phone: "",
+							Video: "http://video.com/wv",
+							Address: model.Address{
+								Street:       "Rua Algum Lugar",
+								Number:       "500",
+								Neighborhood: "Algum Bairro Antigo",
+								City:         "Curitiba",
+								State:        "PR",
+								Zipcode:      "90230000",
+								Complement:   nulls.NewString("Perto do Obelisco"),
+							},
+						},
+						nil,
+					)
+
+				oUpdated := model.Organization{
+					User: model.User{
+						ID:    1,
+						Email: "org@org.org",
+					},
+					Name:  "new name",
+					About: "old about",
+					Phone: "",
+					Video: "http://video.com/wv",
+					Address: model.Address{
+						Street:       "Rua Algum Lugar",
+						Number:       "500",
+						Neighborhood: "Algum Bairro Antigo",
+						City:         "Curitiba",
+						State:        "PR",
+						Zipcode:      "90230000",
+						Complement:   nulls.String{Valid: false},
+					},
+				}
+
+				m.On("Update", oUpdated).Once().
+					Return(oUpdated, nil)
+
+				return m
+			}(),
+		},
+		"organizationUpdate/fails_when_withoutComplement_and_complement": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					organizationUpdate(input: {
+						name: "new name",
+						address: {
+							withoutComplement: true,
+							complement: "Olhe para cima"
+						}
+					}) {
+						organization {
+							name, address {complement}
+						}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"organizationUpdate": null }}, "errors": [
+			{ "message": "parameters withoutComplement and complement can't be used together", "locations":[] }
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{
+								ID:    1,
+								Email: "org@org.org",
+							},
+						},
+						nil,
+					)
+				return m
+			}(),
+		},
+		"resetPassword/when_token_dont_have_permission": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					resetPassword(newPassword: "123456") {
+						organization {name}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"resetPassword": null }}, "errors": [
+				{ "message": "token does not have permission to reset the password", "locations":[] }
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(
+						&model.Organization{
+							User: model.User{
+								ID:    1,
+								Email: "org@org.org",
+							},
+						},
+						nil,
+					)
+				return m
+			}(),
+		},
+		"resetPassword/when_fails_to_reset": testCase{
+			token: &model.Token{
+				UserID:      1,
+				Permissions: map[string]bool{model.PasswordResetPermission: true},
+			},
+			mutation: `mutation {
+				viewer {
+					resetPassword(newPassword: "123456") {
+						organization {name}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"resetPassword": null }}, "errors": [
+				{ "message": "fails to reset", "locations":[] }
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				o := &model.Organization{
+					Name: "org rp",
+					User: model.User{
+						ID:    1,
+						Email: "org@org.org",
+					},
+				}
+				m.On("Get", int64(1)).Once().
+					Return(o, nil)
+
+				m.On("ResetPasswordTo", o, "123456").Once().
+					Return(nil, errors.New("fails to reset"))
+				return m
+			}(),
+		},
+		"resetPassword/when_success": testCase{
+			token: &model.Token{
+				UserID:      1,
+				Permissions: map[string]bool{model.PasswordResetPermission: true},
+			},
+			mutation: `mutation {
+				viewer {
+					resetPassword(newPassword: "123456") {
+						organization {name}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"resetPassword":{"organization":{"name":"org rp"}}}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				o := &model.Organization{
+					Name: "org rp",
+					User: model.User{
+						ID:    1,
+						Email: "org@org.org",
+					},
+				}
+				m.On("Get", int64(1)).Once().
+					Return(o, nil)
+
+				m.On("ResetPasswordTo", o, "123456").Once().
+					Return(o, nil)
+				return m
+			}(),
+		},
+		"updatePassword/when_success": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					updatePassword(input: {currentPassword: "1234567", newPassword: "123456"}) {
+						organization {name}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"updatePassword":{"organization":{"name":"Coderockr"}}}}}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(dOrg, nil)
+
+				m.On("ChangePassword", *dOrg, "1234567", "123456").Once().
+					Return(*dOrg, nil)
+				return m
+			}(),
+		},
+		"updatePassword/when_fail": testCase{
+			token: dToken,
+			mutation: `mutation {
+				viewer {
+					updatePassword(input: {currentPassword: "1234567", newPassword: "123456"}) {
+						organization {name}
+					}
+				}
+			}`,
+			response: `{"data":{"viewer":{"updatePassword":null}}, "errors": [
+				{"message": "fail to update password", "locations":[]}
+			]}`,
+			orgRepoMock: func() *orgRepoMock {
+				m := &orgRepoMock{}
+				m.On("Get", int64(1)).Once().
+					Return(dOrg, nil)
+
+				m.On("ChangePassword", *dOrg, "1234567", "123456").Once().
+					Return(*dOrg, errors.New("fail to update password"))
+				return m
+			}(),
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			if test.orgRepoMock == nil {
+				test.orgRepoMock = &orgRepoMock{}
+				test.orgRepoMock.On("Get", dToken.UserID).
+					Return(dOrg, nil)
+			}
+
+			h := graphql.NewHandler(
+				test.needRepoMock,
+				test.orgRepoMock,
+				test.tmMock,
+				&catRepoMock{},
+				&searchRepoMock{},
+				test.imageStorage,
+			)
+
+			w := httptest.NewRecorder()
+
+			h.ServeHTTP(w, getGraphqlRequest(test.token, test.mutation, nil))
+
+			body, _ := ioutil.ReadAll(w.Result().Body)
+			require.JSONEq(t, test.response, string(body))
+
+			if test.orgRepoMock != nil {
+				test.orgRepoMock.AssertExpectations(t)
+			}
+
+			if test.tmMock != nil {
+				test.tmMock.AssertExpectations(t)
+			}
+
+			if test.needRepoMock != nil {
+				test.needRepoMock.AssertExpectations(t)
+			}
+
+			if test.imageStorage != nil {
+				test.imageStorage.AssertExpectations(t)
+			}
+		})
+	}
+}
+
+func createUploadRequest(
+	t *model.Token,
+	mutation string,
+	vars map[string]interface{},
+	fileMap map[string][]string,
+	files map[string]string,
+) *http.Request {
+	jsonFileMap, _ := json.Marshal(fileMap)
+
+	if vars == nil {
+		vars = make(map[string]interface{}, 0)
+	}
+
+	operation, _ := json.Marshal(map[string]interface{}{
+		"query":     mutation,
+		"variables": vars,
+	})
+
+	r := testutil.NewGraphQLFileUploadRequest(
+		"/graphql",
+		map[string]string{
+			"operations": string(operation),
+			"map":        string(jsonFileMap),
+		},
+		files,
+	)
+	context.Set(r, handlers.TokenKey, t)
+
+	return r
+}
+
+func TestMutationsWithUpload(t *testing.T) {
+	type testCase struct {
+		orgRepoMock  *orgRepoMock
+		imageStorage *imageStorageMock
+		token        *model.Token
+		mutation     string
+		vars         map[string]interface{}
+		fileMap      map[string][]string
+		files        map[string]string
+		response     string
+	}
+
+	dOrg := &model.Organization{
+		User: model.User{ID: 1},
+		Name: "Coderockr",
+	}
+	dToken := &model.Token{UserID: 1}
+
+	tests := map[string]testCase{
+		"needCreate/when_success": testCase{
+			mutation: `mutation ($file: Upload!) {
+				viewer {
+					needImageCreate(input: { needId: 1, file: $file }){
+						needImage { name, url }
+					}
+				}
+			}`,
+			vars:    map[string]interface{}{"file": nil},
+			fileMap: map[string][]string{"graphql": []string{"variables.file"}},
+			files:   map[string]string{"graphql": "graphql.go"},
+			response: `{"data": { "viewer": { "needImageCreate": { "needImage": {
+				"name": "graphql", "url": "http://localhost/need-1/aaaa.go"
+			}}}}}`,
+			token: dToken,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("CreateNeedImage", dToken, int64(1), mock.AnythingOfType("*multipart.FileHeader")).Once().
+					Return(
+						&model.NeedImage{
+							Image: model.Image{
+								ID:   1,
+								Name: "graphql",
+								URL:  "http://localhost/need-1/aaaa.go",
+							},
+						},
+						nil,
+					)
+				return m
+			}(),
+		},
+		"needCreate/when_fail": testCase{
+			mutation: `mutation ($file: Upload!) {
+				viewer {
+					needImageCreate(input: { needId: 1, file: $file }){
+						needImage { name, url }
+					}
+				}
+			}`,
+			vars:    map[string]interface{}{"file": nil},
+			fileMap: map[string][]string{"graphql": []string{"variables.file"}},
+			files:   map[string]string{"graphql": "graphql.go"},
+			response: `{"data": { "viewer": { "needImageCreate": null }}, "errors": [
+				{"message": "no more space", "locations":[]}
+			]}`,
+			token: dToken,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("CreateNeedImage", dToken, int64(1), mock.AnythingOfType("*multipart.FileHeader")).Once().
+					Return(nil, errors.New("no more space"))
+				return m
+			}(),
+		},
+		"organizationCreate/when_success": testCase{
+			mutation: `mutation ($file: Upload!) {
+				viewer {
+					organizationImageCreate(input: { file: $file }){
+						organizationImage { name, url }
+					}
+				}
+			}`,
+			vars:    map[string]interface{}{"file": nil},
+			fileMap: map[string][]string{"graphql": []string{"variables.file"}},
+			files:   map[string]string{"graphql": "graphql.go"},
+			response: `{"data": { "viewer": { "organizationImageCreate": { "organizationImage": {
+				"name": "graphql", "url": "http://localhost/organization-1/aaaa.go"
+			}}}}}`,
+			token: dToken,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("CreateOrganizationImage", dToken, mock.AnythingOfType("*multipart.FileHeader")).Once().
+					Return(
+						&model.OrganizationImage{
+							Image: model.Image{
+								ID:   1,
+								Name: "graphql",
+								URL:  "http://localhost/organization-1/aaaa.go",
+							},
+						},
+						nil,
+					)
+				return m
+			}(),
+		},
+		"organizationCreate/when_fail": testCase{
+			mutation: `mutation ($file: Upload!) {
+				viewer {
+					organizationImageCreate(input: { file: $file }){
+						organizationImage { name, url }
+					}
+				}
+			}`,
+			vars:    map[string]interface{}{"file": nil},
+			fileMap: map[string][]string{"graphql": []string{"variables.file"}},
+			files:   map[string]string{"graphql": "graphql.go"},
+			response: `{"data": { "viewer": { "organizationImageCreate": null }}, "errors": [
+				{"message": "no more space", "locations":[]}
+			]}`,
+			token: dToken,
+			imageStorage: func() *imageStorageMock {
+				m := &imageStorageMock{}
+				m.On("CreateOrganizationImage", dToken, mock.AnythingOfType("*multipart.FileHeader")).Once().
+					Return(nil, errors.New("no more space"))
+				return m
+			}(),
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			if test.orgRepoMock == nil {
+				test.orgRepoMock = &orgRepoMock{}
+				test.orgRepoMock.On("Get", int64(1)).
+					Return(dOrg, nil)
+			}
+
+			h := graphql.NewHandler(
+				&needRepoMock{},
+				test.orgRepoMock,
+				&tokenManagerMock{},
+				&catRepoMock{},
+				&searchRepoMock{},
+				test.imageStorage,
+			)
+
+			w := httptest.NewRecorder()
+
+			h.ServeHTTP(
+				w,
+				createUploadRequest(
+					test.token,
+					test.mutation,
+					test.vars,
+					test.fileMap,
+					test.files,
+				),
+			)
+
+			body, _ := ioutil.ReadAll(w.Result().Body)
+			require.JSONEq(t, test.response, string(body))
+
+			if test.orgRepoMock != nil {
+				test.orgRepoMock.AssertExpectations(t)
+			}
+
+			if test.imageStorage != nil {
+				test.imageStorage.AssertExpectations(t)
+			}
+		})
+	}
+}
+
+type needRepoMock struct {
+	mock.Mock
+}
+
+func (m *needRepoMock) Get(id int64) (*model.Need, error) {
+	args := m.Called(id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*model.Need), args.Error(1)
+}
+
+func (m *needRepoMock) GetNeedsImages(n model.Need) ([]model.NeedImage, error) {
+	args := m.Called(n)
+	return args.Get(0).([]model.NeedImage), args.Error(1)
+}
+
+func (m *needRepoMock) Create(n model.Need) (model.Need, error) {
+	args := m.Called(n)
+	return args.Get(0).(model.Need), args.Error(1)
+}
+
+func (m *needRepoMock) Update(n model.Need) (model.Need, error) {
+	args := m.Called(n)
+	return args.Get(0).(model.Need), args.Error(1)
+}
+
+type orgRepoMock struct {
+	mock.Mock
+}
+
+func (m *orgRepoMock) Get(id int64) (*model.Organization, error) {
+	args := m.Called(id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*model.Organization), args.Error(1)
+}
+
+func (m *orgRepoMock) Update(o model.Organization) (model.Organization, error) {
+	args := m.Called(o)
+	return args.Get(0).(model.Organization), args.Error(1)
+}
+
+func (m *orgRepoMock) GetUserByEmail(s string) (model.User, error) {
+	args := m.Called(s)
+	return args.Get(0).(model.User), args.Error(1)
+}
+
+func (m *orgRepoMock) ChangePassword(o model.Organization, cPassword, nPassword string) (model.Organization, error) {
+	args := m.Called(o, cPassword, nPassword)
+	return args.Get(0).(model.Organization), args.Error(1)
+}
+
+func (m *orgRepoMock) ResetPasswordTo(o *model.Organization, s string) error {
+	args := m.Called(o, s)
+	return args.Error(1)
+}
+
+type catRepoMock struct {
+	mock.Mock
+}
+
+func (m *catRepoMock) Get(id int64) (*model.Category, error) {
+	args := m.Called(id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*model.Category), args.Error(1)
+}
+
+func (m *catRepoMock) GetAll() ([]model.Category, error) {
+	args := m.Called()
+	return args.Get(0).([]model.Category), args.Error(1)
+}
+
+func (m *catRepoMock) GetNeedsCount(c *model.Category) (int64, error) {
+	args := m.Called(c)
+	return args.Get(0).(int64), args.Error(1)
+}
+
+type searchRepoMock struct {
+	mock.Mock
+}
+
+func (m *searchRepoMock) Search(
+	text string,
+	categoriesID []int,
+	organizationsID int64,
+	status string,
+	orderBy string,
+	order string,
+	page int,
+) (results []model.SearchNeed, count int, err error) {
+	args := m.Called(text, categoriesID, organizationsID, status, orderBy, order, page)
+	return args.Get(0).([]model.SearchNeed), args.Int(1), args.Error(2)
+}
+
+type tokenManagerMock struct {
+	mock.Mock
+}
+
+func (m *tokenManagerMock) CreateToken(u model.User, ps *[]string) (string, error) {
+	args := m.Called(u, ps)
+	return args.String(0), args.Error(1)
+}
+
+type imageStorageMock struct {
+	mock.Mock
+}
+
+func (m *imageStorageMock) CreateNeedImage(t *model.Token, needID int64, fh *multipart.FileHeader) (*model.NeedImage, error) {
+	args := m.Called(t, needID, fh)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*model.NeedImage), args.Error(1)
+}
+func (m *imageStorageMock) CreateOrganizationImage(t *model.Token, fh *multipart.FileHeader) (*model.OrganizationImage, error) {
+	args := m.Called(t, fh)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*model.OrganizationImage), args.Error(1)
+}
+func (m *imageStorageMock) DeleteNeedImage(t *model.Token, needID, imageID int64) error {
+	args := m.Called(t, needID, imageID)
+	return args.Error(0)
+}
+
+func (m *imageStorageMock) DeleteOrganizationImage(t *model.Token, imageID int64) error {
+	args := m.Called(t, imageID)
+	return args.Error(0)
+}

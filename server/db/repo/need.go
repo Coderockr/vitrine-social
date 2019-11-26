@@ -34,9 +34,10 @@ func (r *NeedRepository) Get(id int64) (*model.Need, error) {
 		return nil, err
 	}
 
-	n.Images, err = getNeedImages(r.db, n)
+	n.Images, _ = getNeedImages(r.db, n)
 
-	n.Category, err = r.catRepo.Get(n.CategoryID)
+	c, _ := r.catRepo.Get(n.CategoryID)
+	n.Category = *c
 
 	o, err := r.orgRepo.GetBaseOrganization(n.OrganizationID)
 	n.Organization = *o
@@ -67,12 +68,22 @@ func (r *NeedRepository) Create(n model.Need) (model.Need, error) {
 		return n, err
 	}
 
+	c, err := r.catRepo.Get(n.CategoryID)
+	if err != nil {
+		return n, err
+	}
+
+	if c == nil {
+		return n, fmt.Errorf("category with id %d not found", n.CategoryID)
+	}
+
+	n.Category = *c
 	n.Status = model.NeedStatusActive
 
 	err = r.db.QueryRow(
 		`INSERT INTO needs (category_id, organization_id, title, description, required_qtd, reached_qtd, due_date, status, unit)
 			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
-			RETURNING id
+			RETURNING id, updated_at, created_at
 		`,
 		n.CategoryID,
 		n.OrganizationID,
@@ -83,7 +94,7 @@ func (r *NeedRepository) Create(n model.Need) (model.Need, error) {
 		n.DueDate,
 		n.Status,
 		n.Unit,
-	).Scan(&n.ID)
+	).Scan(&n.ID, &n.UpdatedAt, &n.CreatedAt)
 
 	if err != nil {
 		return n, err
@@ -215,10 +226,12 @@ func (r *NeedRepository) GetOrganizationNeeds(oID int64, orderBy string, order s
 	}
 
 	for i := range oNeeds {
-		oNeeds[i].Category, err = r.catRepo.Get(oNeeds[i].CategoryID)
+		cat, err := r.catRepo.Get(oNeeds[i].CategoryID)
 		if err != nil {
 			return nil, err
 		}
+
+		oNeeds[i].Category = *cat
 
 		oNeeds[i].Images, err = getNeedImages(r.db, &oNeeds[i])
 		if err != nil {

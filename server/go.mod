@@ -22,6 +22,8 @@ require (
 	github.com/gopherjs/gopherjs v0.0.0-20180825215210-0210a2f0f73c // indirect
 	github.com/gorilla/context v1.1.1
 	github.com/gorilla/mux v1.6.2
+	github.com/graphql-go/graphql v0.7.7
+	github.com/graphql-go/handler v0.2.3
 	github.com/graymeta/stow v0.0.0-20180719215413-7b5498c561bb
 	github.com/imdario/mergo v0.3.6 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
@@ -32,6 +34,7 @@ require (
 	github.com/kardianos/osext v0.0.0-20170510131534-ae77be60afb1 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/lib/pq v0.0.0-20180523175426-90697d60dd84
+	github.com/lucassabreu/graphql-multipart-middleware v0.0.0-20180727164413-5a6fd5cea814
 	github.com/lucassabreu/stow v0.0.0-20180720164008-16de368348a3
 	github.com/mattn/go-sqlite3 v1.9.0 // indirect
 	github.com/pkg/errors v0.8.0 // indirect
