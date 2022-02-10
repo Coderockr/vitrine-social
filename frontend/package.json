@@ -57,7 +57,7 @@
     "less": "^3.0.2",
     "less-loader": "^4.1.0",
     "less-vars-to-js": "^1.2.1",
-    "node-sass": "^4.9.0",
+    "node-sass": "^7.0.0",
     "postcss-loader": "2.0.6",
     "reicons": "^0.4.7",
     "sass-loader": "^7.0.1",
